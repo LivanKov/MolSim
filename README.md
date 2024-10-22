@@ -11,6 +11,11 @@ We recommend using the following compilers:
 - **GCC** (GNU Compiler Collection) version 11.1 or later
 - **Clang** version 14.0.0 or later
 
+Building this project will require the following tools:
+
+- **CMake**: Version 3.15 or later.
+ We recommend installing CMake from the [official website](https://cmake.org/download/), or using your package manager.
+
 Build instructions
 
 ```
@@ -20,5 +25,7 @@ $ cmake ..
 ``` 
 
 ### Run on Linux
+
+
 
 ### Participants
