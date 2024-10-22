@@ -4,7 +4,7 @@ MolSim (WS24/25, Group H)
 This repository contains the code written for the Molecular Dynamics Lab (IN0012) during WS24/25 at TUM
 
 
-### Build on Linux 
+### Build and Run on Linux 
 
 We recommend using the following compilers:
 
@@ -16,7 +16,7 @@ Building this project will require the following tools:
 - **CMake**: Version 3.15 or later.
  We recommend installing CMake from the [official website](https://cmake.org/download/), or using your package manager.
 
-Build instructions
+Build the project
 
 ```
 $ mkdir build
@@ -24,8 +24,12 @@ $ cd build
 $ cmake ..
 ``` 
 
-### Run on Linux
+Compile and run the executable
 
+```
+$ make
+$ ./<PROJECT_NAME>
+``` 
 
 
 ### Participants
