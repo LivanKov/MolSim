@@ -43,3 +43,8 @@ $ ./<PROJECT_NAME>
 - [BangruiW](https://github.com/BangruiW)
 - [sebastian3007](https://github.com/sebastian3007)
 - [LivanKov](https://github.com/LivanKov)
+
+### Supervisors
+
+- [Manish Kumar Mishra](https://github.com/manishmishra6016)
+- [Samuel Newcome](https://github.com/SamNewcome)
