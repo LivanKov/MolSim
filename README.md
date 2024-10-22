@@ -30,7 +30,7 @@ Compile and run the executable
 
 ```
 $ make
-$ ./<PROJECT_NAME>
+$ ./MolSim
 ``` 
 
 ### Branch naming conventions
