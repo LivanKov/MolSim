@@ -31,5 +31,7 @@ $ make
 $ ./<PROJECT_NAME>
 ``` 
 
+### Branch naming conventions
+
 
 ### Participants
