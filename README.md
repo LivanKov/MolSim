@@ -33,5 +33,9 @@ $ ./<PROJECT_NAME>
 
 ### Branch naming conventions
 
+- `dev-misc`: For miscellaneous updates like documentation, configuration, or small fixes.
+- `dev-<sheet number, task number>`: For specific tasks 
+- `dev-<feature-name>`: For specific features under development
+- `dev-fix-<bug name>`: For fixing bugs that occur during the project
 
 ### Participants
