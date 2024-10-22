@@ -39,3 +39,7 @@ $ ./<PROJECT_NAME>
 - `dev-fix-<bug name>`: For fixing bugs that occur during the project.
 
 ### Participants
+
+- [BangruiW](https://github.com/BangruiW)
+- [sebastian3007](https://github.com/sebastian3007)
+- [LivanKov](https://github.com/LivanKov)
