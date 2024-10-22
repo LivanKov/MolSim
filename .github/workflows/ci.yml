@@ -1,4 +1,4 @@
-name: CI Build
+name: MolSim CI Build
 
 on:
   push:
@@ -11,17 +11,25 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
+    # Step 1: Checkout the code from the repository
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-
+    # Step 2: Install CMake
     - name: Install dependencies
-      run: npm install
+      run: sudo apt-get update && sudo apt-get install -y cmake g++ libxerces-c-dev
 
-    - name: Run tests
-      run: npm test
+    # Step 3: Create build directory
+    - name: Create build directory
+      run: mkdir -p build
+
+    # Step 4: Run CMake to configure the project
+    - name: Run CMake
+      run: cmake -S . -B build
+
+    # Step 5: Build the project
+    - name: Build with Make
+      run: cmake --build build
+
