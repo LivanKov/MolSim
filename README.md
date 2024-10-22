@@ -13,7 +13,7 @@ We recommend using the following compilers:
 
 Building this project will require the following tools:
 
-- **CMake**: Version 3.15 or later.
+- **CMake**: Version 3.10 or later.
  We recommend installing CMake from the [official website](https://cmake.org/download/), or using your package manager.
 
 Build the project
