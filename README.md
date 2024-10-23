@@ -42,9 +42,9 @@ $ ./MolSim
 
 ### Participants
 
-- [BangruiW](https://github.com/BangruiW)
-- [sebastian-j-john](https://github.com/sebastian-j-john)
-- [LivanKov](https://github.com/LivanKov)
+- [Bangrui Wu](https://github.com/BangruiW)
+- [Sebastian John](https://github.com/sebastian-j-john)
+- [Ivan Lomakov](https://github.com/LivanKov)
 
 ### Supervisors
 
