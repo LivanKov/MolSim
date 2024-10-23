@@ -36,7 +36,8 @@ $ ./MolSim
 ### Branch naming conventions
 
 - `dev-misc`: For miscellaneous updates like documentation, configuration, or small fixes.
-- `dev-<sheet number, task number>`: For specific tasks.
+- `dev-<sheet number>`: For specific sheets handed out during the course, should be merged into master branch by deadline 
+- `dev-<sheet number/task number>`: For specific tasks on a sheet, should be merged into specific sheet branch throughout the week
 - `dev-<feature-name>`: For specific features under development.
 - `dev-fix-<bug name>`: For fixing bugs that occur during the project.
 
