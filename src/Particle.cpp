@@ -69,3 +69,19 @@ std::ostream &operator<<(std::ostream &stream, Particle &p) {
   stream << p.toString();
   return stream;
 }
+
+void Particle::updateX(double x_arg, double y_arg, double z_arg) {
+  x = {x_arg, y_arg, z_arg};
+}
+
+void Particle::updateV(double x_arg, double y_arg, double z_arg) {
+  v = {x_arg, y_arg, z_arg};
+}
+
+void Particle::updateF(double x_arg, double y_arg, double z_arg) {
+  f = {x_arg, y_arg, z_arg};
+}
+
+void Particle::updateOldF(double x_arg, double y_arg, double z_arg) {
+  old_f = {x_arg, y_arg, z_arg};
+}
