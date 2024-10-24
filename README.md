@@ -1,7 +1,7 @@
 MolSim (WS24/25, Group H)
 ===
 
-This repository contains the code written for the Molecular Dynamics Lab (IN0012) during WS24/25 at TUM
+This repository contains the code written for the Molecular Dynamics Lab (IN0012) during WS24/25 at TUM.
 
 ### Build and Run on Linux 
 
@@ -35,11 +35,11 @@ $ ./MolSim
 
 ### Branch naming conventions
 
-- `dev-misc`: For miscellaneous updates like documentation, configuration, or small fixes.
-- `dev-<sheet number>`: For specific sheets handed out during the course, should be merged into master branch by deadline 
-- `dev-<sheet number/task number>`: For specific tasks on a sheet, should be merged into specific sheet branch throughout the week
+- `dev-<sheet number>`: For specific work sheets handed out during the course; should be merged into master branch by deadline.
+- `dev-<sheet number/task number>`: For specific tasks on a work sheet; should be merged into specific work sheet branch throughout the week.
 - `dev-<feature-name>`: For specific features under development.
 - `dev-fix-<bug name>`: For fixing bugs that occur during the project.
+- `dev-misc`: For miscellaneous updates like documentation, configuration, or small fixes.
 
 ### Participants
 
