@@ -76,9 +76,10 @@ int main(int argc, char *argsv[]) {
     calculateV();
 
     iteration++;
-    if (iteration % 10 == 0) {
+    if(sparse_output && iteration % 10 == 0)
       plotParticles(iteration);
-    }
+    else
+      plotParticles(iteration);
     std::cout << "Iteration " << iteration << " finished." << std::endl;
 
     current_time += delta_t;
