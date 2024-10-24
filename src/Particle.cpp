@@ -7,8 +7,8 @@
 
 #include "Particle.h"
 
-#include <iostream>
 #include "utils/ArrayUtils.h"
+#include <iostream>
 
 Particle::Particle(int type_arg) {
   type = type_arg;

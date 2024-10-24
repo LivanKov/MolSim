@@ -174,11 +174,11 @@ template <class Container> auto L2Norm(const Container &c) {
 }
 } // namespace ArrayUtils
 
-
 /**
  * Stream operator for containers.
  *
- * This function actually checks if the given Template parameter satisfies is_container.
+ * This function actually checks if the given Template parameter satisfies
+ * is_container.
  *
  * @tparam Container
  * @param os
