@@ -1,5 +1,5 @@
-#ifndef ARGUMENTPARSER_HPP
-#define ARGUMENTPARSER_HPP
+#ifndef GETOPT_WRAPPER
+#define GETOPT_WRAPPER
 
 #include <cstdlib>
 #include <getopt.h>
