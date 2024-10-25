@@ -151,6 +151,38 @@ void calculateF() {
   }
 }
 
+void calculateF_new() {
+  // Store the current force as the old force and reset current to 0
+  for (auto &p1 : particles) {
+    p1.updateOldF(p1.getF()[0], p1.getF()[1], p1.getF()[2]);
+    p1.updateF(0, 0, 0);
+  }
+
+  // Simple force calculation formula (14)
+  for (auto it1 = particles.begin(); it1 != particles.end(); ++it1) {
+    for (auto it2 = std::next(it1); it2 != particles.end(); ++it2) {
+      Particle &p1 = *it1;
+      Particle &p2 = *it2;
+      
+      double distance = std::sqrt(std::pow(p1.getX()[0] - p2.getX()[0], 2) +
+                                  std::pow(p1.getX()[1] - p2.getX()[1], 2) +
+                                  std::pow(p1.getX()[2] - p2.getX()[2], 2));
+
+      // Avoid division by zero
+      if (distance > 0) { 
+        double f_x = (p2.getX()[0] - p1.getX()[0]) * (p1.getM() * p2.getM()) / pow(distance, 3);
+        double f_y = (p2.getX()[1] - p1.getX()[1]) * (p1.getM() * p2.getM()) / pow(distance, 3);
+        double f_z = (p2.getX()[2] - p1.getX()[2]) * (p1.getM() * p2.getM()) / pow(distance, 3);
+
+        p1.updateF(p1.getF()[0] + f_x, p1.getF()[1] + f_y, p1.getF()[2] + f_z);
+        // Newton's third law
+        p2.updateF(p2.getF()[0] - f_x, p2.getF()[1] - f_y, p2.getF()[2] - f_z); 
+      }
+    }
+  }
+}
+
+
 void calculateX() {
   for (auto &p : particles) {
     std::array<double, 3> location_copy(p.getX());
@@ -166,6 +198,22 @@ void calculateX() {
   }
 }
 
+void calculateX_new() {
+  for (auto &p : particles) {
+    auto x = p.getX();
+    auto v = p.getV();
+    auto f = p.getF();
+    double m = p.getM();
+
+    // Velocity-Störmer-Verlet formula (8)
+    x[0] = x[0] + delta_t * v[0] + pow(delta_t, 2) * f[0] / (2 * m);
+    x[1] = x[1] + delta_t * v[1] + pow(delta_t, 2) * f[1] / (2 * m);
+    x[2] = x[2] + delta_t * v[2] + pow(delta_t, 2) * f[2] / (2 * m);
+
+    p.updateX(x[0], x[1], x[2]);
+  }
+}
+
 void calculateV() {
   for (auto &p : particles) {
     std::array<double, 3> velocity_copy(p.getV());
@@ -178,6 +226,23 @@ void calculateV() {
     p.updateV(velocity_copy[0], velocity_copy[1], velocity_copy[2]);
   }
 }
+
+void calculateV_new() {
+  for (auto &p : particles) {
+    auto v = p.getV();
+    auto old_f = p.getOldF();
+    auto new_f = p.getF();
+    double m = p.getM();
+
+    // Velocity-Störmer-Verlet formula (9)
+    v[0] = v[0] + delta_t * (old_f[0] + new_f[0]) / (2 * m);
+    v[1] = v[1] + delta_t * (old_f[1] + new_f[1]) / (2 * m);
+    v[2] = v[2] + delta_t * (old_f[2] + new_f[2]) / (2 * m);
+
+    p.updateV(v[0], v[1], v[2]);
+  }
+}
+
 
 void plotParticles(int iteration) {
 
