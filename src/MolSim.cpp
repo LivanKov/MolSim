@@ -1,7 +1,7 @@
 
 #include "FileReader.h"
-#include "outputWriter/XYZWriter.h"
 #include "outputWriter/VTKWriter.h"
+#include "outputWriter/XYZWriter.h"
 #include "utils/ArrayUtils.h"
 
 #include <algorithm>
@@ -51,12 +51,17 @@ double start_time = 0;
 double end_time, delta_t;
 std::string input_path, output_path;
 bool sparse_output = true;
+bool xyz_output = false;
+
+std::string out_name("MD_vtk");
+outputWriter::XYZWriter writer;
+outputWriter::VTKWriter v_writer;
 
 int main(int argc, char *argsv[]) {
 
   int opt;
 
-  while ((opt = getopt(argc, argsv, "e:d:i:o:th")) != -1) {
+  while ((opt = getopt(argc, argsv, "e:d:i:o:thx")) != -1) {
     switch (opt) {
     case 'e':
       end_time = atof(optarg);
@@ -76,13 +81,14 @@ int main(int argc, char *argsv[]) {
     case 'h':
       print_help();
       break;
+    case 'x':
+      xyz_output = true;
+      break;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argsv[0]);
       return 1;
     }
   }
-
-
 
   FileReader fileReader;
   fileReader.readFile(particles, input_path.data());
@@ -103,7 +109,7 @@ int main(int argc, char *argsv[]) {
     iteration++;
     if (sparse_output && iteration % 10 == 0)
       plotParticles(iteration);
-    else if(!sparse_output)
+    else if (!sparse_output)
       plotParticles(iteration);
     std::cout << "Iteration " << iteration << " finished." << std::endl;
     current_time += delta_t;
@@ -119,10 +125,12 @@ void print_help() {
   std::cout << "  -h                 Show this help message\n";
   std::cout << "  -o   <file_path>   Specify output file path\n";
   std::cout << "  -i   <file_path>   Specify input file path\n";
-  std::cout << "  -e   <end_time>    Specify how long the simulation should run\n";
-  std::cout << "  -d   <time_delta>  Specify time increments\n";
   std::cout
-      << "  -t                 Enable testing mode (Writes a file for each iteration)\n";
+      << "  -e   <end_time>    Specify how long the simulation should run\n";
+  std::cout << "  -d   <time_delta>  Specify time increments\n";
+  std::cout << "  -t                 Enable testing mode (Writes a file for "
+               "each iteration)\n";
+  std::cout << "  -x                 Output .xyz files instead of .vpu\n";
 }
 
 void calculateF() {
@@ -245,13 +253,12 @@ void calculateV_new() {
 }
 
 void plotParticles(int iteration) {
-
-  std::string out_name("MD_vtk");
-  outputWriter::XYZWriter writer;
-  outputWriter::VTKWriter v_writer;
-  v_writer.initializeOutput(particles.size());
-  for(auto p : particles)
-    v_writer.plotParticle(p);
-  v_writer.writeFile(output_path + "/" + out_name,iteration);
-  //writer.plotParticles(particles, out_name, output_path, iteration);
+  if (xyz_output) {
+    writer.plotParticles(particles, out_name, output_path, iteration);
+  } else {
+    v_writer.initializeOutput(particles.size());
+    for (auto p : particles)
+      v_writer.plotParticle(p);
+    v_writer.writeFile(output_path + "/" + out_name, iteration);
+  }
 }
