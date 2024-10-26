@@ -2,14 +2,14 @@
 #include "FileReader.h"
 #include "outputWriter/XYZWriter.h"
 #include "utils/ArrayUtils.h"
-#include "utils/GetoptWrapper.h"
 
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <list>
+#include <unistd.h>
 #include <unordered_map>
-
+#include <variant>
 
 /**** forward declaration of the calculation functions ****/
 
@@ -33,97 +33,95 @@ void calculateV();
  */
 void plotParticles(int iteration);
 
-constexpr double start_time = 0;
-double end_time = 1;
-double delta_t = 0.014;
+/*
+ * print help flag
+ */
+void print_help();
 
-//e : time-end
-//d : delta
-//i : input path
-//o : output  path
-//s : sparse output : 1(default) -> enabled, 0 -> disabled
+// e : time-end
+// d : delta
+// i : input path
+// o : output  path
+// t : testing flag -> writes a file for each iteration
+// h: help
 
-//help: need to implement later
-
-
-// If the input file is not found -> exception
-// If the output file is not found: Create it or throw exception?
-
-constexpr std::string_view optstring {"e:d:i:o:s:"};
-
-// this variable should be set via input, it can be helpful for testing
-// controls how often the simulator state is plotted
-// sparse = every 10th iteration
-// !sparse = every iteration
-bool sparse_output = true;
-
-// TODO: what data structure to pick?
 std::list<Particle> particles;
+double start_time = 0;
+double end_time, delta_t;
+std::string input_path, output_path;
+bool sparse_output = true;
 
 int main(int argc, char *argsv[]) {
 
-  /*std::cout << "Hello from MolSim for PSE!" << std::endl;
-  if (argc < 2) {
-    std::cout << "Erroneous programme call! " << std::endl;
-    std::cout << "./molsym filename" << std::endl;
-  }*/
+  int opt;
 
-  GetoptWrapper wrapper{optstring};
-  std::unordered_map<char,char*> opt_map = wrapper.parse(argc,argsv);
-
-  for(auto const& [a, b] : opt_map){
-    std::cout << a << ", " << b << std::endl;
+  while ((opt = getopt(argc, argsv, "e:d:i:o:th")) != -1) {
+    switch (opt) {
+    case 'e':
+      end_time = atof(optarg);
+      break;
+    case 'd':
+      delta_t = atof(optarg);
+      break;
+    case 'i':
+      input_path = std::string(optarg);
+      break;
+    case 'o':
+      output_path = std::string(optarg);
+      break;
+    case 't':
+      sparse_output = false;
+      break;
+    case 'h':
+      print_help();
+      break;
+    default:
+      fprintf(stderr, "Usage: %s [-h] help\n", argsv[0]);
+      return 1;
+    }
   }
-  
-  end_time = atof(opt_map['e']);
-  delta_t = atof(opt_map['d']);
+
+
 
   FileReader fileReader;
-  fileReader.readFile(particles, opt_map['i']);
-
-  double current_time = start_time;
+  fileReader.readFile(particles, input_path.data());
 
   int iteration = 0;
+  double current_time = start_time;
 
-  for(auto &p : particles) {
-    std::cout << p.toString() << std::endl;
-  }
-
-
-  // Calculate position based on velocity: Störmer Verlet
-  // Calculate velocity in the next step: Störmer Verlet
-  // Calculate force: Simple force calculation
-
-  // Force is initially set to 0
-  // Need a way to handle collisions
-
-  // Consider gravitational pull of bigger bodies
-
-  // for this loop, we assume: current x, current f and current v are known
   std::cout << "Starting a simulation with:\n"
             << "\tStart time: " << start_time << "\n"
             << "\tEnd time: " << end_time << "\n"
             << "\tDelta: " << delta_t << "\n";
+
   while (current_time < end_time) {
-    // calculate new x
     calculateX();
-    // calculate new f
     calculateF();
-    // calculate new v
     calculateV();
 
     iteration++;
-    if(sparse_output && iteration % 10 == 0)
+    if (sparse_output && iteration % 10 == 0)
       plotParticles(iteration);
-    else
+    else if(!sparse_output)
       plotParticles(iteration);
     std::cout << "Iteration " << iteration << " finished." << std::endl;
-
     current_time += delta_t;
   }
 
   std::cout << "output written. Terminating..." << std::endl;
   return 0;
+}
+
+void print_help() {
+  std::cout << "Usage: MolSim [options]\n";
+  std::cout << "Options:\n";
+  std::cout << "  -h                 Show this help message\n";
+  std::cout << "  -o   <file_path>   Specify output file path\n";
+  std::cout << "  -i   <file_path>   Specify input file path\n";
+  std::cout << "  -e   <end_time>    Specify how long the simulation should run\n";
+  std::cout << "  -d   <time_delta>  Specify time increments\n";
+  std::cout
+      << "  -t                 Enable testing mode (Writes a file for each iteration)\n";
 }
 
 void calculateF() {
@@ -163,25 +161,27 @@ void calculateF_new() {
     for (auto it2 = std::next(it1); it2 != particles.end(); ++it2) {
       Particle &p1 = *it1;
       Particle &p2 = *it2;
-      
+
       double distance = std::sqrt(std::pow(p1.getX()[0] - p2.getX()[0], 2) +
                                   std::pow(p1.getX()[1] - p2.getX()[1], 2) +
                                   std::pow(p1.getX()[2] - p2.getX()[2], 2));
 
       // Avoid division by zero
-      if (distance > 0) { 
-        double f_x = (p2.getX()[0] - p1.getX()[0]) * (p1.getM() * p2.getM()) / pow(distance, 3);
-        double f_y = (p2.getX()[1] - p1.getX()[1]) * (p1.getM() * p2.getM()) / pow(distance, 3);
-        double f_z = (p2.getX()[2] - p1.getX()[2]) * (p1.getM() * p2.getM()) / pow(distance, 3);
+      if (distance > 0) {
+        double f_x = (p2.getX()[0] - p1.getX()[0]) * (p1.getM() * p2.getM()) /
+                     pow(distance, 3);
+        double f_y = (p2.getX()[1] - p1.getX()[1]) * (p1.getM() * p2.getM()) /
+                     pow(distance, 3);
+        double f_z = (p2.getX()[2] - p1.getX()[2]) * (p1.getM() * p2.getM()) /
+                     pow(distance, 3);
 
         p1.updateF(p1.getF()[0] + f_x, p1.getF()[1] + f_y, p1.getF()[2] + f_z);
         // Newton's third law
-        p2.updateF(p2.getF()[0] - f_x, p2.getF()[1] - f_y, p2.getF()[2] - f_z); 
+        p2.updateF(p2.getF()[0] - f_x, p2.getF()[1] - f_y, p2.getF()[2] - f_z);
       }
     }
   }
 }
-
 
 void calculateX() {
   for (auto &p : particles) {
@@ -242,7 +242,6 @@ void calculateV_new() {
     p.updateV(v[0], v[1], v[2]);
   }
 }
-
 
 void plotParticles(int iteration) {
 
