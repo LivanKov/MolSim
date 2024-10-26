@@ -1,6 +1,7 @@
 
 #include "FileReader.h"
 #include "outputWriter/XYZWriter.h"
+#include "outputWriter/VTKWriter.h"
 #include "utils/ArrayUtils.h"
 
 #include <algorithm>
@@ -246,7 +247,11 @@ void calculateV_new() {
 void plotParticles(int iteration) {
 
   std::string out_name("MD_vtk");
-  std::string output_path("../output");
   outputWriter::XYZWriter writer;
-  writer.plotParticles(particles, out_name, output_path, iteration);
+  outputWriter::VTKWriter v_writer;
+  v_writer.initializeOutput(particles.size());
+  for(auto p : particles)
+    v_writer.plotParticle(p);
+  v_writer.writeFile(output_path + "/" + out_name,iteration);
+  //writer.plotParticles(particles, out_name, output_path, iteration);
 }
