@@ -21,6 +21,10 @@ struct ParticlePair{
   bool operator==(const Particle& rhs) const;
 };
 
+struct ParticlePairHash {
+    std::size_t operator()(const ParticlePair& p) const;
+};
+
 
 class ParticleContainer {
 
