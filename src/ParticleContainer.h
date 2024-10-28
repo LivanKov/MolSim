@@ -6,12 +6,19 @@
 
 #include "Particle.h"
 #include <vector>
-
+#include <stdexcept>
 #include <array>
 
 struct ParticlePair{
   std::array<double, 3> f;
   std::array<double, 3> old_f;
+  
+  Particle first;
+  Particle second;
+
+  ParticlePair(const Particle& first, const Particle& second);
+
+  bool operator==(const Particle& rhs) const;
 };
 
 
