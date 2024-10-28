@@ -18,7 +18,7 @@ struct ParticlePair{
 
   ParticlePair(const Particle& first, const Particle& second);
 
-  bool operator==(const Particle& rhs) const;
+  bool operator==(ParticlePair& rhs);
 };
 
 struct ParticlePairHash {

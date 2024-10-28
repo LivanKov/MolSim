@@ -13,7 +13,7 @@ ParticlePair::ParticlePair(const Particle &first, const Particle &second)
   }
 }
 
-bool ParticlePair::operator==(const ParticlePair &rhs) const
+bool ParticlePair::operator==(ParticlePair &rhs)
 {
   return first == rhs.first && second == rhs.second || first == rhs.second && second == rhs.first;
 }
