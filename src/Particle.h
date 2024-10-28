@@ -74,4 +74,9 @@ public:
   std::string toString() const;
 };
 
+template<>
+struct std::hash<Particle>{
+  size_t operator() (const Particle& p) const noexcept;
+};
+
 std::ostream &operator<<(std::ostream &stream, Particle &p);

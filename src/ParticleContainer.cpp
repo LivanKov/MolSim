@@ -15,7 +15,7 @@ ParticlePair::ParticlePair(const Particle &first, const Particle &second)
 
 bool ParticlePair::operator==(ParticlePair &rhs)
 {
-  return first == rhs.first && second == rhs.second || first == rhs.second && second == rhs.first;
+  return (first == rhs.first && second == rhs.second) || (first == rhs.second && second == rhs.first);
 }
 
 std::size_t ParticlePairHash::operator()(const ParticlePair &p) const
