@@ -7,6 +7,13 @@
 #include "Particle.h"
 #include <vector>
 
+#include <array>
+
+struct ParticlePair{
+  std::array<double, 3> f;
+  std::array<double, 3> old_f;
+};
+
 
 class ParticleContainer {
 
