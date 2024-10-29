@@ -74,9 +74,6 @@ int main(int argc, char *argsv[]) {
 }
 
 void calculateF() {
-  std::list<Particle>::iterator iterator;
-  iterator = particles.begin();
-
   for (auto &p1 : particles) {
     for (auto &p2 : particles) {
       // @TODO: insert calculation of forces here!

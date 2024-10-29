@@ -9,7 +9,7 @@ ParticlePair::ParticlePair(const Particle &first, const Particle &second)
   if (&first == &second)
   {
     throw std::invalid_argument(
-        "Pair requires to different instances of Particle");
+        "Pair requires two different instances of Particle");
   }
 }
 
@@ -18,22 +18,54 @@ bool ParticlePair::operator==(ParticlePair &rhs)
   return (first == rhs.first && second == rhs.second) || (first == rhs.second && second == rhs.first);
 }
 
-std::size_t ParticlePairHash::operator()(const ParticlePair &p) const
-{
-  std::size_t hash1 = std::hash<Particle>()(p.first) ^ (std::hash<Particle>()(p.second) << 1);
-  std::size_t hash2 = std::hash<Particle>()(p.second) ^ (std::hash<Particle>()(p.first) << 1);
-  return hash1 ^ hash2;
-}
-
-template <typename... Args>
-  requires std::constructible_from<Particle, Args...>
-void ParticleContainer::emplace_back(Args... args)
-{
-  particle_container.emplace_back(std::forward<args>...);
-}
-
 void ParticleContainer::insert(Particle &p) { emplace_back(p); }
 
 void ParticleContainer::insert(Particle &&p) { emplace_back(p); }
 
-size_t ParticleContainer::size() { return particle_container.size(); }
+size_t ParticleContainer::size() { return _particle_container.size(); }
+
+ParticleContainer::PContainerIterator::PContainerIterator(PPointerType p) : _ptr{p} {}
+
+ParticleContainer::PContainerIterator& ParticleContainer::PContainerIterator::operator++()
+{
+  _ptr++;
+  return *this;
+}
+
+ParticleContainer::PContainerIterator ParticleContainer::PContainerIterator::operator++(int)
+{
+  PContainerIterator _ret = *this;
+  ++(*this);
+  return _ret;
+}
+
+ParticleContainer::PContainerIterator::PPointerType ParticleContainer::PContainerIterator::operator->()
+{
+  return _ptr;
+}
+
+bool ParticleContainer::PContainerIterator::operator==(ParticleContainer::PContainerIterator& rhs) const
+{
+  return _ptr == rhs._ptr;
+}
+
+bool ParticleContainer::PContainerIterator::operator!=(ParticleContainer::PContainerIterator& rhs) const
+{
+  return !(*this == rhs);
+}
+
+ParticleContainer::PContainerIterator::PReferenceType ParticleContainer::PContainerIterator::operator*() const
+{
+  return *_ptr;
+}
+
+ParticleContainer::PContainerIterator ParticleContainer::begin(){
+    return ParticleContainer::PContainerIterator(_particle_container.data());
+}
+
+ParticleContainer::PContainerIterator ParticleContainer::end(){
+    return ParticleContainer::PContainerIterator(_particle_container.data() + _particle_container.size());
+}
+
+
+
