@@ -18,6 +18,15 @@ bool ParticlePair::operator==(ParticlePair &rhs)
   return (first == rhs.first && second == rhs.second) || (first == rhs.second && second == rhs.first);
 }
 
+std::size_t ParticlePairHash::operator()(const ParticlePair &p) const
+{
+  std::size_t hash1 = std::hash<Particle>()(p.first) ^ (std::hash<Particle>()(p.second) << 1);
+  std::size_t hash2 = std::hash<Particle>()(p.second) ^ (std::hash<Particle>()(p.first) << 1);
+  return hash1 ^ hash2;
+}
+
+ParticleContainer::ParticleContainer() : _particle_container{}, _particle_set{}, _particle_pair_map{} {}
+
 void ParticleContainer::insert(Particle &p) { emplace_back(p); }
 
 void ParticleContainer::insert(Particle &&p) { emplace_back(p); }

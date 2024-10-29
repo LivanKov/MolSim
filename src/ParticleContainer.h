@@ -24,11 +24,15 @@ struct ParticlePair
   bool operator==(ParticlePair &rhs);
 };
 
+struct ParticlePairHash{
+  std::size_t operator()(const ParticlePair &p) const;
+};
+
 class ParticleContainer
 {
 
 public:
-  ParticleContainer() = default;
+  ParticleContainer();
   ~ParticleContainer() = default;
   ParticleContainer(const ParticleContainer &lhs) = delete;
   ParticleContainer &operator=(const ParticleContainer &lhs) = delete;
@@ -73,5 +77,6 @@ public:
 
 private:
   std::vector<Particle> _particle_container;
+  std::unordered_set<ParticlePair, ParticlePairHash> _particle_set;
   std::unordered_map<Particle, std::vector<ParticlePair>> _particle_pair_map;
 };
