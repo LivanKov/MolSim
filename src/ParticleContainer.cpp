@@ -13,7 +13,7 @@ ParticlePair::ParticlePair(const Particle &first, const Particle &second)
   }
 }
 
-bool ParticlePair::operator==(const ParticlePair &rhs) const 
+bool ParticlePair::operator==(const ParticlePair &rhs) const
 {
   return (first == rhs.first && second == rhs.second) || (first == rhs.second && second == rhs.first);
 }
@@ -49,53 +49,100 @@ std::vector<ParticlePair> &ParticleContainer::operator[](const Particle &p)
   return _particle_pair_map[p];
 }
 
-Particle& ParticleContainer::operator[](int index){
+Particle &ParticleContainer::operator[](int index)
+{
   return _particle_container[index];
 }
 
-ParticleContainer::PContainerIterator::PContainerIterator(PPointerType p) : _ptr{p} {}
+ParticleIterator::ParticleIterator(PPointerType p) : _ptr{p} {}
 
-ParticleContainer::PContainerIterator &ParticleContainer::PContainerIterator::operator++()
+ParticleIterator &ParticleIterator::operator++()
 {
   _ptr++;
   return *this;
 }
 
-ParticleContainer::PContainerIterator ParticleContainer::PContainerIterator::operator++(int)
+ParticleIterator ParticleIterator::operator++(int)
 {
-  PContainerIterator _ret = *this;
+  ParticleIterator _ret = *this;
   ++(*this);
   return _ret;
 }
 
-ParticleContainer::PContainerIterator::PPointerType ParticleContainer::PContainerIterator::operator->()
+ParticleIterator::PPointerType ParticleIterator::operator->()
 {
   return _ptr;
 }
 
-bool ParticleContainer::PContainerIterator::operator==(ParticleContainer::PContainerIterator &rhs) const
+bool ParticleIterator::operator==(ParticleIterator &rhs) const
 {
   return _ptr == rhs._ptr;
 }
 
-bool ParticleContainer::PContainerIterator::operator!=(ParticleContainer::PContainerIterator &rhs) const
+bool ParticleIterator::operator!=(ParticleIterator &rhs) const
 {
   return !(*this == rhs);
 }
 
-ParticleContainer::PContainerIterator::PReferenceType ParticleContainer::PContainerIterator::operator*() const
+ParticleIterator::PReferenceType ParticleIterator::operator*() const
 {
   return *_ptr;
 }
 
-ParticleContainer::PContainerIterator ParticleContainer::begin()
+ParticleIterator ParticleContainer::begin()
 {
-  return ParticleContainer::PContainerIterator(_particle_container.data());
+  return ParticleIterator(_particle_container.data());
 }
 
-ParticleContainer::PContainerIterator ParticleContainer::end()
+ParticleIterator ParticleContainer::end()
 {
-  return ParticleContainer::PContainerIterator(_particle_container.data() + _particle_container.size());
+  return ParticleIterator(_particle_container.data() + _particle_container.size());
+}
+
+ParticlePairIterator::ParticlePairIterator(PPointerType p) : _ptr{p} {}
+
+ParticlePairIterator &ParticlePairIterator::operator++()
+{
+  _ptr++;
+  return *this;
+}
+
+ParticlePairIterator ParticlePairIterator::operator++(int)
+{
+  ParticlePairIterator _ret = *this;
+  ++(*this);
+  return _ret;
+}
+
+ParticlePairIterator::PPointerType
+ParticlePairIterator::operator->()
+{
+  return _ptr;
+}
+
+bool ParticlePairIterator::operator==(ParticlePairIterator &rhs) const
+{
+  return _ptr == rhs._ptr;
+}
+
+bool ParticlePairIterator::operator!=(ParticlePairIterator &rhs) const
+{
+  return !(*this == rhs);
+}
+
+ParticlePairIterator::PReferenceType ParticlePairIterator::operator*() const
+{
+  return *_ptr;
+}
+
+ParticlePairIterator ParticleContainer::pair_begin()
+{
+  return ParticlePairIterator(_particle_pair_set.cbegin());
+}
+
+ParticlePairIterator ParticleContainer::pair_end()
+{
+  return ParticlePairIterator(_particle_pair_set.cend());
 }
 
 void ParticleContainer::create_pairs(const Particle &p)
@@ -106,7 +153,7 @@ void ParticleContainer::create_pairs(const Particle &p)
     if (!(k == p))
     {
       _particle_pair_map[p].emplace_back(k, p);
-      _particle_pair_set.emplace(k,p);
+      _particle_pair_set.emplace(k, p);
     }
   }
 }

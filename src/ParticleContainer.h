@@ -23,9 +23,46 @@ struct ParticlePair
 
   bool operator==(const ParticlePair &rhs) const;
 };
-template<>
-struct std::hash<ParticlePair> {
+template <>
+struct std::hash<ParticlePair>
+{
   std::size_t operator()(const ParticlePair &p) const;
+};
+
+class ParticleIterator
+{
+public:
+  using PValueType = Particle;
+  using PPointerType = Particle *;
+  using PReferenceType = Particle &;
+  ParticleIterator(PPointerType p);
+  ParticleIterator &operator++();
+  ParticleIterator operator++(int);
+  PPointerType operator->();
+  bool operator==(ParticleIterator &rhs) const;
+  bool operator!=(ParticleIterator &rhs) const;
+  PReferenceType operator*() const;
+
+private:
+  PPointerType _ptr;
+};
+
+class ParticlePairIterator
+{
+public:
+  using PValueType = const Particle;
+  using PPointerType = std::unordered_set<ParticlePair>::const_iterator;
+  using PReferenceType = const ParticlePair &;
+  ParticlePairIterator(PPointerType p);
+  ParticlePairIterator &operator++();
+  ParticlePairIterator operator++(int);
+  PPointerType operator->();
+  bool operator==(ParticlePairIterator &rhs) const;
+  bool operator!=(ParticlePairIterator &rhs) const;
+  PReferenceType operator*() const;
+
+private:
+  PPointerType _ptr;
 };
 
 class ParticleContainer
@@ -53,35 +90,19 @@ public:
 
   size_t size();
 
-  std::vector<ParticlePair>& pairs_of(const Particle &p);
+  std::vector<ParticlePair> &pairs_of(const Particle &p);
 
-  std::vector<ParticlePair>& operator[](const Particle &p);
+  std::vector<ParticlePair> &operator[](const Particle &p);
 
-  Particle& operator[](int index);
+  Particle &operator[](int index);
 
-  class PContainerIterator
-  {
-  public:
-    using PValueType = Particle;
-    using PPointerType = Particle *;
-    using PReferenceType = Particle &;
-    PContainerIterator(PPointerType p);
-    PContainerIterator &operator++();
-    PContainerIterator operator++(int);
-    PPointerType operator->();
-    bool operator==(PContainerIterator &rhs) const;
-    bool operator!=(PContainerIterator &rhs) const;
-    PReferenceType operator*() const;
-
-  private:
-    PPointerType _ptr;
-  };
-
-  PContainerIterator begin();
-  PContainerIterator end();
+  ParticleIterator begin();
+  ParticleIterator end();
+  ParticlePairIterator pair_begin();
+  ParticlePairIterator pair_end();
 
 private:
-  void create_pairs(const Particle& p);
+  void create_pairs(const Particle &p);
 
   std::vector<Particle> _particle_container;
   std::unordered_set<ParticlePair> _particle_pair_set;
