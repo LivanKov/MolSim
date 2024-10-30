@@ -10,6 +10,10 @@
 #include <array>
 #include <unordered_set>
 #include <unordered_map>
+#include <memory>
+
+using ParticlePointer = std::shared_ptr<Particle>;
+using ParticlePairPointer = std::shared_ptr<ParticlePair>;
 
 struct ParticlePair
 {
@@ -22,6 +26,8 @@ struct ParticlePair
   ParticlePair(const Particle &first, const Particle &second);
 
   bool operator==(const ParticlePair &rhs) const;
+
+  std::string toString() const;
 };
 template <>
 struct std::hash<ParticlePair>
@@ -80,8 +86,8 @@ public:
     requires std::constructible_from<Particle, Args...>
   void emplace_back(Args... args)
   {
-    _particle_container.emplace_back(std::forward<Args>(args)...);
     create_pairs(Particle{std::forward<Args>(args)...});
+    _particle_container.emplace_back(std::forward<Args>(args)...);
   }
 
   void insert(Particle &p);
@@ -104,7 +110,7 @@ public:
 private:
   void create_pairs(const Particle &p);
 
-  std::vector<Particle> _particle_container;
-  std::unordered_set<ParticlePair> _particle_pair_set;
-  std::unordered_map<Particle, std::vector<ParticlePair>> _particle_pair_map;
+  std::vector<ParticlePointer> _particle_container;
+  std::unordered_set<ParticlePairPointer> _particle_pair_set;
+  std::unordered_map<ParticlePointer, std::vector<ParticlePairPointer>> _particle_pair_map;
 };

@@ -2,6 +2,7 @@
 #include "Particle.h"
 #include <concepts>
 #include <utility>
+#include "utils/ArrayUtils.h"
 
 ParticlePair::ParticlePair(const Particle &first, const Particle &second)
     : first{first}, second{second}
@@ -16,6 +17,13 @@ ParticlePair::ParticlePair(const Particle &first, const Particle &second)
 bool ParticlePair::operator==(const ParticlePair &rhs) const
 {
   return (first == rhs.first && second == rhs.second) || (first == rhs.second && second == rhs.first);
+}
+
+std::string ParticlePair::toString() const
+{
+  std::stringstream stream;
+  stream << "ParticlePair: first: " << first.toString() << " second: " << second.toString();
+  return stream.str();
 }
 
 std::size_t std::hash<ParticlePair>::operator()(const ParticlePair &p) const
@@ -145,15 +153,11 @@ ParticlePairIterator ParticleContainer::pair_end()
   return ParticlePairIterator(_particle_pair_set.cend());
 }
 
-void ParticleContainer::create_pairs(const Particle &p)
+void ParticleContainer::create_pairs(const Particle &new_particle)
 {
-
   for (const Particle &k : _particle_container)
   {
-    if (!(k == p))
-    {
-      _particle_pair_map[p].emplace_back(k, p);
-      _particle_pair_set.emplace(k, p);
-    }
+    _particle_pair_set.emplace(k, new_particle);
+    _particle_pair_map[k].emplace_back(k, new_particle);
   }
 }

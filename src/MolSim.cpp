@@ -52,7 +52,7 @@ int main(int argc, char *argsv[]) {
   int iteration = 0;
 
   // for this loop, we assume: current x, current f and current v are known
-  while (current_time < end_time) {
+  /*while (current_time < end_time) {
     // calculate new x
     calculateX();
     // calculate new f
@@ -67,9 +67,20 @@ int main(int argc, char *argsv[]) {
     std::cout << "Iteration " << iteration << " finished." << std::endl;
 
     current_time += delta_t;
-  }
+  }*/
 
   std::cout << "output written. Terminating..." << std::endl;
+
+  std::cout << particles.size() << std::endl;
+
+  for(auto &p : particles){
+    std::cout << "Main Particle: "<< p.toString() << std::endl;
+    for(auto &p2 : particles[p]){
+      std::cout << p2.toString() << std::endl;
+    }
+    std::cout << std::endl;
+  }
+
   return 0;
 }
 
