@@ -33,6 +33,17 @@ std::size_t std::hash<ParticlePair>::operator()(const ParticlePair &p) const
   return hash1 ^ hash2;
 }
 
+bool ParticlePointerEqual::operator()(const std::shared_ptr<Particle> &a,
+                                          const std::shared_ptr<Particle> &b) const
+{
+  return *a == *b;
+}
+
+size_t ParticlePointerHash::operator()(const std::shared_ptr<Particle> &s) const noexcept
+{
+  return std::hash<Particle>()(*s);
+}
+
 ParticleContainer::ParticleContainer() : _particle_container{}, _particle_pair_set{}, _particle_pair_map{} {}
 
 void ParticleContainer::insert(Particle &p)
@@ -64,30 +75,36 @@ Particle &ParticleContainer::operator[](int index)
 
 ParticleIterator::ParticleIterator(PPointerType p) : _ptr(p) {}
 
-ParticleIterator &ParticleIterator::operator++() {
+ParticleIterator &ParticleIterator::operator++()
+{
   _ptr++;
   return *this;
 }
 
-ParticleIterator ParticleIterator::operator++(int) {
+ParticleIterator ParticleIterator::operator++(int)
+{
   ParticleIterator _ret = *this;
   ++(*this);
   return _ret;
 }
 
-ParticleIterator::PPointerType ParticleIterator::operator->() {
+ParticleIterator::PPointerType ParticleIterator::operator->()
+{
   return _ptr;
 }
 
-bool ParticleIterator::operator==(ParticleIterator &rhs) const {
+bool ParticleIterator::operator==(ParticleIterator &rhs) const
+{
   return _ptr == rhs._ptr;
 }
 
-bool ParticleIterator::operator!=(ParticleIterator &rhs) const {
+bool ParticleIterator::operator!=(ParticleIterator &rhs) const
+{
   return _ptr != rhs._ptr;
 }
 
-ParticleIterator::PReferenceType ParticleIterator::operator*() const {
+ParticleIterator::PReferenceType ParticleIterator::operator*() const
+{
   return **_ptr;
 }
 
@@ -146,11 +163,10 @@ ParticlePairIterator ParticleContainer::pair_end()
   return ParticlePairIterator(_particle_pair_set.cend());
 }
 
-void ParticleContainer::create_pairs(const ParticlePointer& new_particle)
+void ParticleContainer::create_pairs(const ParticlePointer &new_particle)
 {
-  for (auto const& p : _particle_container)
+  for (auto const &p : _particle_container)
   {
-    
     _particle_pair_set.insert(std::make_shared<ParticlePair>(new_particle, p));
     _particle_pair_map[new_particle].push_back(std::make_shared<ParticlePair>(new_particle, p));
   }

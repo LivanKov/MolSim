@@ -34,6 +34,17 @@ struct std::hash<ParticlePair>
   std::size_t operator()(const ParticlePair &p) const;
 };
 
+struct ParticlePointerHash
+{
+  size_t operator()(const std::shared_ptr<Particle> &s) const noexcept;
+};
+
+struct ParticlePointerEqual
+{
+  bool operator()(const std::shared_ptr<Particle> &a,
+                  const std::shared_ptr<Particle> &b) const;
+};
+
 using ParticlePairPointer = std::shared_ptr<ParticlePair>;
 
 class ParticleIterator
@@ -114,5 +125,5 @@ private:
 
   std::vector<ParticlePointer> _particle_container;
   std::unordered_set<ParticlePairPointer> _particle_pair_set;
-  std::unordered_map<ParticlePointer, std::vector<ParticlePairPointer>> _particle_pair_map;
+  std::unordered_map<ParticlePointer, std::vector<ParticlePairPointer>,ParticlePointerHash,ParticlePointerEqual> _particle_pair_map;
 };
