@@ -22,7 +22,7 @@ public:
   virtual ~XYZWriter();
 
   void plotParticles(std::list<Particle> particles, const std::string &filename,
-                     int iteration);
+                     const std::string &output_path, int iteration);
 };
 
 } // namespace outputWriter

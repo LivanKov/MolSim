@@ -1,0 +1,6 @@
+#sets up a single particle that moves right from origin
+#this is an extremely simple test case that lets you test with trajectory of a single particle
+#
+# xyz-coord      velocity        mass
+1
+0.0 0.0 0.0      1.0 0.0 0.0     1.0

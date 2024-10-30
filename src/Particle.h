@@ -72,6 +72,14 @@ public:
   bool operator==(Particle &other);
 
   std::string toString() const;
+
+  void updateX(double x_arg, double y_arg, double z_arg);
+
+  void updateV(double x_arg, double y_arg, double z_arg);
+
+  void updateF(double x_arg, double y_arg, double z_arg);
+
+  void updateOldF(double x_arg, double y_arg, double z_arg);
 };
 
 std::ostream &operator<<(std::ostream &stream, Particle &p);
