@@ -21,10 +21,10 @@ struct ParticlePair
 
   ParticlePair(const Particle &first, const Particle &second);
 
-  bool operator==(ParticlePair &rhs);
+  bool operator==(const ParticlePair &rhs) const;
 };
-
-struct ParticlePairHash{
+template<>
+struct std::hash<ParticlePair> {
   std::size_t operator()(const ParticlePair &p) const;
 };
 
@@ -44,6 +44,7 @@ public:
   void emplace_back(Args... args)
   {
     _particle_container.emplace_back(std::forward<Args>(args)...);
+    create_pairs(Particle{std::forward<Args>(args)...});
   }
 
   void insert(Particle &p);
@@ -52,7 +53,11 @@ public:
 
   size_t size();
 
-  void pairs_of(Particle &p);
+  std::vector<ParticlePair>& pairs_of(const Particle &p);
+
+  std::vector<ParticlePair>& operator[](const Particle &p);
+
+  Particle& operator[](int index);
 
   class PContainerIterator
   {
@@ -76,7 +81,9 @@ public:
   PContainerIterator end();
 
 private:
+  void create_pairs(const Particle& p);
+
   std::vector<Particle> _particle_container;
-  std::unordered_set<ParticlePair, ParticlePairHash> _particle_set;
+  std::unordered_set<ParticlePair> _particle_pair_set;
   std::unordered_map<Particle, std::vector<ParticlePair>> _particle_pair_map;
 };
