@@ -76,7 +76,7 @@ int main(int argc, char *argsv[]) {
   for(auto &p : particles){
     std::cout << "Main Particle: "<< p.toString() << std::endl;
     for(auto &p2 : particles[p]){
-      std::cout << p2.toString() << std::endl;
+      std::cout << p2->toString() << std::endl;
     }
     std::cout << std::endl;
   }

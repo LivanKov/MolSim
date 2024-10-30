@@ -13,17 +13,16 @@
 #include <memory>
 
 using ParticlePointer = std::shared_ptr<Particle>;
-using ParticlePairPointer = std::shared_ptr<ParticlePair>;
 
 struct ParticlePair
 {
   std::array<double, 3> f;
   std::array<double, 3> old_f;
 
-  Particle first;
-  Particle second;
+  ParticlePointer first;
+  ParticlePointer second;
 
-  ParticlePair(const Particle &first, const Particle &second);
+  ParticlePair(const ParticlePointer first, const ParticlePointer second);
 
   bool operator==(const ParticlePair &rhs) const;
 
@@ -35,11 +34,13 @@ struct std::hash<ParticlePair>
   std::size_t operator()(const ParticlePair &p) const;
 };
 
+using ParticlePairPointer = std::shared_ptr<ParticlePair>;
+
 class ParticleIterator
 {
 public:
   using PValueType = Particle;
-  using PPointerType = Particle *;
+  using PPointerType = ParticlePointer *;
   using PReferenceType = Particle &;
   ParticleIterator(PPointerType p);
   ParticleIterator &operator++();
@@ -56,9 +57,9 @@ private:
 class ParticlePairIterator
 {
 public:
-  using PValueType = const Particle;
-  using PPointerType = std::unordered_set<ParticlePair>::const_iterator;
-  using PReferenceType = const ParticlePair &;
+  using PValueType = ParticlePair;
+  using PPointerType = std::unordered_set<ParticlePairPointer>::const_iterator;
+  using PReferenceType = ParticlePair &;
   ParticlePairIterator(PPointerType p);
   ParticlePairIterator &operator++();
   ParticlePairIterator operator++(int);
@@ -86,8 +87,9 @@ public:
     requires std::constructible_from<Particle, Args...>
   void emplace_back(Args... args)
   {
-    create_pairs(Particle{std::forward<Args>(args)...});
-    _particle_container.emplace_back(std::forward<Args>(args)...);
+    ParticlePointer p = std::make_shared<Particle>(std::forward<Args>(args)...);
+    create_pairs(p);
+    _particle_container.push_back(p);
   }
 
   void insert(Particle &p);
@@ -96,9 +98,9 @@ public:
 
   size_t size();
 
-  std::vector<ParticlePair> &pairs_of(const Particle &p);
+  std::vector<ParticlePairPointer> &pairs_of(const ParticlePointer &p);
 
-  std::vector<ParticlePair> &operator[](const Particle &p);
+  std::vector<ParticlePairPointer> &operator[](const Particle &p);
 
   Particle &operator[](int index);
 
@@ -108,7 +110,7 @@ public:
   ParticlePairIterator pair_end();
 
 private:
-  void create_pairs(const Particle &p);
+  void create_pairs(const ParticlePointer &new_particle);
 
   std::vector<ParticlePointer> _particle_container;
   std::unordered_set<ParticlePairPointer> _particle_pair_set;
