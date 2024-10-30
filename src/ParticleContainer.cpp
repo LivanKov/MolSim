@@ -34,7 +34,7 @@ std::size_t std::hash<ParticlePair>::operator()(const ParticlePair &p) const
 }
 
 bool ParticlePointerEqual::operator()(const std::shared_ptr<Particle> &a,
-                                          const std::shared_ptr<Particle> &b) const
+                                      const std::shared_ptr<Particle> &b) const
 {
   return *a == *b;
 }
@@ -138,12 +138,12 @@ ParticlePairIterator::PPointerType ParticlePairIterator::operator->()
   return _ptr;
 }
 
-bool ParticlePairIterator::operator==(ParticlePairIterator &rhs) const
+bool ParticlePairIterator::operator==(const ParticlePairIterator &rhs) const
 {
   return _ptr == rhs._ptr;
 }
 
-bool ParticlePairIterator::operator!=(ParticlePairIterator &rhs) const
+bool ParticlePairIterator::operator!=(const ParticlePairIterator &rhs) const
 {
   return _ptr != rhs._ptr;
 }
@@ -167,7 +167,10 @@ void ParticleContainer::create_pairs(const ParticlePointer &new_particle)
 {
   for (auto const &p : _particle_container)
   {
+    if (*new_particle == *p)
+      continue;
     _particle_pair_set.insert(std::make_shared<ParticlePair>(new_particle, p));
+    _particle_pair_map[p].push_back(std::make_shared<ParticlePair>(new_particle, p));
     _particle_pair_map[new_particle].push_back(std::make_shared<ParticlePair>(new_particle, p));
   }
 }

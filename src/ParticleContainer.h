@@ -75,8 +75,8 @@ public:
   ParticlePairIterator &operator++();
   ParticlePairIterator operator++(int);
   PPointerType operator->();
-  bool operator==(ParticlePairIterator &rhs) const;
-  bool operator!=(ParticlePairIterator &rhs) const;
+  bool operator==(const ParticlePairIterator &rhs) const;
+  bool operator!=(const ParticlePairIterator &rhs) const;
   PReferenceType operator*() const;
 
 private:
@@ -99,8 +99,8 @@ public:
   void emplace_back(Args... args)
   {
     ParticlePointer p = std::make_shared<Particle>(std::forward<Args>(args)...);
-    create_pairs(p);
     _particle_container.push_back(p);
+    create_pairs(p);
   }
 
   void insert(Particle &p);
