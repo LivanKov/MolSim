@@ -33,6 +33,27 @@ $ make
 $ ./MolSim
 ``` 
 
+### Options 
+
+
+| Option            | Description                                                         |
+|-------------------|---------------------------------------------------------------------|
+| `-h`              | Show this help message and exit                                     |
+| `-o <file_path>`  | Specify the output file path                                        |
+| `-i <file_path>`  | Specify the input file path                                         |
+| `-e <end_time>`   | Specify the end time for the simulation to run                      |
+| `-d <time_delta>` | Specify the time increments for each simulation step                |
+| `-t`              | Enable testing mode (writes a file for each iteration of the run)   |
+| `-x`              | Output files in `.xyz` format instead of the default `.vtu` format  |
+
+
+### Examples
+
+- `./MolSim -i data/input.txt -o results/output.txt`: Run with specified input and output paths
+- `./MolSim -e 100 -d 0.01`: Run for a specific time duration with specific time steps: 
+- `./MolSim -t -x`: Run while outputting a .xyz file for each iteration: 
+
+
 ### Branch naming conventions
 
 - `dev-<sheet number>`: For specific work sheets handed out during the course; should be merged into master branch by deadline.
