@@ -59,6 +59,11 @@ outputWriter::VTKWriter v_writer;
 
 int main(int argc, char *argsv[]) {
 
+  if(argc < 2) {
+    print_help();
+    return 1;
+  }
+
   int opt;
 
   while ((opt = getopt(argc, argsv, "e:d:i:o:thx")) != -1) {
