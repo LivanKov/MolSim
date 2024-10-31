@@ -11,6 +11,7 @@
 #include <list>
 #include <unistd.h>
 #include <unordered_map>
+#include <iterator>
 #include <variant>
 
 /**** forward declaration of the calculation functions ****/
@@ -185,7 +186,7 @@ void calculateF_new() {
 
   // Simple force calculation formula (14)
   for (auto it1 = particles.begin(); it1 != particles.end(); ++it1) {
-    for (auto it2 = std::next(it1); it2 != particles.end(); ++it2) {
+    for (auto it2 = ++it1; it2 != particles.end(); ++it2) {
       Particle &p1 = *it1;
       Particle &p2 = *it2;
 
@@ -272,7 +273,7 @@ void calculateV_new() {
 
 void plotParticles(int iteration) {
   if (xyz_output) {
-    writer.plotParticles(particles, out_name, output_path, iteration);
+    writer.plotParticles(particles, output_path + "/" + out_name, iteration);
   } else {
     v_writer.initializeOutput(particles.size());
     for (auto p : particles)
