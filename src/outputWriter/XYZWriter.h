@@ -20,7 +20,7 @@ public:
   XYZWriter();
 
   virtual ~XYZWriter();
-
+a
   void plotParticles(ParticleContainer& particles, const std::string &filename,
                      int iteration);
 };

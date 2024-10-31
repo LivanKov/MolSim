@@ -1,7 +1,9 @@
 MolSim (WS24/25, Group H)
 ===
-
 This repository contains the code written for the Molecular Dynamics Lab (IN0012) during WS24/25 at TUM.
+
+![CI Build](https://github.com/LivanKov/MolSim/actions/workflows/ci.yml/badge.svg?branch=dev-StatusBadge)
+
 
 ### Build and Run on Linux 
 
@@ -32,6 +34,27 @@ Compile and run the executable
 $ make
 $ ./MolSim
 ``` 
+
+### Options 
+
+
+| Option            | Description                                                         |
+|-------------------|---------------------------------------------------------------------|
+| `-h`              | Show this help message and exit                                     |
+| `-o <file_path>`  | Specify the output file path                                        |
+| `-i <file_path>`  | Specify the input file path                                         |
+| `-e <end_time>`   | Specify the end time for the simulation to run                      |
+| `-d <time_delta>` | Specify the time increments for each simulation step                |
+| `-t`              | Enable testing mode (writes a file for each iteration of the run)   |
+| `-x`              | Output files in `.xyz` format instead of the default `.vtu` format  |
+
+
+### Examples
+
+- `./MolSim -i data/input.txt -o results/output.txt`: Run with specified input and output paths
+- `./MolSim -e 100 -d 0.01`: Run for a specific time duration with specific time steps: 
+- `./MolSim -t -x`: Run while outputting a .xyz file for each iteration: 
+
 
 ### Branch naming conventions
 
