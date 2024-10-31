@@ -5,17 +5,16 @@
 #pragma once
 
 #include "Particle.h"
-#include <vector>
-#include <stdexcept>
 #include <array>
-#include <unordered_set>
-#include <unordered_map>
 #include <memory>
+#include <stdexcept>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 using ParticlePointer = std::shared_ptr<Particle>;
 
-struct ParticlePair
-{
+struct ParticlePair {
   std::array<double, 3> f;
   std::array<double, 3> old_f;
 
@@ -28,27 +27,22 @@ struct ParticlePair
 
   std::string toString() const;
 };
-template <>
-struct std::hash<ParticlePair>
-{
+template <> struct std::hash<ParticlePair> {
   std::size_t operator()(const ParticlePair &p) const;
 };
 
-struct ParticlePointerHash
-{
+struct ParticlePointerHash {
   size_t operator()(const std::shared_ptr<Particle> &s) const noexcept;
 };
 
-struct ParticlePointerEqual
-{
+struct ParticlePointerEqual {
   bool operator()(const std::shared_ptr<Particle> &a,
                   const std::shared_ptr<Particle> &b) const;
 };
 
 using ParticlePairPointer = std::shared_ptr<ParticlePair>;
 
-class ParticleIterator
-{
+class ParticleIterator {
 public:
   using PValueType = Particle;
   using PPointerType = ParticlePointer *;
@@ -65,8 +59,7 @@ private:
   PPointerType _ptr;
 };
 
-class ParticlePairIterator
-{
+class ParticlePairIterator {
 public:
   using PValueType = ParticlePair;
   using PPointerType = std::unordered_set<ParticlePairPointer>::const_iterator;
@@ -83,8 +76,7 @@ private:
   PPointerType _ptr;
 };
 
-class ParticleContainer
-{
+class ParticleContainer {
 
 public:
   ParticleContainer();
@@ -95,9 +87,8 @@ public:
   ParticleContainer &operator=(ParticleContainer &&lhs) = delete;
 
   template <typename... Args>
-    requires std::constructible_from<Particle, Args...>
-  void emplace_back(Args... args)
-  {
+  requires std::constructible_from<Particle, Args...>
+  void emplace_back(Args... args) {
     ParticlePointer p = std::make_shared<Particle>(std::forward<Args>(args)...);
     _particle_container.push_back(p);
     create_pairs(p);
@@ -125,5 +116,7 @@ private:
 
   std::vector<ParticlePointer> _particle_container;
   std::unordered_set<ParticlePairPointer> _particle_pair_set;
-  std::unordered_map<ParticlePointer, std::vector<ParticlePairPointer>,ParticlePointerHash,ParticlePointerEqual> _particle_pair_map;
+  std::unordered_map<ParticlePointer, std::vector<ParticlePairPointer>,
+                     ParticlePointerHash, ParticlePointerEqual>
+      _particle_pair_map;
 };

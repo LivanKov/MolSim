@@ -82,9 +82,8 @@ public:
   void updateOldF(double x_arg, double y_arg, double z_arg);
 };
 
-template<>
-struct std::hash<Particle>{
-  size_t operator() (const Particle& p) const noexcept;
+template <> struct std::hash<Particle> {
+  size_t operator()(const Particle &p) const noexcept;
 };
 
 std::ostream &operator<<(std::ostream &stream, Particle &p);

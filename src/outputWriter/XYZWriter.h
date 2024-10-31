@@ -21,7 +21,7 @@ public:
 
   virtual ~XYZWriter();
 
-  void plotParticles(ParticleContainer& particles, const std::string &filename,
+  void plotParticles(ParticleContainer &particles, const std::string &filename,
                      int iteration);
 };
 

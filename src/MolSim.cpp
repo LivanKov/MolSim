@@ -1,17 +1,17 @@
 
 #include "FileReader.h"
+#include "ParticleContainer.h"
 #include "outputWriter/VTKWriter.h"
 #include "outputWriter/XYZWriter.h"
 #include "utils/ArrayUtils.h"
-#include "ParticleContainer.h"
 
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <iterator>
 #include <list>
 #include <unistd.h>
 #include <unordered_map>
-#include <iterator>
 #include <variant>
 
 /**** forward declaration of the calculation functions ****/
@@ -48,7 +48,6 @@ void print_help();
 // t : testing flag -> writes a file for each iteration
 // h: help
 
-
 // TODO: what data structure to pick?
 ParticleContainer particles;
 double start_time = 0;
@@ -63,7 +62,7 @@ outputWriter::VTKWriter v_writer;
 
 int main(int argc, char *argsv[]) {
 
-  if(argc < 2) {
+  if (argc < 2) {
     print_help();
     return 1;
   }
@@ -110,7 +109,6 @@ int main(int argc, char *argsv[]) {
             << "\tEnd time: " << end_time << "\n"
             << "\tDelta: " << delta_t << "\n";
 
-
   // for this loop, we assume: current x, current f and current v are known
   while (current_time < end_time) {
     calculateX();
@@ -130,9 +128,9 @@ int main(int argc, char *argsv[]) {
 
   std::cout << particles.size() << std::endl;
 
-  for(auto &p : particles){
-    std::cout << "Main Particle: "<< p.toString() << std::endl;
-    for(auto &p2 : particles[p]){
+  for (auto &p : particles) {
+    std::cout << "Main Particle: " << p.toString() << std::endl;
+    for (auto &p2 : particles[p]) {
       std::cout << p2->toString() << std::endl;
     }
     std::cout << std::endl;

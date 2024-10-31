@@ -13,12 +13,11 @@
 #include <iostream>
 #include <sstream>
 
-
 FileReader::FileReader() = default;
 
 FileReader::~FileReader() = default;
 
-void FileReader::readFile(ParticleContainer& particles, char *filename) {
+void FileReader::readFile(ParticleContainer &particles, char *filename) {
   std::array<double, 3> x;
   std::array<double, 3> v;
   double m;
