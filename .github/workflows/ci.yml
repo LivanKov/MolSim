@@ -3,10 +3,10 @@ name: MolSim CI Build
 on:
   push:
     branches:
-      - dev-StatusBadge
+      - dev-sheet_1
   pull_request:
     branches:
-      - dev-StatusBadge
+      - dev-sheet_1
 
 jobs:
   build:
