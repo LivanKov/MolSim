@@ -60,9 +60,15 @@ std::string Particle::toString() const {
   return stream.str();
 }
 
-bool Particle::operator==(Particle &other) {
+bool Particle::operator==(const Particle &other) const {
   return (x == other.x) and (v == other.v) and (f == other.f) and
          (type == other.type) and (m == other.m) and (old_f == other.old_f);
+}
+
+size_t std::hash<Particle>::operator() (const Particle& p) const noexcept{
+  size_t h1 = std::hash<double>{}(p.getM());
+  size_t h2 = std::hash<int>{}(p.getType());
+  return h1 ^ (h2 << 1);
 }
 
 std::ostream &operator<<(std::ostream &stream, Particle &p) {

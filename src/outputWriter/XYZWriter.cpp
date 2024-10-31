@@ -15,9 +15,9 @@ XYZWriter::XYZWriter() = default;
 
 XYZWriter::~XYZWriter() = default;
 
-void XYZWriter::plotParticles(std::list<Particle> particles,
-                              const std::string &filename,
-                              const std::string &output_path, int iteration) {
+void XYZWriter::plotParticles(ParticleContainer& particles,
+                              const std::string &filename, int iteration) {
+
   std::ofstream file;
   std::stringstream strstr;
   strstr << output_path << "/" << filename << "_" << std::setfill('0')

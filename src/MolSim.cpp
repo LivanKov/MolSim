@@ -3,6 +3,7 @@
 #include "outputWriter/VTKWriter.h"
 #include "outputWriter/XYZWriter.h"
 #include "utils/ArrayUtils.h"
+#include "ParticleContainer.h"
 
 #include <algorithm>
 #include <cmath>
@@ -46,7 +47,9 @@ void print_help();
 // t : testing flag -> writes a file for each iteration
 // h: help
 
-std::list<Particle> particles;
+
+// TODO: what data structure to pick?
+ParticleContainer particles;
 double start_time = 0;
 double end_time, delta_t;
 std::string input_path, output_path;
@@ -106,6 +109,8 @@ int main(int argc, char *argsv[]) {
             << "\tEnd time: " << end_time << "\n"
             << "\tDelta: " << delta_t << "\n";
 
+
+  // for this loop, we assume: current x, current f and current v are known
   while (current_time < end_time) {
     calculateX();
     calculateF();
@@ -121,6 +126,17 @@ int main(int argc, char *argsv[]) {
   }
 
   std::cout << "output written. Terminating..." << std::endl;
+
+  std::cout << particles.size() << std::endl;
+
+  for(auto &p : particles){
+    std::cout << "Main Particle: "<< p.toString() << std::endl;
+    for(auto &p2 : particles[p]){
+      std::cout << p2->toString() << std::endl;
+    }
+    std::cout << std::endl;
+  }
+
   return 0;
 }
 
@@ -139,9 +155,6 @@ void print_help() {
 }
 
 void calculateF() {
-  std::list<Particle>::iterator iterator;
-  iterator = particles.begin();
-
   for (auto &p1 : particles) {
     std::array<double, 3> force_copy = p1.getF();
     for (auto &p2 : particles) {

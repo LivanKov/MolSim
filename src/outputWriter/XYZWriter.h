@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Particle.h"
+#include "ParticleContainer.h"
 
 #include <fstream>
 #include <list>
@@ -20,9 +20,9 @@ public:
   XYZWriter();
 
   virtual ~XYZWriter();
-
-  void plotParticles(std::list<Particle> particles, const std::string &filename,
-                     const std::string &output_path, int iteration);
+a
+  void plotParticles(ParticleContainer& particles, const std::string &filename,
+                     int iteration);
 };
 
 } // namespace outputWriter

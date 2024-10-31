@@ -69,7 +69,7 @@ public:
 
   int getType() const;
 
-  bool operator==(Particle &other);
+  bool operator==(const Particle &other) const;
 
   std::string toString() const;
 
@@ -80,6 +80,11 @@ public:
   void updateF(double x_arg, double y_arg, double z_arg);
 
   void updateOldF(double x_arg, double y_arg, double z_arg);
+};
+
+template<>
+struct std::hash<Particle>{
+  size_t operator() (const Particle& p) const noexcept;
 };
 
 std::ostream &operator<<(std::ostream &stream, Particle &p);
