@@ -57,8 +57,8 @@ public:
   ParticleIterator &operator++();
   ParticleIterator operator++(int);
   PPointerType operator->();
-  bool operator==(ParticleIterator &rhs) const;
-  bool operator!=(ParticleIterator &rhs) const;
+  bool operator==(const ParticleIterator &rhs) const;
+  bool operator!=(const ParticleIterator &rhs) const;
   PReferenceType operator*() const;
 
 private:

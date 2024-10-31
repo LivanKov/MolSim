@@ -93,12 +93,12 @@ ParticleIterator::PPointerType ParticleIterator::operator->()
   return _ptr;
 }
 
-bool ParticleIterator::operator==(ParticleIterator &rhs) const
+bool ParticleIterator::operator==(const ParticleIterator &rhs) const
 {
   return _ptr == rhs._ptr;
 }
 
-bool ParticleIterator::operator!=(ParticleIterator &rhs) const
+bool ParticleIterator::operator!=(const ParticleIterator &rhs) const
 {
   return _ptr != rhs._ptr;
 }
