@@ -1,10 +1,9 @@
 MolSim (WS24/25, Group H)
 ===
+This repository contains the code written for the Molecular Dynamics Lab (IN0012) during WS24/25 at TUM.
 
 ![CI Build](https://github.com/LivanKov/MolSim/actions/workflows/ci.yml/badge.svg?branch=dev-StatusBadge)
 
-=======
-This repository contains the code written for the Molecular Dynamics Lab (IN0012) during WS24/25 at TUM.
 
 ### Build and Run on Linux 
 
