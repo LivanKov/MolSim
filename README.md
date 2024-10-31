@@ -56,6 +56,19 @@ $ ./MolSim
 - `./MolSim -t -x`: Run while outputting a .xyz file for each iteration: 
 
 
+### Scripts Overview
+
+```bash
+./scripts/cleanup.sh
+```
+Deletes all files in the `output` directory. Use this to clear generated files or results from previous runs.
+
+```bash
+./scripts/format.sh
+```
+ Formats all .cpp and .h files in src using clang-format.
+
+
 ### Branch naming conventions
 
 - `dev-<sheet number>`: For specific work sheets handed out during the course; should be merged into master branch by deadline.
