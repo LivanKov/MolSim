@@ -6,10 +6,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 enable_testing()
-add_executable(
-  hello_test
-  hello_test.cc
-)
+add_executable(hello_test hello_test.cc ../src/ParticleContainer.cpp ../src/Particle.cpp)
+
+target_include_directories(hello_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+
 target_link_libraries(
   hello_test
   GTest::gtest_main
