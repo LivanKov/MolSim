@@ -14,5 +14,10 @@ target_link_libraries(
   hello_test
   GTest::gtest_main
 )
+target_compile_features(hello_test
+        PRIVATE
+            cxx_std_20
+)
+
 include(GoogleTest)
 gtest_discover_tests(hello_test)
