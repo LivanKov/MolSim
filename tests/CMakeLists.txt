@@ -8,7 +8,7 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 add_executable(
   hello_test
-  tests/hello_test.cc
+  hello_test.cc
 )
 target_link_libraries(
   hello_test
