@@ -1,0 +1,35 @@
+name: MolSim CI Build
+
+on:
+  push:
+    branches:
+      - dev-sheet_1
+  pull_request:
+    branches:
+      - dev-sheet_1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the code from the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Step 2: Install CMake
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y cmake g++ libxerces-c-dev
+
+    # Step 3: Create build directory
+    - name: Create build directory
+      run: mkdir -p build
+
+    # Step 4: Run CMake to configure the project
+    - name: Run CMake
+      run: cmake -S . -B build
+
+    # Step 5: Build the project
+    - name: Build with Make
+      run: cmake --build build
+

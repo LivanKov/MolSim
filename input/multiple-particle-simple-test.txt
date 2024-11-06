@@ -1,0 +1,8 @@
+#This is a slightly more advanced test, that checks collisions and force interaction
+#Contains 3 molecules
+#
+# xyz-coord      velocity        mass
+3
+1.0 1.0 0.0      -1.0 -1.0 0.0     1.0
+-1.0 1.0 0.0     1.0 -1.0 0.0      1.0
+-1.0 -1.0 0.0    1.0 1.0 0.0       1.0
