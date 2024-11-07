@@ -5,6 +5,8 @@
 #include "outputWriter/XYZWriter.h"
 #include "utils/ArrayUtils.h"
 
+#include <spdlog/spdlog.h>
+
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -13,6 +15,8 @@
 #include <unistd.h>
 #include <unordered_map>
 #include <variant>
+
+#include "Logger.h"
 
 /**** forward declaration of the calculation functions ****/
 
@@ -55,6 +59,7 @@ double end_time, delta_t;
 std::string input_path, output_path;
 bool sparse_output = true;
 bool xyz_output = false;
+std::string log_level;
 
 std::string out_name("MD_vtk");
 outputWriter::XYZWriter writer;
@@ -69,7 +74,7 @@ int main(int argc, char *argsv[]) {
 
   int opt;
 
-  while ((opt = getopt(argc, argsv, "e:d:i:o:thx")) != -1) {
+  while ((opt = getopt(argc, argsv, "e:d:i:o:thxl:")) != -1) {
     switch (opt) {
     case 'e':
       end_time = atof(optarg);
@@ -92,11 +97,20 @@ int main(int argc, char *argsv[]) {
     case 'x':
       xyz_output = true;
       break;
+    case 'l':
+      log_level = std::string(optarg);
+      break;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argsv[0]);
       return 1;
     }
   }
+
+
+  Logger logger;
+
+  logger.initLogger(log_level);
+
 
   FileReader fileReader;
   fileReader.readFile(particles, input_path.data());
@@ -124,7 +138,8 @@ int main(int argc, char *argsv[]) {
     current_time += delta_t;
   }
 
-  std::cout << "output written. Terminating..." << std::endl;
+  // std::cout << "output written. Terminating..." << std::endl;
+  logger.info("output written. Terminating...");
 
   std::cout << particles.size() << std::endl;
 
@@ -138,6 +153,8 @@ int main(int argc, char *argsv[]) {
 
   return 0;
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
 
 void print_help() {
   std::cout << "Usage: MolSim [options]\n";

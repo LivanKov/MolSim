@@ -12,6 +12,20 @@ if(NOT CMAKE_BUILD_TYPE)
             "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
 
+
+# Include the FetchContent module
+include(FetchContent)
+
+# Fetch the latest version of spdlog
+FetchContent_Declare(
+        spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG v1.x
+)
+
+FetchContent_MakeAvailable(spdlog)
+
+
 # collect all cpp files
 file(GLOB_RECURSE MY_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
@@ -38,7 +52,9 @@ target_include_directories(MolSim
 target_link_libraries(MolSim
         # stuff that is used in headers and source files
         PUBLIC
-            xerces-c
+        xerces-c
+        PRIVATE
+        spdlog::spdlog
 )
 
 # activate all compiler warnings. Clean up your code :P
