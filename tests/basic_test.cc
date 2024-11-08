@@ -137,7 +137,8 @@ TEST_F(BasicTest, SimulationBehaviourTest) {
     calculateX();
     calculateF();
     calculateV();
-    ASSERT_TRUE((container[0].getX() == std::array<double, 3>{static_cast<double>(i+1), 0.0, 0.0}));
+    ASSERT_TRUE((container[0].getX() ==
+                 std::array<double, 3>{static_cast<double>(i + 1), 0.0, 0.0}));
     ASSERT_TRUE((container[0].getF() == std::array<double, 3>{0.0, 0.0, 0.0}));
     ASSERT_TRUE((container[0].getV() == std::array<double, 3>{1.0, 0.0, 0.0}));
   }
