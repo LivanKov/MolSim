@@ -9,7 +9,7 @@
 
 
 //create 3 arbitrary particles, ensure that pairs are built correctly and no excessive objects are created
-TEST(HelloTest, ParticleContainerInitializationTest) {
+TEST(HelloTest, ContainerBehaviourTest) {
   ParticleContainer container{};
   //this in place initialization looks super ugly, perhaps we can use std::initializer_list
 
@@ -60,4 +60,8 @@ TEST(HelloTest, ParticleContainerInitializationTest) {
       ASSERT_TRUE(*(v->first) == p && *(v->second) != p || *(v->first) != p && *(v->second) == p);
     }
   }
+
+
+
+
 }
