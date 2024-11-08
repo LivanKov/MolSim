@@ -6,18 +6,18 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 enable_testing()
-add_executable(hello_test hello_test.cc ../src/ParticleContainer.cpp ../src/Particle.cpp)
+add_executable(basic_test basic_test.cc ../src/ParticleContainer.cpp ../src/Particle.cpp)
 
-target_include_directories(hello_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+target_include_directories(basic_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
 target_link_libraries(
-  hello_test
+  basic_test
   GTest::gtest_main
 )
-target_compile_features(hello_test
+target_compile_features(basic_test
         PRIVATE
             cxx_std_20
 )
 
 include(GoogleTest)
-gtest_discover_tests(hello_test)
+gtest_discover_tests(basic_test)
