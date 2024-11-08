@@ -106,6 +106,8 @@ public:
 
   Particle &operator[](int index);
 
+  void clear();
+
   ParticleIterator begin();
   ParticleIterator end();
   ParticlePairIterator pair_begin();
