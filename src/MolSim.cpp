@@ -178,28 +178,6 @@ void print_help() {
 }
 
 void calculateF() {
-  for (auto &p1 : particles) {
-    std::array<double, 3> force_copy = p1.getF();
-    for (auto &p2 : particles) {
-      double f_x, f_y, f_z = 0;
-      double distance = std::sqrt(std::pow(p1.getX()[0] - p2.getX()[0], 2) +
-                                  std::pow(p1.getX()[1] - p2.getX()[1], 2) +
-                                  std::pow(p1.getX()[2] - p2.getX()[2], 2));
-      if (!(p1 == p2)) {
-        f_x = (p2.getX()[0] - p1.getX()[0]) * (p1.getM() * p2.getM()) /
-              pow(distance, 3);
-        f_y = (p2.getX()[1] - p1.getX()[1]) * (p1.getM() * p2.getM()) /
-              pow(distance, 3);
-        f_z = (p2.getX()[2] - p1.getX()[2]) * (p1.getM() * p2.getM()) /
-              pow(distance, 3);
-        p1.updateF(p1.getF()[0] + f_x, p1.getF()[1] + f_y, p1.getF()[2] + f_z);
-      }
-    }
-    p1.updateOldF(force_copy[0], force_copy[1], force_copy[2]);
-  }
-}
-
-void calculateF_new() {
   // Store the current force as the old force and reset current to 0
   for (auto &p1 : particles) {
     p1.updateOldF(p1.getF()[0], p1.getF()[1], p1.getF()[2]);
@@ -235,21 +213,6 @@ void calculateF_new() {
 
 void calculateX() {
   for (auto &p : particles) {
-    std::array<double, 3> location_copy(p.getX());
-    if (p.getF()[0] != 0 || p.getF()[1] != 0 || p.getF()[2] != 0) {
-      location_copy[0] = pow(delta_t, 2) * p.getF()[0] / (2 * p.getM());
-      location_copy[1] = pow(delta_t, 2) * p.getF()[1] / (2 * p.getM());
-      location_copy[2] = pow(delta_t, 2) * p.getF()[2] / (2 * p.getM());
-    }
-    location_copy[0] = location_copy[0] + delta_t * p.getV()[0];
-    location_copy[1] = location_copy[1] + delta_t * p.getV()[1];
-    location_copy[2] = location_copy[2] + delta_t * p.getV()[2];
-    p.updateX(location_copy[0], location_copy[1], location_copy[2]);
-  }
-}
-
-void calculateX_new() {
-  for (auto &p : particles) {
     auto x = p.getX();
     auto v = p.getV();
     auto f = p.getF();
@@ -265,19 +228,6 @@ void calculateX_new() {
 }
 
 void calculateV() {
-  for (auto &p : particles) {
-    std::array<double, 3> velocity_copy(p.getV());
-    velocity_copy[0] = velocity_copy[0] +
-                       delta_t * (p.getOldF()[0] + p.getF()[0]) / 2 * p.getM();
-    velocity_copy[1] = velocity_copy[1] +
-                       delta_t * (p.getOldF()[1] + p.getF()[1]) / 2 * p.getM();
-    velocity_copy[2] = velocity_copy[2] +
-                       delta_t * (p.getOldF()[2] + p.getF()[2]) / 2 * p.getM();
-    p.updateV(velocity_copy[0], velocity_copy[1], velocity_copy[2]);
-  }
-}
-
-void calculateV_new() {
   for (auto &p : particles) {
     auto v = p.getV();
     auto old_f = p.getOldF();
