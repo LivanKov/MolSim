@@ -155,6 +155,7 @@ int main(int argc, char *argsv[]) {
     }
     std::cout << std::endl;
   }
+  logger.info("Simulation finished.");
 
   return 0;
 }
