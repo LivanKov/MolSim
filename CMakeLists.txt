@@ -50,6 +50,11 @@ target_compile_options(MolSim
             $<$<CXX_COMPILER_ID:Intel>:-w3 -wd383,981,1418,1572,2259>
 )
 
+add_subdirectory(tests ${CMAKE_BINARY_DIR}/tests)
+
+enable_testing()
+add_test(NAME BasicTest COMMAND tests/basic_test)
+
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 
 include(doxygen)

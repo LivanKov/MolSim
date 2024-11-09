@@ -132,6 +132,12 @@ ParticlePairIterator::PReferenceType ParticlePairIterator::operator*() const {
   return **_ptr;
 }
 
+void ParticleContainer::clear() {
+  _particle_container.clear();
+  _particle_pair_set.clear();
+  _particle_pair_map.clear();
+}
+
 ParticlePairIterator ParticleContainer::pair_begin() {
   return ParticlePairIterator(_particle_pair_set.cbegin());
 }
