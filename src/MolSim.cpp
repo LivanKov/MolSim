@@ -5,6 +5,8 @@
 #include "outputWriter/XYZWriter.h"
 #include "utils/ArrayUtils.h"
 
+#include <spdlog/spdlog.h>
+
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -13,6 +15,8 @@
 #include <unistd.h>
 #include <unordered_map>
 #include <variant>
+
+#include "Logger.h"
 
 /**** forward declaration of the calculation functions ****/
 
@@ -55,6 +59,7 @@ double end_time, delta_t;
 std::string input_path, output_path;
 bool sparse_output = true;
 bool xyz_output = false;
+std::string log_level;
 
 std::string out_name("MD_vtk");
 outputWriter::XYZWriter writer;
@@ -69,7 +74,7 @@ int main(int argc, char *argsv[]) {
 
   int opt;
 
-  while ((opt = getopt(argc, argsv, "e:d:i:o:thx")) != -1) {
+  while ((opt = getopt(argc, argsv, "e:d:i:o:thxl:")) != -1) {
     switch (opt) {
     case 'e':
       end_time = atof(optarg);
@@ -92,11 +97,18 @@ int main(int argc, char *argsv[]) {
     case 'x':
       xyz_output = true;
       break;
+    case 'l':
+      log_level = std::string(optarg);
+      break;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argsv[0]);
       return 1;
     }
   }
+
+
+  Logger& logger = Logger::getInstance(log_level);
+
 
   FileReader fileReader;
   fileReader.readFile(particles, input_path.data());
@@ -104,10 +116,15 @@ int main(int argc, char *argsv[]) {
   int iteration = 0;
   double current_time = start_time;
 
-  std::cout << "Starting a simulation with:\n"
+  /* std::cout << "Starting a simulation with:\n"
             << "\tStart time: " << start_time << "\n"
             << "\tEnd time: " << end_time << "\n"
-            << "\tDelta: " << delta_t << "\n";
+            << "\tDelta: " << delta_t << "\n"; */
+
+  logger.info("Starting a simulation with:");
+  logger.info("\tStart time: " + std::to_string(start_time));
+  logger.info("\tEnd time: " + std::to_string(end_time));
+  logger.info("\tDelta: " + std::to_string(delta_t));
 
   // for this loop, we assume: current x, current f and current v are known
   while (current_time < end_time) {
@@ -120,24 +137,31 @@ int main(int argc, char *argsv[]) {
       plotParticles(iteration);
     else if (!sparse_output)
       plotParticles(iteration);
-    std::cout << "Iteration " << iteration << " finished." << std::endl;
+    // std::cout << "Iteration " << iteration << " finished." << std::endl;
+    logger.trace("Iteration " + std::to_string(iteration) + " finished.");
     current_time += delta_t;
   }
 
-  std::cout << "output written. Terminating..." << std::endl;
+  // std::cout << "output written. Terminating..." << std::endl;
+  logger.info("output written. Terminating...");
 
-  std::cout << particles.size() << std::endl;
+  // std::cout << particles.size() << std::endl;
+  logger.debug("Number of particles: " + std::to_string(particles.size()));
 
   for (auto &p : particles) {
-    std::cout << "Main Particle: " << p.toString() << std::endl;
+     // std::cout << "Main Particle: " << p.toString() << std::endl;
+     logger.debug("Main particle " + p.toString());
     for (auto &p2 : particles[p]) {
-      std::cout << p2->toString() << std::endl;
+       // std::cout << p2->toString() << std::endl;
+       logger.trace(p2->toString());
     }
     std::cout << std::endl;
   }
 
   return 0;
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
 
 void print_help() {
   std::cout << "Usage: MolSim [options]\n";
@@ -151,6 +175,7 @@ void print_help() {
   std::cout << "  -t                 Enable testing mode (Writes a file for "
                "each iteration)\n";
   std::cout << "  -x                 Output .xyz files instead of .vpu\n";
+  std::cout << "  -l  <log_level>    Option to choose the logging level\n";
 }
 
 void calculateF() {
