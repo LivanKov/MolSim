@@ -3,10 +3,11 @@ name: MolSim CI Build
 on:
   push:
     branches:
-      - dev-sheet_1
+      - dev-sheet_2-task_2
   pull_request:
     branches:
-      - dev-sheet_1
+      - dev-sheet_2
+      - master
 
 jobs:
   build:
@@ -26,10 +27,17 @@ jobs:
       run: mkdir -p build
 
     # Step 4: Run CMake to configure the project
-    - name: Run CMake
-      run: cmake -S . -B build
+    - name: Run CMake and Address Sanitizer
+      run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=address -g"
 
     # Step 5: Build the project
     - name: Build with Make
       run: cmake --build build
 
+    # Step 6
+    - name: Build and run Google Tests
+      run: |
+        cmake -S tests -B build/tests
+        cmake --build build/tests
+        cd build/tests
+        ctest --output-on-failure
