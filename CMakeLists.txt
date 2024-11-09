@@ -52,6 +52,9 @@ target_compile_options(MolSim
 
 add_subdirectory(tests ${CMAKE_BINARY_DIR}/tests)
 
+enable_testing()
+add_test(NAME BasicTest COMMAND tests/basic_test)
+
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 
 include(doxygen)
