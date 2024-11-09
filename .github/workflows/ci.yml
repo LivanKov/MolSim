@@ -25,10 +25,10 @@ jobs:
           cd build
 
     - name: Run CMake and Address Sanitizer
-      run: cmake .. -B build -DCMAKE_CXX_FLAGS="-fsanitize=address -g"
+      run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=address -g"
 
     - name: Build with Make
-      run: cmake --build .
+      run: cmake --build build
 
     - name: Build and run Google Tests
       run: |
