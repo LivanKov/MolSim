@@ -106,9 +106,7 @@ int main(int argc, char *argsv[]) {
     }
   }
 
-
-  Logger& logger = Logger::getInstance(log_level);
-
+  Logger &logger = Logger::getInstance(log_level);
 
   FileReader fileReader;
   fileReader.readFile(particles, input_path.data());
@@ -149,11 +147,11 @@ int main(int argc, char *argsv[]) {
   logger.debug("Number of particles: " + std::to_string(particles.size()));
 
   for (auto &p : particles) {
-     // std::cout << "Main Particle: " << p.toString() << std::endl;
-     logger.debug("Main particle " + p.toString());
+    // std::cout << "Main Particle: " << p.toString() << std::endl;
+    logger.debug("Main particle " + p.toString());
     for (auto &p2 : particles[p]) {
-       // std::cout << p2->toString() << std::endl;
-       logger.trace(p2->toString());
+      // std::cout << p2->toString() << std::endl;
+      logger.trace(p2->toString());
     }
     std::cout << std::endl;
   }

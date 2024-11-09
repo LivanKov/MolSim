@@ -25,7 +25,7 @@ void FileReader::readFile(ParticleContainer &particles, char *filename) {
   double m;
   int num_particles = 0;
 
-  Logger& logger = Logger::getInstance();
+  Logger &logger = Logger::getInstance();
 
   std::ifstream input_file(filename);
   std::string tmp_string;
@@ -60,8 +60,11 @@ void FileReader::readFile(ParticleContainer &particles, char *filename) {
         datastream >> vj;
       }
       if (datastream.eof()) {
-        // std::cout << "Error reading file: eof reached unexpectedly reading from line " << i << std::endl;
-        logger.error("Error reading file: eof reached unexpectedly reading from line " + std::to_string(i));
+        // std::cout << "Error reading file: eof reached unexpectedly reading
+        // from line " << i << std::endl;
+        logger.error(
+            "Error reading file: eof reached unexpectedly reading from line " +
+            std::to_string(i));
 
         exit(-1);
       }
