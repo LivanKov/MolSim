@@ -33,22 +33,18 @@ void FileReader::readFile(ParticleContainer &particles, char *filename) {
   if (input_file.is_open()) {
 
     getline(input_file, tmp_string);
-    // std::cout << "Read line: " << tmp_string << std::endl;
-    logger.info("Read line: " + tmp_string);
+    logger.debug("Read line: " + tmp_string);
 
     while (tmp_string.empty() or tmp_string[0] == '#') {
       getline(input_file, tmp_string);
-      // std::cout << "Read line: " << tmp_string << std::endl;
-      logger.info("Read line: " + tmp_string);
+      logger.debug("Read line: " + tmp_string);
     }
 
     std::istringstream numstream(tmp_string);
     numstream >> num_particles;
-    // std::cout << "Reading " << num_particles << "." << std::endl;
-    logger.info("Reading " + num_particles);
+    logger.info("    Reading " + num_particles);
     getline(input_file, tmp_string);
-    // std::cout << "Read line: " << tmp_string << std::endl;
-    logger.info("Read line: " + tmp_string);
+    logger.debug("Read line: " + tmp_string);
 
     for (int i = 0; i < num_particles; i++) {
       std::istringstream datastream(tmp_string);
@@ -60,8 +56,6 @@ void FileReader::readFile(ParticleContainer &particles, char *filename) {
         datastream >> vj;
       }
       if (datastream.eof()) {
-        // std::cout << "Error reading file: eof reached unexpectedly reading
-        // from line " << i << std::endl;
         logger.error(
             "Error reading file: eof reached unexpectedly reading from line " +
             std::to_string(i));
@@ -72,7 +66,6 @@ void FileReader::readFile(ParticleContainer &particles, char *filename) {
       particles.emplace_back(x, v, m);
 
       getline(input_file, tmp_string);
-      // std::cout << "Read line: " << tmp_string << std::endl;
       logger.info("Read line: " + tmp_string);
     }
   } else {
