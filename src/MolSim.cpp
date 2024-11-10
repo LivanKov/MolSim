@@ -101,7 +101,7 @@ int main(int argc, char *argsv[]) {
     case 'l':
       log_level = std::string(optarg);
       break;
-    case 'f' :
+    case 'f':
       calculateLJForce = false;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argsv[0]);
@@ -178,51 +178,54 @@ void print_help() {
                "each iteration)\n";
   std::cout << "  -x                 Output .xyz files instead of .vpu\n";
   std::cout << "  -l  <log_level>    Option to choose the logging level\n";
-  std::cout << "  -f                 Calculate Gravitational Force instead of Lennard-Jones Force\n"
+  std::cout << "  -f                 Calculate Gravitational Force instead of "
+               "Lennard-Jones Force\n";
 }
 
 void calculateF() {
-   // store the current force as the old force and reset current to 0
+  // store the current force as the old force and reset current to 0
   for (auto &p : particles) {
     auto f = p.getF();
     p.updateOldF(f[0], f[1], f[2]);
     p.updateF(0, 0, 0);
   }
-  // iterate each pair
-  for (auto it1 = particles.begin(); it1 != particles.end(); ++it1) {
-    for (auto it2 = ++it1; it2 != particles.end(); ++it2) {
-      Particle &p1 = *it1;
-      Particle &p2 = *it2;
 
-      auto r12 = p2.getX() - p1.getX();
-      // distance ||x_i - x_j ||
-      double distance = std::sqrt(ArrayUtils::L2Norm(r12) * ArrayUtils::L2Norm(r12));
+  // Iterate each pair
+  for (auto it = particles.pair_begin(); it != particles.pair_end(); ++it) {
+    ParticlePair &pair = *it;
+    Particle &p1 = *(pair.first);
+    Particle &p2 = *(pair.second);
+    auto r12 = p2.getX() - p1.getX();
+    // distance ||x_i - x_j ||
+    double distance = ArrayUtils::L2Norm(r12);
 
-     // avoid extermely small distance
-      if (distance > 1e-5) {
-        // switch Lennard-Jones/ Simple force
-        double totalForce;
-        if (calculateLJForce) {
-          // Lennard-Jones parameters
-          const double epsilon = 5.0;
-          const double sigma = 1.0;
-          // Lennard-Jones Force Formula (3)
-          double term = sigma / distance;
-          double term6 = pow(term, 6);
-          double term12 = pow(term, 12);
-          totalForce = -24 * epsilon * (term6 - 2 * term12) / distance;
-        } else {
-          // Simple force calculation formula (14)
-          totalForce =  p1.getM() * p2.getM() / pow(distance, 2);
-        }
-        auto force = (totalForce / distance) * r12;
-
-        p1.updateF(p1.getF()[0] + force[0], p1.getF()[1] + force[1], p1.getF()[2] + force[2]);
-        // Newton's third law
-        p2.updateF(p2.getF()[0] - force[0], p2.getF()[1] - force[1], p2.getF()[2] - force[2]);
+    // avoid extermely small distance
+    if (distance > 1e-5) {
+      // switch Lennard-Jones/ Simple force
+      double totalForce;
+      if (calculateLJForce) {
+        // Lennard-Jones parameters
+        const double epsilon = 5.0;
+        const double sigma = 1.0;
+        // Lennard-Jones Force Formula (3)
+        double term = sigma / distance;
+        double term6 = pow(term, 6);
+        double term12 = pow(term, 12);
+        totalForce = -24 * epsilon * (term6 - 2 * term12) / distance;
+      } else {
+        // Simple Force Calculation Formula (14)
+        totalForce = p1.getM() * p2.getM() / pow(distance, 2);
       }
+      auto force = (totalForce / distance) * r12;
+
+      p1.updateF(p1.getF()[0] + force[0], p1.getF()[1] + force[1],
+                 p1.getF()[2] + force[2]);
+      // Newton's third law
+      p2.updateF(p2.getF()[0] - force[0], p2.getF()[1] - force[1],
+                 p2.getF()[2] - force[2]);
     }
-  }  
+  }
+  // }
 }
 
 void calculateX() {
