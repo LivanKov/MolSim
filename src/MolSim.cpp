@@ -59,6 +59,7 @@ double end_time, delta_t;
 std::string input_path, output_path;
 bool sparse_output = true;
 bool xyz_output = false;
+bool calculateLJForce = true;
 std::string log_level;
 
 std::string out_name("MD_vtk");
@@ -74,7 +75,7 @@ int main(int argc, char *argsv[]) {
 
   int opt;
 
-  while ((opt = getopt(argc, argsv, "e:d:i:o:thxl:")) != -1) {
+  while ((opt = getopt(argc, argsv, "e:d:i:o:thxlf:")) != -1) {
     switch (opt) {
     case 'e':
       end_time = atof(optarg);
@@ -100,6 +101,8 @@ int main(int argc, char *argsv[]) {
     case 'l':
       log_level = std::string(optarg);
       break;
+    case 'f' :
+      calculateLJForce = false;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argsv[0]);
       return 1;
@@ -178,51 +181,13 @@ void print_help() {
 }
 
 void calculateF() {
-  // Store the current force as the old force and reset current to 0
-  for (auto &p1 : particles) {
-    p1.updateOldF(p1.getF()[0], p1.getF()[1], p1.getF()[2]);
-    p1.updateF(0, 0, 0);
-  }
-
-  // Simple force calculation formula (14)
-  for (auto it1 = particles.begin(); it1 != particles.end(); ++it1) {
-    for (auto it2 = ++it1; it2 != particles.end(); ++it2) {
-      Particle &p1 = *it1;
-      Particle &p2 = *it2;
-
-      double distance = std::sqrt(std::pow(p1.getX()[0] - p2.getX()[0], 2) +
-                                  std::pow(p1.getX()[1] - p2.getX()[1], 2) +
-                                  std::pow(p1.getX()[2] - p2.getX()[2], 2));
-
-      // Avoid division by zero
-      if (distance > 0) {
-        double f_x = (p2.getX()[0] - p1.getX()[0]) * (p1.getM() * p2.getM()) /
-                     pow(distance, 3);
-        double f_y = (p2.getX()[1] - p1.getX()[1]) * (p1.getM() * p2.getM()) /
-                     pow(distance, 3);
-        double f_z = (p2.getX()[2] - p1.getX()[2]) * (p1.getM() * p2.getM()) /
-                     pow(distance, 3);
-
-        p1.updateF(p1.getF()[0] + f_x, p1.getF()[1] + f_y, p1.getF()[2] + f_z);
-        // Newton's third law
-        p2.updateF(p2.getF()[0] - f_x, p2.getF()[1] - f_y, p2.getF()[2] - f_z);
-      }
-    }
-  }
-}
-
-void calculateLennardJonesF() {
-  a  // Lennard-Jones parameters
-  const double epsilon = 5.0;
-  const double sigma = 1.0;
-
-  // store the current force as the old force and reset current to 0
+   // store the current force as the old force and reset current to 0
   for (auto &p : particles) {
     auto f = p.getF();
     p.updateOldF(f[0], f[1], f[2]);
     p.updateF(0, 0, 0);
   }
-
+  // iterate each pair
   for (auto it1 = particles.begin(); it1 != particles.end(); ++it1) {
     for (auto it2 = ++it1; it2 != particles.end(); ++it2) {
       Particle &p1 = *it1;
@@ -234,23 +199,29 @@ void calculateLennardJonesF() {
 
      // avoid extermely small distance
       if (distance > 1e-5) {
-         // Lennard-Jones Force Formula (3)
-        double term = sigma / distance;
-        double term6 = std::pow(term, 6);
-        double term12 = std::pow(term, 12);
-        double totalForce = -24 * epsilon * (term6 - 2 * term12) / distance;
-
+        // switch Lennard-Jones/ Simple force
+        double totalForce;
+        if (calculateLJForce) {
+          // Lennard-Jones parameters
+          const double epsilon = 5.0;
+          const double sigma = 1.0;
+          // Lennard-Jones Force Formula (3)
+          double term = sigma / distance;
+          double term6 = pow(term, 6);
+          double term12 = pow(term, 12);
+          totalForce = -24 * epsilon * (term6 - 2 * term12) / distance;
+        } else {
+          // Simple force calculation formula (14)
+          totalForce =  p1.getM() * p2.getM() / pow(distance, 2);
+        }
         auto force = (totalForce / distance) * r12;
 
-        auto f1 = p1.getF();
-        auto f2 = p2.getF();
-
-        p1.updateF(f1[0] + force[0], f1[1] + force[1], f1[2] + force[2]);
+        p1.updateF(p1.getF()[0] + force[0], p1.getF()[1] + force[1], p1.getF()[2] + force[2]);
         // Newton's third law
-        p2.updateF(f2[0] - force[0], f2[1] - force[1], f2[2] - force[2]);
+        p2.updateF(p2.getF()[0] - force[0], p2.getF()[1] - force[1], p2.getF()[2] - force[2]);
       }
     }
-  }
+  }  
 }
 
 void calculateX() {
