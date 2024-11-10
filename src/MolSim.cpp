@@ -211,6 +211,48 @@ void calculateF() {
   }
 }
 
+void calculateLennardJonesF() {
+  a  // Lennard-Jones parameters
+  const double epsilon = 5.0;
+  const double sigma = 1.0;
+
+  // store the current force as the old force and reset current to 0
+  for (auto &p : particles) {
+    auto f = p.getF();
+    p.updateOldF(f[0], f[1], f[2]);
+    p.updateF(0, 0, 0);
+  }
+
+  for (auto it1 = particles.begin(); it1 != particles.end(); ++it1) {
+    for (auto it2 = ++it1; it2 != particles.end(); ++it2) {
+      Particle &p1 = *it1;
+      Particle &p2 = *it2;
+
+      auto r12 = p2.getX() - p1.getX();
+      // distance ||x_i - x_j ||
+      double distance = std::sqrt(ArrayUtils::L2Norm(r12) * ArrayUtils::L2Norm(r12));
+
+     // avoid extermely small distance
+      if (distance > 1e-5) {
+         // Lennard-Jones Force Formula (3)
+        double term = sigma / distance;
+        double term6 = std::pow(term, 6);
+        double term12 = std::pow(term, 12);
+        double totalForce = -24 * epsilon * (term6 - 2 * term12) / distance;
+
+        auto force = (totalForce / distance) * r12;
+
+        auto f1 = p1.getF();
+        auto f2 = p2.getF();
+
+        p1.updateF(f1[0] + force[0], f1[1] + force[1], f1[2] + force[2]);
+        // Newton's third law
+        p2.updateF(f2[0] - force[0], f2[1] - force[1], f2[2] - force[2]);
+      }
+    }
+  }
+}
+
 void calculateX() {
   for (auto &p : particles) {
     auto x = p.getX();
