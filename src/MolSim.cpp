@@ -75,7 +75,7 @@ int main(int argc, char *argsv[]) {
 
   int opt;
 
-  while ((opt = getopt(argc, argsv, "e:d:i:o:thxlf:")) != -1) {
+  while ((opt = getopt(argc, argsv, "e:d:i:o:thxl:f")) != -1) {
     switch (opt) {
     case 'e':
       end_time = atof(optarg);
@@ -178,6 +178,7 @@ void print_help() {
                "each iteration)\n";
   std::cout << "  -x                 Output .xyz files instead of .vpu\n";
   std::cout << "  -l  <log_level>    Option to choose the logging level\n";
+  std::cout << "  -f                 Calculate Gravitational Force instead of Lennard-Jones Force\n"
 }
 
 void calculateF() {

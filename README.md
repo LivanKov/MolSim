@@ -47,7 +47,8 @@ $ ./MolSim
 | `-d <time_delta>` | Specify the time increments for each simulation step                |
 | `-t`              | Enable testing mode (writes a file for each iteration of the run)   |
 | `-x`              | Output files in `.xyz` format instead of the default `.vtu` format  |
-
+| `-l` <log_level>  | Option to choose the logging level                                  |
+| `-f`              | Calculate Gravitational Force instead of Lennard-Jones Force        |
 
 ### Examples
 
