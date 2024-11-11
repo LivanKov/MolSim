@@ -99,7 +99,7 @@ public:
 
   std::vector<ParticlePairPointer> &operator[](const Particle &p);
 
-  Particle &operator[](int index);
+  Particle &operator[](size_t index);
 
   void clear();
 

@@ -15,12 +15,12 @@ ParticleContainer ParticleGenerator::generateCuboid(
     const std::array<size_t, 3> &dimensions, double h, double m,
     const std::array<double, 3> &initialVelocity, double averageVelocity) {
   ParticleContainer container;
-  for (size_t i = 0; i < dimensions[0]; ++i) {
+  for (size_t i = 0; i < dimensions[2]; ++i) {
     for (size_t j = 0; j < dimensions[1]; ++j) {
-      for (size_t k = 0; k < dimensions[2]; ++k) {
-        std::array position = {lowerLeftFrontCorner[0] + i * h,
+      for (size_t k = 0; k < dimensions[0]; ++k) {
+        std::array position = {lowerLeftFrontCorner[0] + k * h,
                                lowerLeftFrontCorner[1] + j * h,
-                               lowerLeftFrontCorner[2] + k * h};
+                               lowerLeftFrontCorner[2] + i * h};
 
         std::array<double, 3> velocity = initialVelocity;
         std::array<double, 3> randomVelocity =

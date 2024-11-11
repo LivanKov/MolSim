@@ -63,7 +63,7 @@ ParticleContainer::operator[](const Particle &p) {
   return _particle_pair_map[std::make_shared<Particle>(p)];
 }
 
-Particle &ParticleContainer::operator[](int index) {
+Particle &ParticleContainer::operator[](size_t index) {
   return *(_particle_container[index]);
 }
 
