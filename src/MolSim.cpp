@@ -108,7 +108,6 @@ int main(int argc, char *argsv[]) {
     }
   }
 
-
   Logger &logger = Logger::getInstance(log_level);
 
   FileReader fileReader;

@@ -14,5 +14,6 @@ public:
   static ParticleContainer
   generateCuboid(const std::array<double, 3> &lowerLeftFrontCorner,
                  const std::array<size_t, 3> &dimensions, double h, double mass,
-                 const std::array<double, 3> &initialVelocity, double averageVelocity);
+                 const std::array<double, 3> &initialVelocity,
+                 double averageVelocity);
 };
