@@ -1,6 +1,6 @@
-//
-// Created by sebastianpse on 11/9/24.
-//
+/*
+ * Created by sebastianpse on 11/9/24.
+ */
 
 #pragma once
 
@@ -9,16 +9,11 @@
 
 class ParticleGenerator {
 public:
-    ParticleGenerator();
+  ParticleGenerator();
 
-    static ParticleContainer generateCuboid(
-        const std::array<double, 3>& lowerLeftFrontCorner,
-        const std::array<size_t, 3>& dimensions,
-        double h,
-        double mass,
-        const std::array<double, 3>& initialVelocity,
-        double averageVelocity
-    );
-
+  static ParticleContainer
+  generateCuboid(const std::array<double, 3> &lowerLeftFrontCorner,
+                 const std::array<size_t, 3> &dimensions, double h, double mass,
+                 const std::array<double, 3> &initialVelocity,
+                 double averageVelocity);
 };
-
