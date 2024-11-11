@@ -103,6 +103,7 @@ int main(int argc, char *argsv[]) {
       break;
     case 'f':
       calculateLJForce = false;
+      break;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argsv[0]);
       return 1;
@@ -211,7 +212,7 @@ void calculateF() {
         double term = sigma / distance;
         double term6 = pow(term, 6);
         double term12 = pow(term, 12);
-        totalForce = -24 * epsilon * (term6 - 2 * term12) / distance;
+        totalForce = 24 * epsilon * (term6 - 2 * term12) / distance;
       } else {
         // Simple Force Calculation Formula (14)
         totalForce = p1.getM() * p2.getM() / pow(distance, 2);
