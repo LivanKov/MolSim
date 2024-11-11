@@ -80,11 +80,11 @@ class ParticleContainer {
 
 public:
   ParticleContainer();
-  ~ParticleContainer() = default;
+ /* ~ParticleContainer() = default;
   ParticleContainer(const ParticleContainer &lhs) = delete;
   ParticleContainer &operator=(const ParticleContainer &lhs) = delete;
   ParticleContainer(ParticleContainer &&lhs) = delete;
-  ParticleContainer &operator=(ParticleContainer &&lhs) = delete;
+  ParticleContainer &operator=(ParticleContainer &&lhs) = delete; */
 
   template <typename... Args>
   requires std::constructible_from<Particle, Args...>
