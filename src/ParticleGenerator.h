@@ -11,7 +11,7 @@ class ParticleGenerator {
 public:
     ParticleGenerator();
 
-    ParticleContainer generateCuboid(
+    static ParticleContainer generateCuboid(
         const std::array<double, 3>& lowerLeftFrontCorner,
         size_t N1, size_t N2, size_t N3,
         double h,

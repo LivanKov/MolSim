@@ -14,7 +14,7 @@
 ParticleGenerator::ParticleGenerator() = default;
 
 
-ParticleContainer ParticleGenerator::generateCuboid(
+static ParticleContainer ParticleGenerator::generateCuboid(
     const std::array<double, 3>& lowerLeftFrontCorner,
     const std::array<size_t, 3>& dimensions,
     double h,
@@ -23,9 +23,9 @@ ParticleContainer ParticleGenerator::generateCuboid(
     double averageVelocity
 ) {
     ParticleContainer container;
-    for (int i = 0; i < N1; ++i) {
-        for (int j = 0; j < N2; ++j) {
-            for (int k = 0; k < N3; ++k) {
+    for (int i = 0; i < dimensions[0]; ++i) {
+        for (int j = 0; j < dimensions[1]; ++j) {
+            for (int k = 0; k < dimensions[2]; ++k) {
                 std::array position = {
                     lowerLeftFrontCorner[0] + i * h,
                     lowerLeftFrontCorner[1] + j * h,
