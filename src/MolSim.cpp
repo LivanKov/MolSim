@@ -5,6 +5,8 @@
 #include "outputWriter/XYZWriter.h"
 #include "utils/ArrayUtils.h"
 
+#include "ParticleGenerator.h"
+
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
@@ -105,6 +107,7 @@ int main(int argc, char *argsv[]) {
       return 1;
     }
   }
+
 
   Logger &logger = Logger::getInstance(log_level);
 
