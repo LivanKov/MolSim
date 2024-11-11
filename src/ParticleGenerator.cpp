@@ -16,7 +16,7 @@ ParticleGenerator::ParticleGenerator() = default;
 
 ParticleContainer ParticleGenerator::generateCuboid(
     const std::array<double, 3>& lowerLeftFrontCorner,
-    size_t N1, size_t N2, size_t N3,
+    const std::array<size_t, 3>& dimensions,
     double h,
     double m,
     const std::array<double, 3>& initialVelocity,
