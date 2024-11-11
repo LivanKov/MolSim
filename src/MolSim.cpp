@@ -19,7 +19,6 @@
 #include <variant>
 
 #include "Logger.h"
-#include "../cmake-build-debug/_deps/googletest-src/googlemock/include/gmock/gmock-matchers.h"
 
 /**** forward declaration of the calculation functions ****/
 
