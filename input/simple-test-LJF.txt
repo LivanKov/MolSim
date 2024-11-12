@@ -1,0 +1,37 @@
+# There are 3 molecules (mass = 1.0) in this simulation. 
+#
+# Molecule 1: 
+# Initial position:(0.0,0.0,0.0). 
+# Velocity: (0.0,0.0,0.0). 
+#
+# Molecule 2: 
+# Initial position:(1.2,0.0,0.0). 
+# Velocity: (−0.1,0.0,0.0). 
+#  
+# Molecule 3: 
+# Initial position: (3.0,0.0,0.0). 
+# Velocity: (0.2,0.0,0.0). 
+# 
+#
+# Expected Visual Behavior:
+# The molecules are aligned along the x-axis.
+#
+# Molecule 1 & 2 starts close to each other. The Lennard-Jones potential 
+# will create: A repulsive force due to the small initial distance, causing them to 
+# slow down and reverse direction after coming close to each other.
+#
+# Molecule 3 is farther away and will be attracted to Molecules 1 and 2 due to the 
+# Lennard-Jones potential. As it gets closer, it will experience:
+# Attractive forces when the distance is moderate.
+# Repulsive forces if the distance becomes too small.
+# 
+# Overall Motion:
+# Molecule 2 will oscillate between Molecule 1 and Molecule 3.
+# Molecule 1 & 3 will also exhibit stable dynamics, as they interact with its neighbors 
+# in a balanced way (forces alternate between attraction and repulsion).
+# 
+# xyz-coord      velocity        mass
+3
+0.0 0.0 0.0      0.0 0.0 0.0     1.0
+1.2 0.0 0.0      -0.1 0.0 0.0    1.0
+3.0 0.0 0.0      0.2 0.0 0.0     1.0

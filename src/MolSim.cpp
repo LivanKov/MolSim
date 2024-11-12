@@ -61,6 +61,7 @@ double end_time, delta_t;
 std::string input_path, output_path;
 bool sparse_output = true;
 bool xyz_output = false;
+bool calculateLJForce = true;
 std::string log_level;
 
 std::string out_name("MD_vtk");
@@ -76,7 +77,7 @@ int main(int argc, char *argsv[]) {
 
   int opt;
 
-  while ((opt = getopt(argc, argsv, "e:d:i:o:thxl:")) != -1) {
+  while ((opt = getopt(argc, argsv, "e:d:i:o:thxl:f")) != -1) {
     switch (opt) {
     case 'e':
       end_time = atof(optarg);
@@ -101,6 +102,9 @@ int main(int argc, char *argsv[]) {
       break;
     case 'l':
       log_level = std::string(optarg);
+      break;
+    case 'f':
+      calculateLJForce = false;
       break;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argsv[0]);
@@ -177,80 +181,57 @@ void print_help() {
                "each iteration)\n";
   std::cout << "  -x                 Output .xyz files instead of .vpu\n";
   std::cout << "  -l  <log_level>    Option to choose the logging level\n";
+  std::cout << "  -f                 Calculate Gravitational Force instead of "
+               "Lennard-Jones Force\n";
 }
 
 void calculateF() {
-  for (auto &p1 : particles) {
-    std::array<double, 3> force_copy = p1.getF();
-    for (auto &p2 : particles) {
-      double f_x, f_y, f_z = 0;
-      double distance = std::sqrt(std::pow(p1.getX()[0] - p2.getX()[0], 2) +
-                                  std::pow(p1.getX()[1] - p2.getX()[1], 2) +
-                                  std::pow(p1.getX()[2] - p2.getX()[2], 2));
-      if (!(p1 == p2)) {
-        f_x = (p2.getX()[0] - p1.getX()[0]) * (p1.getM() * p2.getM()) /
-              pow(distance, 3);
-        f_y = (p2.getX()[1] - p1.getX()[1]) * (p1.getM() * p2.getM()) /
-              pow(distance, 3);
-        f_z = (p2.getX()[2] - p1.getX()[2]) * (p1.getM() * p2.getM()) /
-              pow(distance, 3);
-        p1.updateF(p1.getF()[0] + f_x, p1.getF()[1] + f_y, p1.getF()[2] + f_z);
-      }
-    }
-    p1.updateOldF(force_copy[0], force_copy[1], force_copy[2]);
-  }
-}
-
-void calculateF_new() {
-  // Store the current force as the old force and reset current to 0
-  for (auto &p1 : particles) {
-    p1.updateOldF(p1.getF()[0], p1.getF()[1], p1.getF()[2]);
-    p1.updateF(0, 0, 0);
+  // store the current force as the old force and reset current to 0
+  for (auto &p : particles) {
+    auto f = p.getF();
+    p.updateOldF(f[0], f[1], f[2]);
+    p.updateF(0, 0, 0);
   }
 
-  // Simple force calculation formula (14)
-  for (auto it1 = particles.begin(); it1 != particles.end(); ++it1) {
-    for (auto it2 = ++it1; it2 != particles.end(); ++it2) {
-      Particle &p1 = *it1;
-      Particle &p2 = *it2;
+  // Iterate each pair
+  for (auto it = particles.pair_begin(); it != particles.pair_end(); ++it) {
+    ParticlePair &pair = *it;
+    Particle &p1 = *(pair.first);
+    Particle &p2 = *(pair.second);
+    auto r12 = p2.getX() - p1.getX();
+    // distance ||x_i - x_j ||
+    double distance = ArrayUtils::L2Norm(r12);
 
-      double distance = std::sqrt(std::pow(p1.getX()[0] - p2.getX()[0], 2) +
-                                  std::pow(p1.getX()[1] - p2.getX()[1], 2) +
-                                  std::pow(p1.getX()[2] - p2.getX()[2], 2));
-
-      // Avoid division by zero
-      if (distance > 0) {
-        double f_x = (p2.getX()[0] - p1.getX()[0]) * (p1.getM() * p2.getM()) /
-                     pow(distance, 3);
-        double f_y = (p2.getX()[1] - p1.getX()[1]) * (p1.getM() * p2.getM()) /
-                     pow(distance, 3);
-        double f_z = (p2.getX()[2] - p1.getX()[2]) * (p1.getM() * p2.getM()) /
-                     pow(distance, 3);
-
-        p1.updateF(p1.getF()[0] + f_x, p1.getF()[1] + f_y, p1.getF()[2] + f_z);
-        // Newton's third law
-        p2.updateF(p2.getF()[0] - f_x, p2.getF()[1] - f_y, p2.getF()[2] - f_z);
+    // avoid extermely small distance
+    if (distance > 1e-5) {
+      // switch Lennard-Jones/ Simple force
+      double totalForce;
+      if (calculateLJForce) {
+        // Lennard-Jones parameters
+        const double epsilon = 5.0;
+        const double sigma = 1.0;
+        // Lennard-Jones Force Formula (3)
+        double term = sigma / distance;
+        double term6 = pow(term, 6);
+        double term12 = pow(term, 12);
+        totalForce = 24 * epsilon * (term6 - 2 * term12) / distance;
+      } else {
+        // Simple Force Calculation Formula (14)
+        totalForce = p1.getM() * p2.getM() / pow(distance, 2);
       }
+      auto force = (totalForce / distance) * r12;
+
+      p1.updateF(p1.getF()[0] + force[0], p1.getF()[1] + force[1],
+                 p1.getF()[2] + force[2]);
+      // Newton's third law
+      p2.updateF(p2.getF()[0] - force[0], p2.getF()[1] - force[1],
+                 p2.getF()[2] - force[2]);
     }
   }
+  // }
 }
 
 void calculateX() {
-  for (auto &p : particles) {
-    std::array<double, 3> location_copy(p.getX());
-    if (p.getF()[0] != 0 || p.getF()[1] != 0 || p.getF()[2] != 0) {
-      location_copy[0] = pow(delta_t, 2) * p.getF()[0] / (2 * p.getM());
-      location_copy[1] = pow(delta_t, 2) * p.getF()[1] / (2 * p.getM());
-      location_copy[2] = pow(delta_t, 2) * p.getF()[2] / (2 * p.getM());
-    }
-    location_copy[0] = location_copy[0] + delta_t * p.getV()[0];
-    location_copy[1] = location_copy[1] + delta_t * p.getV()[1];
-    location_copy[2] = location_copy[2] + delta_t * p.getV()[2];
-    p.updateX(location_copy[0], location_copy[1], location_copy[2]);
-  }
-}
-
-void calculateX_new() {
   for (auto &p : particles) {
     auto x = p.getX();
     auto v = p.getV();
@@ -267,19 +248,6 @@ void calculateX_new() {
 }
 
 void calculateV() {
-  for (auto &p : particles) {
-    std::array<double, 3> velocity_copy(p.getV());
-    velocity_copy[0] = velocity_copy[0] +
-                       delta_t * (p.getOldF()[0] + p.getF()[0]) / 2 * p.getM();
-    velocity_copy[1] = velocity_copy[1] +
-                       delta_t * (p.getOldF()[1] + p.getF()[1]) / 2 * p.getM();
-    velocity_copy[2] = velocity_copy[2] +
-                       delta_t * (p.getOldF()[2] + p.getF()[2]) / 2 * p.getM();
-    p.updateV(velocity_copy[0], velocity_copy[1], velocity_copy[2]);
-  }
-}
-
-void calculateV_new() {
   for (auto &p : particles) {
     auto v = p.getV();
     auto old_f = p.getOldF();
