@@ -1,3 +1,4 @@
+#include "logger/Logger.h"
 #include "particleSim/Particle.h"
 #include "particleSim/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
@@ -6,6 +7,7 @@
 #include <gtest/gtest.h>
 #include <iostream>
 #include <memory>
+#include <spdlog/spdlog.h>
 #include <unordered_set>
 #include <utility>
 
@@ -18,6 +20,7 @@ protected:
   double starting_coord;
   double delta_t;
   bool calculateLJForce = true;
+  Logger &logger = Logger::getInstance("debug");
 
   void calculateF() {
     // store the current force as the old force and reset current to 0
@@ -194,8 +197,8 @@ TEST_F(BasicTest, CalculateFTest) {
 
   // Update positions for the next iteration
   calculateX();
-  std::cout << "current p1 position:" << container[0].getX() << std::endl;
-  std::cout << "current p2 position:" << container[1].getX() << std::endl;
+  logger.debug("current p1 position: " + ArrayUtils::to_string(container[0].getX()));
+  logger.debug("current p2 position: " + ArrayUtils::to_string(container[1].getX()));
 
   // iteration 2
   calculateF();
@@ -213,8 +216,10 @@ TEST_F(BasicTest, CalculateFTest) {
   delta_t = 0.2;
 
   calculateX();
-  std::cout << "current p1 position:" << container[0].getX() << std::endl;
-  std::cout << "current p2 position:" << container[1].getX() << std::endl;
+  logger.debug("current p1 position: " +
+               ArrayUtils::to_string(container[0].getX()));
+  logger.debug("current p2 position: " +
+               ArrayUtils::to_string(container[1].getX()));
 
   // iteration 3
   calculateF();
