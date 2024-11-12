@@ -12,6 +12,8 @@ if(NOT CMAKE_BUILD_TYPE)
             "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
 
+# Ensure that extracted files have a correct and consistent timestamp
+cmake_policy(SET CMP0135 NEW)
 
 # Include the FetchContent module
 include(FetchContent)
