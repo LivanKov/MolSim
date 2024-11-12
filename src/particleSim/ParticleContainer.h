@@ -12,7 +12,6 @@
 #include <unordered_set>
 #include <vector>
 
-
 using ParticlePointer = std::shared_ptr<Particle>;
 
 /**
@@ -148,8 +147,8 @@ public:
    */
 
   template <typename... Args>
-    requires std::constructible_from<Particle, Args...>
-  void emplace_back(Args... args) {
+  requires std::constructible_from<Particle, Args...> void
+  emplace_back(Args... args) {
     ParticlePointer p = std::make_shared<Particle>(std::forward<Args>(args)...);
     _particle_container.push_back(p);
     create_pairs(p);
@@ -227,7 +226,8 @@ public:
 private:
   /**
    * @brief Creates particle pairs for newly inserted particle.
-   * @param new_particle Reference to a pointer managing the newly inserted Particle.
+   * @param new_particle Reference to a pointer managing the newly inserted
+   * Particle.
    */
   void create_pairs(const ParticlePointer &new_particle);
 
@@ -236,11 +236,13 @@ private:
    */
   std::vector<ParticlePointer> _particle_container;
   /**
-   * @brief Underlying particle container. Stores unique pointers managing ParticlePair objects.
+   * @brief Underlying particle container. Stores unique pointers managing
+   * ParticlePair objects.
    */
   std::unordered_set<ParticlePairPointer> _particle_pair_set;
   /**
-   * @brief Underlying hashmap. Maps pointers to Particle objects onto containers, holding pointers managing corresponding ParticlePairs.
+   * @brief Underlying hashmap. Maps pointers to Particle objects onto
+   * containers, holding pointers managing corresponding ParticlePairs.
    */
   std::unordered_map<ParticlePointer, std::vector<ParticlePairPointer>,
                      ParticlePointerHash, ParticlePointerEqual>

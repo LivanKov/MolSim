@@ -1,8 +1,8 @@
 
 #include "io/FileReader.h"
-#include "particleSim/ParticleContainer.h"
 #include "outputWriter/VTKWriter.h"
 #include "outputWriter/XYZWriter.h"
+#include "particleSim/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 
 #include "particleSim/ParticleGenerator.h"

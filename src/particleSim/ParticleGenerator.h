@@ -21,11 +21,14 @@ public:
 
   /**
    * @brief Generate a cuboid consisting of particles, based on arguments.
-   * @param lowerFrontCorner Coordinates of the lower left point of the cuboid in 3d space.
-   * @param dimensions Amount of particles in height, width and depth of the cuboid.
+   * @param lowerFrontCorner Coordinates of the lower left point of the cuboid
+   * in 3d space.
+   * @param dimensions Amount of particles in height, width and depth of the
+   * cuboid.
    * @param h Distance between particles.
    * @param mass Mass of an individual particle.
-   * @param initialVelocity contains an array with individual velocity in 3d space. Applied to all particles in the container.
+   * @param initialVelocity contains an array with individual velocity in 3d
+   * space. Applied to all particles in the container.
    * @param averageVelocity Mean value of the velocity of the Brownian Motion.
    * @return ParticleContainer in accordance to the arguments passed.
    */

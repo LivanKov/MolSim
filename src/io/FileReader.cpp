@@ -128,11 +128,12 @@ void FileReader::readFile(ParticleContainer &particles, char *filename) {
       };
       std::cout << containerToString(xyz) << std::endl;
       std::cout << containerToString(cube_dim) << std::endl;
- 
+
       logger.info("Created a cuboid\n");
-      logger.info("Amount of particles: " +
-                  std::to_string(std::accumulate(cube_dim.begin(), cube_dim.end(), 1,
-                                  std::multiplies<size_t>())));
+      logger.info(
+          "Amount of particles: " +
+          std::to_string(std::accumulate(cube_dim.begin(), cube_dim.end(), 1,
+                                         std::multiplies<size_t>())));
       logger.info("Dimensions: " + containerToString(cube_dim));
       logger.info("Distance: " + std::to_string(distance));
       logger.info("Mass: " + std::to_string(mass));
