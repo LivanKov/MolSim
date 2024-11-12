@@ -6,14 +6,14 @@
  */
 
 #include "FileReader.h"
-#include "ParticleContainer.h"
+#include "particleSim/ParticleContainer.h"
 
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 
-#include "Logger.h"
+#include "logger/Logger.h"
 
 FileReader::FileReader() = default;
 
