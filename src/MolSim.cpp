@@ -120,10 +120,6 @@ int main(int argc, char *argsv[]) {
   int iteration = 0;
   double current_time = start_time;
 
-  /* std::cout << "Starting a simulation with:\n"
-            << "\tStart time: " << start_time << "\n"
-            << "\tEnd time: " << end_time << "\n"
-            << "\tDelta: " << delta_t << "\n"; */
 
   logger.info("Starting a simulation with:");
   logger.info("\tStart time: " + std::to_string(start_time));
@@ -141,22 +137,17 @@ int main(int argc, char *argsv[]) {
       plotParticles(iteration);
     else if (!sparse_output)
       plotParticles(iteration);
-    // std::cout << "Iteration " << iteration << " finished." << std::endl;
     logger.trace("Iteration " + std::to_string(iteration) + " finished.");
     current_time += delta_t;
   }
 
-  // std::cout << "output written. Terminating..." << std::endl;
   logger.info("output written. Terminating...");
 
-  // std::cout << particles.size() << std::endl;
   logger.debug("Number of particles: " + std::to_string(particles.size()));
 
   for (auto &p : particles) {
-    // std::cout << "Main Particle: " << p.toString() << std::endl;
     logger.debug("Main particle " + p.toString());
     for (auto &p2 : particles[p]) {
-      // std::cout << p2->toString() << std::endl;
       logger.trace(p2->toString());
     }
     std::cout << std::endl;
@@ -166,7 +157,9 @@ int main(int argc, char *argsv[]) {
   return 0;
 }
 
+
 // ---------------------------------------------------------------------------------------------------------------------
+
 
 void print_help() {
   std::cout << "Usage: MolSim [options]\n";
@@ -180,7 +173,8 @@ void print_help() {
   std::cout << "  -t                 Enable testing mode (Writes a file for "
                "each iteration)\n";
   std::cout << "  -x                 Output .xyz files instead of .vpu\n";
-  std::cout << "  -l  <log_level>    Option to choose the logging level\n";
+  std::cout << "  -l   <log_level>   Option to choose the logging level "
+               "[trace, debug, info, warn, error, off]\n";
   std::cout << "  -f                 Calculate Gravitational Force instead of "
                "Lennard-Jones Force\n";
 }

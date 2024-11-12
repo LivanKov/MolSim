@@ -8,6 +8,8 @@
 
 #include <random>
 
+#include "logger/Logger.h"
+
 ParticleGenerator::ParticleGenerator() = default;
 
 ParticleContainer ParticleGenerator::generateCuboid(
@@ -30,9 +32,12 @@ ParticleContainer ParticleGenerator::generateCuboid(
         }
 
         Particle particle(position, velocity, m, 0);
+        Logger::getInstance().trace("New Particle generated");
         container.insert(particle);
+        Logger::getInstance().trace("New Particle inserted into container");
       }
     }
   }
+  Logger::getInstance().info("New cuboid generated");
   return container;
 }

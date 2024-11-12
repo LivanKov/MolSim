@@ -7,7 +7,6 @@
 
 class Logger {
 public:
-  // Public static method to get the logger instance
   static Logger &getInstance(const std::string &log_level = "info");
 
   // Logging methods
@@ -19,16 +18,16 @@ public:
   void critical(const std::string &message);
 
 private:
-  // Private constructor to prevent external instantiation
+  // Prevents external instantiation
   Logger(const std::string &log_level);
 
-  // Private destructor (optional, if you want more control)
+
   ~Logger();
 
-  // Shared pointer to the actual spdlog logger
   std::shared_ptr<spdlog::logger> logger;
 
-  // Delete copy constructor and assignment operator
+  // No instance of Logger class can be copied
   Logger(const Logger &) = delete;
+  // Prevents assigning instance of Logger class to another instance
   Logger &operator=(const Logger &) = delete;
 };
