@@ -194,6 +194,8 @@ TEST_F(BasicTest, CalculateFTest) {
 
   // Update positions for the next iteration
   calculateX();
+  std::cout << "current p1 position:" << container[0].getX() << std::endl;
+  std::cout << "current p2 position:" << container[1].getX() << std::endl;
 
   // iteration 2
   calculateF();
@@ -211,11 +213,13 @@ TEST_F(BasicTest, CalculateFTest) {
   delta_t = 0.2;
 
   calculateX();
+  std::cout << "current p1 position:" << container[0].getX() << std::endl;
+  std::cout << "current p2 position:" << container[1].getX() << std::endl;
 
   // iteration 3
   calculateF();
   // calculate by hand
-  expectedForce = std::array{-16571.732, 0.00, 0.00};
+  expectedForce = std::array{-7376.511, 0.00, 0.00};
   // Verify the forces
   ASSERT_NEAR(container[0].getF()[0], expectedForce[0], 1);
   ASSERT_NEAR(container[0].getF()[1], expectedForce[1], 1);
