@@ -32,4 +32,5 @@ jobs:
 
     - name: Build and run Google Tests
       run: |
+        cd build
         ctest --output-on-failure
