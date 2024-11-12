@@ -1,5 +1,5 @@
-#include "Particle.h"
-#include "ParticleContainer.h"
+#include "particleSim/Particle.h"
+#include "particleSim/ParticleContainer.h"
 #include <array>
 #include <cmath>
 #include <gtest/gtest.h>

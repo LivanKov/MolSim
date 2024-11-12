@@ -80,15 +80,10 @@ class ParticleContainer {
 
 public:
   ParticleContainer();
-  ~ParticleContainer() = default;
-  ParticleContainer(const ParticleContainer &lhs) = delete;
-  ParticleContainer &operator=(const ParticleContainer &lhs) = delete;
-  ParticleContainer(ParticleContainer &&lhs) = delete;
-  ParticleContainer &operator=(ParticleContainer &&lhs) = delete;
 
   template <typename... Args>
-  requires std::constructible_from<Particle, Args...>
-  void emplace_back(Args... args) {
+  requires std::constructible_from<Particle, Args...> void
+  emplace_back(Args... args) {
     ParticlePointer p = std::make_shared<Particle>(std::forward<Args>(args)...);
     _particle_container.push_back(p);
     create_pairs(p);
@@ -104,7 +99,7 @@ public:
 
   std::vector<ParticlePairPointer> &operator[](const Particle &p);
 
-  Particle &operator[](int index);
+  Particle &operator[](size_t index);
 
   void clear();
 

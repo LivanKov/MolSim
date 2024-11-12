@@ -1,9 +1,11 @@
 
-#include "FileReader.h"
-#include "ParticleContainer.h"
+#include "io/FileReader.h"
+#include "particleSim/ParticleContainer.h"
 #include "outputWriter/VTKWriter.h"
 #include "outputWriter/XYZWriter.h"
 #include "utils/ArrayUtils.h"
+
+#include "particleSim/ParticleGenerator.h"
 
 #include <spdlog/spdlog.h>
 
@@ -16,7 +18,7 @@
 #include <unordered_map>
 #include <variant>
 
-#include "Logger.h"
+#include "logger/Logger.h"
 
 /**** forward declaration of the calculation functions ****/
 
