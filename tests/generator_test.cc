@@ -12,9 +12,9 @@ protected:
 };
 
 TEST_F(CuboidTest, SimpleTest) {
-  ParticleContainer container = ParticleGenerator::generateCuboid(
+ ParticleGenerator::insertCuboid(
       std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{3, 3, 3}, 1.0, 1.0,
-      std::array<double, 3>{1.0, 1.0, 1.0}, 0);
+      std::array<double, 3>{1.0, 1.0, 1.0}, 0, container);
 
   size_t index = 0;
 
@@ -30,5 +30,3 @@ TEST_F(CuboidTest, SimpleTest) {
     }
   }
 }
-
-TEST_F(CuboidTest, AdvancedTest) {}

@@ -7,6 +7,7 @@
 
 #include "FileReader.h"
 #include "particleSim/ParticleContainer.h"
+#include "particleSim/ParticleGenerator.h"
 
 #include <cstdlib>
 #include <fstream>
@@ -21,11 +22,28 @@ FileReader::FileReader() = default;
 
 FileReader::~FileReader() = default;
 
+auto containerToString = [](const auto &container) {
+  std::ostringstream oss;
+  oss << "{ ";
+
+  for (auto it = container.begin(); it != container.end(); ++it) {
+    oss << *it;
+    if (std::next(it) != container.end()) {
+      oss << ", ";
+    }
+  }
+
+  oss << " }";
+  return oss.str();
+};
+
 void FileReader::readFile(ParticleContainer &particles, char *filename) {
   std::array<double, 3> x;
-  std::array<double, 3> v;
+  std::array<size_t, 3> mesh;
+  double d;
   double m;
-  int num_particles = 0;
+  std::array<double, 3> v;
+  size_t num_objects = 0;
 
   Logger &logger = Logger::getInstance();
 
@@ -45,13 +63,13 @@ void FileReader::readFile(ParticleContainer &particles, char *filename) {
 
     if (numstream.str().size() == 1) {
 
-      numstream >> num_particles;
+      numstream >> num_objects;
 
-      logger.info("    Reading " + num_particles);
+      logger.info("    Reading " + num_objects);
       getline(input_file, tmp_string);
       logger.debug("Read line: " + tmp_string);
 
-      for (int i = 0; i < num_particles; i++) {
+      for (size_t i = 0; i < num_objects; i++) {
         std::istringstream datastream(tmp_string);
 
         for (auto &xj : x) {
@@ -77,67 +95,47 @@ void FileReader::readFile(ParticleContainer &particles, char *filename) {
       logger.info("    Creating a cuboid ");
 
       getline(input_file, tmp_string);
-      logger.debug("Read line: " + tmp_string);
-      std::array<double, 3> xyz;
-      std::istringstream xyz_datastream(tmp_string);
-      for (auto &p : xyz) {
-        xyz_datastream >> p;
-      }
+      std::istringstream numstream(tmp_string);
+
+      numstream >> num_objects;
+
+      logger.info("    Reading " + num_objects);
 
       getline(input_file, tmp_string);
-      logger.debug("Read line: " + tmp_string);
-      std::array<size_t, 3> cube_dim;
-      std::istringstream dim_datastream(tmp_string);
-      for (auto &p : cube_dim) {
-        dim_datastream >> p;
-      }
 
-      getline(input_file, tmp_string);
-      logger.debug("Read line: " + tmp_string);
-      std::istringstream dist_datastream(tmp_string);
-      double distance;
-      dist_datastream >> distance;
+      for (size_t i = 0; i < num_objects; ++i) {
+        std::istringstream datastream(tmp_string);
 
-      getline(input_file, tmp_string);
-      logger.debug("Read line: " + tmp_string);
-      std::istringstream mass_datastream(tmp_string);
-      double mass;
-      mass_datastream >> mass;
-
-      getline(input_file, tmp_string);
-      logger.debug("Read line: " + tmp_string);
-      std::istringstream velocity_datastream(tmp_string);
-      std::array<double, 3> velocity;
-      for (auto &p : velocity) {
-        velocity_datastream >> p;
-      }
-
-      auto containerToString = [](const auto &container) {
-        std::ostringstream oss;
-        oss << "{ ";
-
-        for (auto it = container.begin(); it != container.end(); ++it) {
-          oss << *it;
-          if (std::next(it) != container.end()) {
-            oss << ", ";
-          }
+        for (auto &xj : x) {
+          datastream >> xj;
         }
 
-        oss << " }";
-        return oss.str();
-      };
-      std::cout << containerToString(xyz) << std::endl;
-      std::cout << containerToString(cube_dim) << std::endl;
+        for (auto &mj : mesh) {
+          datastream >> mj;
+        }
 
-      logger.info("Created a cuboid\n");
-      logger.info(
-          "Amount of particles: " +
-          std::to_string(std::accumulate(cube_dim.begin(), cube_dim.end(), 1,
-                                         std::multiplies<size_t>())));
-      logger.info("Dimensions: " + containerToString(cube_dim));
-      logger.info("Distance: " + std::to_string(distance));
-      logger.info("Mass: " + std::to_string(mass));
-      logger.info("Initial velocity: " + containerToString(velocity));
+        datastream >> d;
+
+        datastream >> m;
+
+        for (auto &vj : v) {
+          datastream >> vj;
+        }
+
+        logger.info("Created a cuboid\n");
+        logger.info(
+            "Amount of particles: " +
+            std::to_string(std::accumulate(mesh.begin(), mesh.end(), 1,
+                                           std::multiplies<size_t>())));
+        logger.info("Dimensions: " + containerToString(mesh));
+        logger.info("Distance: " + std::to_string(d));
+        logger.info("Mass: " + std::to_string(m));
+        logger.info("Initial velocity: " + containerToString(v));
+
+        ParticleGenerator::insertCuboid(x, mesh, d, m, v, 0, particles);
+
+        getline(input_file, tmp_string);
+      }
     }
   } else {
     std::cout << "Error: could not open file " << filename << std::endl;

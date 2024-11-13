@@ -32,9 +32,10 @@ public:
    * @param averageVelocity Mean value of the velocity of the Brownian Motion.
    * @return ParticleContainer in accordance to the arguments passed.
    */
-  static ParticleContainer
-  generateCuboid(const std::array<double, 3> &lowerLeftFrontCorner,
-                 const std::array<size_t, 3> &dimensions, double h, double mass,
-                 const std::array<double, 3> &initialVelocity,
-                 double averageVelocity);
+  static void insertCuboid(const std::array<double, 3> &lowerLeftFrontCorner,
+                             const std::array<size_t, 3> &dimensions, double h,
+                             double mass,
+                             const std::array<double, 3> &initialVelocity,
+                             double averageVelocity,
+                             ParticleContainer &particles);
 };
