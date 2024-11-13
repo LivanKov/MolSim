@@ -132,7 +132,7 @@ void FileReader::readFile(ParticleContainer &particles, char *filename) {
         logger.info("Mass: " + std::to_string(m));
         logger.info("Initial velocity: " + containerToString(v));
 
-        ParticleGenerator::insertCuboid(x, mesh, d, m, v, 0, particles);
+        ParticleGenerator::insertCuboid(x, mesh, d, m, v, 1, particles);
 
         getline(input_file, tmp_string);
       }
