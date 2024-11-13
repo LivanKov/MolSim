@@ -182,8 +182,7 @@ void print_help() {
 void calculateF() {
   // store the current force as the old force and reset current to 0
   for (auto &p : particles) {
-    auto f = p.getF();
-    p.updateOldF(f[0], f[1], f[2]);
+    p.updateOldF(p.getF());
     p.updateF(0, 0, 0);
   }
 
@@ -215,14 +214,11 @@ void calculateF() {
       }
       auto force = (totalForce / distance) * r12;
 
-      p1.updateF(p1.getF()[0] + force[0], p1.getF()[1] + force[1],
-                 p1.getF()[2] + force[2]);
+      p1.updateF(p1.getF() + force);
       // Newton's third law
-      p2.updateF(p2.getF()[0] - force[0], p2.getF()[1] - force[1],
-                 p2.getF()[2] - force[2]);
+      p2.updateF(p2.getF() - force);
     }
   }
-  // }
 }
 
 void calculateX() {
@@ -233,11 +229,9 @@ void calculateX() {
     double m = p.getM();
 
     // Velocity-Störmer-Verlet formula (8)
-    x[0] = x[0] + delta_t * v[0] + pow(delta_t, 2) * f[0] / (2 * m);
-    x[1] = x[1] + delta_t * v[1] + pow(delta_t, 2) * f[1] / (2 * m);
-    x[2] = x[2] + delta_t * v[2] + pow(delta_t, 2) * f[2] / (2 * m);
+    x = x + delta_t * v + pow(delta_t, 2) * f / (2 * m);
 
-    p.updateX(x[0], x[1], x[2]);
+    p.updateX(x);
   }
 }
 
@@ -249,11 +243,9 @@ void calculateV() {
     double m = p.getM();
 
     // Velocity-Störmer-Verlet formula (9)
-    v[0] = v[0] + delta_t * (old_f[0] + new_f[0]) / (2 * m);
-    v[1] = v[1] + delta_t * (old_f[1] + new_f[1]) / (2 * m);
-    v[2] = v[2] + delta_t * (old_f[2] + new_f[2]) / (2 * m);
+    v = v + delta_t * (old_f + new_f) / (2 * m);
 
-    p.updateV(v[0], v[1], v[2]);
+    p.updateV(v);
   }
 }
 

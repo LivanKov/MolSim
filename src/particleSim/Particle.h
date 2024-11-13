@@ -150,11 +150,23 @@ public:
   void updateX(double x_arg, double y_arg, double z_arg);
 
   /**
+   * @brief updates the position of the particle.
+   * @param position: allow the method to accept array.
+   */
+  void updateX(const std::array<double, 3> &position);
+
+  /**
    * @brief updates the velocity of the particle.
    * @param x_arg, y_arg, z_arg: new velocity of the particle.
    */
 
   void updateV(double x_arg, double y_arg, double z_arg);
+
+  /**
+   * @brief updates the velocity of the particle.
+   * @param velocity: allow the method to accept array.
+   */
+  void updateV(const std::array<double, 3> &velocity);
 
   /**
    * @brief updates the force of the particle.
@@ -164,11 +176,23 @@ public:
   void updateF(double x_arg, double y_arg, double z_arg);
 
   /**
+   * @brief updates the force of the particle.
+   * @param force: allowed the method to accept a std::array<double, 3>.
+   */
+  void updateF(const std::array<double, 3> &force);
+
+  /**
    * @brief updates the force of the particle in the previous step.
    * @param x_arg, y_arg, z_arg: new force of the particle in the previous step.
    */
 
   void updateOldF(double x_arg, double y_arg, double z_arg);
+
+  /**
+   * @brief updates the force of the particle in the previous step.
+   * @param force: allowed the method to accept a std::array<double, 3>.
+   */
+  void updateOldF(const std::array<double, 3> &force);
 };
 
 /**
