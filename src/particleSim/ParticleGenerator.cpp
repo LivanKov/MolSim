@@ -40,5 +40,3 @@ void ParticleGenerator::insertCuboid(
   }
   Logger::getInstance().info("New cuboid generated");
 }
-
-

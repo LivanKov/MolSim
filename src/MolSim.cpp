@@ -120,7 +120,6 @@ int main(int argc, char *argsv[]) {
   int iteration = 0;
   double current_time = start_time;
 
-
   logger.info("Starting a simulation with:");
   logger.info("\tStart time: " + std::to_string(start_time));
   logger.info("\tEnd time: " + std::to_string(end_time));
@@ -150,9 +149,7 @@ int main(int argc, char *argsv[]) {
   return 0;
 }
 
-
 // ---------------------------------------------------------------------------------------------------------------------
-
 
 void print_help() {
   std::cout << "Usage: MolSim [options]\n";

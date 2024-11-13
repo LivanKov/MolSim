@@ -183,8 +183,10 @@ TEST_F(BasicTest, CalculateFTest) {
 
   // Update positions for the next iteration
   calculateX();
-  logger.debug("current p1 position: " + ArrayUtils::to_string(container[0].getX()));
-  logger.debug("current p2 position: " + ArrayUtils::to_string(container[1].getX()));
+  logger.debug("current p1 position: " +
+               ArrayUtils::to_string(container[0].getX()));
+  logger.debug("current p2 position: " +
+               ArrayUtils::to_string(container[1].getX()));
 
   // iteration 2
   calculateF();

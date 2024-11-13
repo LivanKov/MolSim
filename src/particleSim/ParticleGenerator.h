@@ -33,9 +33,9 @@ public:
    * @return ParticleContainer in accordance to the arguments passed.
    */
   static void insertCuboid(const std::array<double, 3> &lowerLeftFrontCorner,
-                             const std::array<size_t, 3> &dimensions, double h,
-                             double mass,
-                             const std::array<double, 3> &initialVelocity,
-                             double averageVelocity,
-                             ParticleContainer &particles);
+                           const std::array<size_t, 3> &dimensions, double h,
+                           double mass,
+                           const std::array<double, 3> &initialVelocity,
+                           double averageVelocity,
+                           ParticleContainer &particles);
 };

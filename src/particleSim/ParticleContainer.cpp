@@ -138,6 +138,7 @@ ParticlePairIterator ParticleContainer::pair_end() {
 void ParticleContainer::create_pairs(const ParticlePointer &new_particle) {
   for (auto const &p : _particle_container) {
     if (*new_particle != *p)
-      _particle_pair_set.insert(std::make_shared<ParticlePair>(new_particle, p));
+      _particle_pair_set.insert(
+          std::make_shared<ParticlePair>(new_particle, p));
   }
 }

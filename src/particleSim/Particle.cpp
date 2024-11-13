@@ -85,30 +85,22 @@ void Particle::updateX(double x_arg, double y_arg, double z_arg) {
   x = {x_arg, y_arg, z_arg};
 }
 
-void Particle::updateX(const std::array<double, 3> &position) {
-  x = position;
-}
+void Particle::updateX(const std::array<double, 3> &position) { x = position; }
 
 void Particle::updateV(double x_arg, double y_arg, double z_arg) {
   v = {x_arg, y_arg, z_arg};
 }
 
-void Particle::updateV(const std::array<double, 3> &velocity) {
-  v = velocity;
-}
+void Particle::updateV(const std::array<double, 3> &velocity) { v = velocity; }
 
 void Particle::updateF(double x_arg, double y_arg, double z_arg) {
   f = {x_arg, y_arg, z_arg};
 }
 
-void Particle::updateF(const std::array<double, 3> &force) {
-  f = force;
-}
+void Particle::updateF(const std::array<double, 3> &force) { f = force; }
 
 void Particle::updateOldF(double x_arg, double y_arg, double z_arg) {
   old_f = {x_arg, y_arg, z_arg};
 }
 
-void Particle::updateOldF(const std::array<double, 3> &force) {
-  old_f = force;
-}
+void Particle::updateOldF(const std::array<double, 3> &force) { old_f = force; }
