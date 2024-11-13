@@ -176,25 +176,6 @@ public:
   size_t size();
 
   /**
-   * @brief Returns a container containing all the pairs corresponding to a
-   * specific particle.
-   * @param p Shared pointer managing a Particle object.
-   * @return Std::vector<ParticlePairPointer>, vector of corresponding
-   * ParticlePair pointers.
-   */
-
-  std::vector<ParticlePairPointer> &pairs_of(const ParticlePointer &p);
-
-  /**
-   * @brief Override [] operator, to return a container containing all the pairs
-   * corresponding to a specific particle.
-   * @param p Particle object reference.
-   * @return Std::vector<ParticlePairPointer>, vector of corresponding.
-   * ParticlePair pointers.
-   */
-  std::vector<ParticlePairPointer> &operator[](const Particle &p);
-
-  /**
    * @brief Returns a Particle object stored at index.
    * @param index Index of the Particle in the underlying container.
    * @return Reference to a Particle object.
@@ -240,11 +221,4 @@ private:
    * ParticlePair objects.
    */
   std::unordered_set<ParticlePairPointer> _particle_pair_set;
-  /**
-   * @brief Underlying hashmap. Maps pointers to Particle objects onto
-   * containers, holding pointers managing corresponding ParticlePairs.
-   */
-  std::unordered_map<ParticlePointer, std::vector<ParticlePairPointer>,
-                     ParticlePointerHash, ParticlePointerEqual>
-      _particle_pair_map;
 };

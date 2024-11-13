@@ -135,14 +135,6 @@ TEST_F(BasicTest, ContainerBehaviourTest) {
     EXPECT_TRUE(dummy_pairs.contains(*it));
 
   // check that every particle maps onto correct pair
-
-  for (auto const &p : container) {
-    ASSERT_EQ(container[p].size(), 2);
-    for (auto const &v : container[p]) {
-      ASSERT_TRUE(*(v->first) == p && *(v->second) != p ||
-                  *(v->first) != p && *(v->second) == p);
-    }
-  }
 }
 
 TEST_F(BasicTest, SimulationBehaviourTest) {
