@@ -26,7 +26,7 @@ void ParticleGenerator::insertCuboid(
 
         std::array<double, 3> velocity = initialVelocity;
         std::array<double, 3> randomVelocity =
-            maxwellBoltzmannDistributedVelocity(averageVelocity, 3);
+            maxwellBoltzmannDistributedVelocity(averageVelocity, 2);
         for (size_t dim = 0; dim < 3; ++dim) {
           velocity[dim] += randomVelocity[dim];
         }

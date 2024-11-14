@@ -124,7 +124,7 @@ int main(int argc, char *argsv[]) {
   int iteration = 0;
   double current_time = start_time;
 
-  logger.info("Starting a simulation with:");
+  logger.warn("Starting a simulation with:");
   logger.info("\tStart time: " + std::to_string(start_time));
   logger.info("\tEnd time: " + std::to_string(end_time));
   logger.info("\tDelta: " + std::to_string(delta_t));
@@ -148,7 +148,7 @@ int main(int argc, char *argsv[]) {
 
   logger.debug("Number of particles: " + std::to_string(particles.size()));
 
-  logger.info("Simulation finished.");
+  logger.warn("Simulation finished.");
 
   return 0;
 }
