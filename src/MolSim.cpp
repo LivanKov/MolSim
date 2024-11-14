@@ -62,6 +62,7 @@ std::string input_path, output_path;
 bool sparse_output = true;
 bool xyz_output = false;
 bool calculateLJForce = true;
+bool enableOutput = true;
 std::string log_level;
 
 std::string out_name("MD_vtk");
@@ -77,7 +78,7 @@ int main(int argc, char *argsv[]) {
 
   int opt;
 
-  while ((opt = getopt(argc, argsv, "e:d:i:o:thxl:f")) != -1) {
+  while ((opt = getopt(argc, argsv, "e:d:i:o:thxl:fn")) != -1) {
     switch (opt) {
     case 'e':
       end_time = atof(optarg);
@@ -106,6 +107,9 @@ int main(int argc, char *argsv[]) {
     case 'f':
       calculateLJForce = false;
       break;
+    case 'n':
+      enableOutput = false;
+      break;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argsv[0]);
       return 1;
@@ -132,9 +136,9 @@ int main(int argc, char *argsv[]) {
     calculateV();
 
     iteration++;
-    if (sparse_output && iteration % 10 == 0)
+    if (sparse_output && iteration % 10 == 0 && enableOutput)
       plotParticles(iteration);
-    else if (!sparse_output)
+    else if (!sparse_output && enableOutput)
       plotParticles(iteration);
     logger.trace("Iteration " + std::to_string(iteration) + " finished.");
     current_time += delta_t;
@@ -167,6 +171,7 @@ void print_help() {
                "[trace, debug, info, warn, error, off]\n";
   std::cout << "  -f                 Calculate Gravitational Force instead of "
                "Lennard-Jones Force\n";
+  std::cout << "  -n   Disable all file output for the sake of performance\n";
 }
 
 void calculateF() {
