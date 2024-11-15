@@ -1,7 +1,7 @@
 #include "Logger.h"
 
 Logger::Logger(const std::string &log_level) {
-  // Create a color console sink for pretty logs
+  // Create a color console sink for coloured logs
   auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
   console_sink->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] %v");
   console_sink->set_pattern("%+");
@@ -11,30 +11,26 @@ Logger::Logger(const std::string &log_level) {
 
   // Set the log level based on user input
   if (log_level == "trace") {
-    logger->set_level(spdlog::level::trace); // Set to trace level
+    logger->set_level(spdlog::level::trace);
   } else if (log_level == "debug") {
-    logger->set_level(spdlog::level::debug); // Set to debug level
+    logger->set_level(spdlog::level::debug);
   } else if (log_level == "info") {
-    logger->set_level(spdlog::level::info); // Set to info level
+    logger->set_level(spdlog::level::info);
   } else if (log_level == "warn") {
-    logger->set_level(spdlog::level::warn); // Set to warn level
+    logger->set_level(spdlog::level::warn);
   } else if (log_level == "error") {
-    logger->set_level(spdlog::level::err); // Set to error level
-  } else if (log_level == "critical") {
-    logger->set_level(spdlog::level::critical); // Set to critical level
+    logger->set_level(spdlog::level::err);
   } else if (log_level == "off") {
-    logger->set_level(spdlog::level::off); // Set to off level
+    logger->set_level(spdlog::level::off);
   } else {
-    logger->set_level(spdlog::level::info); // Default to info level
+    logger->set_level(spdlog::level::info);
   }
 }
 
-Logger::~Logger() {
-  // Optional: Clean-up if necessary, but spdlog will manage memory for us
-}
+Logger::~Logger() {}
 
 Logger &Logger::getInstance(const std::string &log_level) {
-  static Logger instance(log_level); // Guaranteed to be initialized only once
+  static Logger instance(log_level); // Ensures to be initialized only once
   return instance;
 }
 
@@ -47,5 +43,3 @@ void Logger::info(const std::string &message) { logger->info(message); }
 void Logger::warn(const std::string &message) { logger->warn(message); }
 
 void Logger::error(const std::string &message) { logger->error(message); }
-
-void Logger::critical(const std::string &message) { logger->critical(message); }

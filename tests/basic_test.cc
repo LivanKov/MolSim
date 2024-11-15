@@ -1,10 +1,13 @@
-#include "Particle.h"
-#include "ParticleContainer.h"
+#include "logger/Logger.h"
+#include "particleSim/Particle.h"
+#include "particleSim/ParticleContainer.h"
+#include "utils/ArrayUtils.h"
 #include <array>
 #include <cmath>
 #include <gtest/gtest.h>
 #include <iostream>
 #include <memory>
+#include <spdlog/spdlog.h>
 #include <unordered_set>
 #include <utility>
 
@@ -16,27 +19,48 @@ protected:
   ParticleContainer container;
   double starting_coord;
   double delta_t;
+  bool calculateLJForce = true;
+  Logger &logger = Logger::getInstance("debug");
 
   void calculateF() {
-    for (auto &p1 : container) {
-      std::array<double, 3> force_copy = p1.getF();
-      for (auto &p2 : container) {
-        double f_x, f_y, f_z = 0;
-        double distance = std::sqrt(std::pow(p1.getX()[0] - p2.getX()[0], 2) +
-                                    std::pow(p1.getX()[1] - p2.getX()[1], 2) +
-                                    std::pow(p1.getX()[2] - p2.getX()[2], 2));
-        if (!(p1 == p2)) {
-          f_x = (p2.getX()[0] - p1.getX()[0]) * (p1.getM() * p2.getM()) /
-                pow(distance, 3);
-          f_y = (p2.getX()[1] - p1.getX()[1]) * (p1.getM() * p2.getM()) /
-                pow(distance, 3);
-          f_z = (p2.getX()[2] - p1.getX()[2]) * (p1.getM() * p2.getM()) /
-                pow(distance, 3);
-          p1.updateF(p1.getF()[0] + f_x, p1.getF()[1] + f_y,
-                     p1.getF()[2] + f_z);
+    // store the current force as the old force and reset current to 0
+    for (auto &p : container) {
+      p.updateOldF(p.getF());
+      p.updateF(0, 0, 0);
+    }
+
+    // Iterate each pair
+    for (auto it = container.pair_begin(); it != container.pair_end(); ++it) {
+      ParticlePair &pair = *it;
+      Particle &p1 = *(pair.first);
+      Particle &p2 = *(pair.second);
+      auto r12 = p2.getX() - p1.getX();
+      // distance ||x_i - x_j ||
+      double distance = ArrayUtils::L2Norm(r12);
+
+      // avoid extermely small distance
+      if (distance > 1e-5) {
+        // switch Lennard-Jones/ Simple force
+        double totalForce;
+        if (calculateLJForce) {
+          // Lennard-Jones parameters
+          const double epsilon = 5.0;
+          const double sigma = 1.0;
+          // Lennard-Jones Force Formula (3)
+          double term = sigma / distance;
+          double term6 = pow(term, 6);
+          double term12 = pow(term, 12);
+          totalForce = 24 * epsilon * (term6 - 2 * term12) / distance;
+        } else {
+          // Simple Force Calculation Formula (14)
+          totalForce = p1.getM() * p2.getM() / pow(distance, 2);
         }
+        auto force = (totalForce / distance) * r12;
+
+        p1.updateF(p1.getF() + force);
+        // Newton's third law
+        p2.updateF(p2.getF() - force);
       }
-      p1.updateOldF(force_copy[0], force_copy[1], force_copy[2]);
     }
   }
 
@@ -47,11 +71,10 @@ protected:
       auto f = p.getF();
       double m = p.getM();
 
-      x[0] = x[0] + delta_t * v[0] + pow(delta_t, 2) * f[0] / (2 * m);
-      x[1] = x[1] + delta_t * v[1] + pow(delta_t, 2) * f[1] / (2 * m);
-      x[2] = x[2] + delta_t * v[2] + pow(delta_t, 2) * f[2] / (2 * m);
+      // Velocity-Störmer-Verlet formula (8)
+      x = x + delta_t * v + pow(delta_t, 2) * f / (2 * m);
 
-      p.updateX(x[0], x[1], x[2]);
+      p.updateX(x);
     }
   }
 
@@ -63,11 +86,9 @@ protected:
       double m = p.getM();
 
       // Velocity-Störmer-Verlet formula (9)
-      v[0] = v[0] + delta_t * (old_f[0] + new_f[0]) / (2 * m);
-      v[1] = v[1] + delta_t * (old_f[1] + new_f[1]) / (2 * m);
-      v[2] = v[2] + delta_t * (old_f[2] + new_f[2]) / (2 * m);
+      v = v + delta_t * (old_f + new_f) / (2 * m);
 
-      p.updateV(v[0], v[1], v[2]);
+      p.updateV(v);
     }
   }
 };
@@ -114,14 +135,6 @@ TEST_F(BasicTest, ContainerBehaviourTest) {
     EXPECT_TRUE(dummy_pairs.contains(*it));
 
   // check that every particle maps onto correct pair
-
-  for (auto const &p : container) {
-    ASSERT_EQ(container[p].size(), 2);
-    for (auto const &v : container[p]) {
-      ASSERT_TRUE(*(v->first) == p && *(v->second) != p ||
-                  *(v->first) != p && *(v->second) == p);
-    }
-  }
 }
 
 TEST_F(BasicTest, SimulationBehaviourTest) {
@@ -142,4 +155,70 @@ TEST_F(BasicTest, SimulationBehaviourTest) {
     ASSERT_TRUE((container[0].getF() == std::array<double, 3>{0.0, 0.0, 0.0}));
     ASSERT_TRUE((container[0].getV() == std::array<double, 3>{1.0, 0.0, 0.0}));
   }
+}
+
+TEST_F(BasicTest, CalculateFTest) {
+  calculateLJForce = true;
+  delta_t = 0.02;
+
+  // Initialize two particles
+  Particle p_1{std::array{0.0, 0.0, 0.0}, std::array{0.0, 0.0, 0.0}, 1.0};
+  Particle p_2{std::array{1.2, 0.0, 0.0}, std::array{0.0, 0.0, 0.0}, 1.0};
+
+  container.insert(p_1);
+  container.insert(p_2);
+
+  // iteration 1
+  calculateF();
+  // calculate by hand
+  auto expectedForce = std::array{11.058, 0.00, 0.00};
+  // Verify the forces
+  ASSERT_NEAR(container[0].getF()[0], expectedForce[0], 1e-2);
+  ASSERT_NEAR(container[0].getF()[1], expectedForce[1], 1e-2);
+  ASSERT_NEAR(container[0].getF()[2], expectedForce[2], 1e-2);
+
+  ASSERT_NEAR(container[1].getF()[0], -expectedForce[0], 1e-2);
+  ASSERT_NEAR(container[1].getF()[1], -expectedForce[1], 1e-2);
+  ASSERT_NEAR(container[1].getF()[2], -expectedForce[2], 1e-2);
+
+  // Update positions for the next iteration
+  calculateX();
+  logger.debug("current p1 position: " +
+               ArrayUtils::to_string(container[0].getX()));
+  logger.debug("current p2 position: " +
+               ArrayUtils::to_string(container[1].getX()));
+
+  // iteration 2
+  calculateF();
+  // calculate by hand
+  expectedForce = std::array{10.832, 0.00, 0.00};
+  // Verify the forces
+  ASSERT_NEAR(container[0].getF()[0], expectedForce[0], 1e-2);
+  ASSERT_NEAR(container[0].getF()[1], expectedForce[1], 1e-2);
+  ASSERT_NEAR(container[0].getF()[2], expectedForce[2], 1e-2);
+
+  ASSERT_NEAR(container[1].getF()[0], -expectedForce[0], 1e-2);
+  ASSERT_NEAR(container[1].getF()[1], -expectedForce[1], 1e-2);
+  ASSERT_NEAR(container[1].getF()[2], -expectedForce[2], 1e-2);
+
+  delta_t = 0.2;
+
+  calculateX();
+  logger.debug("current p1 position: " +
+               ArrayUtils::to_string(container[0].getX()));
+  logger.debug("current p2 position: " +
+               ArrayUtils::to_string(container[1].getX()));
+
+  // iteration 3
+  calculateF();
+  // calculate by hand
+  expectedForce = std::array{-7376.511, 0.00, 0.00};
+  // Verify the forces
+  ASSERT_NEAR(container[0].getF()[0], expectedForce[0], 1);
+  ASSERT_NEAR(container[0].getF()[1], expectedForce[1], 1);
+  ASSERT_NEAR(container[0].getF()[2], expectedForce[2], 1);
+
+  ASSERT_NEAR(container[1].getF()[0], -expectedForce[0], 1);
+  ASSERT_NEAR(container[1].getF()[1], -expectedForce[1], 1);
+  ASSERT_NEAR(container[1].getF()[2], -expectedForce[2], 1);
 }

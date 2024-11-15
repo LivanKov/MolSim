@@ -13,7 +13,7 @@
 #include <iostream>
 #include <string>
 
-#include "Logger.h"
+#include "logger/Logger.h"
 
 namespace outputWriter {
 

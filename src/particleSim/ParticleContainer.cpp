@@ -45,7 +45,7 @@ size_t ParticlePointerHash::operator()(
 }
 
 ParticleContainer::ParticleContainer()
-    : _particle_container{}, _particle_pair_set{}, _particle_pair_map{} {}
+    : _particle_container{}, _particle_pair_set{} {}
 
 void ParticleContainer::insert(Particle &p) { emplace_back(p); }
 
@@ -53,17 +53,7 @@ void ParticleContainer::insert(Particle &&p) { emplace_back(p); }
 
 size_t ParticleContainer::size() { return _particle_container.size(); }
 
-std::vector<ParticlePairPointer> &
-ParticleContainer::pairs_of(const ParticlePointer &p) {
-  return _particle_pair_map[p];
-}
-
-std::vector<ParticlePairPointer> &
-ParticleContainer::operator[](const Particle &p) {
-  return _particle_pair_map[std::make_shared<Particle>(p)];
-}
-
-Particle &ParticleContainer::operator[](int index) {
+Particle &ParticleContainer::operator[](size_t index) {
   return *(_particle_container[index]);
 }
 
@@ -135,7 +125,6 @@ ParticlePairIterator::PReferenceType ParticlePairIterator::operator*() const {
 void ParticleContainer::clear() {
   _particle_container.clear();
   _particle_pair_set.clear();
-  _particle_pair_map.clear();
 }
 
 ParticlePairIterator ParticleContainer::pair_begin() {
@@ -148,12 +137,8 @@ ParticlePairIterator ParticleContainer::pair_end() {
 
 void ParticleContainer::create_pairs(const ParticlePointer &new_particle) {
   for (auto const &p : _particle_container) {
-    if (*new_particle == *p)
-      continue;
-    _particle_pair_set.insert(std::make_shared<ParticlePair>(new_particle, p));
-    _particle_pair_map[p].push_back(
-        std::make_shared<ParticlePair>(new_particle, p));
-    _particle_pair_map[new_particle].push_back(
-        std::make_shared<ParticlePair>(new_particle, p));
+    if (*new_particle != *p)
+      _particle_pair_set.insert(
+          std::make_shared<ParticlePair>(new_particle, p));
   }
 }
