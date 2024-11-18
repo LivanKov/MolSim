@@ -245,6 +245,22 @@ operator*(const Scalar &lhs, const Container &rhs) {
 }
 
 /**
+ * Element wise scaling division of a container.
+ * @tparam Scalar
+ * @tparam Container
+ * @param lhs
+ * @param rhs
+ * @return For all i rhs[i] / lhs.
+ */
+template <class Scalar, class Container>
+std::enable_if_t<ArrayUtils::is_container<Container>::value, Container>
+operator/(const Container &rhs, const Scalar &lhs) {
+  return ArrayUtils::elementWiseScalarOp(
+      lhs, rhs,
+      [](const auto &scalar, const auto &element) { return element / scalar; });
+}
+
+/**
  * Element wise comparison of two containers.
  * @tparam Container
  * @param lhs

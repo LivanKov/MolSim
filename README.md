@@ -2,7 +2,7 @@ MolSim (WS24/25, Group H)
 ===
 This repository contains the code written for the Molecular Dynamics Lab (IN0012) during WS24/25 at TUM.
 
-![CI Build](https://github.com/LivanKov/MolSim/actions/workflows/ci.yml/badge.svg?branch=dev-sheet_1)
+![CI Build](https://github.com/LivanKov/MolSim/actions/workflows/ci.yml/badge.svg?branch=dev-sheet_2)
 
 
 ### Build and Run on Linux 
@@ -47,8 +47,9 @@ $ ./MolSim
 | `-d <time_delta>` | Specify the time increments for each simulation step                |
 | `-t`              | Enable testing mode (writes a file for each iteration of the run)   |
 | `-x`              | Output files in `.xyz` format instead of the default `.vtu` format  |
-
-
+| `-l` <log_level>  | Option to choose the logging level                                  |
+| `-f`              | Calculate Gravitational Force instead of Lennard-Jones Force        |
+| `-n`              | Disable all file outputs                                            | 
 ### Examples
 
 - `./MolSim -i data/input.txt -o results/output.txt`: Run with specified input and output paths

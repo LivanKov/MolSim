@@ -7,10 +7,12 @@
 
 #pragma once
 
-#include "Particle.h"
-#include "ParticleContainer.h"
+#include "particleSim/Particle.h"
+#include "particleSim/ParticleContainer.h"
 
 #include <list>
+
+#include "logger/Logger.h"
 
 class FileReader {
 
