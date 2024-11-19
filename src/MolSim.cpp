@@ -18,6 +18,7 @@
 
 #include "logger/Logger.h"
 #include "utils/SimParams.h"
+#include "utils/CommandParser.h"
 
 /**** forward declaration of the calculation functions ****/
 
@@ -60,6 +61,7 @@ outputWriter::VTKWriter v_writer;
 
 int main(int argc, char *argsv[]) {
 
+  CommandParser::parse(argc,argsv,parameters);
 
   Logger &logger = Logger::getInstance(parameters.log_level);
 
