@@ -43,15 +43,6 @@ void calculateV();
 void plotParticles(int iteration);
 
 
-// e : time-end
-// d : delta
-// i : input path
-// o : output  path
-// t : testing flag -> writes a file for each iteration
-// h: help
-
-// TODO: what data structure to pick?
-
 ParticleContainer particles{};
 SimParams parameters{};
 std::string out_name("MD_vtk");
