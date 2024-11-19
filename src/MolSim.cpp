@@ -19,6 +19,7 @@
 #include <variant>
 
 #include "logger/Logger.h"
+#include "utils/SimParams.h"
 
 /**** forward declaration of the calculation functions ****/
 
@@ -55,19 +56,13 @@ void print_help();
 // h: help
 
 // TODO: what data structure to pick?
-ParticleContainer particles;
-double start_time = 0;
-double end_time, delta_t;
-std::string input_path, output_path;
-bool sparse_output = true;
-bool xyz_output = false;
-bool calculateLJForce = true;
-bool enableOutput = true;
-std::string log_level;
 
+ParticleContainer particles{};
+SimParams parameters{};
 std::string out_name("MD_vtk");
 outputWriter::XYZWriter writer;
 outputWriter::VTKWriter v_writer;
+
 
 int main(int argc, char *argsv[]) {
 
@@ -81,34 +76,34 @@ int main(int argc, char *argsv[]) {
   while ((opt = getopt(argc, argsv, "e:d:i:o:thxl:fn")) != -1) {
     switch (opt) {
     case 'e':
-      end_time = atof(optarg);
+      parameters.end_time = atof(optarg);
       break;
     case 'd':
-      delta_t = atof(optarg);
+      parameters.time_delta = atof(optarg);
       break;
     case 'i':
-      input_path = std::string(optarg);
+      parameters.input_path = std::string(optarg);
       break;
     case 'o':
-      output_path = std::string(optarg);
+      parameters.output_path = std::string(optarg);
       break;
     case 't':
-      sparse_output = false;
+      parameters.sparse_output = false;
       break;
     case 'h':
       print_help();
       break;
     case 'x':
-      xyz_output = true;
+      parameters.xyz_output = true;
       break;
     case 'l':
-      log_level = std::string(optarg);
+      parameters.log_level = std::string(optarg);
       break;
     case 'f':
-      calculateLJForce = false;
+      parameters.calculate_lj_force = false;
       break;
     case 'n':
-      enableOutput = false;
+      parameters.enable_output = false;
       break;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argsv[0]);
@@ -116,32 +111,34 @@ int main(int argc, char *argsv[]) {
     }
   }
 
-  Logger &logger = Logger::getInstance(log_level);
+  Logger &logger = Logger::getInstance(parameters.log_level);
 
   FileReader fileReader;
-  fileReader.readFile(particles, input_path.data());
+  fileReader.readFile(particles, parameters.input_path.data());
 
   int iteration = 0;
-  double current_time = start_time;
+  double current_time = parameters.start_time;
 
   logger.warn("Starting a simulation with:");
-  logger.info("\tStart time: " + std::to_string(start_time));
-  logger.info("\tEnd time: " + std::to_string(end_time));
-  logger.info("\tDelta: " + std::to_string(delta_t));
-
+  logger.info("\tStart time: " + std::to_string(parameters.start_time));
+  logger.info("\tEnd time: " + std::to_string(parameters.end_time));
+  logger.info("\tDelta: " + std::to_string(parameters.time_delta));
+/*
+@brief
+*/
   // for this loop, we assume: current x, current f and current v are known
-  while (current_time < end_time) {
+  while (current_time < parameters.end_time) {
     calculateX();
     calculateF();
     calculateV();
 
     iteration++;
-    if (sparse_output && iteration % 10 == 0 && enableOutput)
+    if (parameters.sparse_output && iteration % 10 == 0 && parameters.enable_output)
       plotParticles(iteration);
-    else if (!sparse_output && enableOutput)
+    else if (!parameters.sparse_output && parameters.enable_output)
       plotParticles(iteration);
     logger.trace("Iteration " + std::to_string(iteration) + " finished.");
-    current_time += delta_t;
+    current_time += parameters.time_delta;
   }
 
   logger.info("output written. Terminating...");
@@ -194,7 +191,7 @@ void calculateF() {
     if (distance > 1e-5) {
       // switch Lennard-Jones/ Simple force
       double totalForce;
-      if (calculateLJForce) {
+      if (parameters.calculate_lj_force) {
         // Lennard-Jones parameters
         const double epsilon = 5.0;
         const double sigma = 1.0;
@@ -224,7 +221,7 @@ void calculateX() {
     double m = p.getM();
 
     // Velocity-Störmer-Verlet formula (8)
-    x = x + delta_t * v + pow(delta_t, 2) * f / (2 * m);
+    x = x + parameters.time_delta * v + pow(parameters.time_delta, 2) * f / (2 * m);
 
     p.updateX(x);
   }
@@ -238,19 +235,19 @@ void calculateV() {
     double m = p.getM();
 
     // Velocity-Störmer-Verlet formula (9)
-    v = v + delta_t * (old_f + new_f) / (2 * m);
+    v = v + parameters.time_delta * (old_f + new_f) / (2 * m);
 
     p.updateV(v);
   }
 }
 
 void plotParticles(int iteration) {
-  if (xyz_output) {
-    writer.plotParticles(particles, output_path + "/" + out_name, iteration);
+  if (parameters.xyz_output) {
+    writer.plotParticles(particles, parameters.output_path + "/" + out_name, iteration);
   } else {
     v_writer.initializeOutput(particles.size());
     for (auto p : particles)
       v_writer.plotParticle(p);
-    v_writer.writeFile(output_path + "/" + out_name, iteration);
+    v_writer.writeFile(parameters.output_path + "/" + out_name, iteration);
   }
 }
