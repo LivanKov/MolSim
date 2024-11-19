@@ -1,4 +1,3 @@
-
 #include "io/FileReader.h"
 #include "outputWriter/VTKWriter.h"
 #include "outputWriter/XYZWriter.h"
@@ -14,7 +13,6 @@
 #include <iostream>
 #include <iterator>
 #include <list>
-#include <unistd.h>
 #include <unordered_map>
 #include <variant>
 
@@ -62,50 +60,6 @@ outputWriter::VTKWriter v_writer;
 
 int main(int argc, char *argsv[]) {
 
-  if (argc < 2) {
-    print_help();
-    return 1;
-  }
-
-  int opt;
-
-  while ((opt = getopt(argc, argsv, "e:d:i:o:thxl:fn")) != -1) {
-    switch (opt) {
-    case 'e':
-      parameters.end_time = atof(optarg);
-      break;
-    case 'd':
-      parameters.time_delta = atof(optarg);
-      break;
-    case 'i':
-      parameters.input_path = std::string(optarg);
-      break;
-    case 'o':
-      parameters.output_path = std::string(optarg);
-      break;
-    case 't':
-      parameters.sparse_output = false;
-      break;
-    case 'h':
-      print_help();
-      break;
-    case 'x':
-      parameters.xyz_output = true;
-      break;
-    case 'l':
-      parameters.log_level = std::string(optarg);
-      break;
-    case 'f':
-      parameters.calculate_lj_force = false;
-      break;
-    case 'n':
-      parameters.enable_output = false;
-      break;
-    default:
-      fprintf(stderr, "Usage: %s [-h] help\n", argsv[0]);
-      return 1;
-    }
-  }
 
   Logger &logger = Logger::getInstance(parameters.log_level);
 
