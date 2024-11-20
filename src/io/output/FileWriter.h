@@ -11,8 +11,6 @@ class FileWriter {
 public:
     FileWriter(std::shared_ptr<ParticleContainer>& particles);
 
-    FileWriter() = default;
-
     virtual ~FileWriter() = default;
 
     virtual void write_file(const std::string& filepath, int iteration) = 0;

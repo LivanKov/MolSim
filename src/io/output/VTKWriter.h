@@ -19,7 +19,7 @@ namespace output {
  * This class implements the functionality to generate vtk output from
  * particles.
  */
-class VTKWriter : FileWriter{
+class VTKWriter : public FileWriter{
 
 public:
   /**

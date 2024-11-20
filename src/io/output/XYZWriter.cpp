@@ -11,6 +11,9 @@
 
 namespace output {
 
+
+XYZWriter::XYZWriter(std::shared_ptr<ParticleContainer>& particles) : FileWriter(particles) {}
+
 void XYZWriter::plotParticles(ParticleContainer &particles,
                               const std::string &filename, int iteration) {
 

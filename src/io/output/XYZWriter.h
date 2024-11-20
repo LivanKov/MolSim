@@ -19,6 +19,8 @@ class XYZWriter : FileWriter {
 
 public:
 
+  XYZWriter(std::shared_ptr<ParticleContainer>& particles);
+
   void plotParticles(ParticleContainer &particles, const std::string &filename,
                      int iteration);
 

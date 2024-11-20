@@ -1,6 +1,7 @@
 #include "io/input/FileReader.h"
 #include "io/output/VTKWriter.h"
 #include "io/output/XYZWriter.h"
+#include "io/output/FileWriter.h"
 #include "particleSim/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 
@@ -14,6 +15,7 @@
 #include <list>
 #include <unordered_map>
 #include <variant>
+#include <memory>
 
 #include "logger/Logger.h"
 #include "utils/SimParams.h"
@@ -39,15 +41,12 @@ void calculateV();
 /**
  * plot the particles to a xyz-file
  */
-void plotParticles(int iteration);
+void plotParticles(output::FileWriter& writer, int iteration);
 
 
 ParticleContainer particles{};
 SimParams parameters{};
 std::string out_name("MD_vtk");
-output::XYZWriter writer();
-output::VTKWriter v_writer;
-
 
 int main(int argc, char *argsv[]) {
 
@@ -65,6 +64,11 @@ int main(int argc, char *argsv[]) {
   logger.info("\tStart time: " + std::to_string(parameters.start_time));
   logger.info("\tEnd time: " + std::to_string(parameters.end_time));
   logger.info("\tDelta: " + std::to_string(parameters.time_delta));
+
+  auto temp_ptr = std::make_shared<ParticleContainer>(particles);
+
+  output::VTKWriter writer(temp_ptr);
+  
 /*
 @brief
 */
@@ -76,9 +80,9 @@ int main(int argc, char *argsv[]) {
 
     iteration++;
     if (parameters.sparse_output && iteration % 10 == 0 && parameters.enable_output)
-      plotParticles(iteration);
+      plotParticles(writer, iteration);
     else if (!parameters.sparse_output && parameters.enable_output)
-      plotParticles(iteration);
+      plotParticles(writer, iteration);
     logger.trace("Iteration " + std::to_string(iteration) + " finished.");
     current_time += parameters.time_delta;
   }
@@ -163,12 +167,7 @@ void calculateV() {
   }
 }
 
-void plotParticles(int iteration) {
-  if (parameters.xyz_output) {
-    writer.plotParticles(particles, parameters.output_path + "/" + out_name, iteration);
-  } else {
-    for (auto p : particles)
-      v_writer.plotParticle(p);
-    v_writer.write_file(parameters.output_path + "/" + out_name, iteration);
-  }
+void plotParticles(output::FileWriter& writer, int iteration) {
+  writer.plot_particles();
+  //v_writer.write_file(parameters.output_path + "/" + out_name, iteration);
 }
