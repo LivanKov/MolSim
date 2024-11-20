@@ -102,4 +102,10 @@ void VTKWriter::plotParticle(Particle &p) {
   pointsIterator->push_back(p.getX()[1]);
   pointsIterator->push_back(p.getX()[2]);
 }
+
+
+void VTKWriter::plot_particles() {
+  // not implemented
+}
+
 } // namespace output

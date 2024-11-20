@@ -47,7 +47,10 @@ public:
    */
   void write_file(const std::string &data, int iteration) override;
 
+  void plot_particles() override;
+
 private:
+
   VTKFile_t *vtkFile;
 };
 
