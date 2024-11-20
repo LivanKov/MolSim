@@ -8,7 +8,7 @@
 #pragma once
 
 #include "outputUtils/vtk-unstructured.h"
-#include "particleSim/Particle.h"
+#include "simulator/Particle.h"
 #include "io/output/FileWriter.h"
 
 #include <list>

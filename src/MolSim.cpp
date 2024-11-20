@@ -2,10 +2,10 @@
 #include "io/output/VTKWriter.h"
 #include "io/output/XYZWriter.h"
 #include "io/output/FileWriter.h"
-#include "particleSim/ParticleContainer.h"
+#include "simulator/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 
-#include "particleSim/ParticleGenerator.h"
+#include "simulator/ParticleGenerator.h"
 
 #include <spdlog/spdlog.h>
 #include <algorithm>

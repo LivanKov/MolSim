@@ -6,8 +6,8 @@
  */
 
 #include "FileReader.h"
-#include "particleSim/ParticleContainer.h"
-#include "particleSim/ParticleGenerator.h"
+#include "simulator/ParticleContainer.h"
+#include "simulator/ParticleGenerator.h"
 
 #include <cstdlib>
 #include <fstream>

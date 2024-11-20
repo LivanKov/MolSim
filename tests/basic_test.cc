@@ -1,6 +1,6 @@
 #include "logger/Logger.h"
-#include "particleSim/Particle.h"
-#include "particleSim/ParticleContainer.h"
+#include "simulator/Particle.h"
+#include "simulator/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 #include <array>
 #include <cmath>

@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "particleSim/ParticleContainer.h"
+#include "simulator/ParticleContainer.h"
 #include "FileWriter.h"
 
 #include <fstream>
