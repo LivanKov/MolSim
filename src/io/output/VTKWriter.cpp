@@ -52,7 +52,7 @@ VTKWriter::VTKWriter(std::shared_ptr<ParticleContainer>& particles) : FileWriter
   vtkFile->UnstructuredGrid(unstructuredGrid);
 }
 
-void VTKWriter::write_file(const std::string &filename, int iteration) {
+void VTKWriter::plot_particles(const std::string &filename, int iteration) {
   std::stringstream strstr;
   strstr << filename << "_" << std::setfill('0') << std::setw(4) << iteration
          << ".vtu";
@@ -101,9 +101,5 @@ void VTKWriter::plotParticle(Particle &p) {
   pointsIterator->push_back(p.getX()[2]);
 }
 
-
-void VTKWriter::plot_particles() {
-  particles->clear();
-}
 
 } // namespace output

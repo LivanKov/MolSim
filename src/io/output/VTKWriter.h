@@ -41,9 +41,8 @@ public:
    * @param iteration the number of the current iteration,
    *        which is used to generate an unique filename
    */
-  void write_file(const std::string &data, int iteration) override;
 
-  void plot_particles() override;
+  void plot_particles(const std::string &filename, int iteration) override;
 
 private:
   

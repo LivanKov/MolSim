@@ -38,11 +38,6 @@ void calculateX();
  */
 void calculateV();
 
-/**
- * plot the particles to a xyz-file
- */
-void plotParticles(output::FileWriter& writer, int iteration);
-
 
 ParticleContainer particles{};
 SimParams parameters{};
@@ -80,9 +75,9 @@ int main(int argc, char *argsv[]) {
 
     iteration++;
     if (parameters.sparse_output && iteration % 10 == 0 && parameters.enable_output)
-      plotParticles(writer, iteration);
+      writer.plot_particles(parameters.output_path ,iteration);
     else if (!parameters.sparse_output && parameters.enable_output)
-      plotParticles(writer, iteration);
+      writer.plot_particles(parameters.output_path ,iteration);
     logger.trace("Iteration " + std::to_string(iteration) + " finished.");
     current_time += parameters.time_delta;
   }
@@ -167,7 +162,3 @@ void calculateV() {
   }
 }
 
-void plotParticles(output::FileWriter& writer, int iteration) {
-  writer.plot_particles();
-  //v_writer.write_file(parameters.output_path + "/" + out_name, iteration);
-}

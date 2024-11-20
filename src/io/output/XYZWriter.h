@@ -21,12 +21,8 @@ public:
 
   XYZWriter(std::shared_ptr<ParticleContainer>& particles);
 
-  void plotParticles(ParticleContainer &particles, const std::string &filename,
-                     int iteration);
-
-  void write_file(const std::string &data, int iteration) override;
-
-  void plot_particles() override;
+  void plot_particles(const std::string &filename,
+                     int iteration) override;
 };
 
 } // namespace outputWriter
