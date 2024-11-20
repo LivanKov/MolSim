@@ -24,6 +24,8 @@ public:
 
   void plotParticles(ParticleContainer &particles, const std::string &filename,
                      int iteration);
+
+  void write_file(const std::string &data, int iteration) override;
 };
 
 } // namespace outputWriter

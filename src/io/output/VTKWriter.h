@@ -45,7 +45,7 @@ public:
    * @param iteration the number of the current iteration,
    *        which is used to generate an unique filename
    */
-  void writeFile(const std::string &filename, int iteration);
+  void write_file(const std::string &data, int iteration) override;
 
 private:
   VTKFile_t *vtkFile;

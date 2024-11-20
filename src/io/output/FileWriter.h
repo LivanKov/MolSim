@@ -9,7 +9,7 @@ class FileWriter {
 public:
     virtual ~FileWriter() = default;
 
-    //virtual void write(const std::string& data) = 0;
+    virtual void write_file(const std::string& filepath, int iteration) = 0;
 
     //virtual void close() = 0;
 };

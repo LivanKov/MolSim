@@ -170,6 +170,6 @@ void plotParticles(int iteration) {
     v_writer.initializeOutput(particles.size());
     for (auto p : particles)
       v_writer.plotParticle(p);
-    v_writer.writeFile(parameters.output_path + "/" + out_name, iteration);
+    v_writer.write_file(parameters.output_path + "/" + out_name, iteration);
   }
 }

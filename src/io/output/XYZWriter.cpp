@@ -44,4 +44,7 @@ void XYZWriter::plotParticles(ParticleContainer &particles,
   file.close();
 }
 
+void XYZWriter::write_file(const std::string &data, int iteration) {
+  // not implemented
 } // namespace outputWriter
+}
