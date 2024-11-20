@@ -105,7 +105,7 @@ void VTKWriter::plotParticle(Particle &p) {
 
 
 void VTKWriter::plot_particles() {
-  // not implemented
+  particles->clear();
 }
 
 } // namespace output

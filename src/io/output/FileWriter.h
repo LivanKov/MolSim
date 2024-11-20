@@ -3,12 +3,13 @@
 
 #include <string>
 #include <particleSim/ParticleContainer.h>
+#include <memory>
 
 namespace output{
 
 class FileWriter {
 public:
-    FileWriter(ParticleContainer& particles);
+    FileWriter(std::shared_ptr<ParticleContainer>& particles);
 
     FileWriter() = default;
 
@@ -18,7 +19,7 @@ public:
     
     virtual void plot_particles() = 0;
 
-    ParticleContainer particles;
+    std::shared_ptr<ParticleContainer> particles;
 };
 }
 #endif

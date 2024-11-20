@@ -1,3 +1,3 @@
 #include "FileWriter.h"
 
-output::FileWriter::FileWriter(ParticleContainer &particles) : particles(particles) {}
+output::FileWriter::FileWriter(std::shared_ptr<ParticleContainer>& particles) : particles(particles) {};
