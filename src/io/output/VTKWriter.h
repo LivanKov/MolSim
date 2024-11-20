@@ -8,7 +8,7 @@
 #pragma once
 
 #include "outputUtils/vtk-unstructured.h"
-#include "simulator/Particle.h"
+#include "simulator/particle/Particle.h"
 #include "io/output/FileWriter.h"
 
 #include <list>
@@ -28,13 +28,6 @@ public:
   VTKWriter(std::shared_ptr<ParticleContainer>& particles);
 
   /**
-   * plot type, mass, position, velocity and force of a particle.
-   *
-   * @note: initializeOutput() must have been called before.
-   */
-  void plotParticle(Particle &p);
-
-  /**
    * writes the final output file.
    *
    * @param filename the base name of the file to be written.
@@ -45,6 +38,12 @@ public:
   void plot_particles(const std::string &filename, int iteration) override;
 
 private:
+
+  /**
+   * plot type, mass, position, velocity and force of a particle.
+   *
+   * @note: initializeOutput() must have been called before.
+   */
 
   void plotParticle(Particle &p);
   

@@ -6,8 +6,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 enable_testing()
-add_executable(basic_test basic_test.cc generator_test.cc ../src/simulator/ParticleContainer.cpp ../src/simulator/Particle.cpp ../src/logger/Logger.cpp
-        ../src/simulator/ParticleGenerator.cpp)
+add_executable(basic_test basic_test.cc generator_test.cc ../src/simulator/particle/ParticleContainer.cpp ../src/simulator/particle/Particle.cpp ../src/logger/Logger.cpp
+        ../src/simulator/particle/ParticleGenerator.cpp)
 
 target_include_directories(basic_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
