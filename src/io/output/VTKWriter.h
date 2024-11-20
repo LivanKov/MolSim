@@ -45,6 +45,8 @@ public:
   void plot_particles(const std::string &filename, int iteration) override;
 
 private:
+
+  void plotParticle(Particle &p);
   
   VTKFile_t *vtkFile;
 };

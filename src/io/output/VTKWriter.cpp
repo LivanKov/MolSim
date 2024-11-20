@@ -56,6 +56,9 @@ void VTKWriter::plot_particles(const std::string &filename, int iteration) {
   std::stringstream strstr;
   strstr << filename << "_" << std::setfill('0') << std::setw(4) << iteration
          << ".vtu";
+  for(auto &p : *particles){
+    plotParticle(p);
+  }
 
   std::ofstream file(strstr.str().c_str());
   VTKFile(file, *vtkFile);
