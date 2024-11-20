@@ -1,9 +1,9 @@
-#include <Position.h>
+#include "Position.h"
 #include <cmath>
-#include <particle/ParticleContainer.h>
+#include "../particle/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 
-void Position::calculateX(ParticleContainer &particles, double time_delta) {
+void Position::calculate(ParticleContainer &particles, double time_delta) {
   for (auto &p : particles) {
     auto x = p.getX();
     auto v = p.getV();
