@@ -2,6 +2,6 @@
 
 
 class Velocity{
-    static void calculate(ParticleContainer& particles, double time_delta);
+    static void run(ParticleContainer& particles, double time_delta);
     virtual ~Velocity() = 0;
 };
