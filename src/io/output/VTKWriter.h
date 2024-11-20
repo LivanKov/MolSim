@@ -9,16 +9,17 @@
 
 #include "outputUtils/vtk-unstructured.h"
 #include "particleSim/Particle.h"
+#include "io/output/FileWriter.h"
 
 #include <list>
 
-namespace outputWriter {
+namespace output {
 
 /**
  * This class implements the functionality to generate vtk output from
  * particles.
  */
-class VTKWriter {
+class VTKWriter : FileWriter{
 
 public:
   VTKWriter();

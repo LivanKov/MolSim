@@ -15,7 +15,7 @@
 
 #include "logger/Logger.h"
 
-namespace outputWriter {
+namespace output { 
 
 VTKWriter::VTKWriter() = default;
 

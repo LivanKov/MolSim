@@ -45,8 +45,8 @@ void plotParticles(int iteration);
 ParticleContainer particles{};
 SimParams parameters{};
 std::string out_name("MD_vtk");
-outputWriter::XYZWriter writer;
-outputWriter::VTKWriter v_writer;
+output::XYZWriter writer;
+output::VTKWriter v_writer;
 
 
 int main(int argc, char *argsv[]) {

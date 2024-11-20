@@ -9,7 +9,7 @@
 #include <iomanip>
 #include <sstream>
 
-namespace outputWriter {
+namespace output {
 
 XYZWriter::XYZWriter() = default;
 

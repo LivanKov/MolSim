@@ -8,13 +8,14 @@
 #pragma once
 
 #include "particleSim/ParticleContainer.h"
+#include "FileWriter.h"
 
 #include <fstream>
 #include <list>
 
-namespace outputWriter {
+namespace output {
 
-class XYZWriter {
+class XYZWriter : FileWriter {
 
 public:
   XYZWriter();
