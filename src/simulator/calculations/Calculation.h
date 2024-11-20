@@ -1,2 +1,14 @@
-template <typename CalculationPolicy>
-class Calculation : CalculationPolicy{};
+#include <concepts>
+#include <type_traits>
+
+class AbstractPolicy{
+    virtual ~AbstractPolicy() = 0;
+};
+
+
+template <typename T>
+concept CalculationPolicy = std::is_base_of_v<AbstractPolicy, T>;
+
+
+template <CalculationPolicy Policy>
+class Calculation : Policy {};
