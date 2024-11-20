@@ -1,13 +1,12 @@
-#include "io/FileReader.h"
-#include "outputWriter/VTKWriter.h"
-#include "outputWriter/XYZWriter.h"
+#include "io/input/FileReader.h"
+#include "io/output/VTKWriter.h"
+#include "io/output/XYZWriter.h"
 #include "particleSim/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 
 #include "particleSim/ParticleGenerator.h"
 
 #include <spdlog/spdlog.h>
-
 #include <algorithm>
 #include <cmath>
 #include <iostream>
