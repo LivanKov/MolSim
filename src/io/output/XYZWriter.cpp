@@ -11,10 +11,6 @@
 
 namespace output {
 
-XYZWriter::XYZWriter() = default;
-
-XYZWriter::~XYZWriter() = default;
-
 void XYZWriter::plotParticles(ParticleContainer &particles,
                               const std::string &filename, int iteration) {
 

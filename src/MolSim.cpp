@@ -45,7 +45,7 @@ void plotParticles(int iteration);
 ParticleContainer particles{};
 SimParams parameters{};
 std::string out_name("MD_vtk");
-output::XYZWriter writer;
+output::XYZWriter writer();
 output::VTKWriter v_writer;
 
 
@@ -167,7 +167,6 @@ void plotParticles(int iteration) {
   if (parameters.xyz_output) {
     writer.plotParticles(particles, parameters.output_path + "/" + out_name, iteration);
   } else {
-    v_writer.initializeOutput(particles.size());
     for (auto p : particles)
       v_writer.plotParticle(p);
     v_writer.write_file(parameters.output_path + "/" + out_name, iteration);

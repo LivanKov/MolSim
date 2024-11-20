@@ -22,14 +22,10 @@ namespace output {
 class VTKWriter : FileWriter{
 
 public:
-  VTKWriter();
-
-  virtual ~VTKWriter();
-
   /**
    * set up internal data structures and prepare to plot a particle.
    */
-  void initializeOutput(int numParticles);
+  VTKWriter(std::shared_ptr<ParticleContainer>& particles);
 
   /**
    * plot type, mass, position, velocity and force of a particle.
@@ -50,7 +46,7 @@ public:
   void plot_particles() override;
 
 private:
-
+  
   VTKFile_t *vtkFile;
 };
 

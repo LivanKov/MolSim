@@ -12,16 +12,14 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
+#include <memory>
 
 #include "logger/Logger.h"
 
 namespace output { 
 
-VTKWriter::VTKWriter() = default;
 
-VTKWriter::~VTKWriter() = default;
-
-void VTKWriter::initializeOutput(int numParticles) {
+VTKWriter::VTKWriter(std::shared_ptr<ParticleContainer>& particles) : FileWriter(particles) {
 
   vtkFile = new VTKFile_t("UnstructuredGrid");
 
@@ -49,7 +47,7 @@ void VTKWriter::initializeOutput(int numParticles) {
   cells.DataArray().push_back(cells_data);
 
   PieceUnstructuredGrid_t piece(pointData, cellData, points, cells,
-                                numParticles, 0);
+                                particles->size(), 0);
   UnstructuredGrid_t unstructuredGrid(piece);
   vtkFile->UnstructuredGrid(unstructuredGrid);
 }
