@@ -60,9 +60,7 @@ int main(int argc, char *argsv[]) {
   logger.info("\tEnd time: " + std::to_string(parameters.end_time));
   logger.info("\tDelta: " + std::to_string(parameters.time_delta));
 
-  auto temp_ptr = std::make_shared<ParticleContainer>(particles);
-
-  output::VTKWriter writer(temp_ptr);
+  output::VTKWriter writer(particles);
   
 /*
 @brief

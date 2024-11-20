@@ -19,7 +19,7 @@ class XYZWriter : FileWriter {
 
 public:
 
-  XYZWriter(std::shared_ptr<ParticleContainer>& particles);
+  XYZWriter(ParticleContainer& particles);
 
   void plot_particles(const std::string &filename,
                      int iteration) override;

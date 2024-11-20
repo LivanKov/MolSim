@@ -25,7 +25,7 @@ public:
   /**
    * set up internal data structures and prepare to plot a particle.
    */
-  VTKWriter(std::shared_ptr<ParticleContainer>& particles);
+  VTKWriter(ParticleContainer& particles);
 
   /**
    * writes the final output file.

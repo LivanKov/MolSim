@@ -9,13 +9,13 @@ namespace output{
 
 class FileWriter {
 public:
-    FileWriter(std::shared_ptr<ParticleContainer>& particles);
+    FileWriter(ParticleContainer& particles);
 
     virtual ~FileWriter() = default;
     
     virtual void plot_particles(const std::string& filepath, int iteration) = 0;
 
-    std::shared_ptr<ParticleContainer> particles;
+    ParticleContainer& particles;
 };
 }
 #endif
