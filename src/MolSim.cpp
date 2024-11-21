@@ -4,9 +4,7 @@
 #include "io/output/FileWriter.h"
 #include "simulator/particle/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
-
 #include "simulator/particle/ParticleGenerator.h"
-
 #include <spdlog/spdlog.h>
 #include <algorithm>
 #include <cmath>
@@ -16,19 +14,22 @@
 #include <unordered_map>
 #include <variant>
 #include <memory>
-
 #include "logger/Logger.h"
 #include "utils/SimParams.h"
 #include "utils/CommandParser.h"
+#include "simulator/calculations/Calculation.h"
+#include "simulator/calculations/Force.h"
+#include "simulator/calculations/Position.h"
+#include "simulator/calculations/Velocity.h"
 
 
-ParticleContainer particles{};
-SimParams parameters{};
-std::string out_name("MD_vtk");
 
 int main(int argc, char *argsv[]) {
 
+  SimParams parameters{};
+
   CommandParser::parse(argc,argsv,parameters);
+  ParticleContainer particles{};
 
   Logger &logger = Logger::getInstance(parameters.log_level);
 
@@ -44,13 +45,11 @@ int main(int argc, char *argsv[]) {
   logger.info("\tDelta: " + std::to_string(parameters.time_delta));
 
   output::VTKWriter writer(particles);
-  
-/*
-@brief
-*/
-  // for this loop, we assume: current x, current f and current v are known
   while (current_time < parameters.end_time) {
     
+    Calculation<Position>::run(particles, parameters.time_delta);
+    Calculation<Force>::run_verlet(particles);
+    Calculation<Velocity>::run(particles, parameters.time_delta);
 
     iteration++;
     if (parameters.sparse_output && iteration % 10 == 0 && parameters.enable_output)
