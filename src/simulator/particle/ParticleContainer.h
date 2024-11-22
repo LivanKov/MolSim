@@ -12,8 +12,6 @@
 #include <unordered_set>
 #include <vector>
 
-using ParticlePointer = std::shared_ptr<Particle>;
-
 /**
  * @struct ParticlePair.
  * @brief Manages two shared pointers to unique Particle objects. Stores the
@@ -23,15 +21,15 @@ struct ParticlePair {
   std::array<double, 3> f;
   std::array<double, 3> old_f;
 
-  ParticlePointer first;
-  ParticlePointer second;
+  Particle& first;
+  Particle& second;
 
   /**
    * @brief Constructor.
    * @param first Pointer managing an instance of Particle class.
    * @param secondd Pointer managing an instance of Particle class.
    */
-  ParticlePair(const ParticlePointer first, const ParticlePointer second);
+  ParticlePair(Particle& first, Particle& second);
 
   /**
    * @brief Override equality operator for ParticlePair class.
@@ -85,19 +83,19 @@ using ParticlePairPointer = std::shared_ptr<ParticlePair>;
  */
 class ParticleIterator {
 public:
-  using PValueType = Particle;
-  using PPointerType = ParticlePointer *;
-  using PReferenceType = Particle &;
-  ParticleIterator(PPointerType p);
+  using ValueType = Particle;
+  using PointerType = Particle*;
+  using ReferenceType = Particle &;
+  ParticleIterator(PointerType p);
   ParticleIterator &operator++();
   ParticleIterator operator++(int);
-  PPointerType operator->();
+  PointerType operator->();
   bool operator==(const ParticleIterator &rhs) const;
   bool operator!=(const ParticleIterator &rhs) const;
-  PReferenceType operator*() const;
+  ReferenceType operator*() const;
 
 private:
-  PPointerType _ptr;
+  PointerType _ptr;
 };
 
 /**
@@ -149,7 +147,7 @@ public:
   template <typename... Args>
   requires std::constructible_from<Particle, Args...> void
   emplace_back(Args... args) {
-    ParticlePointer p = std::make_shared<Particle>(std::forward<Args>(args)...);
+    Particle& new_particle = Particle(std::forward<Particle>(args...));
     _particle_container.push_back(p);
     create_pairs(p);
   }
@@ -210,12 +208,12 @@ private:
    * @param new_particle Reference to a pointer managing the newly inserted
    * Particle.
    */
-  void create_pairs(const ParticlePointer &new_particle);
+  void create_pairs(Particle& new_particle);
 
   /**
    * @brief Main underlying container. Manages pointers to Particle objects.
    */
-  std::vector<ParticlePointer> _particle_container;
+  std::vector<Particle&> _particle_container;
   /**
    * @brief Underlying particle container. Stores unique pointers managing
    * ParticlePair objects.

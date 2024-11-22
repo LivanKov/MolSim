@@ -3,7 +3,19 @@
 #include "utils/ArrayUtils.h"
 
 
-void Force::run_lennard_jones(ParticleContainer &particles){
+void Force::run(ParticleContainer &particles, Type type){
+  switch(type){
+    case LENNARD_JONES:
+      lennard_jones(particles);
+      break;
+    case VERLET:
+      verlet(particles);
+      break;
+  }
+}
+
+void Force::lennard_jones(ParticleContainer &particles) {
+  // store the current force as the old force and reset current to 0
     // store the current force as the old force and reset current to 0
   for (auto &p : particles) {
     p.updateOldF(p.getF());
@@ -13,8 +25,8 @@ void Force::run_lennard_jones(ParticleContainer &particles){
   // Iterate each pair
   for (auto it = particles.pair_begin(); it != particles.pair_end(); ++it) {
     ParticlePair &pair = *it;
-    Particle &p1 = *(pair.first);
-    Particle &p2 = *(pair.second);
+    Particle &p1 = pair.first;
+    Particle &p2 = pair.second;
     auto r12 = p2.getX() - p1.getX();
     // distance ||x_i - x_j ||
     double distance = ArrayUtils::L2Norm(r12);
@@ -36,7 +48,7 @@ void Force::run_lennard_jones(ParticleContainer &particles){
   }
 }
 
-void Force::run_verlet(ParticleContainer &particles) {
+void Force::verlet(ParticleContainer &particles) {
   // store the current force as the old force and reset current to 0
   for (auto &p : particles) {
     p.updateOldF(p.getF());
@@ -46,8 +58,8 @@ void Force::run_verlet(ParticleContainer &particles) {
   // Iterate each pair
   for (auto it = particles.pair_begin(); it != particles.pair_end(); ++it) {
     ParticlePair &pair = *it;
-    Particle &p1 = *(pair.first);
-    Particle &p2 = *(pair.second);
+    Particle &p1 = pair.first;
+    Particle &p2 = pair.second;
     auto r12 = p2.getX() - p1.getX();
     // distance ||x_i - x_j ||
     double distance = ArrayUtils::L2Norm(r12);

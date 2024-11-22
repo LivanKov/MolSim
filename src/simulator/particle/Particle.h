@@ -134,6 +134,14 @@ public:
    */
 
   bool operator==(const Particle &other) const;
+  /**
+   * @brief overload the inequality (!=) operator to compare particles.
+   * @param other: lvalue reference to another Particle object.
+   * @return true/false corresponding to whether or not the function operator
+   * and the operand are not equal .
+   */
+
+  bool operator!=(const Particle &other) const;
 
   /**
    * @brief returns string representation of the particle.

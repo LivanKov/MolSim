@@ -48,7 +48,7 @@ int main(int argc, char *argsv[]) {
   while (current_time < parameters.end_time) {
     
     Calculation<Position>::run(particles, parameters.time_delta);
-    Calculation<Force>::run_verlet(particles);
+    Calculation<Force>::run(particles,Type::VERLET);
     Calculation<Velocity>::run(particles, parameters.time_delta);
 
     iteration++;
