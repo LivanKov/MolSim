@@ -1,5 +1,6 @@
 #include <string>
 
+#pragma once
 
 struct SimParams{
     std::string input_path;

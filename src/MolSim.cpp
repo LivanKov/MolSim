@@ -26,9 +26,7 @@
 
 int main(int argc, char *argsv[]) {
 
-  SimParams parameters{};
-
-  CommandParser::parse(argc,argsv,parameters);
+  SimParams parameters = CommandParser::parse(argc,argsv);
   ParticleContainer particles{};
 
   Logger &logger = Logger::getInstance(parameters.log_level);
@@ -45,6 +43,7 @@ int main(int argc, char *argsv[]) {
   logger.info("\tDelta: " + std::to_string(parameters.time_delta));
 
   output::VTKWriter writer(particles);
+
   while (current_time < parameters.end_time) {
     
     Calculation<Position>::run(particles, parameters.time_delta);

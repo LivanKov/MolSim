@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include "SimParams.h"
 
 namespace CommandParser{
     
@@ -23,10 +24,11 @@ namespace CommandParser{
     }
 
 
-    void parse(int argc, char**argv, SimParams& parameters){
+    SimParams parse(int argc, char**argv){
         if (argc < 2) {
     print_help();
   }
+  SimParams parameters{};
 
   int opt;
 
@@ -66,5 +68,6 @@ namespace CommandParser{
       fprintf(stderr, "Usage: %s [-h] help\n", argv[0]);
     }
   }
+  return parameters;
     }
 }
