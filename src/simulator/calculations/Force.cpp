@@ -25,8 +25,8 @@ void Force::lennard_jones(ParticleContainer &particles) {
   // Iterate each pair
   for (auto it = particles.pair_begin(); it != particles.pair_end(); ++it) {
     ParticlePair &pair = *it;
-    Particle &p1 = pair.first;
-    Particle &p2 = pair.second;
+    Particle &p1 = *(pair.first);
+    Particle &p2 = *(pair.second);
     auto r12 = p2.getX() - p1.getX();
     // distance ||x_i - x_j ||
     double distance = ArrayUtils::L2Norm(r12);
@@ -58,8 +58,8 @@ void Force::verlet(ParticleContainer &particles) {
   // Iterate each pair
   for (auto it = particles.pair_begin(); it != particles.pair_end(); ++it) {
     ParticlePair &pair = *it;
-    Particle &p1 = pair.first;
-    Particle &p2 = pair.second;
+    Particle &p1 = *(pair.first);
+    Particle &p2 = *(pair.second);
     auto r12 = p2.getX() - p1.getX();
     // distance ||x_i - x_j ||
     double distance = ArrayUtils::L2Norm(r12);

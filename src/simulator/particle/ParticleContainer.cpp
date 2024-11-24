@@ -4,32 +4,32 @@
 #include <concepts>
 #include <utility>
 
-ParticlePair::ParticlePair(Particle& first,
-                           Particle& second)
+ParticlePair::ParticlePair(const ParticlePointer first,
+                           const ParticlePointer second)
     : first{first}, second{second} {
-  if (first == second) {
+  if (*first == *second) {
     throw std::invalid_argument(
         "Pair requires two different instances of Particle");
   }
 }
 
 bool ParticlePair::operator==(const ParticlePair &rhs) const {
-  return (first == rhs.first && second == rhs.second) ||
-         (first == rhs.second && second == rhs.first);
+  return (*first == *(rhs.first) && *second == *(rhs.second)) ||
+         (*first == *(rhs.second) && *second == *(rhs.first));
 }
 
 std::string ParticlePair::toString() const {
   std::stringstream stream;
-  stream << "ParticlePair: first: " << first.toString()
-         << " second: " << second.toString();
+  stream << "ParticlePair: first: " << first->toString()
+         << " second: " << second->toString();
   return stream.str();
 }
 
 std::size_t std::hash<ParticlePair>::operator()(const ParticlePair &p) const {
   std::size_t hash1 =
-      std::hash<Particle>()(p.first) ^ (std::hash<Particle>()(p.second) << 1);
+      std::hash<Particle>()(*p.first) ^ (std::hash<Particle>()(*p.second) << 1);
   std::size_t hash2 =
-      std::hash<Particle>()(p.second) ^ (std::hash<Particle>()(p.first) << 1);
+      std::hash<Particle>()(*p.second) ^ (std::hash<Particle>()(*p.first) << 1);
   return hash1 ^ hash2;
 }
 
@@ -54,10 +54,10 @@ void ParticleContainer::insert(Particle &&p) { emplace_back(p); }
 size_t ParticleContainer::size() { return _particle_container.size(); }
 
 Particle &ParticleContainer::operator[](size_t index) {
-  return _particle_container[index];
+  return *(_particle_container[index]);
 }
 
-ParticleIterator::ParticleIterator(PointerType p) : _ptr(p) {}
+ParticleIterator::ParticleIterator(PPointerType p) : _ptr(p) {}
 
 ParticleIterator &ParticleIterator::operator++() {
   _ptr++;
@@ -70,7 +70,7 @@ ParticleIterator ParticleIterator::operator++(int) {
   return _ret;
 }
 
-ParticleIterator::PointerType ParticleIterator::operator->() { return _ptr; }
+ParticleIterator::PPointerType ParticleIterator::operator->() { return _ptr; }
 
 bool ParticleIterator::operator==(const ParticleIterator &rhs) const {
   return _ptr == rhs._ptr;
@@ -80,8 +80,8 @@ bool ParticleIterator::operator!=(const ParticleIterator &rhs) const {
   return _ptr != rhs._ptr;
 }
 
-ParticleIterator::ReferenceType ParticleIterator::operator*() const {
-  return *_ptr;
+ParticleIterator::PReferenceType ParticleIterator::operator*() const {
+  return **_ptr;
 }
 
 ParticleIterator ParticleContainer::begin() {
@@ -135,10 +135,10 @@ ParticlePairIterator ParticleContainer::pair_end() {
   return ParticlePairIterator(_particle_pair_set.cend());
 }
 
-void ParticleContainer::create_pairs(Particle &new_particle) {
-  for (Particle &p : _particle_container) {
-    /*if (new_particle != p)
+void ParticleContainer::create_pairs(const ParticlePointer &new_particle) {
+  for (auto const &p : _particle_container) {
+    if (*new_particle != *p)
       _particle_pair_set.insert(
-          std::make_shared<ParticlePair>(new_particle, p));*/
+          std::make_shared<ParticlePair>(new_particle, p));
   }
 }
