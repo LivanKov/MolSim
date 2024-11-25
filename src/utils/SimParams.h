@@ -10,7 +10,6 @@ struct SimParams{
     double end_time;
     double time_delta;
 
-    bool sparse_output;
     bool xyz_output;
     bool calculate_lj_force;
     bool enable_output;

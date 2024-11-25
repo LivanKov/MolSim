@@ -13,8 +13,6 @@ namespace CommandParser{
   std::cout
       << "  -e   <end_time>    Specify how long the simulation should run\n";
   std::cout << "  -d   <time_delta>  Specify time increments\n";
-  std::cout << "  -t                 Enable testing mode (Writes a file for "
-               "each iteration)\n";
   std::cout << "  -x                 Output .xyz files instead of .vpu\n";
   std::cout << "  -l   <log_level>   Option to choose the logging level "
                "[trace, debug, info, warn, error, off]\n";
@@ -45,9 +43,6 @@ namespace CommandParser{
       break;
     case 'o':
       parameters.output_path = std::string(optarg);
-      break;
-    case 't':
-      parameters.sparse_output = false;
       break;
     case 'h':
       print_help();

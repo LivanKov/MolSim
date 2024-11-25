@@ -45,9 +45,7 @@ void Simulation::run(){
     Calculation<Velocity>::run(particles, params_.time_delta);
 
     iteration++;
-    if (params_.sparse_output && iteration % 10 == 0 && params_.enable_output)
-      writer.plot_particles(params_.output_path ,iteration);
-    else if (!params_.sparse_output && params_.enable_output)
+    if (iteration % 10 == 0 && params_.enable_output)
       writer.plot_particles(params_.output_path ,iteration);
     logger.trace("Iteration " + std::to_string(iteration) + " finished.");
     current_time += params_.time_delta;
