@@ -36,6 +36,8 @@ void Simulation::run(){
   int iteration{0};
   double current_time{0};
 
+  ForceType FORCE_TYPE = params_.calculate_lj_force ? ForceType::LENNARD_JONES : ForceType::VERLET;
+
   std::unique_ptr<output::FileWriter> writer;
   if (params_.xyz_output) {
     writer = std::make_unique<output::XYZWriter>(particles);
@@ -46,7 +48,7 @@ void Simulation::run(){
   while (current_time < params_.end_time) {
     
     Calculation<Position>::run(particles, params_.time_delta);
-    Calculation<Force>::run(particles,Type::VERLET);
+    Calculation<Force>::run(particles, FORCE_TYPE);
     Calculation<Velocity>::run(particles, params_.time_delta);
 
     if (iteration % 10 == 0 && params_.enable_output)

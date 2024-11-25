@@ -3,7 +3,7 @@
 #include "utils/ArrayUtils.h"
 
 
-void Force::run(ParticleContainer &particles, Type type){
+void Force::run(ParticleContainer &particles, ForceType type){
   switch(type){
     case LENNARD_JONES:
       lennard_jones(particles);
