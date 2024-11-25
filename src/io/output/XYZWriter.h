@@ -15,7 +15,7 @@
 
 namespace output {
 
-class XYZWriter : FileWriter {
+class XYZWriter : public FileWriter {
 
 public:
 

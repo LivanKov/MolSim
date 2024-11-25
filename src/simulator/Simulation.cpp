@@ -37,7 +37,12 @@ void Simulation::run(){
   int iteration = 0;
   double current_time = params_.start_time;
 
-  output::VTKWriter writer(particles);
+  std::unique_ptr<output::FileWriter> writer;
+  if (params_.xyz_output) {
+    writer = std::make_unique<output::XYZWriter>(particles);
+  } else {
+    writer = std::make_unique<output::VTKWriter>(particles);
+  }
 
   while (current_time < params_.end_time) {
     
@@ -45,9 +50,8 @@ void Simulation::run(){
     Calculation<Force>::run(particles,Type::VERLET);
     Calculation<Velocity>::run(particles, params_.time_delta);
 
-    iteration++;
     if (iteration % 10 == 0 && params_.enable_output)
-      writer.plot_particles(params_.output_path ,iteration);
+      writer->plot_particles(params_.output_path ,iteration++);
     logger.trace("Iteration " + std::to_string(iteration) + " finished.");
     current_time += params_.time_delta;
   }
