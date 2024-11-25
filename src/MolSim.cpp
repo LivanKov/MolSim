@@ -1,7 +1,7 @@
 #include <iostream>
 #include "simulator/Simulation.h"
-#include "utils/SimParams.h"
-#include "utils/CommandParser.h"
+#include "io/input/cli/SimParams.h"
+#include "io/input/cli/CommandParser.h"
 
 
 

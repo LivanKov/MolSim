@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include "SimParams.h"
+#include <iostream>
 
 namespace CommandParser{
     

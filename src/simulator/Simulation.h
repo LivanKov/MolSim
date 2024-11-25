@@ -1,4 +1,4 @@
-#include "utils/SimParams.h"
+#include "io/input/cli/SimParams.h"
 #include <memory>
 
 #pragma once
