@@ -11,17 +11,14 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <string>
 
-#include "logger/Logger.h"
+#include "utils/logger/Logger.h"
 
-namespace outputWriter {
+namespace output {
 
-VTKWriter::VTKWriter() = default;
-
-VTKWriter::~VTKWriter() = default;
-
-void VTKWriter::initializeOutput(int numParticles) {
+VTKWriter::VTKWriter(ParticleContainer &particles) : FileWriter(particles) {
 
   vtkFile = new VTKFile_t("UnstructuredGrid");
 
@@ -49,15 +46,18 @@ void VTKWriter::initializeOutput(int numParticles) {
   cells.DataArray().push_back(cells_data);
 
   PieceUnstructuredGrid_t piece(pointData, cellData, points, cells,
-                                numParticles, 0);
+                                particles.size(), 0);
   UnstructuredGrid_t unstructuredGrid(piece);
   vtkFile->UnstructuredGrid(unstructuredGrid);
 }
 
-void VTKWriter::writeFile(const std::string &filename, int iteration) {
+void VTKWriter::plot_particles(const std::string &filename, int iteration) {
   std::stringstream strstr;
   strstr << filename << "_" << std::setfill('0') << std::setw(4) << iteration
          << ".vtu";
+  for (auto &p : particles) {
+    plotParticle(p);
+  }
 
   std::ofstream file(strstr.str().c_str());
   VTKFile(file, *vtkFile);
@@ -103,4 +103,4 @@ void VTKWriter::plotParticle(Particle &p) {
   pointsIterator->push_back(p.getX()[2]);
 }
 
-} // namespace outputWriter
+} // namespace output

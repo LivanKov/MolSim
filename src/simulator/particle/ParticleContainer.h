@@ -147,8 +147,8 @@ public:
    */
 
   template <typename... Args>
-  requires std::constructible_from<Particle, Args...> void
-  emplace_back(Args... args) {
+  requires std::constructible_from<Particle, Args...>
+  void emplace_back(Args... args) {
     ParticlePointer p = std::make_shared<Particle>(std::forward<Args>(args)...);
     _particle_container.push_back(p);
     create_pairs(p);

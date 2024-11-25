@@ -5,18 +5,15 @@
  *      Author: eckhardw
  */
 
-#include "outputWriter/XYZWriter.h"
+#include "XYZWriter.h"
 #include <iomanip>
 #include <sstream>
 
-namespace outputWriter {
+namespace output {
 
-XYZWriter::XYZWriter() = default;
+XYZWriter::XYZWriter(ParticleContainer &particles) : FileWriter(particles) {}
 
-XYZWriter::~XYZWriter() = default;
-
-void XYZWriter::plotParticles(ParticleContainer &particles,
-                              const std::string &filename, int iteration) {
+void XYZWriter::plot_particles(const std::string &filename, int iteration) {
 
   std::ofstream file;
   std::stringstream strstr;
@@ -43,5 +40,5 @@ void XYZWriter::plotParticles(ParticleContainer &particles,
 
   file.close();
 }
-
-} // namespace outputWriter
+// namespace outputWriter
+} // namespace output
