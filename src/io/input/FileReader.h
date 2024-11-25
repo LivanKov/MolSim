@@ -20,5 +20,5 @@ public:
   FileReader();
   virtual ~FileReader();
 
-  void readFile(ParticleContainer &particles, char *filename);
+  static void readFile(ParticleContainer &particles, char *filename);
 };

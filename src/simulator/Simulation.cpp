@@ -4,7 +4,9 @@
 #include "utils/logger/Logger.h"
 #include <spdlog/spdlog.h>
 #include "io/input/FileReader.h"
+#include "io/output/XYZWriter.h"
 #include "io/output/VTKWriter.h"
+#include "io/output/FileWriter.h"
 #include "particle/ParticleContainer.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"
@@ -30,8 +32,7 @@ void Simulation::run(){
 
   ParticleContainer particles{};
 
-  FileReader fileReader;
-  fileReader.readFile(particles, params_.input_path.data());
+  FileReader::readFile(particles, params_.input_path.data());
 
   int iteration = 0;
   double current_time = params_.start_time;
