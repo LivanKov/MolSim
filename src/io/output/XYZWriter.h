@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "simulator/particle/ParticleContainer.h"
 #include "FileWriter.h"
+#include "simulator/particle/ParticleContainer.h"
 
 #include <fstream>
 #include <list>
@@ -18,11 +18,9 @@ namespace output {
 class XYZWriter : public FileWriter {
 
 public:
+  XYZWriter(ParticleContainer &particles);
 
-  XYZWriter(ParticleContainer& particles);
-
-  void plot_particles(const std::string &filename,
-                     int iteration) override;
+  void plot_particles(const std::string &filename, int iteration) override;
 };
 
-} // namespace outputWriter
+} // namespace output

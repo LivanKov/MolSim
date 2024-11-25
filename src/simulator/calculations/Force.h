@@ -4,14 +4,12 @@
 #define EPSILON 5.0
 #define SIGMA 1.0
 
-enum ForceType {
-    LENNARD_JONES,
-    VERLET
-};
+enum ForceType { LENNARD_JONES, VERLET };
 
-struct Force : AbstractPolicy{
-    static void run(ParticleContainer &particles, ForceType type);
+struct Force : AbstractPolicy {
+  static void run(ParticleContainer &particles, ForceType type);
+
 private:
-    static void lennard_jones(ParticleContainer &particles);
-    static void verlet(ParticleContainer &particles);
+  static void lennard_jones(ParticleContainer &particles);
+  static void verlet(ParticleContainer &particles);
 };

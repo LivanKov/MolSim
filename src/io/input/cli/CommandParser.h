@@ -1,11 +1,10 @@
-#include <unistd.h>
 #include "SimParams.h"
 #include <iostream>
+#include <unistd.h>
 
-namespace CommandParser{
-    
+namespace CommandParser {
 
-    void print_help() {
+void print_help() {
   std::cout << "Usage: MolSim [options]\n";
   std::cout << "Options:\n";
   std::cout << "  -h                 Show this help message\n";
@@ -20,11 +19,10 @@ namespace CommandParser{
   std::cout << "  -f                 Calculate Gravitational Force instead of "
                "Lennard-Jones Force\n";
   std::cout << "  -n   Disable all file output for the sake of performance\n";
-    }
+}
 
-
-    SimParams parse(int argc, char**argv){
-        if (argc < 2) {
+SimParams parse(int argc, char **argv) {
+  if (argc < 2) {
     print_help();
   }
   SimParams parameters{};
@@ -65,5 +63,5 @@ namespace CommandParser{
     }
   }
   return parameters;
-    }
 }
+} // namespace CommandParser

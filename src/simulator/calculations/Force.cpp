@@ -2,21 +2,20 @@
 #include "../particle/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 
-
-void Force::run(ParticleContainer &particles, ForceType type){
-  switch(type){
-    case LENNARD_JONES:
-      lennard_jones(particles);
-      break;
-    case VERLET:
-      verlet(particles);
-      break;
+void Force::run(ParticleContainer &particles, ForceType type) {
+  switch (type) {
+  case LENNARD_JONES:
+    lennard_jones(particles);
+    break;
+  case VERLET:
+    verlet(particles);
+    break;
   }
 }
 
 void Force::lennard_jones(ParticleContainer &particles) {
   // store the current force as the old force and reset current to 0
-    // store the current force as the old force and reset current to 0
+  // store the current force as the old force and reset current to 0
   for (auto &p : particles) {
     p.updateOldF(p.getF());
     p.updateF(0, 0, 0);
@@ -34,11 +33,11 @@ void Force::lennard_jones(ParticleContainer &particles) {
     // this needs to be removed
     if (distance > 1e-5) {
       double totalForce;
-        double term = SIGMA / distance;
-        double term6 = pow(term, 6);
-        double term12 = pow(term, 12);
-        totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
-      
+      double term = SIGMA / distance;
+      double term6 = pow(term, 6);
+      double term12 = pow(term, 12);
+      totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
+
       auto force = (totalForce / distance) * r12;
 
       p1.updateF(p1.getF() + force);

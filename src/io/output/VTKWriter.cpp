@@ -11,15 +11,14 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <string>
 #include <memory>
+#include <string>
 
 #include "utils/logger/Logger.h"
 
-namespace output { 
+namespace output {
 
-
-VTKWriter::VTKWriter(ParticleContainer& particles) : FileWriter(particles) {
+VTKWriter::VTKWriter(ParticleContainer &particles) : FileWriter(particles) {
 
   vtkFile = new VTKFile_t("UnstructuredGrid");
 
@@ -56,7 +55,7 @@ void VTKWriter::plot_particles(const std::string &filename, int iteration) {
   std::stringstream strstr;
   strstr << filename << "_" << std::setfill('0') << std::setw(4) << iteration
          << ".vtu";
-  for(auto &p : particles){
+  for (auto &p : particles) {
     plotParticle(p);
   }
 
@@ -103,6 +102,5 @@ void VTKWriter::plotParticle(Particle &p) {
   pointsIterator->push_back(p.getX()[1]);
   pointsIterator->push_back(p.getX()[2]);
 }
-
 
 } // namespace output

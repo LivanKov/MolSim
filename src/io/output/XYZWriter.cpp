@@ -11,8 +11,7 @@
 
 namespace output {
 
-
-XYZWriter::XYZWriter(ParticleContainer& particles) : FileWriter(particles) {}
+XYZWriter::XYZWriter(ParticleContainer &particles) : FileWriter(particles) {}
 
 void XYZWriter::plot_particles(const std::string &filename, int iteration) {
 
@@ -41,5 +40,5 @@ void XYZWriter::plot_particles(const std::string &filename, int iteration) {
 
   file.close();
 }
- // namespace outputWriter
-}
+// namespace outputWriter
+} // namespace output

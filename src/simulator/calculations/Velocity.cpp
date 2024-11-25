@@ -1,9 +1,9 @@
 #include "Velocity.h"
+#include "../particle/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 #include <cmath>
-#include "../particle/ParticleContainer.h"   
 
-void Velocity::run(ParticleContainer& particles, double time_delta) {
+void Velocity::run(ParticleContainer &particles, double time_delta) {
   for (auto &p : particles) {
     auto v = p.getV();
     auto old_f = p.getOldF();

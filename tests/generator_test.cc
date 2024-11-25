@@ -1,6 +1,6 @@
-#include "utils/logger/Logger.h"
 #include "simulator/particle/ParticleContainer.h"
 #include "simulator/particle/ParticleGenerator.h"
+#include "utils/logger/Logger.h"
 #include <gtest/gtest.h>
 #include <iostream>
 #include <numeric>

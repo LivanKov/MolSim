@@ -1,27 +1,26 @@
 #include "Simulation.h"
-#include <memory>
-#include <utility>
-#include "utils/logger/Logger.h"
-#include <spdlog/spdlog.h>
 #include "io/input/FileReader.h"
-#include "io/output/XYZWriter.h"
-#include "io/output/VTKWriter.h"
 #include "io/output/FileWriter.h"
+#include "io/output/VTKWriter.h"
+#include "io/output/XYZWriter.h"
 #include "particle/ParticleContainer.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"
 #include "simulator/calculations/Position.h"
 #include "simulator/calculations/Velocity.h"
+#include "utils/logger/Logger.h"
+#include <memory>
+#include <spdlog/spdlog.h>
+#include <utility>
 
-
-std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams& params){
-    std::unique_ptr<Simulation> ptr = std::make_unique<Simulation>(params);
-    return ptr;
+std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
+  std::unique_ptr<Simulation> ptr = std::make_unique<Simulation>(params);
+  return ptr;
 }
 
-Simulation::Simulation(SimParams& params):params_(params){}
+Simulation::Simulation(SimParams &params) : params_(params) {}
 
-void Simulation::run(){
+void Simulation::run() {
 
   Logger &logger = Logger::getInstance(params_.log_level);
 
@@ -36,7 +35,8 @@ void Simulation::run(){
   int iteration{0};
   double current_time{0};
 
-  ForceType FORCE_TYPE = params_.calculate_lj_force ? ForceType::LENNARD_JONES : ForceType::VERLET;
+  ForceType FORCE_TYPE =
+      params_.calculate_lj_force ? ForceType::LENNARD_JONES : ForceType::VERLET;
 
   std::unique_ptr<output::FileWriter> writer;
   if (params_.xyz_output) {
@@ -46,13 +46,13 @@ void Simulation::run(){
   }
 
   while (current_time < params_.end_time) {
-    
+
     Calculation<Position>::run(particles, params_.time_delta);
     Calculation<Force>::run(particles, FORCE_TYPE);
     Calculation<Velocity>::run(particles, params_.time_delta);
 
     if (iteration % 10 == 0 && params_.enable_output)
-      writer->plot_particles(params_.output_path ,iteration++);
+      writer->plot_particles(params_.output_path, iteration++);
     logger.trace("Iteration " + std::to_string(iteration) + " finished.");
     current_time += params_.time_delta;
   }

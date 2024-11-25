@@ -1,7 +1,7 @@
 #include "Position.h"
-#include <cmath>
 #include "../particle/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
+#include <cmath>
 
 void Position::run(ParticleContainer &particles, double time_delta) {
   for (auto &p : particles) {
