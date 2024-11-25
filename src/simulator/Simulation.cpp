@@ -26,7 +26,6 @@ void Simulation::run(){
   Logger &logger = Logger::getInstance(params_.log_level);
 
   logger.warn("Starting a simulation with:");
-  logger.info("\tStart time: " + std::to_string(params_.start_time));
   logger.info("\tEnd time: " + std::to_string(params_.end_time));
   logger.info("\tDelta: " + std::to_string(params_.time_delta));
 
@@ -34,8 +33,8 @@ void Simulation::run(){
 
   FileReader::readFile(particles, params_.input_path.data());
 
-  int iteration = 0;
-  double current_time = params_.start_time;
+  int iteration{0};
+  double current_time{0};
 
   std::unique_ptr<output::FileWriter> writer;
   if (params_.xyz_output) {

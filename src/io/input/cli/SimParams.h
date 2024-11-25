@@ -6,7 +6,6 @@ struct SimParams{
     std::string input_path;
     std::string output_path;
 
-    double start_time;
     double end_time;
     double time_delta;
 
