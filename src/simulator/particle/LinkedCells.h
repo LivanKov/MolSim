@@ -11,7 +11,7 @@ struct Cell{
     /**
      * @brief Particles contained within the cell
      */
-    std::vector<ParticlePointer&> particles;
+    std::vector<ParticlePointer> particles;
 };
 
 /**
@@ -42,7 +42,7 @@ class LinkedCells<2> {
          */
         void insert_particles(std::vector<ParticlePointer>& particles);
     private: 
-        std::vector<std::vector<Cell&>> cells_;
+        std::vector<std::vector<Cell>> cells_;
         double r_cutoff_;
         double width;
         double height;
@@ -68,7 +68,7 @@ class LinkedCells<3> {
          */
         void insert_particles(std::vector<ParticlePointer>& particles);
     private:
-        std::vector<std::vector<std::vector<Cell&>>> cells_;
+        std::vector<std::vector<std::vector<Cell>>> cells_;
         double r_cutoff_;
         double width;
         double height;
