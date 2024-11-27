@@ -47,6 +47,8 @@ private:
   void plotParticle(Particle &p);
 
   VTKFile_t *vtkFile;
+
+  std::string out_name{"MD_vtk"};
 };
 
 } // namespace output

@@ -12,6 +12,7 @@
 #include <memory>
 #include <spdlog/spdlog.h>
 #include <utility>
+#include <iostream>
 
 std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
   std::unique_ptr<Simulation> ptr = std::make_unique<Simulation>(params);
@@ -37,7 +38,6 @@ void Simulation::run() {
 
   ForceType FORCE_TYPE =
       params_.calculate_lj_force ? ForceType::LENNARD_JONES : ForceType::VERLET;
-
   std::unique_ptr<output::FileWriter> writer;
   if (params_.xyz_output) {
     writer = std::make_unique<output::XYZWriter>(particles);
@@ -50,11 +50,11 @@ void Simulation::run() {
     Calculation<Position>::run(particles, params_.time_delta);
     Calculation<Force>::run(particles, FORCE_TYPE);
     Calculation<Velocity>::run(particles, params_.time_delta);
-
-    if (iteration % 10 == 0 && params_.enable_output)
-      writer->plot_particles(params_.output_path, iteration++);
-    logger.trace("Iteration " + std::to_string(iteration) + " finished.");
+    if (iteration % 10 == 0 && !params_.disable_output)
+      writer->plot_particles(params_.output_path, iteration);
+    logger.info("Iteration " + std::to_string(iteration) + " finished.");
     current_time += params_.time_delta;
+    iteration++;
   }
   logger.info("output written. Terminating...");
 

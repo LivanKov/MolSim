@@ -56,11 +56,12 @@ SimParams parse(int argc, char **argv) {
       parameters.calculate_lj_force = false;
       break;
     case 'n':
-      parameters.enable_output = false;
+      parameters.disable_output = true;
       break;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argv[0]);
     }
+    std::cout << "Enabled output: " << parameters.disable_output << std::endl;
   }
   return parameters;
 }

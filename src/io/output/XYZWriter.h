@@ -17,10 +17,13 @@ namespace output {
 
 class XYZWriter : public FileWriter {
 
+
 public:
   XYZWriter(ParticleContainer &particles);
 
   void plot_particles(const std::string &filename, int iteration) override;
+
+  std::string out_name{"MD_xyz"};
 };
 
 } // namespace output

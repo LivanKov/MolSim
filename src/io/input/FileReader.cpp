@@ -137,8 +137,7 @@ void FileReader::readFile(ParticleContainer &particles, char *filename) {
       }
     }
   } else {
-    std::cout << "Error: could not open file " << filename << std::endl;
-    // logger.warn("Error: could not open file "  filename);
+    logger.warn("Error: could not open file " + std::string(filename));
     exit(-1);
   }
 }

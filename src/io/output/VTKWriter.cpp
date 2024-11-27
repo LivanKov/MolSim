@@ -18,10 +18,10 @@
 
 namespace output {
 
-VTKWriter::VTKWriter(ParticleContainer &particles) : FileWriter(particles) {
+VTKWriter::VTKWriter(ParticleContainer &particles) : FileWriter(particles) {}
 
+void VTKWriter::plot_particles(const std::string &filename, int iteration) {
   vtkFile = new VTKFile_t("UnstructuredGrid");
-
   // per point, we add type, position, velocity and force
   PointData pointData;
   DataArray_t mass(type::Float32, "mass", 1);
@@ -49,11 +49,8 @@ VTKWriter::VTKWriter(ParticleContainer &particles) : FileWriter(particles) {
                                 particles.size(), 0);
   UnstructuredGrid_t unstructuredGrid(piece);
   vtkFile->UnstructuredGrid(unstructuredGrid);
-}
-
-void VTKWriter::plot_particles(const std::string &filename, int iteration) {
-  std::stringstream strstr;
-  strstr << filename << "_" << std::setfill('0') << std::setw(4) << iteration
+  std::stringstream strstr; 
+  strstr << filename << "/" << out_name << "_" << std::setfill('0') << std::setw(4) << iteration
          << ".vtu";
   for (auto &p : particles) {
     plotParticle(p);

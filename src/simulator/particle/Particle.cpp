@@ -41,10 +41,7 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   Logger::getInstance().trace("Particle generated!");
 }
 
-Particle::~Particle() {
-  // std::cout << "Particle destructed!" << std::endl;
-  // Logger::getInstance().info("Particle destructed!");
-}
+Particle::~Particle() { Logger::getInstance().trace("Particle destroyed!"); }
 
 const std::array<double, 3> &Particle::getX() const { return x; }
 

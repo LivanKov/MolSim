@@ -9,6 +9,6 @@ struct SimParams {
   double time_delta;
   bool xyz_output;
   bool calculate_lj_force;
-  bool enable_output;
+  bool disable_output;
   std::string log_level;
 };
