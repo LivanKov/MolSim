@@ -5,7 +5,7 @@
 
 // 2 or 3 dimensions ???
 struct Cell{
-    std::vector<ParticlePointer> particles;
+    std::vector<ParticlePointer&> particles;
 };
 
 
@@ -19,7 +19,7 @@ class LinkedCells<2> {
         LinkedCells(std::array<double,2>& domain_size, double r_cutoff);
         void insert_particles(std::vector<ParticlePointer>& particles);
     private: 
-        std::vector<std::vector<Cell>> cells_;
+        std::vector<std::vector<Cell&>> cells_;
         double r_cutoff_;
         double width;
         double height;
@@ -33,7 +33,7 @@ class LinkedCells<3> {
         LinkedCells(std::array<double,3>& domain_size, double r_cutoff);
         void insert_particles(std::vector<ParticlePointer>& particles);
     private:
-        std::vector<std::vector<std::vector<Cell>>> cells_;
+        std::vector<std::vector<std::vector<Cell&>>> cells_;
         double r_cutoff_;
         double width;
         double height;

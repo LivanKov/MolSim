@@ -66,10 +66,8 @@ void VTKWriter::plot_particles(const std::string &filename, int iteration) {
 
 void VTKWriter::plotParticle(Particle &p) {
   if (vtkFile->UnstructuredGrid().present()) {
-    // std::cout << "UnstructuredGrid is present" << std::endl;
     Logger::getInstance().debug("UnstructuredGrid is present");
   } else {
-    // std::cout << "ERROR: No UnstructuredGrid present" << std::endl;
     Logger::getInstance().error("ERROR: No UnstructuredGrid present");
   }
 
@@ -78,19 +76,15 @@ void VTKWriter::plotParticle(Particle &p) {
   PointData::DataArray_iterator dataIterator = pointDataSequence.begin();
 
   dataIterator->push_back(p.getM());
-  // cout << "Appended mass data in: " << dataIterator->Name();
-
   dataIterator++;
   dataIterator->push_back(p.getV()[0]);
   dataIterator->push_back(p.getV()[1]);
   dataIterator->push_back(p.getV()[2]);
-  // cout << "Appended velocity data in: " << dataIterator->Name();
 
   dataIterator++;
   dataIterator->push_back(p.getOldF()[0]);
   dataIterator->push_back(p.getOldF()[1]);
   dataIterator->push_back(p.getOldF()[2]);
-  // cout << "Appended force data in: " << dataIterator->Name();
 
   dataIterator++;
   dataIterator->push_back(p.getType());

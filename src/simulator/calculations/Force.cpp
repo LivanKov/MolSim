@@ -31,19 +31,17 @@ void Force::lennard_jones(ParticleContainer &particles) {
     double distance = ArrayUtils::L2Norm(r12);
 
     // this needs to be removed
-    if (distance > 1e-5) {
-      double totalForce;
-      double term = SIGMA / distance;
-      double term6 = pow(term, 6);
-      double term12 = pow(term, 12);
-      totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
+    double totalForce;
+    double term = SIGMA / distance;
+    double term6 = pow(term, 6);
+    double term12 = pow(term, 12);
+    totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
 
-      auto force = (totalForce / distance) * r12;
+    auto force = (totalForce / distance) * r12;
 
-      p1.updateF(p1.getF() + force);
-      // Newton's third law
-      p2.updateF(p2.getF() - force);
-    }
+    p1.updateF(p1.getF() + force);
+    // Newton's third law
+    p2.updateF(p2.getF() - force);
   }
 }
 
@@ -62,15 +60,12 @@ void Force::verlet(ParticleContainer &particles) {
     auto r12 = p2.getX() - p1.getX();
     // distance ||x_i - x_j ||
     double distance = ArrayUtils::L2Norm(r12);
-
-    // this needs to be removed
-    if (distance > 1e-5) {
-      double totalForce;
-      totalForce = p1.getM() * p2.getM() / pow(distance, 2);
-      auto force = (totalForce / distance) * r12;
-      p1.updateF(p1.getF() + force);
-      // Newton's third law
-      p2.updateF(p2.getF() - force);
-    }
+    
+    double totalForce;
+    totalForce = p1.getM() * p2.getM() / pow(distance, 2);
+    auto force = (totalForce / distance) * r12;
+    p1.updateF(p1.getF() + force);
+    // Newton's third law
+    p2.updateF(p2.getF() - force);
   }
 }

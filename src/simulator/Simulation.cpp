@@ -24,7 +24,7 @@ void Simulation::run() {
 
   Logger &logger = Logger::getInstance(params_.log_level);
 
-  logger.warn("Starting a simulation with:");
+  logger.info("Starting a simulation with:");
   logger.info("\tEnd time: " + std::to_string(params_.end_time));
   logger.info("\tDelta: " + std::to_string(params_.time_delta));
 
@@ -58,7 +58,7 @@ void Simulation::run() {
   }
   logger.info("output written. Terminating...");
 
-  logger.debug("Number of particles: " + std::to_string(particles.size()));
+  logger.info("Number of particles: " + std::to_string(particles.size()));
 
-  logger.warn("Simulation finished.");
+  logger.info("Simulation finished.");
 }
