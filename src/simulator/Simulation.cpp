@@ -55,11 +55,12 @@ void Simulation::run(ParticleContainer &particles) {
     Calculation<Position>::run(particles, params_.time_delta);
     Calculation<Force>::run(particles, FORCE_TYPE);
     Calculation<Velocity>::run(particles, params_.time_delta);
-    if (iteration % 10 == 0 && !params_.disable_output)
+
+    iteration++;
+    if (iteration % params_.write_frequency == 0 && !params_.disable_output)
       writer->plot_particles(params_.output_path, iteration);
     logger.info("Iteration " + std::to_string(iteration) + " finished.");
     current_time += params_.time_delta;
-    iteration++;
   }
   logger.info("output written. Terminating...");
 
