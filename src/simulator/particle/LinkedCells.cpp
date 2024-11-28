@@ -28,6 +28,11 @@ Cell& LinkedCells<2>::get_corresponding_cell(ParticlePointer &particle) {
   return cells_[x][y];
 }
 
+void LinkedCells<2>::update_particle_location(ParticlePointer &particle) {
+  Cell& old_cell = get_corresponding_cell(particle);
+  old_cell.particles.erase(particle);
+}
+
 
 
 LinkedCells<3>::LinkedCells(std::array<double,3>& left_corner_coordinates, std::array<double, 3> &domain_size, double r_cutoff) : r_cutoff_{r_cutoff}, width{domain_size[0]}, height{domain_size[1]}, depth{domain_size[2]} {
