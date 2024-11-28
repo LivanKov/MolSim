@@ -35,27 +35,87 @@ $ make
 $ ./MolSim
 ``` 
 
-### Options 
+## XML Input Configuration
 
+The MolSim application now supports using an XML input file for configuring simulation parameters. This XML file allows users to define the simulation setup in a structured way, making it easier to manage complex configuration.
+
+### XML Parameters
+The XML input file provides the following parameters:
+- **end_time**: The total time for which the simulation should run.
+- **delta_time**: The time increment between simulation steps.
+- **output_basename**: The base name for output files (including filepath).
+- **write_frequency**: Specifies how often to write output files (e.g., every N iterations).
+
+These parameters are defined in the XML file and are loaded when running the simulation.
+
+### Command Line Arguments
+Users can override the parameters defined in the XML file using command line arguments. The command line arguments available are as follows.
 
 | Option            | Description                                                         |
 |-------------------|---------------------------------------------------------------------|
 | `-h`              | Show this help message and exit                                     |
-| `-o <file_path>`  | Specify the output file path                                        |
-| `-i <file_path>`  | Specify the input file path                                         |
-| `-e <end_time>`   | Specify the end time for the simulation to run                      |
-| `-d <time_delta>` | Specify the time increments for each simulation step                |
-| `-t`              | Enable testing mode (writes a file for each iteration of the run)   |
+| `-o <output_name>`| The base name for output files including filepath (override XML)    |
+| `-e <end_time>`   | Specify the end time for the simulation to run (override XML)       |
+| `-d <time_delta>` | Specify the time increments for each simulation step (override XML) |
+| `-t <write_freq>` | write a file for every -t iteration of the run (override XML)       |
 | `-x`              | Output files in `.xyz` format instead of the default `.vtu` format  |
-| `-l` <log_level>  | Option to choose the logging level                                  |
+| `-l <log_level>`  | Option to choose the logging level                                  |
 | `-f`              | Calculate Gravitational Force instead of Lennard-Jones Force        |
 | `-n`              | Disable all file outputs                                            | 
+
 ### Examples
+To run the MolSim program with an XML input file and additional command line arguments:
 
-- `./MolSim -i data/input.txt -o results/output.txt`: Run with specified input and output paths
-- `./MolSim -e 100 -d 0.01`: Run for a specific time duration with specific time steps: 
-- `./MolSim -t -x`: Run while outputting a .xyz file for each iteration: 
+```sh
+./MolSim ../input/input_file.xml -e 100.0 -d 0.01 -o ../output/simulation_output -t 5
+```
 
+In this example:
+- **input_file.xml** is the XML file that provides the base configuration for the simulation.
+- **-e 100.0** overrides the `end_time` specified in the XML file to run the simulation for 100.0 units of time.
+- **-d 0.01** overrides the `delta_time` specified in the XML file to set the time increment to 0.01.
+- **-o ../output/simulation_output** sets the output file path.
+- **-t 5** sets the write frequency to write a file every 5 iterations.
+
+### EML Example
+Here is an example of an XML input file:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<MolSim>
+    <simulation_parameters>
+        <end_time>5</end_time>
+        <delta_time>0.005</delta_time>
+        <output_basename>../output/MD_vtk</output_basename>
+        <write_frequency>10</write_frequency>
+    </simulation_parameters>
+    <cuboids>
+        <cuboid>
+            <coordinate>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </coordinate>
+            <dimensions>
+                <x>3</x>
+                <y>3</y>
+                <z>3</z>
+            </dimensions>
+            <mesh_width>1.0</mesh_width>
+            <mass>1.0</mass>
+            <initial_velocity>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </initial_velocity>
+            <average_velocity>0.1</average_velocity>
+        </cuboid>
+    </cuboids>
+</MolSim>
+```
+### Notes
+- The XML file is parsed first, and all defined parameters are loaded. If command line arguments are provided, they take precedence over the values in the XML file.
+- Using an XML input file makes it easier to manage and reuse complex configurations, especially when working with multiple simulations or running parameter sweeps.
 
 ### Scripts Overview
 

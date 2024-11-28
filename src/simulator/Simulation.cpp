@@ -57,8 +57,10 @@ void Simulation::run(ParticleContainer &particles) {
     Calculation<Velocity>::run(particles, params_.time_delta);
 
     iteration++;
-    if (iteration % params_.write_frequency == 0 && !params_.disable_output)
+    if (iteration % params_.write_frequency == 0 && !params_.disable_output){
       writer->plot_particles(params_.output_path, iteration);
+    }
+
     logger.info("Iteration " + std::to_string(iteration) + " finished.");
     current_time += params_.time_delta;
   }
