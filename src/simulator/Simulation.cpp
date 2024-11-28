@@ -13,6 +13,7 @@
 #include <memory>
 #include <spdlog/spdlog.h>
 #include <utility>
+#include "io/input/XMLReader.h"
 
 std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
   std::unique_ptr<Simulation> ptr = std::make_unique<Simulation>(params);
@@ -21,17 +22,21 @@ std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
 
 Simulation::Simulation(SimParams &params) : params_(params) {}
 
-void Simulation::run() {
+ParticleContainer Simulation::readFile(char *argsv1, SimParams &params) {
+  ParticleContainer particles{};
+  // FileReader::readFile(particles, params_.input_path.data());
+  XMLReader::readXMLFile(particles, params, argsv1);
+
+  return particles;
+}
+
+void Simulation::run(ParticleContainer &particles) {
 
   Logger &logger = Logger::getInstance(params_.log_level);
 
   logger.warn("Starting a simulation with:");
   logger.info("\tEnd time: " + std::to_string(params_.end_time));
   logger.info("\tDelta: " + std::to_string(params_.time_delta));
-
-  ParticleContainer particles{};
-
-  FileReader::readFile(particles, params_.input_path.data());
 
   int iteration{0};
   double current_time{0};
@@ -51,11 +56,14 @@ void Simulation::run() {
     Calculation<Position>::run(particles, params_.time_delta);
     Calculation<Force>::run(particles, FORCE_TYPE);
     Calculation<Velocity>::run(particles, params_.time_delta);
-    if (iteration % 10 == 0 && !params_.disable_output)
+
+    iteration++;
+    if (iteration % params_.write_frequency == 0 && !params_.disable_output){
       writer->plot_particles(params_.output_path, iteration);
+    }
+
     logger.info("Iteration " + std::to_string(iteration) + " finished.");
     current_time += params_.time_delta;
-    iteration++;
   }
   logger.info("output written. Terminating...");
 
