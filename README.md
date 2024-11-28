@@ -95,6 +95,7 @@ Here is an example of an XML input file:
             <x>180.0</x>
             <y>90.0</y>
             <z>0.0</z>
+        </domain_size>
     </simulation_parameters>
     <cuboids>
         <cuboid>
