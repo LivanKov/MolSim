@@ -33,6 +33,11 @@ file(GLOB_RECURSE MY_SRC
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
 )
 
+# Add the generated .cxx files from CodeSynthesis XSD
+set(GENERATED_SRC
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/io/MolSim.cxx
+)   
+
 # create make target
 add_executable(MolSim ${MY_SRC})
 
