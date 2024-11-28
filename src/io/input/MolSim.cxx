@@ -173,6 +173,48 @@ write_frequency (const write_frequency_type& x)
   this->write_frequency_.set (x);
 }
 
+const simulation_parameters::r_cutoff_radius_type& simulation_parameters::
+r_cutoff_radius () const
+{
+  return this->r_cutoff_radius_.get ();
+}
+
+simulation_parameters::r_cutoff_radius_type& simulation_parameters::
+r_cutoff_radius ()
+{
+  return this->r_cutoff_radius_.get ();
+}
+
+void simulation_parameters::
+r_cutoff_radius (const r_cutoff_radius_type& x)
+{
+  this->r_cutoff_radius_.set (x);
+}
+
+const simulation_parameters::domain_size_type& simulation_parameters::
+domain_size () const
+{
+  return this->domain_size_.get ();
+}
+
+simulation_parameters::domain_size_type& simulation_parameters::
+domain_size ()
+{
+  return this->domain_size_.get ();
+}
+
+void simulation_parameters::
+domain_size (const domain_size_type& x)
+{
+  this->domain_size_.set (x);
+}
+
+void simulation_parameters::
+domain_size (::std::auto_ptr< domain_size_type > x)
+{
+  this->domain_size_.set (x);
+}
+
 
 // cuboids
 // 
@@ -193,6 +235,64 @@ void cuboids::
 cuboid (const cuboid_sequence& s)
 {
   this->cuboid_ = s;
+}
+
+
+// domain_size
+// 
+
+const domain_size::x_type& domain_size::
+x () const
+{
+  return this->x_.get ();
+}
+
+domain_size::x_type& domain_size::
+x ()
+{
+  return this->x_.get ();
+}
+
+void domain_size::
+x (const x_type& x)
+{
+  this->x_.set (x);
+}
+
+const domain_size::y_type& domain_size::
+y () const
+{
+  return this->y_.get ();
+}
+
+domain_size::y_type& domain_size::
+y ()
+{
+  return this->y_.get ();
+}
+
+void domain_size::
+y (const y_type& x)
+{
+  this->y_.set (x);
+}
+
+const domain_size::z_type& domain_size::
+z () const
+{
+  return this->z_.get ();
+}
+
+domain_size::z_type& domain_size::
+z ()
+{
+  return this->z_.get ();
+}
+
+void domain_size::
+z (const z_type& x)
+{
+  this->z_.set (x);
 }
 
 
@@ -636,12 +736,33 @@ simulation_parameters::
 simulation_parameters (const end_time_type& end_time,
                        const delta_time_type& delta_time,
                        const output_basename_type& output_basename,
-                       const write_frequency_type& write_frequency)
+                       const write_frequency_type& write_frequency,
+                       const r_cutoff_radius_type& r_cutoff_radius,
+                       const domain_size_type& domain_size)
 : ::xml_schema::type (),
   end_time_ (end_time, this),
   delta_time_ (delta_time, this),
   output_basename_ (output_basename, this),
-  write_frequency_ (write_frequency, this)
+  write_frequency_ (write_frequency, this),
+  r_cutoff_radius_ (r_cutoff_radius, this),
+  domain_size_ (domain_size, this)
+{
+}
+
+simulation_parameters::
+simulation_parameters (const end_time_type& end_time,
+                       const delta_time_type& delta_time,
+                       const output_basename_type& output_basename,
+                       const write_frequency_type& write_frequency,
+                       const r_cutoff_radius_type& r_cutoff_radius,
+                       ::std::auto_ptr< domain_size_type > domain_size)
+: ::xml_schema::type (),
+  end_time_ (end_time, this),
+  delta_time_ (delta_time, this),
+  output_basename_ (output_basename, this),
+  write_frequency_ (write_frequency, this),
+  r_cutoff_radius_ (r_cutoff_radius, this),
+  domain_size_ (domain_size, this)
 {
 }
 
@@ -653,7 +774,9 @@ simulation_parameters (const simulation_parameters& x,
   end_time_ (x.end_time_, f, this),
   delta_time_ (x.delta_time_, f, this),
   output_basename_ (x.output_basename_, f, this),
-  write_frequency_ (x.write_frequency_, f, this)
+  write_frequency_ (x.write_frequency_, f, this),
+  r_cutoff_radius_ (x.r_cutoff_radius_, f, this),
+  domain_size_ (x.domain_size_, f, this)
 {
 }
 
@@ -665,7 +788,9 @@ simulation_parameters (const ::xercesc::DOMElement& e,
   end_time_ (this),
   delta_time_ (this),
   output_basename_ (this),
-  write_frequency_ (this)
+  write_frequency_ (this),
+  r_cutoff_radius_ (this),
+  domain_size_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -731,6 +856,31 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // r_cutoff_radius
+    //
+    if (n.name () == "r_cutoff_radius" && n.namespace_ ().empty ())
+    {
+      if (!r_cutoff_radius_.present ())
+      {
+        this->r_cutoff_radius_.set (r_cutoff_radius_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // domain_size
+    //
+    if (n.name () == "domain_size" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< domain_size_type > r (
+        domain_size_traits::create (i, f, this));
+
+      if (!domain_size_.present ())
+      {
+        this->domain_size_.set (r);
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -761,6 +911,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       "write_frequency",
       "");
   }
+
+  if (!r_cutoff_radius_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "r_cutoff_radius",
+      "");
+  }
+
+  if (!domain_size_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "domain_size",
+      "");
+  }
 }
 
 simulation_parameters* simulation_parameters::
@@ -780,6 +944,8 @@ operator= (const simulation_parameters& x)
     this->delta_time_ = x.delta_time_;
     this->output_basename_ = x.output_basename_;
     this->write_frequency_ = x.write_frequency_;
+    this->r_cutoff_radius_ = x.r_cutoff_radius_;
+    this->domain_size_ = x.domain_size_;
   }
 
   return *this;
@@ -869,6 +1035,141 @@ operator= (const cuboids& x)
 
 cuboids::
 ~cuboids ()
+{
+}
+
+// domain_size
+//
+
+domain_size::
+domain_size (const x_type& x,
+             const y_type& y,
+             const z_type& z)
+: ::xml_schema::type (),
+  x_ (x, this),
+  y_ (y, this),
+  z_ (z, this)
+{
+}
+
+domain_size::
+domain_size (const domain_size& x,
+             ::xml_schema::flags f,
+             ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  x_ (x.x_, f, this),
+  y_ (x.y_, f, this),
+  z_ (x.z_, f, this)
+{
+}
+
+domain_size::
+domain_size (const ::xercesc::DOMElement& e,
+             ::xml_schema::flags f,
+             ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  x_ (this),
+  y_ (this),
+  z_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void domain_size::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // x
+    //
+    if (n.name () == "x" && n.namespace_ ().empty ())
+    {
+      if (!x_.present ())
+      {
+        this->x_.set (x_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // y
+    //
+    if (n.name () == "y" && n.namespace_ ().empty ())
+    {
+      if (!y_.present ())
+      {
+        this->y_.set (y_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // z
+    //
+    if (n.name () == "z" && n.namespace_ ().empty ())
+    {
+      if (!z_.present ())
+      {
+        this->z_.set (z_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!x_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "x",
+      "");
+  }
+
+  if (!y_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "y",
+      "");
+  }
+
+  if (!z_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "z",
+      "");
+  }
+}
+
+domain_size* domain_size::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class domain_size (*this, f, c);
+}
+
+domain_size& domain_size::
+operator= (const domain_size& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->x_ = x.x_;
+    this->y_ = x.y_;
+    this->z_ = x.z_;
+  }
+
+  return *this;
+}
+
+domain_size::
+~domain_size ()
 {
 }
 

@@ -1,9 +1,9 @@
 #include "XMLReader.h"
 #include "MolSim.hxx"
+#include "cli/SimParams.h"
 #include "simulator/particle/ParticleContainer.h"
 #include "simulator/particle/ParticleGenerator.h"
 #include "utils/logger/Logger.h"
-#include "cli/SimParams.h"
 
 #include <cstdlib>
 #include <fstream>
@@ -31,7 +31,8 @@ auto containerToStrings = [](const auto &container) {
   return oss.str();
 };
 
-void XMLReader::readXMLFile(ParticleContainer &particles, SimParams &simParameters,
+void XMLReader::readXMLFile(ParticleContainer &particles,
+                            SimParams &simParameters,
                             const std::string &filename) {
   Logger &logger = Logger::getInstance();
   try {
@@ -51,6 +52,10 @@ void XMLReader::readXMLFile(ParticleContainer &particles, SimParams &simParamete
     simParameters.time_delta = simParams.delta_time();
     simParameters.output_path = simParams.output_basename();
     simParameters.write_frequency = simParams.write_frequency();
+    simParameters.r_cutoff_radius = simParams.r_cutoff_radius();
+    simParameters.domain_size = {simParams.domain_size().x(),
+                                 simParams.domain_size().y(),
+                                 simParams.domain_size().z()};
 
     logger.info("Simulation parameters loaded:");
     logger.info("End Time: " + std::to_string(simParameters.end_time));
@@ -58,9 +63,10 @@ void XMLReader::readXMLFile(ParticleContainer &particles, SimParams &simParamete
     logger.info("Output Base Name: " + simParameters.output_path);
     logger.info("Write Frequency: " +
                 std::to_string(simParameters.write_frequency));
+    logger.info("Cutoff Radius: " + std::to_string(simParameters.r_cutoff_radius));
+    logger.info("Domain Size: " + containerToStrings(simParameters.domain_size));
 
     // auto cuboids = doc->cuboids();
-
 
     // Extract cuboid specification
     logger.info("Number of cuboids found: " +
@@ -83,9 +89,10 @@ void XMLReader::readXMLFile(ParticleContainer &particles, SimParams &simParamete
       double avg_velocity = cuboid.average_velocity();
 
       logger.info("Creating cuboid: \n");
-      logger.info("Amount of particles: " +
-                  std::to_string(std::accumulate(dimensions.begin(), dimensions.end(), 1,
-                                                 std::multiplies<size_t>())));
+      logger.info(
+          "Amount of particles: " +
+          std::to_string(std::accumulate(dimensions.begin(), dimensions.end(),
+                                         1, std::multiplies<size_t>())));
       logger.info("Position: " + containerToStrings(position));
       logger.info("Dimensions: " + containerToStrings(dimensions));
       logger.info("Mesh Width: " + std::to_string(mesh_width));
@@ -96,7 +103,7 @@ void XMLReader::readXMLFile(ParticleContainer &particles, SimParams &simParamete
       ParticleGenerator::insertCuboid(position, dimensions, mesh_width, mass,
                                       initial_velocity, avg_velocity,
                                       particles);
-    } 
+    }
 
   } catch (const std::exception &e) {
     logger.warn("Error while reading XML file: " + std::string(filename));

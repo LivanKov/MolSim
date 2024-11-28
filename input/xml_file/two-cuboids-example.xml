@@ -5,18 +5,23 @@
         <delta_time>0.002</delta_time>
         <output_basename>../output/MD_vtk</output_basename>
         <write_frequency>10</write_frequency>
+        <r_cutoff_radius>3.0</r_cutoff_radius>
+        <domain_size>
+            <x>180.0</x>
+            <y>90.0</y>
+            <z>0.0</z>
     </simulation_parameters>
     
     <cuboids>
         <cuboid>
             <coordinate>
-                <x>0.0</x>
-                <y>0.0</y>
+                <x>20.0</x>
+                <y>20.0</y>
                 <z>0.0</z>
             </coordinate>
             <dimensions>
-                <x>40</x>
-                <y>8</y>
+                <x>100</x>
+                <y>20</y>
                 <z>1</z>
             </dimensions>
             <mesh_width>1.1225</mesh_width>
@@ -26,18 +31,18 @@
                 <y>0.0</y>
                 <z>0.0</z>
             </initial_velocity>
-            <average_velocity>0.1</average_velocity>
+            <average_velocity>0.0</average_velocity>
         </cuboid>
 
         <cuboid>
             <coordinate>
-                <x>15.0</x>
-                <y>15.0</y>
+                <x>70.0</x>
+                <y>60.0</y>
                 <z>0.0</z>
             </coordinate>
             <dimensions>
-                <x>8</x>
-                <y>8</y>
+                <x>20</x>
+                <y>20</y>
                 <z>1</z>
             </dimensions>
             <mesh_width>1.1225</mesh_width>
@@ -47,7 +52,7 @@
                 <y>-10.0</y>
                 <z>0.0</z>
             </initial_velocity>
-            <average_velocity>0.1</average_velocity>
+            <average_velocity>0.0</average_velocity>
         </cuboid>
     </cuboids>
 </MolSim>

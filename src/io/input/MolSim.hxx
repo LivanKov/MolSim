@@ -225,6 +225,7 @@ namespace xml_schema
 class MolSim;
 class simulation_parameters;
 class cuboids;
+class domain_size;
 class cuboid;
 class coordinate;
 class dimensions;
@@ -380,12 +381,52 @@ class simulation_parameters: public ::xml_schema::type
   void
   write_frequency (const write_frequency_type& x);
 
+  // r_cutoff_radius
+  //
+  typedef ::xml_schema::double_ r_cutoff_radius_type;
+  typedef ::xsd::cxx::tree::traits< r_cutoff_radius_type, char, ::xsd::cxx::tree::schema_type::double_ > r_cutoff_radius_traits;
+
+  const r_cutoff_radius_type&
+  r_cutoff_radius () const;
+
+  r_cutoff_radius_type&
+  r_cutoff_radius ();
+
+  void
+  r_cutoff_radius (const r_cutoff_radius_type& x);
+
+  // domain_size
+  //
+  typedef ::domain_size domain_size_type;
+  typedef ::xsd::cxx::tree::traits< domain_size_type, char > domain_size_traits;
+
+  const domain_size_type&
+  domain_size () const;
+
+  domain_size_type&
+  domain_size ();
+
+  void
+  domain_size (const domain_size_type& x);
+
+  void
+  domain_size (::std::auto_ptr< domain_size_type > p);
+
   // Constructors.
   //
   simulation_parameters (const end_time_type&,
                          const delta_time_type&,
                          const output_basename_type&,
-                         const write_frequency_type&);
+                         const write_frequency_type&,
+                         const r_cutoff_radius_type&,
+                         const domain_size_type&);
+
+  simulation_parameters (const end_time_type&,
+                         const delta_time_type&,
+                         const output_basename_type&,
+                         const write_frequency_type&,
+                         const r_cutoff_radius_type&,
+                         ::std::auto_ptr< domain_size_type >);
 
   simulation_parameters (const ::xercesc::DOMElement& e,
                          ::xml_schema::flags f = 0,
@@ -417,6 +458,8 @@ class simulation_parameters: public ::xml_schema::type
   ::xsd::cxx::tree::one< delta_time_type > delta_time_;
   ::xsd::cxx::tree::one< output_basename_type > output_basename_;
   ::xsd::cxx::tree::one< write_frequency_type > write_frequency_;
+  ::xsd::cxx::tree::one< r_cutoff_radius_type > r_cutoff_radius_;
+  ::xsd::cxx::tree::one< domain_size_type > domain_size_;
 };
 
 class cuboids: public ::xml_schema::type
@@ -470,6 +513,88 @@ class cuboids: public ::xml_schema::type
 
   protected:
   cuboid_sequence cuboid_;
+};
+
+class domain_size: public ::xml_schema::type
+{
+  public:
+  // x
+  //
+  typedef ::xml_schema::double_ x_type;
+  typedef ::xsd::cxx::tree::traits< x_type, char, ::xsd::cxx::tree::schema_type::double_ > x_traits;
+
+  const x_type&
+  x () const;
+
+  x_type&
+  x ();
+
+  void
+  x (const x_type& x);
+
+  // y
+  //
+  typedef ::xml_schema::double_ y_type;
+  typedef ::xsd::cxx::tree::traits< y_type, char, ::xsd::cxx::tree::schema_type::double_ > y_traits;
+
+  const y_type&
+  y () const;
+
+  y_type&
+  y ();
+
+  void
+  y (const y_type& x);
+
+  // z
+  //
+  typedef ::xml_schema::double_ z_type;
+  typedef ::xsd::cxx::tree::traits< z_type, char, ::xsd::cxx::tree::schema_type::double_ > z_traits;
+
+  const z_type&
+  z () const;
+
+  z_type&
+  z ();
+
+  void
+  z (const z_type& x);
+
+  // Constructors.
+  //
+  domain_size (const x_type&,
+               const y_type&,
+               const z_type&);
+
+  domain_size (const ::xercesc::DOMElement& e,
+               ::xml_schema::flags f = 0,
+               ::xml_schema::container* c = 0);
+
+  domain_size (const domain_size& x,
+               ::xml_schema::flags f = 0,
+               ::xml_schema::container* c = 0);
+
+  virtual domain_size*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  domain_size&
+  operator= (const domain_size& x);
+
+  virtual 
+  ~domain_size ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< x_type > x_;
+  ::xsd::cxx::tree::one< y_type > y_;
+  ::xsd::cxx::tree::one< z_type > z_;
 };
 
 class cuboid: public ::xml_schema::type
