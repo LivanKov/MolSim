@@ -9,10 +9,11 @@
 #include "simulator/calculations/Position.h"
 #include "simulator/calculations/Velocity.h"
 #include "utils/logger/Logger.h"
+#include <iostream>
 #include <memory>
 #include <spdlog/spdlog.h>
 #include <utility>
-#include <iostream>
+#include "io/input/XMLReader.h"
 
 std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
   std::unique_ptr<Simulation> ptr = std::make_unique<Simulation>(params);
@@ -21,17 +22,21 @@ std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
 
 Simulation::Simulation(SimParams &params) : params_(params) {}
 
-void Simulation::run() {
+ParticleContainer Simulation::readFile(char *argsv1, SimParams &params) {
+  ParticleContainer particles{};
+  // FileReader::readFile(particles, params_.input_path.data());
+  XMLReader::readXMLFile(particles, params, argsv1);
+
+  return particles;
+}
+
+void Simulation::run(ParticleContainer &particles) {
 
   Logger &logger = Logger::getInstance(params_.log_level);
 
   logger.info("Starting a simulation with:");
   logger.info("\tEnd time: " + std::to_string(params_.end_time));
   logger.info("\tDelta: " + std::to_string(params_.time_delta));
-
-  ParticleContainer particles{};
-
-  FileReader::readFile(particles, params_.input_path.data());
 
   int iteration{0};
   double current_time{0};

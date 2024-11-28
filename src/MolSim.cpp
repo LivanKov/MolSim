@@ -4,8 +4,10 @@
 #include <iostream>
 
 int main(int argc, char *argsv[]) {
-  SimParams parameters = CommandParser::parse(argc, argsv);
+  SimParams parameters{};
+  ParticleContainer particles = Simulation::readFile(argsv[1], parameters);
+  parameters = CommandParser::parse(argc, argsv);
   auto simulation = Simulation::generate_simulation(parameters);
-  simulation->run();
+  simulation->run(particles);
   return 0;
 }

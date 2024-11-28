@@ -1,5 +1,6 @@
 #include "io/input/cli/SimParams.h"
 #include <memory>
+#include "particle/ParticleContainer.h"
 
 #pragma once
 
@@ -26,5 +27,10 @@ public:
   /** 
    * @brief Run the simulation, contains all the necessary logic for the simulation.
    */
-  void run();
+  void run(ParticleContainer &particles);
+  /**
+   * @brief read file from XML input, initialize particles.
+   * @return ParticleContainer initialized particle container.
+   */
+  static ParticleContainer readFile(char *argv1, SimParams &SimParams);
 };

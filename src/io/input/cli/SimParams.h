@@ -7,6 +7,7 @@ struct SimParams {
   std::string output_path;
   double end_time;
   double time_delta;
+  unsigned int write_frequency;
   bool xyz_output;
   bool calculate_lj_force;
   bool disable_output;
