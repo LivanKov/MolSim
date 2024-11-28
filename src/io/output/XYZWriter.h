@@ -17,7 +17,6 @@ namespace output {
 
 class XYZWriter : public FileWriter {
 
-
 public:
   XYZWriter(ParticleContainer &particles);
 

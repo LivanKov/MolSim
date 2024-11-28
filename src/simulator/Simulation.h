@@ -12,19 +12,20 @@ private:
   SimParams &params_;
 
 public:
-  /** 
+  /**
    * @brief Constructor
    * @param params SimParams reference, pass the simulatin parameters.
    */
   Simulation(SimParams &params);
-  /** 
+  /**
    * @brief Generate a simulation object.
    * @param params SimParams reference, pass the simulatin parameters.
    * @return std::unique_ptr<Simulation> pointer to the simulation object.
    */
   static std::unique_ptr<Simulation> generate_simulation(SimParams &params);
-  /** 
-   * @brief Run the simulation, contains all the necessary logic for the simulation.
+  /**
+   * @brief Run the simulation, contains all the necessary logic for the
+   * simulation.
    */
   void run();
 };

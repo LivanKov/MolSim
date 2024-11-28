@@ -9,10 +9,10 @@
 #include "simulator/calculations/Position.h"
 #include "simulator/calculations/Velocity.h"
 #include "utils/logger/Logger.h"
+#include <iostream>
 #include <memory>
 #include <spdlog/spdlog.h>
 #include <utility>
-#include <iostream>
 
 std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
   std::unique_ptr<Simulation> ptr = std::make_unique<Simulation>(params);
@@ -25,7 +25,7 @@ void Simulation::run() {
 
   Logger &logger = Logger::getInstance(params_.log_level);
 
-  logger.info("Starting a simulation with:");
+  logger.warn("Starting a simulation with:");
   logger.info("\tEnd time: " + std::to_string(params_.end_time));
   logger.info("\tDelta: " + std::to_string(params_.time_delta));
 
@@ -36,8 +36,9 @@ void Simulation::run() {
   int iteration{0};
   double current_time{0};
 
-  ForceType FORCE_TYPE =
-      params_.calculate_lj_force ? ForceType::LENNARD_JONES : ForceType::VERLET;
+  ForceType FORCE_TYPE = params_.calculate_grav_force
+                             ? ForceType::VERLET
+                             : ForceType::LENNARD_JONES;
   std::unique_ptr<output::FileWriter> writer;
   if (params_.xyz_output) {
     writer = std::make_unique<output::XYZWriter>(particles);
@@ -60,5 +61,5 @@ void Simulation::run() {
 
   logger.info("Number of particles: " + std::to_string(particles.size()));
 
-  logger.info("Simulation finished.");
+  logger.warn("Simulation finished.");
 }

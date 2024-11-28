@@ -17,8 +17,8 @@ void XYZWriter::plot_particles(const std::string &filename, int iteration) {
 
   std::ofstream file;
   std::stringstream strstr;
-  strstr << filename << "/" << out_name << "_" << std::setfill('0') << std::setw(4) << iteration
-         << ".xyz";
+  strstr << filename << "/" << out_name << "_" << std::setfill('0')
+         << std::setw(4) << iteration << ".xyz";
 
   file.open(strstr.str().c_str());
   file << particles.size() << std::endl;

@@ -9,7 +9,8 @@ namespace output {
 
 /**
  * @class FileWriter
- * @brief Abstract file writer, used to declare writers with different properties.
+ * @brief Abstract file writer, used to declare writers with different
+ * properties.
  */
 class FileWriter {
 public:
@@ -20,7 +21,8 @@ public:
   FileWriter(ParticleContainer &particles);
 
   /**
-   * @brief Virtual function to plot particles, should be overriden by the derived classes.
+   * @brief Virtual function to plot particles, should be overriden by the
+   * derived classes.
    * @param filepath std::string reference, path to the file.
    * @param iteration int, iteration number.
    */

@@ -60,7 +60,7 @@ void Force::verlet(ParticleContainer &particles) {
     auto r12 = p2.getX() - p1.getX();
     // distance ||x_i - x_j ||
     double distance = ArrayUtils::L2Norm(r12);
-    
+
     double totalForce;
     totalForce = p1.getM() * p2.getM() / pow(distance, 2);
     auto force = (totalForce / distance) * r12;

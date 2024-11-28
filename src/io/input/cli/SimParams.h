@@ -8,7 +8,7 @@ struct SimParams {
   double end_time;
   double time_delta;
   bool xyz_output;
-  bool calculate_lj_force;
+  bool calculate_grav_force;
   bool disable_output;
   std::string log_level;
 };

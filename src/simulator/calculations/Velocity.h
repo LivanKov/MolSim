@@ -1,7 +1,6 @@
 #include "../particle/ParticleContainer.h"
 #include "Calculation.h"
 
-
 /**
  * @struct Position
  * @brief Struct, that provides functions for position calculation.

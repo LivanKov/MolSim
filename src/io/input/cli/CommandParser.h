@@ -53,7 +53,7 @@ SimParams parse(int argc, char **argv) {
       parameters.log_level = std::string(optarg);
       break;
     case 'f':
-      parameters.calculate_lj_force = false;
+      parameters.calculate_grav_force = true;
       break;
     case 'n':
       parameters.disable_output = true;
