@@ -21,11 +21,10 @@ void print_help() {
   std::cout << "  -n   Disable all file output for the sake of performance\n";
 }
 
-SimParams parse(int argc, char **argv) {
+SimParams parse(int argc, char **argv, SimParams &parameters) {
   if (argc < 2) {
     print_help();
   }
-  SimParams parameters{};
 
   int opt;
 
