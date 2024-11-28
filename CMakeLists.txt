@@ -35,11 +35,11 @@ file(GLOB_RECURSE MY_SRC
 
 # Add the generated .cxx files from CodeSynthesis XSD
 set(GENERATED_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/io/MolSim.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/io/input/MolSim.cxx
 )   
 
 # create make target
-add_executable(MolSim ${MY_SRC})
+add_executable(MolSim ${MY_SRC} ${GENERATED_SRC})
 
 # set cxx standard. You may raise this if you want.
 target_compile_features(MolSim
