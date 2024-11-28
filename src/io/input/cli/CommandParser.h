@@ -61,7 +61,6 @@ SimParams parse(int argc, char **argv) {
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argv[0]);
     }
-    std::cout << "Enabled output: " << parameters.disable_output << std::endl;
   }
   return parameters;
 }
