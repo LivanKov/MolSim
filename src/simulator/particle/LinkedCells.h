@@ -1,7 +1,9 @@
 #include "ParticleContainer.h"
 #include <array>
+#include <unordered_set>
 
 #pragma once
+
 
 /**
  * @struct Cell
@@ -11,7 +13,9 @@ struct Cell{
     /**
      * @brief Particles contained within the cell
      */
-    std::vector<ParticlePointer> particles;
+    std::unordered_set<ParticlePointer> particles;
+    std::array<double,3> left_corner_coordinates;
+    bool is_boundary;
 };
 
 /**
@@ -35,18 +39,25 @@ class LinkedCells<2> {
          * @param domain_size Domain size of the container.
          * @param r_cutoff Cutoff radius.
          */
-        LinkedCells(std::array<double,2>& domain_size, double r_cutoff);
+        LinkedCells(std::array<double,3>& left_corner_coordinates, std::array<double,2>& domain_size, double r_cutoff);
         /**
          * @brief Insert particles into the container.
          * @param particles Vector of ParticlePointer objects.
          */
         void insert_particles(std::vector<ParticlePointer>& particles);
+
+        std::vector<Cell>& get_neighbour_cells(Cell& cell);
+
+        Cell& get_corresponding_cell(ParticlePointer& particle);
+
     private: 
+        std::array<double,3> left_corner_coordinates;
         std::vector<std::vector<Cell>> cells_;
         double r_cutoff_;
         double width;
         double height;
         double depth;
+    
     
 };
 
@@ -61,13 +72,14 @@ class LinkedCells<3> {
          * @param domain_size Domain size of the container.
          * @param r_cutoff Cutoff radius.
          */
-        LinkedCells(std::array<double,3>& domain_size, double r_cutoff);
+        LinkedCells(std::array<double,3>& left_corner_coordinates, std::array<double,3>& domain_size, double r_cutoff);
         /**
          * @brief Insert particles into the container.
          * @param particles Vector of ParticlePointer objects.
          */
         void insert_particles(std::vector<ParticlePointer>& particles);
     private:
+        std::array<double,3>left_corner_coordinates;
         std::vector<std::vector<std::vector<Cell>>> cells_;
         double r_cutoff_;
         double width;

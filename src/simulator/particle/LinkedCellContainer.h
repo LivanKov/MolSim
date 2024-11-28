@@ -1,4 +1,5 @@
 #include "ParticleContainer.h"
+#include "LinkedCells.h"
 #include <array>
 
 #pragma once
@@ -19,8 +20,8 @@ class LinkedCellContainer : public ParticleContainer {
          */
     LinkedCellContainer(std::array<double,N>& domain_size, double r_cutoff);
 
-    public:
-        std::array<double,N> domain_size_;
-        double r_cutoff_;
+    std::array<double,N> domain_size_;
+    double r_cutoff_;
+    LinkedCells<N> cells_;
         
 };
