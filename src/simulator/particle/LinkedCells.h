@@ -78,6 +78,8 @@ class LinkedCells<3> {
          * @param particles Vector of ParticlePointer objects.
          */
         void insert_particles(std::vector<ParticlePointer>& particles);
+
+        Cell& get_corresponding_cell(ParticlePointer& particle);
     private:
         std::array<double,3>left_corner_coordinates;
         std::vector<std::vector<std::vector<Cell>>> cells_;

@@ -15,16 +15,19 @@ LinkedCells<2>::LinkedCells(std::array<double,3>& left_corner_coordinates, std::
 }
 
 void LinkedCells<2>::insert_particles(std::vector<ParticlePointer> &particles) {
-  
+  for(auto &particle : particles){
+    Cell &cell = get_corresponding_cell(particle);
+    cell.particles.insert(particle);
+  }
 }
 
 Cell& LinkedCells<2>::get_corresponding_cell(ParticlePointer &particle) {
-  return cells_[0][0];
+  auto coordinates = particle->getX();
+  auto x = (coordinates[0] - left_corner_coordinates[0]) / r_cutoff_;
+  auto y = (coordinates[1] - left_corner_coordinates[1]) / r_cutoff_;
+  return cells_[x][y];
 }
 
-std::vector<Cell>& LinkedCells<2>::get_neighbour_cells(Cell &cell) {
-  return cells_[0];
-}
 
 
 LinkedCells<3>::LinkedCells(std::array<double,3>& left_corner_coordinates, std::array<double, 3> &domain_size, double r_cutoff) : r_cutoff_{r_cutoff}, width{domain_size[0]}, height{domain_size[1]}, depth{domain_size[2]} {
@@ -43,6 +46,18 @@ LinkedCells<3>::LinkedCells(std::array<double,3>& left_corner_coordinates, std::
   }
 }
 
+Cell& LinkedCells<3>::get_corresponding_cell(ParticlePointer &particle) {
+  auto coordinates = particle->getX();
+  auto x = (coordinates[0] - left_corner_coordinates[0]) / r_cutoff_;
+  auto y = (coordinates[1] - left_corner_coordinates[1]) / r_cutoff_;
+  auto z = (coordinates[2] - left_corner_coordinates[2]) / r_cutoff_;
+  return cells_[x][y][z];
+}
+
+
 void LinkedCells<3>::insert_particles(std::vector<ParticlePointer> &particles) {
-  // ...
+  for(auto &particle : particles){
+    Cell &cell = get_corresponding_cell(particle);
+    cell.particles.insert(particle);
+  }
 }
