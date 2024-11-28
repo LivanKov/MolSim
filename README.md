@@ -42,9 +42,11 @@ The MolSim application now supports using an XML input file for configuring simu
 ### XML Parameters
 The XML input file provides the following parameters:
 - **end_time**: The total time for which the simulation should run.
-- **delta_time**: The time increment between simulation steps.
-- **output_basename**: The base name for output files (including filepath).
+- **time_delta**: The time increment between simulation steps.
+- **output_path**: The base name for output files (including filepath).
 - **write_frequency**: Specifies how often to write output files (e.g., every N iterations).
+- **r_cutoff_radius**: Specifies the distance, from which the force set to 0.
+- **domain_size**: size of the inner area including the boundary of the domain.
 
 These parameters are defined in the XML file and are loaded when running the simulation.
 
@@ -88,6 +90,11 @@ Here is an example of an XML input file:
         <delta_time>0.005</delta_time>
         <output_basename>../output/MD_vtk</output_basename>
         <write_frequency>10</write_frequency>
+        <r_cutoff_radius>3.0</r_cutoff_radius>
+        <domain_size>
+            <x>180.0</x>
+            <y>90.0</y>
+            <z>0.0</z>
     </simulation_parameters>
     <cuboids>
         <cuboid>
