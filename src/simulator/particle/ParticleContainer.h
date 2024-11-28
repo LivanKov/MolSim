@@ -204,9 +204,6 @@ public:
    */
   ParticlePairIterator pair_end();
 
-
-  void delete_particle(ParticlePointer &p);
-
 private:
   /**
    * @brief Creates particle pairs for newly inserted particle.
