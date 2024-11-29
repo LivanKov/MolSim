@@ -23,6 +23,39 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
+                <xs:element name="discs">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="disc" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="center">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="x" type="xs:double"/>
+                                                    <xs:element name="y" type="xs:double"/>
+                                                    <xs:element name="z" type="xs:double"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="initial_velocity">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="x" type="xs:double"/>
+                                                    <xs:element name="y" type="xs:double"/>
+                                                    <xs:element name="z" type="xs:double"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="radius" type="xs:unsignedInt"/>
+                                        <xs:element name="mesh_width" type="xs:double"/>
+                                        <xs:element name="mass" type="xs:double"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
                 <xs:element name="cuboids">
                     <xs:complexType>
                         <xs:sequence>
@@ -51,9 +84,9 @@
                                         <xs:element name="mass" type="xs:double"/>
                                         <xs:element name="initial_velocity">
                                             <xs:complexType>
-                                            <xs:sequence>
-                                                <xs:element name="x" type="xs:double"/>
-                                                <xs:element name="y" type="xs:double"/>
+                                                <xs:sequence>
+                                                    <xs:element name="x" type="xs:double"/>
+                                                    <xs:element name="y" type="xs:double"/>
                                                     <xs:element name="z" type="xs:double"/>
                                                 </xs:sequence>
                                             </xs:complexType>

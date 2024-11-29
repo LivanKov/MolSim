@@ -224,12 +224,15 @@ namespace xml_schema
 //
 class MolSim;
 class simulation_parameters;
+class discs;
 class cuboids;
 class domain_size;
+class disc;
 class cuboid;
+class center;
+class initial_velocity;
 class coordinate;
 class dimensions;
-class initial_velocity;
 
 #include <memory>    // ::std::auto_ptr
 #include <limits>    // std::numeric_limits
@@ -264,6 +267,23 @@ class MolSim: public ::xml_schema::type
   void
   simulation_parameters (::std::auto_ptr< simulation_parameters_type > p);
 
+  // discs
+  //
+  typedef ::discs discs_type;
+  typedef ::xsd::cxx::tree::traits< discs_type, char > discs_traits;
+
+  const discs_type&
+  discs () const;
+
+  discs_type&
+  discs ();
+
+  void
+  discs (const discs_type& x);
+
+  void
+  discs (::std::auto_ptr< discs_type > p);
+
   // cuboids
   //
   typedef ::cuboids cuboids_type;
@@ -284,9 +304,11 @@ class MolSim: public ::xml_schema::type
   // Constructors.
   //
   MolSim (const simulation_parameters_type&,
+          const discs_type&,
           const cuboids_type&);
 
   MolSim (::std::auto_ptr< simulation_parameters_type >,
+          ::std::auto_ptr< discs_type >,
           ::std::auto_ptr< cuboids_type >);
 
   MolSim (const ::xercesc::DOMElement& e,
@@ -316,6 +338,7 @@ class MolSim: public ::xml_schema::type
 
   protected:
   ::xsd::cxx::tree::one< simulation_parameters_type > simulation_parameters_;
+  ::xsd::cxx::tree::one< discs_type > discs_;
   ::xsd::cxx::tree::one< cuboids_type > cuboids_;
 };
 
@@ -462,6 +485,59 @@ class simulation_parameters: public ::xml_schema::type
   ::xsd::cxx::tree::one< domain_size_type > domain_size_;
 };
 
+class discs: public ::xml_schema::type
+{
+  public:
+  // disc
+  //
+  typedef ::disc disc_type;
+  typedef ::xsd::cxx::tree::sequence< disc_type > disc_sequence;
+  typedef disc_sequence::iterator disc_iterator;
+  typedef disc_sequence::const_iterator disc_const_iterator;
+  typedef ::xsd::cxx::tree::traits< disc_type, char > disc_traits;
+
+  const disc_sequence&
+  disc () const;
+
+  disc_sequence&
+  disc ();
+
+  void
+  disc (const disc_sequence& s);
+
+  // Constructors.
+  //
+  discs ();
+
+  discs (const ::xercesc::DOMElement& e,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
+
+  discs (const discs& x,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
+
+  virtual discs*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  discs&
+  operator= (const discs& x);
+
+  virtual 
+  ~discs ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  disc_sequence disc_;
+};
+
 class cuboids: public ::xml_schema::type
 {
   public:
@@ -595,6 +671,132 @@ class domain_size: public ::xml_schema::type
   ::xsd::cxx::tree::one< x_type > x_;
   ::xsd::cxx::tree::one< y_type > y_;
   ::xsd::cxx::tree::one< z_type > z_;
+};
+
+class disc: public ::xml_schema::type
+{
+  public:
+  // center
+  //
+  typedef ::center center_type;
+  typedef ::xsd::cxx::tree::traits< center_type, char > center_traits;
+
+  const center_type&
+  center () const;
+
+  center_type&
+  center ();
+
+  void
+  center (const center_type& x);
+
+  void
+  center (::std::auto_ptr< center_type > p);
+
+  // initial_velocity
+  //
+  typedef ::initial_velocity initial_velocity_type;
+  typedef ::xsd::cxx::tree::traits< initial_velocity_type, char > initial_velocity_traits;
+
+  const initial_velocity_type&
+  initial_velocity () const;
+
+  initial_velocity_type&
+  initial_velocity ();
+
+  void
+  initial_velocity (const initial_velocity_type& x);
+
+  void
+  initial_velocity (::std::auto_ptr< initial_velocity_type > p);
+
+  // radius
+  //
+  typedef ::xml_schema::unsigned_int radius_type;
+  typedef ::xsd::cxx::tree::traits< radius_type, char > radius_traits;
+
+  const radius_type&
+  radius () const;
+
+  radius_type&
+  radius ();
+
+  void
+  radius (const radius_type& x);
+
+  // mesh_width
+  //
+  typedef ::xml_schema::double_ mesh_width_type;
+  typedef ::xsd::cxx::tree::traits< mesh_width_type, char, ::xsd::cxx::tree::schema_type::double_ > mesh_width_traits;
+
+  const mesh_width_type&
+  mesh_width () const;
+
+  mesh_width_type&
+  mesh_width ();
+
+  void
+  mesh_width (const mesh_width_type& x);
+
+  // mass
+  //
+  typedef ::xml_schema::double_ mass_type;
+  typedef ::xsd::cxx::tree::traits< mass_type, char, ::xsd::cxx::tree::schema_type::double_ > mass_traits;
+
+  const mass_type&
+  mass () const;
+
+  mass_type&
+  mass ();
+
+  void
+  mass (const mass_type& x);
+
+  // Constructors.
+  //
+  disc (const center_type&,
+        const initial_velocity_type&,
+        const radius_type&,
+        const mesh_width_type&,
+        const mass_type&);
+
+  disc (::std::auto_ptr< center_type >,
+        ::std::auto_ptr< initial_velocity_type >,
+        const radius_type&,
+        const mesh_width_type&,
+        const mass_type&);
+
+  disc (const ::xercesc::DOMElement& e,
+        ::xml_schema::flags f = 0,
+        ::xml_schema::container* c = 0);
+
+  disc (const disc& x,
+        ::xml_schema::flags f = 0,
+        ::xml_schema::container* c = 0);
+
+  virtual disc*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  disc&
+  operator= (const disc& x);
+
+  virtual 
+  ~disc ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< center_type > center_;
+  ::xsd::cxx::tree::one< initial_velocity_type > initial_velocity_;
+  ::xsd::cxx::tree::one< radius_type > radius_;
+  ::xsd::cxx::tree::one< mesh_width_type > mesh_width_;
+  ::xsd::cxx::tree::one< mass_type > mass_;
 };
 
 class cuboid: public ::xml_schema::type
@@ -741,6 +943,170 @@ class cuboid: public ::xml_schema::type
   ::xsd::cxx::tree::one< mass_type > mass_;
   ::xsd::cxx::tree::one< initial_velocity_type > initial_velocity_;
   ::xsd::cxx::tree::one< average_velocity_type > average_velocity_;
+};
+
+class center: public ::xml_schema::type
+{
+  public:
+  // x
+  //
+  typedef ::xml_schema::double_ x_type;
+  typedef ::xsd::cxx::tree::traits< x_type, char, ::xsd::cxx::tree::schema_type::double_ > x_traits;
+
+  const x_type&
+  x () const;
+
+  x_type&
+  x ();
+
+  void
+  x (const x_type& x);
+
+  // y
+  //
+  typedef ::xml_schema::double_ y_type;
+  typedef ::xsd::cxx::tree::traits< y_type, char, ::xsd::cxx::tree::schema_type::double_ > y_traits;
+
+  const y_type&
+  y () const;
+
+  y_type&
+  y ();
+
+  void
+  y (const y_type& x);
+
+  // z
+  //
+  typedef ::xml_schema::double_ z_type;
+  typedef ::xsd::cxx::tree::traits< z_type, char, ::xsd::cxx::tree::schema_type::double_ > z_traits;
+
+  const z_type&
+  z () const;
+
+  z_type&
+  z ();
+
+  void
+  z (const z_type& x);
+
+  // Constructors.
+  //
+  center (const x_type&,
+          const y_type&,
+          const z_type&);
+
+  center (const ::xercesc::DOMElement& e,
+          ::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0);
+
+  center (const center& x,
+          ::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0);
+
+  virtual center*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  center&
+  operator= (const center& x);
+
+  virtual 
+  ~center ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< x_type > x_;
+  ::xsd::cxx::tree::one< y_type > y_;
+  ::xsd::cxx::tree::one< z_type > z_;
+};
+
+class initial_velocity: public ::xml_schema::type
+{
+  public:
+  // x
+  //
+  typedef ::xml_schema::double_ x_type;
+  typedef ::xsd::cxx::tree::traits< x_type, char, ::xsd::cxx::tree::schema_type::double_ > x_traits;
+
+  const x_type&
+  x () const;
+
+  x_type&
+  x ();
+
+  void
+  x (const x_type& x);
+
+  // y
+  //
+  typedef ::xml_schema::double_ y_type;
+  typedef ::xsd::cxx::tree::traits< y_type, char, ::xsd::cxx::tree::schema_type::double_ > y_traits;
+
+  const y_type&
+  y () const;
+
+  y_type&
+  y ();
+
+  void
+  y (const y_type& x);
+
+  // z
+  //
+  typedef ::xml_schema::double_ z_type;
+  typedef ::xsd::cxx::tree::traits< z_type, char, ::xsd::cxx::tree::schema_type::double_ > z_traits;
+
+  const z_type&
+  z () const;
+
+  z_type&
+  z ();
+
+  void
+  z (const z_type& x);
+
+  // Constructors.
+  //
+  initial_velocity (const x_type&,
+                    const y_type&,
+                    const z_type&);
+
+  initial_velocity (const ::xercesc::DOMElement& e,
+                    ::xml_schema::flags f = 0,
+                    ::xml_schema::container* c = 0);
+
+  initial_velocity (const initial_velocity& x,
+                    ::xml_schema::flags f = 0,
+                    ::xml_schema::container* c = 0);
+
+  virtual initial_velocity*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  initial_velocity&
+  operator= (const initial_velocity& x);
+
+  virtual 
+  ~initial_velocity ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< x_type > x_;
+  ::xsd::cxx::tree::one< y_type > y_;
+  ::xsd::cxx::tree::one< z_type > z_;
 };
 
 class coordinate: public ::xml_schema::type
@@ -893,88 +1259,6 @@ class dimensions: public ::xml_schema::type
 
   virtual 
   ~dimensions ();
-
-  // Implementation.
-  //
-  protected:
-  void
-  parse (::xsd::cxx::xml::dom::parser< char >&,
-         ::xml_schema::flags);
-
-  protected:
-  ::xsd::cxx::tree::one< x_type > x_;
-  ::xsd::cxx::tree::one< y_type > y_;
-  ::xsd::cxx::tree::one< z_type > z_;
-};
-
-class initial_velocity: public ::xml_schema::type
-{
-  public:
-  // x
-  //
-  typedef ::xml_schema::double_ x_type;
-  typedef ::xsd::cxx::tree::traits< x_type, char, ::xsd::cxx::tree::schema_type::double_ > x_traits;
-
-  const x_type&
-  x () const;
-
-  x_type&
-  x ();
-
-  void
-  x (const x_type& x);
-
-  // y
-  //
-  typedef ::xml_schema::double_ y_type;
-  typedef ::xsd::cxx::tree::traits< y_type, char, ::xsd::cxx::tree::schema_type::double_ > y_traits;
-
-  const y_type&
-  y () const;
-
-  y_type&
-  y ();
-
-  void
-  y (const y_type& x);
-
-  // z
-  //
-  typedef ::xml_schema::double_ z_type;
-  typedef ::xsd::cxx::tree::traits< z_type, char, ::xsd::cxx::tree::schema_type::double_ > z_traits;
-
-  const z_type&
-  z () const;
-
-  z_type&
-  z ();
-
-  void
-  z (const z_type& x);
-
-  // Constructors.
-  //
-  initial_velocity (const x_type&,
-                    const y_type&,
-                    const z_type&);
-
-  initial_velocity (const ::xercesc::DOMElement& e,
-                    ::xml_schema::flags f = 0,
-                    ::xml_schema::container* c = 0);
-
-  initial_velocity (const initial_velocity& x,
-                    ::xml_schema::flags f = 0,
-                    ::xml_schema::container* c = 0);
-
-  virtual initial_velocity*
-  _clone (::xml_schema::flags f = 0,
-          ::xml_schema::container* c = 0) const;
-
-  initial_velocity&
-  operator= (const initial_velocity& x);
-
-  virtual 
-  ~initial_velocity ();
 
   // Implementation.
   //

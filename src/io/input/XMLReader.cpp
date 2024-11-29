@@ -116,8 +116,35 @@ void XMLReader::readXMLFile(ParticleContainer &particles,
       ParticleGenerator::insertCuboid(position, dimensions, mesh_width, mass,
                                       initial_velocity, avg_velocity,
                                       particles);
-    }
+    }                                  
 
+    // Extract disc specification
+    for (const auto &disc : doc->discs().disc()) {
+      std::array<double, 3> center = {
+        disc.center().x(),
+        disc.center().y(),
+        disc.center().z()};
+
+      std::array<double, 3> initial_velocity = {
+        disc.initial_velocity().x(),
+        disc.initial_velocity().y(),
+        disc.initial_velocity().z()
+      };
+
+      size_t radius = disc.radius();
+      double mesh_width = disc.mesh_width();
+      double mass = disc.mass();
+
+      logger.info("Creating disc: \n");
+      logger.info("Center: " + containerToStrings(center));
+      logger.info("Radius: " + std::to_string(radius));
+      logger.info("Mesh Width: " + std::to_string(mesh_width));
+      logger.info("Mass: " + std::to_string(mass));
+      logger.info("Initial Velocity: " + containerToStrings(initial_velocity));
+
+      ParticleGenerator::insertDisc(center, initial_velocity, radius,
+                                    mesh_width, mass, particles);
+    }
   } catch (const std::exception &e) {
     logger.warn("Error while reading XML file: " + std::string(filename));
     exit(-1);
