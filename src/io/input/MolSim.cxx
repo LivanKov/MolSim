@@ -67,6 +67,30 @@ simulation_parameters (::std::auto_ptr< simulation_parameters_type > x)
   this->simulation_parameters_.set (x);
 }
 
+const MolSim::discs_type& MolSim::
+discs () const
+{
+  return this->discs_.get ();
+}
+
+MolSim::discs_type& MolSim::
+discs ()
+{
+  return this->discs_.get ();
+}
+
+void MolSim::
+discs (const discs_type& x)
+{
+  this->discs_.set (x);
+}
+
+void MolSim::
+discs (::std::auto_ptr< discs_type > x)
+{
+  this->discs_.set (x);
+}
+
 const MolSim::cuboids_type& MolSim::
 cuboids () const
 {
@@ -216,6 +240,28 @@ domain_size (::std::auto_ptr< domain_size_type > x)
 }
 
 
+// discs
+// 
+
+const discs::disc_sequence& discs::
+disc () const
+{
+  return this->disc_;
+}
+
+discs::disc_sequence& discs::
+disc ()
+{
+  return this->disc_;
+}
+
+void discs::
+disc (const disc_sequence& s)
+{
+  this->disc_ = s;
+}
+
+
 // cuboids
 // 
 
@@ -293,6 +339,112 @@ void domain_size::
 z (const z_type& x)
 {
   this->z_.set (x);
+}
+
+
+// disc
+// 
+
+const disc::center_type& disc::
+center () const
+{
+  return this->center_.get ();
+}
+
+disc::center_type& disc::
+center ()
+{
+  return this->center_.get ();
+}
+
+void disc::
+center (const center_type& x)
+{
+  this->center_.set (x);
+}
+
+void disc::
+center (::std::auto_ptr< center_type > x)
+{
+  this->center_.set (x);
+}
+
+const disc::initial_velocity_type& disc::
+initial_velocity () const
+{
+  return this->initial_velocity_.get ();
+}
+
+disc::initial_velocity_type& disc::
+initial_velocity ()
+{
+  return this->initial_velocity_.get ();
+}
+
+void disc::
+initial_velocity (const initial_velocity_type& x)
+{
+  this->initial_velocity_.set (x);
+}
+
+void disc::
+initial_velocity (::std::auto_ptr< initial_velocity_type > x)
+{
+  this->initial_velocity_.set (x);
+}
+
+const disc::radius_type& disc::
+radius () const
+{
+  return this->radius_.get ();
+}
+
+disc::radius_type& disc::
+radius ()
+{
+  return this->radius_.get ();
+}
+
+void disc::
+radius (const radius_type& x)
+{
+  this->radius_.set (x);
+}
+
+const disc::mesh_width_type& disc::
+mesh_width () const
+{
+  return this->mesh_width_.get ();
+}
+
+disc::mesh_width_type& disc::
+mesh_width ()
+{
+  return this->mesh_width_.get ();
+}
+
+void disc::
+mesh_width (const mesh_width_type& x)
+{
+  this->mesh_width_.set (x);
+}
+
+const disc::mass_type& disc::
+mass () const
+{
+  return this->mass_.get ();
+}
+
+disc::mass_type& disc::
+mass ()
+{
+  return this->mass_.get ();
+}
+
+void disc::
+mass (const mass_type& x)
+{
+  this->mass_.set (x);
 }
 
 
@@ -426,6 +578,122 @@ average_velocity (const average_velocity_type& x)
 }
 
 
+// center
+// 
+
+const center::x_type& center::
+x () const
+{
+  return this->x_.get ();
+}
+
+center::x_type& center::
+x ()
+{
+  return this->x_.get ();
+}
+
+void center::
+x (const x_type& x)
+{
+  this->x_.set (x);
+}
+
+const center::y_type& center::
+y () const
+{
+  return this->y_.get ();
+}
+
+center::y_type& center::
+y ()
+{
+  return this->y_.get ();
+}
+
+void center::
+y (const y_type& x)
+{
+  this->y_.set (x);
+}
+
+const center::z_type& center::
+z () const
+{
+  return this->z_.get ();
+}
+
+center::z_type& center::
+z ()
+{
+  return this->z_.get ();
+}
+
+void center::
+z (const z_type& x)
+{
+  this->z_.set (x);
+}
+
+
+// initial_velocity
+// 
+
+const initial_velocity::x_type& initial_velocity::
+x () const
+{
+  return this->x_.get ();
+}
+
+initial_velocity::x_type& initial_velocity::
+x ()
+{
+  return this->x_.get ();
+}
+
+void initial_velocity::
+x (const x_type& x)
+{
+  this->x_.set (x);
+}
+
+const initial_velocity::y_type& initial_velocity::
+y () const
+{
+  return this->y_.get ();
+}
+
+initial_velocity::y_type& initial_velocity::
+y ()
+{
+  return this->y_.get ();
+}
+
+void initial_velocity::
+y (const y_type& x)
+{
+  this->y_.set (x);
+}
+
+const initial_velocity::z_type& initial_velocity::
+z () const
+{
+  return this->z_.get ();
+}
+
+initial_velocity::z_type& initial_velocity::
+z ()
+{
+  return this->z_.get ();
+}
+
+void initial_velocity::
+z (const z_type& x)
+{
+  this->z_.set (x);
+}
+
+
 // coordinate
 // 
 
@@ -542,64 +810,6 @@ z (const z_type& x)
 }
 
 
-// initial_velocity
-// 
-
-const initial_velocity::x_type& initial_velocity::
-x () const
-{
-  return this->x_.get ();
-}
-
-initial_velocity::x_type& initial_velocity::
-x ()
-{
-  return this->x_.get ();
-}
-
-void initial_velocity::
-x (const x_type& x)
-{
-  this->x_.set (x);
-}
-
-const initial_velocity::y_type& initial_velocity::
-y () const
-{
-  return this->y_.get ();
-}
-
-initial_velocity::y_type& initial_velocity::
-y ()
-{
-  return this->y_.get ();
-}
-
-void initial_velocity::
-y (const y_type& x)
-{
-  this->y_.set (x);
-}
-
-const initial_velocity::z_type& initial_velocity::
-z () const
-{
-  return this->z_.get ();
-}
-
-initial_velocity::z_type& initial_velocity::
-z ()
-{
-  return this->z_.get ();
-}
-
-void initial_velocity::
-z (const z_type& x)
-{
-  this->z_.set (x);
-}
-
-
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 
 // MolSim
@@ -607,18 +817,22 @@ z (const z_type& x)
 
 MolSim::
 MolSim (const simulation_parameters_type& simulation_parameters,
+        const discs_type& discs,
         const cuboids_type& cuboids)
 : ::xml_schema::type (),
   simulation_parameters_ (simulation_parameters, this),
+  discs_ (discs, this),
   cuboids_ (cuboids, this)
 {
 }
 
 MolSim::
 MolSim (::std::auto_ptr< simulation_parameters_type > simulation_parameters,
+        ::std::auto_ptr< discs_type > discs,
         ::std::auto_ptr< cuboids_type > cuboids)
 : ::xml_schema::type (),
   simulation_parameters_ (simulation_parameters, this),
+  discs_ (discs, this),
   cuboids_ (cuboids, this)
 {
 }
@@ -629,6 +843,7 @@ MolSim (const MolSim& x,
         ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   simulation_parameters_ (x.simulation_parameters_, f, this),
+  discs_ (x.discs_, f, this),
   cuboids_ (x.cuboids_, f, this)
 {
 }
@@ -639,6 +854,7 @@ MolSim (const ::xercesc::DOMElement& e,
         ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   simulation_parameters_ (this),
+  discs_ (this),
   cuboids_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
@@ -672,6 +888,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // discs
+    //
+    if (n.name () == "discs" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< discs_type > r (
+        discs_traits::create (i, f, this));
+
+      if (!discs_.present ())
+      {
+        this->discs_.set (r);
+        continue;
+      }
+    }
+
     // cuboids
     //
     if (n.name () == "cuboids" && n.namespace_ ().empty ())
@@ -693,6 +923,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   {
     throw ::xsd::cxx::tree::expected_element< char > (
       "simulation_parameters",
+      "");
+  }
+
+  if (!discs_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "discs",
       "");
   }
 
@@ -718,6 +955,7 @@ operator= (const MolSim& x)
   {
     static_cast< ::xml_schema::type& > (*this) = x;
     this->simulation_parameters_ = x.simulation_parameters_;
+    this->discs_ = x.discs_;
     this->cuboids_ = x.cuboids_;
   }
 
@@ -956,6 +1194,88 @@ simulation_parameters::
 {
 }
 
+// discs
+//
+
+discs::
+discs ()
+: ::xml_schema::type (),
+  disc_ (this)
+{
+}
+
+discs::
+discs (const discs& x,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  disc_ (x.disc_, f, this)
+{
+}
+
+discs::
+discs (const ::xercesc::DOMElement& e,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  disc_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void discs::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // disc
+    //
+    if (n.name () == "disc" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< disc_type > r (
+        disc_traits::create (i, f, this));
+
+      this->disc_.push_back (r);
+      continue;
+    }
+
+    break;
+  }
+}
+
+discs* discs::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class discs (*this, f, c);
+}
+
+discs& discs::
+operator= (const discs& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->disc_ = x.disc_;
+  }
+
+  return *this;
+}
+
+discs::
+~discs ()
+{
+}
+
 // cuboids
 //
 
@@ -1170,6 +1490,208 @@ operator= (const domain_size& x)
 
 domain_size::
 ~domain_size ()
+{
+}
+
+// disc
+//
+
+disc::
+disc (const center_type& center,
+      const initial_velocity_type& initial_velocity,
+      const radius_type& radius,
+      const mesh_width_type& mesh_width,
+      const mass_type& mass)
+: ::xml_schema::type (),
+  center_ (center, this),
+  initial_velocity_ (initial_velocity, this),
+  radius_ (radius, this),
+  mesh_width_ (mesh_width, this),
+  mass_ (mass, this)
+{
+}
+
+disc::
+disc (::std::auto_ptr< center_type > center,
+      ::std::auto_ptr< initial_velocity_type > initial_velocity,
+      const radius_type& radius,
+      const mesh_width_type& mesh_width,
+      const mass_type& mass)
+: ::xml_schema::type (),
+  center_ (center, this),
+  initial_velocity_ (initial_velocity, this),
+  radius_ (radius, this),
+  mesh_width_ (mesh_width, this),
+  mass_ (mass, this)
+{
+}
+
+disc::
+disc (const disc& x,
+      ::xml_schema::flags f,
+      ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  center_ (x.center_, f, this),
+  initial_velocity_ (x.initial_velocity_, f, this),
+  radius_ (x.radius_, f, this),
+  mesh_width_ (x.mesh_width_, f, this),
+  mass_ (x.mass_, f, this)
+{
+}
+
+disc::
+disc (const ::xercesc::DOMElement& e,
+      ::xml_schema::flags f,
+      ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  center_ (this),
+  initial_velocity_ (this),
+  radius_ (this),
+  mesh_width_ (this),
+  mass_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void disc::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // center
+    //
+    if (n.name () == "center" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< center_type > r (
+        center_traits::create (i, f, this));
+
+      if (!center_.present ())
+      {
+        this->center_.set (r);
+        continue;
+      }
+    }
+
+    // initial_velocity
+    //
+    if (n.name () == "initial_velocity" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< initial_velocity_type > r (
+        initial_velocity_traits::create (i, f, this));
+
+      if (!initial_velocity_.present ())
+      {
+        this->initial_velocity_.set (r);
+        continue;
+      }
+    }
+
+    // radius
+    //
+    if (n.name () == "radius" && n.namespace_ ().empty ())
+    {
+      if (!radius_.present ())
+      {
+        this->radius_.set (radius_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // mesh_width
+    //
+    if (n.name () == "mesh_width" && n.namespace_ ().empty ())
+    {
+      if (!mesh_width_.present ())
+      {
+        this->mesh_width_.set (mesh_width_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // mass
+    //
+    if (n.name () == "mass" && n.namespace_ ().empty ())
+    {
+      if (!mass_.present ())
+      {
+        this->mass_.set (mass_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!center_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "center",
+      "");
+  }
+
+  if (!initial_velocity_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "initial_velocity",
+      "");
+  }
+
+  if (!radius_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "radius",
+      "");
+  }
+
+  if (!mesh_width_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "mesh_width",
+      "");
+  }
+
+  if (!mass_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "mass",
+      "");
+  }
+}
+
+disc* disc::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class disc (*this, f, c);
+}
+
+disc& disc::
+operator= (const disc& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->center_ = x.center_;
+    this->initial_velocity_ = x.initial_velocity_;
+    this->radius_ = x.radius_;
+    this->mesh_width_ = x.mesh_width_;
+    this->mass_ = x.mass_;
+  }
+
+  return *this;
+}
+
+disc::
+~disc ()
 {
 }
 
@@ -1400,6 +1922,276 @@ operator= (const cuboid& x)
 
 cuboid::
 ~cuboid ()
+{
+}
+
+// center
+//
+
+center::
+center (const x_type& x,
+        const y_type& y,
+        const z_type& z)
+: ::xml_schema::type (),
+  x_ (x, this),
+  y_ (y, this),
+  z_ (z, this)
+{
+}
+
+center::
+center (const center& x,
+        ::xml_schema::flags f,
+        ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  x_ (x.x_, f, this),
+  y_ (x.y_, f, this),
+  z_ (x.z_, f, this)
+{
+}
+
+center::
+center (const ::xercesc::DOMElement& e,
+        ::xml_schema::flags f,
+        ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  x_ (this),
+  y_ (this),
+  z_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void center::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // x
+    //
+    if (n.name () == "x" && n.namespace_ ().empty ())
+    {
+      if (!x_.present ())
+      {
+        this->x_.set (x_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // y
+    //
+    if (n.name () == "y" && n.namespace_ ().empty ())
+    {
+      if (!y_.present ())
+      {
+        this->y_.set (y_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // z
+    //
+    if (n.name () == "z" && n.namespace_ ().empty ())
+    {
+      if (!z_.present ())
+      {
+        this->z_.set (z_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!x_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "x",
+      "");
+  }
+
+  if (!y_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "y",
+      "");
+  }
+
+  if (!z_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "z",
+      "");
+  }
+}
+
+center* center::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class center (*this, f, c);
+}
+
+center& center::
+operator= (const center& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->x_ = x.x_;
+    this->y_ = x.y_;
+    this->z_ = x.z_;
+  }
+
+  return *this;
+}
+
+center::
+~center ()
+{
+}
+
+// initial_velocity
+//
+
+initial_velocity::
+initial_velocity (const x_type& x,
+                  const y_type& y,
+                  const z_type& z)
+: ::xml_schema::type (),
+  x_ (x, this),
+  y_ (y, this),
+  z_ (z, this)
+{
+}
+
+initial_velocity::
+initial_velocity (const initial_velocity& x,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  x_ (x.x_, f, this),
+  y_ (x.y_, f, this),
+  z_ (x.z_, f, this)
+{
+}
+
+initial_velocity::
+initial_velocity (const ::xercesc::DOMElement& e,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  x_ (this),
+  y_ (this),
+  z_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void initial_velocity::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // x
+    //
+    if (n.name () == "x" && n.namespace_ ().empty ())
+    {
+      if (!x_.present ())
+      {
+        this->x_.set (x_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // y
+    //
+    if (n.name () == "y" && n.namespace_ ().empty ())
+    {
+      if (!y_.present ())
+      {
+        this->y_.set (y_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // z
+    //
+    if (n.name () == "z" && n.namespace_ ().empty ())
+    {
+      if (!z_.present ())
+      {
+        this->z_.set (z_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!x_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "x",
+      "");
+  }
+
+  if (!y_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "y",
+      "");
+  }
+
+  if (!z_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "z",
+      "");
+  }
+}
+
+initial_velocity* initial_velocity::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class initial_velocity (*this, f, c);
+}
+
+initial_velocity& initial_velocity::
+operator= (const initial_velocity& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->x_ = x.x_;
+    this->y_ = x.y_;
+    this->z_ = x.z_;
+  }
+
+  return *this;
+}
+
+initial_velocity::
+~initial_velocity ()
 {
 }
 
@@ -1670,141 +2462,6 @@ operator= (const dimensions& x)
 
 dimensions::
 ~dimensions ()
-{
-}
-
-// initial_velocity
-//
-
-initial_velocity::
-initial_velocity (const x_type& x,
-                  const y_type& y,
-                  const z_type& z)
-: ::xml_schema::type (),
-  x_ (x, this),
-  y_ (y, this),
-  z_ (z, this)
-{
-}
-
-initial_velocity::
-initial_velocity (const initial_velocity& x,
-                  ::xml_schema::flags f,
-                  ::xml_schema::container* c)
-: ::xml_schema::type (x, f, c),
-  x_ (x.x_, f, this),
-  y_ (x.y_, f, this),
-  z_ (x.z_, f, this)
-{
-}
-
-initial_velocity::
-initial_velocity (const ::xercesc::DOMElement& e,
-                  ::xml_schema::flags f,
-                  ::xml_schema::container* c)
-: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  x_ (this),
-  y_ (this),
-  z_ (this)
-{
-  if ((f & ::xml_schema::flags::base) == 0)
-  {
-    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
-    this->parse (p, f);
-  }
-}
-
-void initial_velocity::
-parse (::xsd::cxx::xml::dom::parser< char >& p,
-       ::xml_schema::flags f)
-{
-  for (; p.more_content (); p.next_content (false))
-  {
-    const ::xercesc::DOMElement& i (p.cur_element ());
-    const ::xsd::cxx::xml::qualified_name< char > n (
-      ::xsd::cxx::xml::dom::name< char > (i));
-
-    // x
-    //
-    if (n.name () == "x" && n.namespace_ ().empty ())
-    {
-      if (!x_.present ())
-      {
-        this->x_.set (x_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    // y
-    //
-    if (n.name () == "y" && n.namespace_ ().empty ())
-    {
-      if (!y_.present ())
-      {
-        this->y_.set (y_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    // z
-    //
-    if (n.name () == "z" && n.namespace_ ().empty ())
-    {
-      if (!z_.present ())
-      {
-        this->z_.set (z_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    break;
-  }
-
-  if (!x_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "x",
-      "");
-  }
-
-  if (!y_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "y",
-      "");
-  }
-
-  if (!z_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "z",
-      "");
-  }
-}
-
-initial_velocity* initial_velocity::
-_clone (::xml_schema::flags f,
-        ::xml_schema::container* c) const
-{
-  return new class initial_velocity (*this, f, c);
-}
-
-initial_velocity& initial_velocity::
-operator= (const initial_velocity& x)
-{
-  if (this != &x)
-  {
-    static_cast< ::xml_schema::type& > (*this) = x;
-    this->x_ = x.x_;
-    this->y_ = x.y_;
-    this->z_ = x.z_;
-  }
-
-  return *this;
-}
-
-initial_velocity::
-~initial_velocity ()
 {
 }
 
