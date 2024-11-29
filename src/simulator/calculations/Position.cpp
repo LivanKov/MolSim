@@ -4,15 +4,6 @@
 #include <cmath>
 
 void Position::run(ParticleContainer &particles, double time_delta) {
-  for (auto &p : particles) {
-    auto x = p.getX();
-    auto v = p.getV();
-    auto f = p.getF();
-    double m = p.getM();
-
-    // Velocity-Störmer-Verlet formula (8)
-    x = x + time_delta * v + pow(time_delta, 2) * f / (2 * m);
-
-    p.updateX(x);
-  }
+  for (auto &p : particles)
+    p.updateX(p.getX() + time_delta * p.getV() + pow(time_delta, 2) * p.getF() / (2 * p.getM()));
 }
