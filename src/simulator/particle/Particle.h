@@ -204,17 +204,6 @@ public:
 };
 
 /**
- * @brief custom hash function for the Particle class, based on the hashable
- * class attributes.
- * @param p: lvalue reference to the Particle object.
- * @return size_t variable containing the parameter's hash.
- */
-
-template <> struct std::hash<Particle> {
-  size_t operator()(const Particle &p) const noexcept;
-};
-
-/**
  * @brief overload the output stream operator to print the particle.
  * @param stream: lvalue reference to the output stream.
  * @param p: lvalue reference to the Particle object.

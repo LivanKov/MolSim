@@ -8,8 +8,6 @@
 #include <array>
 #include <memory>
 #include <stdexcept>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 using ParticlePointer = std::shared_ptr<Particle>;
@@ -46,37 +44,7 @@ struct ParticlePair {
    */
   std::string toString() const;
 };
-/**
- * @brief Custom hashing function, disregards the order of the objects stored in
- * the pair
- * @param p Reference to ParticlePair object.
- * @return std::size_t hash.
- */
-template <> struct std::hash<ParticlePair> {
-  std::size_t operator()(const ParticlePair &p) const;
-};
-/**
- * @brief Custom hashing function object, disregards the order of the objects
- * stored in the pair.
- * @param s Reference to ParticlePair object.
- * @return Std::size_t hash.
- */
-struct ParticlePointerHash {
-  size_t operator()(const std::shared_ptr<Particle> &s) const noexcept;
-};
-/**
- * @brief Struct to determine equality of two Particle objects managed by shared
- * pointers. Used for hashing in a std::unordered_map.
- * @param a Reference to a pointer managing a Particle object.
- * @param b Reference to a pointer managing a Particle object.
- * @return Boolean.
- */
-struct ParticlePointerEqual {
-  bool operator()(const std::shared_ptr<Particle> &a,
-                  const std::shared_ptr<Particle> &b) const;
-};
 
-using ParticlePairPointer = std::shared_ptr<ParticlePair>;
 /**
  * @class ParticleIterator
  * @brief Provides an iterator interface for the ParticleContainer class.
@@ -94,31 +62,6 @@ public:
   PPointerType operator->();
   bool operator==(const ParticleIterator &rhs) const;
   bool operator!=(const ParticleIterator &rhs) const;
-  PReferenceType operator*() const;
-
-private:
-  PPointerType _ptr;
-};
-
-/**
- * @class ParticlePairterator
- * @brief Provides an iterator interface that allows to iterate over unique
- * pairs stored in container. Can speed up computation by avoiding excessive
- * operations. Based on the now deprecated std::iterator. See
- * https://en.cppreference.com/w/cpp/iterator/iterator for more details.
- */
-
-class ParticlePairIterator {
-public:
-  using PValueType = ParticlePair;
-  using PPointerType = std::unordered_set<ParticlePairPointer>::const_iterator;
-  using PReferenceType = ParticlePair &;
-  ParticlePairIterator(PPointerType p);
-  ParticlePairIterator &operator++();
-  ParticlePairIterator operator++(int);
-  PPointerType operator->();
-  bool operator==(const ParticlePairIterator &rhs) const;
-  bool operator!=(const ParticlePairIterator &rhs) const;
   PReferenceType operator*() const;
 
 private:
@@ -150,8 +93,8 @@ public:
   requires std::constructible_from<Particle, Args...>
   void emplace_back(Args... args) {
     ParticlePointer p = std::make_shared<Particle>(std::forward<Args>(args)...);
-    _particle_container.push_back(p);
     create_pairs(p);
+    _particle_container.push_back(p);
   }
   /**
    * @brief Inserts a Particle object into the container. Redirects the call to
@@ -198,11 +141,12 @@ public:
   /**
    * @brief Iterator interface for the pair iterator.
    */
-  ParticlePairIterator pair_begin();
+  std::vector<ParticlePair>::iterator pair_begin();
   /**
    * @brief Iterator interface for the pair iterator.
    */
-  ParticlePairIterator pair_end();
+  std::vector<ParticlePair>::iterator pair_end();
+
 
 private:
   /**
@@ -220,5 +164,5 @@ private:
    * @brief Underlying particle container. Stores unique pointers managing
    * ParticlePair objects.
    */
-  std::unordered_set<ParticlePairPointer> _particle_pair_set;
+  std::vector<ParticlePair> _particle_pair_container;
 };
