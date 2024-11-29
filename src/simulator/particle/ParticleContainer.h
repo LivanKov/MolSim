@@ -147,7 +147,6 @@ public:
    */
   std::vector<ParticlePair>::iterator pair_end();
 
-  size_t amount_of_pairs();
 
 private:
   /**
