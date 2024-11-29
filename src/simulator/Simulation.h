@@ -35,4 +35,6 @@ public:
    * @return ParticleContainer initialized particle container.
    */
   static ParticleContainer readFile(char *argv1, SimParams &simParams);
+
+ //void runDisc();
 };

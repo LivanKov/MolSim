@@ -14,6 +14,7 @@
 #include <spdlog/spdlog.h>
 #include <utility>
 #include "io/input/XMLReader.h"
+#include "particle/ParticleGenerator.h"
 
 std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
   std::unique_ptr<Simulation> ptr = std::make_unique<Simulation>(params);
@@ -71,3 +72,31 @@ void Simulation::run(ParticleContainer &particles) {
 
   logger.warn("Simulation finished.");
 }
+
+/*void Simulation::runDisc() {
+
+  const std::array<double, 3> &center{10,10,0};
+  const std::array<double, 3> &initialVelocity{0,0,0};
+  size_t radius{15};
+  double h{2^(1/6)};
+  double mass{1.0};
+  ParticleContainer particles{};
+
+  ParticleGenerator::insertDisc(center,initialVelocity,radius,h,mass,particles);
+
+  const std::array<double, 3> &center2{0,0,1};
+  const std::array<double, 3> &initialVelocity2{0,0,0};
+  size_t radius2{3};
+  double h2{2^(1/6)};
+  double mass2{1.0};
+
+  ParticleGenerator::insertDisc(center2,initialVelocity2,radius2,h2,mass2,particles);
+
+
+  std::unique_ptr<output::FileWriter> writer;
+  writer = std::make_unique<output::VTKWriter>(particles);
+  writer->plot_particles(params_.output_path,1);
+
+
+
+}*/;
