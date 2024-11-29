@@ -8,7 +8,6 @@
 #include <array>
 #include <memory>
 #include <stdexcept>
-#include <unordered_map>
 #include <vector>
 
 using ParticlePointer = std::shared_ptr<Particle>;
@@ -45,25 +44,6 @@ struct ParticlePair {
    */
   std::string toString() const;
 };
-/**
- * @brief Custom hashing function, disregards the order of the objects stored in
- * the pair
- * @param p Reference to ParticlePair object.
- * @return std::size_t hash.
- */
-template <> struct std::hash<ParticlePair> {
-  std::size_t operator()(const ParticlePair &p) const;
-};
-/**
- * @brief Custom hashing function object, disregards the order of the objects
- * stored in the pair.
- * @param s Reference to ParticlePair object.
- * @return Std::size_t hash.
- */
-struct ParticlePointerHash {
-  size_t operator()(const std::shared_ptr<Particle> &s) const noexcept;
-};
-
 
 /**
  * @class ParticleIterator

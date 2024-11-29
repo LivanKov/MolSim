@@ -8,7 +8,8 @@
 #include <iostream>
 #include <memory>
 #include <spdlog/spdlog.h>
-#include <unordered_set>
+#include <vector>
+#include <algorithm>
 #include <utility>
 
 // The fixture for testing class Foo.
@@ -123,7 +124,7 @@ TEST_F(BasicTest, ContainerBehaviourTest) {
 
   // check that exactly the right particles are contained within the set
 
-  std::unordered_set<ParticlePair> dummy_pairs{
+  std::vector<ParticlePair> dummy_pairs{
       ParticlePair(std::make_shared<Particle>(p_1),
                    std::make_shared<Particle>(p_2)),
       ParticlePair(std::make_shared<Particle>(p_1),
@@ -132,7 +133,8 @@ TEST_F(BasicTest, ContainerBehaviourTest) {
                    std::make_shared<Particle>(p_3))};
 
   for (auto it = container.pair_begin(); it != container.pair_end(); ++it)
-    EXPECT_TRUE(dummy_pairs.contains(*it));
+    EXPECT_TRUE(std::find(dummy_pairs.begin(), dummy_pairs.end(), *it) !=
+                dummy_pairs.end());
 
   // check that every particle maps onto correct pair
 }

@@ -25,15 +25,6 @@ std::string ParticlePair::toString() const {
   return stream.str();
 }
 
-std::size_t std::hash<ParticlePair>::operator()(const ParticlePair &p) const {
-  return 1;
-}
-
-
-size_t ParticlePointerHash::operator()(
-    const std::shared_ptr<Particle> &s) const noexcept {
-  return 1;
-}
 
 ParticleContainer::ParticleContainer()
     : _particle_container{}, _particle_pair_container{} {}
