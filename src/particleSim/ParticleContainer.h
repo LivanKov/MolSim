@@ -111,7 +111,7 @@ private:
 class ParticlePairIterator {
 public:
   using PValueType = ParticlePair;
-  using PPointerType = std::unordered_set<ParticlePairPointer>::const_iterator;
+  using PPointerType = ParticlePairPointer *;
   using PReferenceType = ParticlePair &;
   ParticlePairIterator(PPointerType p);
   ParticlePairIterator &operator++();
@@ -150,8 +150,8 @@ public:
   requires std::constructible_from<Particle, Args...> void
   emplace_back(Args... args) {
     ParticlePointer p = std::make_shared<Particle>(std::forward<Args>(args)...);
-    _particle_container.push_back(p);
     create_pairs(p);
+    _particle_container.push_back(p);
   }
   /**
    * @brief Inserts a Particle object into the container. Redirects the call to
@@ -220,5 +220,5 @@ private:
    * @brief Underlying particle container. Stores unique pointers managing
    * ParticlePair objects.
    */
-  std::unordered_set<ParticlePairPointer> _particle_pair_set;
+  std::vector<ParticlePairPointer> _particle_pair_container;
 };
