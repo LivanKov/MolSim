@@ -98,6 +98,23 @@ Here is an example of an XML input file:
             <z>0.0</z>
         </domain_size>
     </simulation_parameters>
+    <discs>
+        <disc>
+            <center>
+                <x>60.0</x>
+                <y>25.0</y>
+                <z>0.0</z>
+            </center>
+            <initial_velocity>
+                <x>0.0</x>
+                <y>-10.0</y>
+                <z>0.0</z>
+            </initial_velocity>
+            <radius>15</radius>
+            <mesh_width>1.1225</mesh_width>
+            <mass>1.0</mass>
+        </disc>
+    </discs>
     <cuboids>
         <cuboid>
             <coordinate>
@@ -120,23 +137,6 @@ Here is an example of an XML input file:
             <average_velocity>0.1</average_velocity>
         </cuboid>
     </cuboids>
-    <discs>
-        <disc>
-            <center>
-                <x>60.0</x>
-                <y>25.0</y>
-                <z>0.0</z>
-            </center>
-            <initial_velocity>
-                <x>0.0</x>
-                <y>-10.0</y>
-                <z>0.0</z>
-            </initial_velocity>
-            <radius>15</radius>
-            <mesh_width>1.1225</mesh_width>
-            <mass>1.0</mass>
-        </disc>
-    </discs>
 </MolSim>
 ```
 ### Notes
