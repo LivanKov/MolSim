@@ -96,6 +96,3 @@ void ParticleContainer::create_pairs(const ParticlePointer &new_particle) {
           ParticlePair(new_particle, p));
     }
   }
-}
-
-size_t ParticleContainer::amount_of_pairs() { return _particle_pair_container.size(); }

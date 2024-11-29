@@ -1,7 +1,7 @@
-#include "logger/Logger.h"
-#include "particleSim/Particle.h"
-#include "particleSim/ParticleContainer.h"
+#include "simulator/particle/Particle.h"
+#include "simulator/particle/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
+#include "utils/logger/Logger.h"
 #include <array>
 #include <cmath>
 #include <gtest/gtest.h>

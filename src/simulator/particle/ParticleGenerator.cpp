@@ -8,7 +8,7 @@
 
 #include <random>
 
-#include "logger/Logger.h"
+#include "utils/logger/Logger.h"
 
 ParticleGenerator::ParticleGenerator() = default;
 

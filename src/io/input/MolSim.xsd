@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="MolSim">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="simulation_parameters">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="end_time" type="xs:double"/>
+                            <xs:element name="delta_time" type="xs:double"/>
+                            <xs:element name="output_basename" type="xs:string"/>
+                            <xs:element name="write_frequency" type="xs:unsignedInt"/>
+                            <xs:element name="r_cutoff_radius" type="xs:double"/>
+                            <xs:element name="domain_size">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="x" type="xs:double"/>
+                                        <xs:element name="y" type="xs:double"/>
+                                        <xs:element name="z" type="xs:double"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="cuboids">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="cuboid" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="coordinate">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="x" type="xs:double"/>
+                                                    <xs:element name="y" type="xs:double"/>
+                                                    <xs:element name="z" type="xs:double"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="dimensions">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="x" type="xs:unsignedInt"/>
+                                                    <xs:element name="y" type="xs:unsignedInt"/>
+                                                    <xs:element name="z" type="xs:unsignedInt"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="mesh_width" type="xs:double"/>
+                                        <xs:element name="mass" type="xs:double"/>
+                                        <xs:element name="initial_velocity">
+                                            <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="x" type="xs:double"/>
+                                                <xs:element name="y" type="xs:double"/>
+                                                    <xs:element name="z" type="xs:double"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="average_velocity" type="xs:double"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+    
