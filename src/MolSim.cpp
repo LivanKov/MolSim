@@ -121,10 +121,12 @@ int main(int argc, char *argsv[]) {
   FileReader fileReader;
   fileReader.readFile(particles, input_path.data());
 
+  
+
   int iteration = 0;
   double current_time = start_time;
 
-  logger.warn("Starting a simulation with:");
+  logger.warn("Starting a simulation with: " + std::to_string(particles.amount_of_pairs()) + " pairs.");
   logger.info("\tStart time: " + std::to_string(start_time));
   logger.info("\tEnd time: " + std::to_string(end_time));
   logger.info("\tDelta: " + std::to_string(delta_t));
@@ -191,7 +193,6 @@ void calculateF() {
     double distance = ArrayUtils::L2Norm(r12);
 
     // avoid extermely small distance
-    if (distance > 1e-5) {
       // switch Lennard-Jones/ Simple force
       double totalForce;
       if (calculateLJForce) {
@@ -212,7 +213,6 @@ void calculateF() {
       p1.updateF(p1.getF() + force);
       // Newton's third law
       p2.updateF(p2.getF() - force);
-    }
   }
 }
 

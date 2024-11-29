@@ -204,6 +204,8 @@ public:
    */
   ParticlePairIterator pair_end();
 
+  size_t amount_of_pairs();
+
 private:
   /**
    * @brief Creates particle pairs for newly inserted particle.
