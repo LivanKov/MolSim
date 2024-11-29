@@ -2,7 +2,7 @@
 <MolSim>
     <simulation_parameters>
         <end_time>10</end_time>
-        <delta_time>0.00005</delta_time>
+        <delta_time>0.1</delta_time>
         <output_basename>../output/MD_vtk</output_basename>
         <write_frequency>10</write_frequency>
         <r_cutoff_radius>3.0</r_cutoff_radius>
