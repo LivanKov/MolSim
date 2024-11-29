@@ -82,69 +82,72 @@ void XMLReader::readXMLFile(ParticleContainer &particles,
     // auto cuboids = doc->cuboids();
 
     // Extract cuboid specification
-    logger.info("Number of cuboids found: " +
-                std::to_string(doc->cuboids().cuboid().size()));
+    if (doc->cuboids().present()) {
+      logger.info("Number of cuboids found: " +
+                  std::to_string(doc->cuboids().get().cuboid().size()));
 
-    for (const auto &cuboid : doc->cuboids().cuboid()) {
-      // const auto &cuboid = cuboids_instance.cuboid();
-      std::array<double, 3> position = {cuboid.coordinate().x(),
-                                        cuboid.coordinate().y(),
-                                        cuboid.coordinate().z()};
+      for (const auto &cuboid : doc->cuboids().get().cuboid()) {
+        // const auto &cuboid = cuboids_instance.cuboid();
+        std::array<double, 3> position = {cuboid.coordinate().x(),
+                                          cuboid.coordinate().y(),
+                                          cuboid.coordinate().z()};
 
-      std::array<size_t, 3> dimensions = {cuboid.dimensions().x(),
-                                          cuboid.dimensions().y(),
-                                          cuboid.dimensions().z()};
-      double mesh_width = cuboid.mesh_width();
-      double mass = cuboid.mass();
-      std::array<double, 3> initial_velocity = {cuboid.initial_velocity().x(),
-                                                cuboid.initial_velocity().y(),
-                                                cuboid.initial_velocity().z()};
-      double avg_velocity = cuboid.average_velocity();
+        std::array<size_t, 3> dimensions = {cuboid.dimensions().x(),
+                                            cuboid.dimensions().y(),
+                                            cuboid.dimensions().z()};
+        double mesh_width = cuboid.mesh_width();
+        double mass = cuboid.mass();
+        std::array<double, 3> initial_velocity = {
+            cuboid.initial_velocity().x(), cuboid.initial_velocity().y(),
+            cuboid.initial_velocity().z()};
+        double avg_velocity = cuboid.average_velocity();
 
-      logger.info("Creating cuboid: \n");
-      logger.info(
-          "Amount of particles: " +
-          std::to_string(std::accumulate(dimensions.begin(), dimensions.end(),
-                                         1, std::multiplies<size_t>())));
-      logger.info("Position: " + containerToStrings(position));
-      logger.info("Dimensions: " + containerToStrings(dimensions));
-      logger.info("Mesh Width: " + std::to_string(mesh_width));
-      logger.info("Mass: " + std::to_string(mass));
-      logger.info("Initial Velocity: " + containerToStrings(initial_velocity));
-      logger.info("Average Velocity: " + std::to_string(avg_velocity));
+        logger.info("Creating cuboid: \n");
+        logger.info(
+            "Amount of particles: " +
+            std::to_string(std::accumulate(dimensions.begin(), dimensions.end(),
+                                           1, std::multiplies<size_t>())));
+        logger.info("Position: " + containerToStrings(position));
+        logger.info("Dimensions: " + containerToStrings(dimensions));
+        logger.info("Mesh Width: " + std::to_string(mesh_width));
+        logger.info("Mass: " + std::to_string(mass));
+        logger.info("Initial Velocity: " +
+                    containerToStrings(initial_velocity));
+        logger.info("Average Velocity: " + std::to_string(avg_velocity));
 
-      ParticleGenerator::insertCuboid(position, dimensions, mesh_width, mass,
-                                      initial_velocity, avg_velocity,
-                                      particles);
-    }                                  
+        ParticleGenerator::insertCuboid(position, dimensions, mesh_width, mass,
+                                        initial_velocity, avg_velocity,
+                                        particles);
+      }
+    }
 
     // Extract disc specification
-    for (const auto &disc : doc->discs().disc()) {
-      std::array<double, 3> center = {
-        disc.center().x(),
-        disc.center().y(),
-        disc.center().z()};
+    if (doc->discs().present()) {
+      for (const auto &disc : doc->discs().get().disc()) {
+        std::array<double, 3> center = {disc.center().x(), disc.center().y(),
+                                        disc.center().z()};
 
-      std::array<double, 3> initial_velocity = {
-        disc.initial_velocity().x(),
-        disc.initial_velocity().y(),
-        disc.initial_velocity().z()
-      };
+        std::array<double, 3> initial_velocity = {disc.initial_velocity().x(),
+                                                  disc.initial_velocity().y(),
+                                                  disc.initial_velocity().z()};
 
-      size_t radius = disc.radius();
-      double mesh_width = disc.mesh_width();
-      double mass = disc.mass();
+        size_t radius = disc.radius();
+        double mesh_width = disc.mesh_width();
+        double mass = disc.mass();
 
-      logger.info("Creating disc: \n");
-      logger.info("Center: " + containerToStrings(center));
-      logger.info("Radius: " + std::to_string(radius));
-      logger.info("Mesh Width: " + std::to_string(mesh_width));
-      logger.info("Mass: " + std::to_string(mass));
-      logger.info("Initial Velocity: " + containerToStrings(initial_velocity));
+        logger.info("Creating disc: \n");
+        logger.info("Center: " + containerToStrings(center));
+        logger.info("Radius: " + std::to_string(radius));
+        logger.info("Mesh Width: " + std::to_string(mesh_width));
+        logger.info("Mass: " + std::to_string(mass));
+        logger.info("Initial Velocity: " +
+                    containerToStrings(initial_velocity));
 
-      ParticleGenerator::insertDisc(center, initial_velocity, radius,
-                                    mesh_width, mass, particles);
+        ParticleGenerator::insertDisc(center, initial_velocity, radius,
+                                      mesh_width, mass, particles);
+      }
     }
+
   } catch (const std::exception &e) {
     logger.warn("Error while reading XML file: " + std::string(filename));
     exit(-1);

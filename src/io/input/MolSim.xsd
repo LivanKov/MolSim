@@ -23,7 +23,7 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="discs">
+                <xs:element name="discs" minOccurs="0">
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="disc" maxOccurs="unbounded">
@@ -56,7 +56,7 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="cuboids">
+                <xs:element name="cuboids" minOccurs="0">
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="cuboid" maxOccurs="unbounded">

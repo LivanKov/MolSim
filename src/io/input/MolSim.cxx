@@ -67,16 +67,16 @@ simulation_parameters (::std::auto_ptr< simulation_parameters_type > x)
   this->simulation_parameters_.set (x);
 }
 
-const MolSim::discs_type& MolSim::
+const MolSim::discs_optional& MolSim::
 discs () const
 {
-  return this->discs_.get ();
+  return this->discs_;
 }
 
-MolSim::discs_type& MolSim::
+MolSim::discs_optional& MolSim::
 discs ()
 {
-  return this->discs_.get ();
+  return this->discs_;
 }
 
 void MolSim::
@@ -86,27 +86,39 @@ discs (const discs_type& x)
 }
 
 void MolSim::
+discs (const discs_optional& x)
+{
+  this->discs_ = x;
+}
+
+void MolSim::
 discs (::std::auto_ptr< discs_type > x)
 {
   this->discs_.set (x);
 }
 
-const MolSim::cuboids_type& MolSim::
+const MolSim::cuboids_optional& MolSim::
 cuboids () const
 {
-  return this->cuboids_.get ();
+  return this->cuboids_;
 }
 
-MolSim::cuboids_type& MolSim::
+MolSim::cuboids_optional& MolSim::
 cuboids ()
 {
-  return this->cuboids_.get ();
+  return this->cuboids_;
 }
 
 void MolSim::
 cuboids (const cuboids_type& x)
 {
   this->cuboids_.set (x);
+}
+
+void MolSim::
+cuboids (const cuboids_optional& x)
+{
+  this->cuboids_ = x;
 }
 
 void MolSim::
@@ -816,24 +828,20 @@ z (const z_type& x)
 //
 
 MolSim::
-MolSim (const simulation_parameters_type& simulation_parameters,
-        const discs_type& discs,
-        const cuboids_type& cuboids)
+MolSim (const simulation_parameters_type& simulation_parameters)
 : ::xml_schema::type (),
   simulation_parameters_ (simulation_parameters, this),
-  discs_ (discs, this),
-  cuboids_ (cuboids, this)
+  discs_ (this),
+  cuboids_ (this)
 {
 }
 
 MolSim::
-MolSim (::std::auto_ptr< simulation_parameters_type > simulation_parameters,
-        ::std::auto_ptr< discs_type > discs,
-        ::std::auto_ptr< cuboids_type > cuboids)
+MolSim (::std::auto_ptr< simulation_parameters_type > simulation_parameters)
 : ::xml_schema::type (),
   simulation_parameters_ (simulation_parameters, this),
-  discs_ (discs, this),
-  cuboids_ (cuboids, this)
+  discs_ (this),
+  cuboids_ (this)
 {
 }
 
@@ -895,7 +903,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       ::std::auto_ptr< discs_type > r (
         discs_traits::create (i, f, this));
 
-      if (!discs_.present ())
+      if (!this->discs_)
       {
         this->discs_.set (r);
         continue;
@@ -909,7 +917,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       ::std::auto_ptr< cuboids_type > r (
         cuboids_traits::create (i, f, this));
 
-      if (!cuboids_.present ())
+      if (!this->cuboids_)
       {
         this->cuboids_.set (r);
         continue;
@@ -923,20 +931,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   {
     throw ::xsd::cxx::tree::expected_element< char > (
       "simulation_parameters",
-      "");
-  }
-
-  if (!discs_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "discs",
-      "");
-  }
-
-  if (!cuboids_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "cuboids",
       "");
   }
 }

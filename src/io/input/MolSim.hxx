@@ -270,16 +270,20 @@ class MolSim: public ::xml_schema::type
   // discs
   //
   typedef ::discs discs_type;
+  typedef ::xsd::cxx::tree::optional< discs_type > discs_optional;
   typedef ::xsd::cxx::tree::traits< discs_type, char > discs_traits;
 
-  const discs_type&
+  const discs_optional&
   discs () const;
 
-  discs_type&
+  discs_optional&
   discs ();
 
   void
   discs (const discs_type& x);
+
+  void
+  discs (const discs_optional& x);
 
   void
   discs (::std::auto_ptr< discs_type > p);
@@ -287,29 +291,29 @@ class MolSim: public ::xml_schema::type
   // cuboids
   //
   typedef ::cuboids cuboids_type;
+  typedef ::xsd::cxx::tree::optional< cuboids_type > cuboids_optional;
   typedef ::xsd::cxx::tree::traits< cuboids_type, char > cuboids_traits;
 
-  const cuboids_type&
+  const cuboids_optional&
   cuboids () const;
 
-  cuboids_type&
+  cuboids_optional&
   cuboids ();
 
   void
   cuboids (const cuboids_type& x);
 
   void
+  cuboids (const cuboids_optional& x);
+
+  void
   cuboids (::std::auto_ptr< cuboids_type > p);
 
   // Constructors.
   //
-  MolSim (const simulation_parameters_type&,
-          const discs_type&,
-          const cuboids_type&);
+  MolSim (const simulation_parameters_type&);
 
-  MolSim (::std::auto_ptr< simulation_parameters_type >,
-          ::std::auto_ptr< discs_type >,
-          ::std::auto_ptr< cuboids_type >);
+  MolSim (::std::auto_ptr< simulation_parameters_type >);
 
   MolSim (const ::xercesc::DOMElement& e,
           ::xml_schema::flags f = 0,
@@ -338,8 +342,8 @@ class MolSim: public ::xml_schema::type
 
   protected:
   ::xsd::cxx::tree::one< simulation_parameters_type > simulation_parameters_;
-  ::xsd::cxx::tree::one< discs_type > discs_;
-  ::xsd::cxx::tree::one< cuboids_type > cuboids_;
+  discs_optional discs_;
+  cuboids_optional cuboids_;
 };
 
 class simulation_parameters: public ::xml_schema::type
