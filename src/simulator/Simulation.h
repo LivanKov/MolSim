@@ -1,6 +1,6 @@
 #include "io/input/cli/SimParams.h"
-#include <memory>
 #include "particle/ParticleContainer.h"
+#include <memory>
 
 #pragma once
 
@@ -20,18 +20,22 @@ public:
   Simulation(SimParams &params);
   /**
    * @brief Generate a simulation object.
-   * @param params SimParams reference, pass the overrided simulation parameters by Command line arguments.
+   * @param params SimParams reference, pass the overrided simulation parameters
+   * by Command line arguments.
    * @return std::unique_ptr<Simulation> pointer to the simulation object.
    */
   static std::unique_ptr<Simulation> generate_simulation(SimParams &params);
-  /** 
-   * @brief Run the simulation, contains all the necessary logic for the simulation.
-   * @param particles ParticleContainer reference, pass the particle container initialized in readFile.
+  /**
+   * @brief Run the simulation, contains all the necessary logic for the
+   * simulation.
+   * @param particles ParticleContainer reference, pass the particle container
+   * initialized in readFile.
    */
   void run(ParticleContainer &particles);
   /**
    * @brief read file from XML input, initialize particles.
-   * @param simParams SimParams reference, pass the initial simulation parameters by XML input.
+   * @param simParams SimParams reference, pass the initial simulation
+   * parameters by XML input.
    * @return ParticleContainer initialized particle container.
    */
   static ParticleContainer readFile(char *argv1, SimParams &simParams);

@@ -1,5 +1,5 @@
-#include <string>
 #include <array>
+#include <string>
 #pragma once
 
 struct SimParams {

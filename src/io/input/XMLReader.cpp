@@ -63,8 +63,10 @@ void XMLReader::readXMLFile(ParticleContainer &particles,
     logger.info("Output Base Name: " + simParameters.output_path);
     logger.info("Write Frequency: " +
                 std::to_string(simParameters.write_frequency));
-    logger.info("Cutoff Radius: " + std::to_string(simParameters.r_cutoff_radius));
-    logger.info("Domain Size: " + containerToStrings(simParameters.domain_size));
+    logger.info("Cutoff Radius: " +
+                std::to_string(simParameters.r_cutoff_radius));
+    logger.info("Domain Size: " +
+                containerToStrings(simParameters.domain_size));
 
     // auto cuboids = doc->cuboids();
 

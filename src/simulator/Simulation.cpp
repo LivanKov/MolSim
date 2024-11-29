@@ -1,5 +1,6 @@
 #include "Simulation.h"
 #include "io/input/FileReader.h"
+#include "io/input/XMLReader.h"
 #include "io/output/FileWriter.h"
 #include "io/output/VTKWriter.h"
 #include "io/output/XYZWriter.h"
@@ -13,7 +14,6 @@
 #include <memory>
 #include <spdlog/spdlog.h>
 #include <utility>
-#include "io/input/XMLReader.h"
 
 std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
   std::unique_ptr<Simulation> ptr = std::make_unique<Simulation>(params);
@@ -58,7 +58,7 @@ void Simulation::run(ParticleContainer &particles) {
     Calculation<Velocity>::run(particles, params_.time_delta);
 
     iteration++;
-    if (iteration % params_.write_frequency == 0 && !params_.disable_output){
+    if (iteration % params_.write_frequency == 0 && !params_.disable_output) {
       writer->plot_particles(params_.output_path, iteration);
     }
 

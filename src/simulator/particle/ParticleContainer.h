@@ -147,7 +147,6 @@ public:
    */
   std::vector<ParticlePair>::iterator pair_end();
 
-
 private:
   /**
    * @brief Creates particle pairs for newly inserted particle.

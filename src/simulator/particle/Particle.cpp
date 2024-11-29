@@ -67,11 +67,9 @@ bool Particle::operator==(const Particle &other) const {
          (type == other.type) and (m == other.m) and (old_f == other.old_f);
 }
 
-
 bool Particle::operator!=(const Particle &other) const {
   return !(*this == other);
 }
-
 
 std::ostream &operator<<(std::ostream &stream, Particle &p) {
   stream << p.toString();

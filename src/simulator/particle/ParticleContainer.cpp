@@ -25,7 +25,6 @@ std::string ParticlePair::toString() const {
   return stream.str();
 }
 
-
 ParticleContainer::ParticleContainer()
     : _particle_container{}, _particle_pair_container{} {}
 
@@ -75,7 +74,6 @@ ParticleIterator ParticleContainer::end() {
                           _particle_container.size());
 }
 
-
 void ParticleContainer::clear() {
   _particle_container.clear();
   _particle_pair_container.clear();
@@ -91,8 +89,7 @@ std::vector<ParticlePair>::iterator ParticleContainer::pair_end() {
 
 void ParticleContainer::create_pairs(const ParticlePointer &new_particle) {
   for (auto const &p : _particle_container) {
-    if (*new_particle != *p){
-      _particle_pair_container.push_back(
-          ParticlePair(new_particle, p));
-    }
+    if (*new_particle != *p)
+      _particle_pair_container.push_back(ParticlePair(new_particle, p));
   }
+}
