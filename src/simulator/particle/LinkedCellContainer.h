@@ -1,4 +1,3 @@
-#include "LinkedCells.h"
 #include "ParticleContainer.h"
 #include <array>
 
@@ -22,5 +21,4 @@ template <size_t N> class LinkedCellContainer : public ParticleContainer {
   std::array<double, N> domain_size_;
   std::array<double, 3> left_corner_coordinates;
   double r_cutoff_;
-  LinkedCells<N> cells_;
 };
