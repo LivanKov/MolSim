@@ -38,7 +38,7 @@ public:
    * parameters by XML input.
    * @return ParticleContainer initialized particle container.
    */
-  static ParticleContainer readFile(char *argv1, SimParams &simParams);
+  static ParticleContainer readFile(SimParams &simParams);
 
   // void runDisc();
 };
