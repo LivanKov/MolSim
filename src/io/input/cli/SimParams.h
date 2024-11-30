@@ -4,6 +4,7 @@
 
 struct SimParams {
   std::string output_path;
+  std::string input_path;
   double end_time;
   double time_delta;
   double r_cutoff_radius;

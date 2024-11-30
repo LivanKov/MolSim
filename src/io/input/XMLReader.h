@@ -11,6 +11,5 @@ public:
   XMLReader();
   ~XMLReader();
 
-  static void readXMLFile(ParticleContainer &particles, SimParams &simParams,
-                          const std::string &filename);
+  static void readXMLFile(ParticleContainer &particles, SimParams &simParams);
 };

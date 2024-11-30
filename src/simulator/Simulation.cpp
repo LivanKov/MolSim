@@ -22,10 +22,10 @@ std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
 
 Simulation::Simulation(SimParams &params) : params_(params) {}
 
-ParticleContainer Simulation::readFile(char *argsv1, SimParams &params) {
+ParticleContainer Simulation::readFile(SimParams &params) {
   ParticleContainer particles{};
   // FileReader::readFile(particles, params_.input_path.data());
-  XMLReader::readXMLFile(particles, params, argsv1);
+  XMLReader::readXMLFile(particles, params);
 
   return particles;
 }

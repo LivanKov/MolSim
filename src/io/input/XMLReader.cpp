@@ -32,9 +32,9 @@ auto containerToStrings = [](const auto &container) {
 };
 
 void XMLReader::readXMLFile(ParticleContainer &particles,
-                            SimParams &simParameters,
-                            const std::string &filename) {
-  Logger &logger = Logger::getInstance();
+                            SimParams &simParameters) {
+  Logger &logger = Logger::getInstance(simParameters.log_level);
+  std::string filename = simParameters.input_path;
   try {
     std::ifstream inputFile(filename);
     if (!inputFile.is_open()) {
@@ -47,15 +47,26 @@ void XMLReader::readXMLFile(ParticleContainer &particles,
     logger.info("Parsed XML file successfully");
 
     // Extract simulation parameters
-    auto simParams = doc->simulation_parameters();
-    simParameters.end_time = simParams.end_time();
-    simParameters.time_delta = simParams.delta_time();
-    simParameters.output_path = simParams.output_basename();
-    simParameters.write_frequency = simParams.write_frequency();
-    simParameters.r_cutoff_radius = simParams.r_cutoff_radius();
-    simParameters.domain_size = {simParams.domain_size().x(),
-                                 simParams.domain_size().y(),
-                                 simParams.domain_size().z()};
+    auto xmlParams = doc->simulation_parameters();
+    simParameters.end_time = (xmlParams.end_time() != simParameters.end_time && simParameters.end_time == 0.0)
+                                 ? xmlParams.end_time()
+                                 : simParameters.end_time;
+    simParameters.time_delta =
+        (xmlParams.delta_time() != simParameters.time_delta && simParameters.time_delta == 0.0)
+            ? xmlParams.delta_time()
+            : simParameters.time_delta;
+    simParameters.output_path =
+        (xmlParams.output_basename() != simParameters.output_path && simParameters.output_path == "")
+            ? xmlParams.output_basename()
+            : simParameters.output_path;
+    simParameters.write_frequency =
+        (xmlParams.write_frequency() != simParameters.write_frequency && simParameters.write_frequency == 0)
+            ? xmlParams.write_frequency()
+            : simParameters.write_frequency;
+    simParameters.r_cutoff_radius = xmlParams.r_cutoff_radius();
+    simParameters.domain_size = {xmlParams.domain_size().x(),
+                                 xmlParams.domain_size().y(),
+                                 xmlParams.domain_size().z()};
 
     logger.info("Simulation parameters loaded:");
     logger.info("End Time: " + std::to_string(simParameters.end_time));

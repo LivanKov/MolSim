@@ -56,6 +56,7 @@ Users can override the parameters defined in the XML file using command line arg
 | Option            | Description                                                         |
 |-------------------|---------------------------------------------------------------------|
 | `-h`              | Show this help message and exit                                     |
+| `-i <file_path>`  | Specify the input file path                                         |
 | `-o <output_name>`| The base name for output files including filepath (override XML)    |
 | `-e <end_time>`   | Specify the end time for the simulation to run (override XML)       |
 | `-d <time_delta>` | Specify the time increments for each simulation step (override XML) |
@@ -69,15 +70,15 @@ Users can override the parameters defined in the XML file using command line arg
 To run the MolSim program with an XML input file and additional command line arguments:
 
 ```sh
-./MolSim ../input/input_file.xml -e 100.0 -d 0.01 -o ../output/simulation_output -t 5
+./MolSim -i ../input/input_file.xml -e 100.0 -d 0.01 -o ../output/simulation_output -t 5
 ```
 
 In this example:
-- **input_file.xml** is the XML file that provides the base configuration for the simulation.
+- **-i ../input_file.xml** is the XML file that provides the base configuration for the simulation.
 - **-e 100.0** overrides the `end_time` specified in the XML file to run the simulation for 100.0 units of time.
 - **-d 0.01** overrides the `delta_time` specified in the XML file to set the time increment to 0.01.
-- **-o ../output/simulation_output** sets the output file path.
-- **-t 5** sets the write frequency to write a file every 5 iterations.
+- **-o ../output/simulation_output** overrides the `output_path` specified in the XML file to set the output file path.
+- **-t 5** overrides the `write_frequence` specified in the XML file to set the write frequency to write a file every 5 iterations.
 
 ### EML Example
 Here is an example of an XML input file:
