@@ -102,7 +102,7 @@ public:
    * @param p Particle object reference.
    */
 
-  void insert(Particle &p);
+  virtual void insert(Particle &p);
 
   /**
    * @brief Inserts a Particle object into the container. Redirects the call to
@@ -110,7 +110,7 @@ public:
    * @param p Particle object rvalue reference.
    */
 
-  void insert(Particle &&p);
+  virtual void insert(Particle &&p);
 
   /**
    * @brief Returns the amount of unique particles stored in the container.

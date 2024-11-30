@@ -12,5 +12,5 @@ LinkedCellContainer::LinkedCellContainer(
         x = static_cast<size_t>(std::ceil(domain_size[0] / r_cutoff));
         y = static_cast<size_t>(std::ceil(domain_size[1] / r_cutoff));
         z = domain_size.size() == 3 ? static_cast<size_t>(std::ceil(domain_size[2] / r_cutoff)) : 1;
-        unwrapped_cells_.resize(x * y * z);      
+        unwrapped_cells_ = std::vector<Cell>(x * y * z, Cell());     
       }
