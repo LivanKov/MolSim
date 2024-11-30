@@ -201,6 +201,12 @@ public:
    * @param force: allowed the method to accept a std::array<double, 3>.
    */
   void updateOldF(const std::array<double, 3> &force);
+
+  /**
+   * @brief check if particle is outside the domain.
+   */
+
+  bool in_halo;
 };
 
 /**
