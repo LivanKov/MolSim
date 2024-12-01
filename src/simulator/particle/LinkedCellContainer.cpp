@@ -14,6 +14,7 @@ LinkedCellContainer::LinkedCellContainer(
         z = domain_size.size() == 3 ? static_cast<size_t>(std::ceil(domain_size[2] / r_cutoff)) : 1;
         unwrapped_cells_ = std::vector<Cell>(x * y * z, Cell());     
       }
+
 void LinkedCellContainer::insert(Particle &p) {
     std::array<double, 3> position = p.getX();
     size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) / r_cutoff_);
@@ -22,3 +23,19 @@ void LinkedCellContainer::insert(Particle &p) {
     size_t index = i + j * x + k * x * y;
     unwrapped_cells_[index].particles.push_back(std::make_shared<Particle>(p));
 }
+
+
+void LinkedCellContainer::update_particle_location(Particle &p, std::array<double, 3> &old_position) {
+    size_t i = static_cast<size_t>((old_position[0] - left_corner_coordinates[0]) / r_cutoff_);
+    size_t j = static_cast<size_t>((old_position[1] - left_corner_coordinates[1]) / r_cutoff_);
+    size_t k = domain_size_.size() == 3 ? static_cast<size_t>((old_position[2] - left_corner_coordinates[2]) / r_cutoff_) : 0;
+    size_t old_index = i + j * x + k * x * y;
+    unwrapped_cells_[old_index].particles.erase(std::remove_if(unwrapped_cells_[old_index].particles.begin(), unwrapped_cells_[old_index].particles.end(), [&p](const ParticlePointer &particle) { return *particle == p; }), unwrapped_cells_[old_index].particles.end());
+    insert(p);
+}
+
+Cell &LinkedCellContainer::get_cell(size_t index) {
+    return unwrapped_cells_[index];
+}
+
+

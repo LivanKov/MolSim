@@ -39,5 +39,9 @@ class LinkedCellContainer : public ParticleContainer {
 
   void insert(Particle &p) override; 
 
+  void update_particle_location(Particle &p, std::array<double, 3> &old_position);
 
+  private:
+
+  Cell& get_cell(size_t index);
   };
