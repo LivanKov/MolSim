@@ -1,5 +1,6 @@
 #include "ParticleContainer.h"
 #include <array>
+#include <initializer_list>
 
 #pragma once
 
@@ -24,8 +25,8 @@ class LinkedCellContainer : public ParticleContainer {
    * @param r_cutoff Cutoff radius.
    */
   public:
-  LinkedCellContainer(const std::vector<double> domain_size, double r_cutoff,
-                      std::array<double, 3> left_corner_coordinates);
+  LinkedCellContainer(std::initializer_list<double> domain_size, double r_cutoff,
+                      std::initializer_list<double> left_corner_coordinates);
 
   void insert(Particle& p) override; 
 
@@ -35,7 +36,7 @@ class LinkedCellContainer : public ParticleContainer {
   
   private:
   const std::vector<double> domain_size_;
-  std::array<double, 3> left_corner_coordinates;
+  const std::vector<double> left_corner_coordinates;
   double r_cutoff_;
   size_t x;
   size_t y;
