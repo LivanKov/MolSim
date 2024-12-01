@@ -37,9 +37,11 @@ class LinkedCellContainer : public ParticleContainer {
   
   public:
 
-  void insert(Particle &p) override; 
+  void insert(Particle& p) override; 
 
-  void update_particle_location(Particle &p, std::array<double, 3> &old_position);
+  void update_particle_location(Particle& p, std::array<double, 3> &old_position);
+
+  std::vector<ParticlePointer> get_neighbours(Particle& p);
 
   private:
 

@@ -38,4 +38,22 @@ Cell &LinkedCellContainer::get_cell(size_t index) {
     return unwrapped_cells_[index];
 }
 
+std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
+    std::array<double, 3> position = p.getX();
+    size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) / r_cutoff_);
+    size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) / r_cutoff_);
+    size_t k = domain_size_.size() == 3 ? static_cast<size_t>((position[2] - left_corner_coordinates[2]) / r_cutoff_) : 0;
+    size_t index = i + j * x + k * x * y;
+    std::vector<ParticlePointer> neighbours;
+    
+    return neighbours;
+}
+
+
+
+
+
+
+
+
 
