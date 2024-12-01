@@ -16,6 +16,7 @@ protected:
   ~BoundaryConditionsTest() override = default;
 };
 
+// Test that particles reflect correctly off the left boundary
 TEST_F(BoundaryConditionsTest, ReflectingBoundary) {
   // Particle heading towards the left boundary
   Particle p({-0.5, 5.0, 0.0}, {-1.0, 0.0, 0.0}, 1.0);
@@ -28,6 +29,7 @@ TEST_F(BoundaryConditionsTest, ReflectingBoundary) {
   EXPECT_NEAR(p.getV()[0], 1.0, 1e-6); // Velocity reversed
 }
 
+// Test that particles crossing the right boundary are marked for removal
 TEST_F(BoundaryConditionsTest, OutflowBoundary) {
   // Particle exiting the right boundary
   Particle p({10.5, 5.0, 0.0}, {1.0, 0.0, 0.0}, 1.0);
@@ -39,6 +41,7 @@ TEST_F(BoundaryConditionsTest, OutflowBoundary) {
   EXPECT_TRUE(p.isMarkedForRemoval());
 }
 
+// Test that particles reflect correctly off the bottom boundary and crossing the top boundary are marked for removal
 TEST_F(BoundaryConditionsTest, BottomReflectingTopOutflow) {
   // Particle heading towards the bottom (reflecting)
   Particle p_bottom({5.0, -0.5, 0.0}, {0.0, -1.0, 0.0}, 1.0);
@@ -59,6 +62,7 @@ TEST_F(BoundaryConditionsTest, BottomReflectingTopOutflow) {
   EXPECT_TRUE(p_top.isMarkedForRemoval());
 }
 
+// Test that particle within the domain should remain unchanged
 TEST_F(BoundaryConditionsTest, NoBoundaryViolation) {
   // Particle within the domain
   Particle p({5.0, 5.0, 0.0}, {0.0, 0.0, 0.0}, 1.0);
