@@ -12,6 +12,7 @@
 struct Cell{
   std::vector<ParticlePointer> particles;
   size_t size() const;
+  ParticlePointer operator[](size_t index);
 };
 
 /**
@@ -31,7 +32,7 @@ class LinkedCellContainer : public ParticleContainer {
 
   void insert(Particle& p) override; 
 
-  void update_particle_location(Particle& p, std::array<double, 3> &old_position);
+  void update_particle_location(ParticlePointer p, std::array<double, 3> &old_position);
 
   std::vector<ParticlePointer> get_neighbours(Particle& p);
 

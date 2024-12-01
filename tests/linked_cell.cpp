@@ -1,22 +1,60 @@
 #include <gtest/gtest.h>
 #include "simulator/particle/LinkedCellContainer.h"
 #include "simulator/particle/ParticleGenerator.h"
+#include "utils/logger/Logger.h"
 #include <array>
 
 
 class LinkedCellTest : public ::testing::Test {
 protected:
     LinkedCellTest() : container{{9.0,9.0}, 3.0, {0.0, 0.0, 0.0}} {}
-
+    Logger &logger = Logger::getInstance("debug");
     LinkedCellContainer container;
 };
 
 TEST_F(LinkedCellTest, LocationTest) {
-    ParticleGenerator::insertCuboid(std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3, 3}, 3.0, 1.0, std::array<double,3>{0.0, 0.0, 0.0}, 0.0, container);
-
-    //assert that every cells contains exactly one particle
     for(size_t i = 0; i < container.cells.size(); ++i){
-        EXPECT_EQ(container.cells[i].size(), 1);
+        EXPECT_EQ(container.cells[i].size(), 0);
     }
+    
+    
+    //ParticleGenerator::insertCuboid(std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3, 3}, 3.0, 1.0, std::array<double,3>{0.0, 0.0, 0.0}, 0.0, container);
+
+    EXPECT_TRUE(container.cells.size() == 9);    
+
+    // single particles insertion test
+
+    Particle p1(std::array<double, 3>{5.0, 4.0, 0.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
+
+    container.insert(p1);
+
+    EXPECT_EQ(container.cells[4].size(), 1);
+
+    for(size_t i = 0; i < container.cells.size(); ++i){
+        if(i != 4){
+            EXPECT_EQ(container.cells[i].size(), 0);
+        }
+    }
+
+    std::array<double,3>old_position = p1.getX();
+
+    container.cells[4][0]->updateX(7.0, 7.0, 0.0);
+
+    container.update_particle_location(container.cells[4][0], old_position);
+
+
+    //EXPECT_EQ(container.cells[8].size(), 1);
+
+    for(size_t i = 0; i < container.cells.size(); ++i){
+        if(i != 8){
+            EXPECT_EQ(container.cells[i].size(), 0);
+        }
+    }
+
+    //update particle location, make sure it is removed from old cell and inserted into new cell
+    //stay within the domain
+
+    
+    
 
 }

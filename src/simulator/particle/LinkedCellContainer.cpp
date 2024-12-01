@@ -5,6 +5,10 @@ size_t Cell::size() const {
     return particles.size();
 }
 
+ParticlePointer Cell::operator[](size_t index) {
+    return particles[index];
+}
+
 
 LinkedCellContainer::LinkedCellContainer(
     std::initializer_list<double> domain_size, double r_cutoff,
@@ -27,16 +31,22 @@ void LinkedCellContainer::insert(Particle &p) {
     size_t k = domain_size_.size() == 3 ? static_cast<size_t>((position[2] - left_corner_coordinates[2]) / r_cutoff_) : 0;
     size_t index = i + j * x + k * x * y;
     cells[index].particles.push_back(std::make_shared<Particle>(p));
+    emplace_back(p);
 }
 
 
-void LinkedCellContainer::update_particle_location(Particle &p, std::array<double, 3> &old_position) {
+void LinkedCellContainer::update_particle_location(ParticlePointer p, std::array<double, 3> &old_position) {
     size_t i = static_cast<size_t>((old_position[0] - left_corner_coordinates[0]) / r_cutoff_);
     size_t j = static_cast<size_t>((old_position[1] - left_corner_coordinates[1]) / r_cutoff_);
     size_t k = domain_size_.size() == 3 ? static_cast<size_t>((old_position[2] - left_corner_coordinates[2]) / r_cutoff_) : 0;
     size_t old_index = i + j * x + k * x * y;
-    cells[old_index].particles.erase(std::remove_if(cells[old_index].particles.begin(), cells[old_index].particles.end(), [&p](const ParticlePointer &particle) { return *particle == p; }), cells[old_index].particles.end());
-    insert(p);
+    cells[old_index].particles.erase(std::remove(cells[old_index].particles.begin(), cells[old_index].particles.end(), p), cells[old_index].particles.end());
+    std::array<double, 3> position = p->getX();
+    i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) / r_cutoff_);
+    j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) / r_cutoff_);
+    k = domain_size_.size() == 3 ? static_cast<size_t>((position[2] - left_corner_coordinates[2]) / r_cutoff_) : 0;
+    size_t index = i + j * x + k * x * y;
+    cells[index].particles.push_back(p);
 }
 
 Cell &LinkedCellContainer::get_cell(size_t index) {
