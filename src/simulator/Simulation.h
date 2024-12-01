@@ -36,5 +36,4 @@ public:
    */
   static ParticleContainer readFile(char *argv1, SimParams &simParams);
 
- //void runDisc();
 };

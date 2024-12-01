@@ -9,6 +9,5 @@ int main(int argc, char *argsv[]) {
   SimParams overridedParams = CommandParser::parse(argc, argsv, parameters);
   auto simulation = Simulation::generate_simulation(overridedParams);
   simulation->run(particles);
- //   simulation->runDisc();
   return 0;
 }
