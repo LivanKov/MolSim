@@ -40,6 +40,51 @@
 
 #include "MolSim.hxx"
 
+// boundary_condition_type
+// 
+
+boundary_condition_type::
+boundary_condition_type (value v)
+: ::xml_schema::string (_xsd_boundary_condition_type_literals_[v])
+{
+}
+
+boundary_condition_type::
+boundary_condition_type (const char* v)
+: ::xml_schema::string (v)
+{
+}
+
+boundary_condition_type::
+boundary_condition_type (const ::std::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+boundary_condition_type::
+boundary_condition_type (const ::xml_schema::string& v)
+: ::xml_schema::string (v)
+{
+}
+
+boundary_condition_type::
+boundary_condition_type (const boundary_condition_type& v,
+                         ::xml_schema::flags f,
+                         ::xml_schema::container* c)
+: ::xml_schema::string (v, f, c)
+{
+}
+
+boundary_condition_type& boundary_condition_type::
+operator= (value v)
+{
+  static_cast< ::xml_schema::string& > (*this) = 
+  ::xml_schema::string (_xsd_boundary_condition_type_literals_[v]);
+
+  return *this;
+}
+
+
 // MolSim
 // 
 
@@ -65,6 +110,36 @@ void MolSim::
 simulation_parameters (::std::auto_ptr< simulation_parameters_type > x)
 {
   this->simulation_parameters_.set (x);
+}
+
+const MolSim::boundary_conditions_optional& MolSim::
+boundary_conditions () const
+{
+  return this->boundary_conditions_;
+}
+
+MolSim::boundary_conditions_optional& MolSim::
+boundary_conditions ()
+{
+  return this->boundary_conditions_;
+}
+
+void MolSim::
+boundary_conditions (const boundary_conditions_type& x)
+{
+  this->boundary_conditions_.set (x);
+}
+
+void MolSim::
+boundary_conditions (const boundary_conditions_optional& x)
+{
+  this->boundary_conditions_ = x;
+}
+
+void MolSim::
+boundary_conditions (::std::auto_ptr< boundary_conditions_type > x)
+{
+  this->boundary_conditions_.set (x);
 }
 
 const MolSim::discs_optional& MolSim::
@@ -249,6 +324,166 @@ void simulation_parameters::
 domain_size (::std::auto_ptr< domain_size_type > x)
 {
   this->domain_size_.set (x);
+}
+
+
+// boundary_conditions
+// 
+
+const boundary_conditions::left_type& boundary_conditions::
+left () const
+{
+  return this->left_.get ();
+}
+
+boundary_conditions::left_type& boundary_conditions::
+left ()
+{
+  return this->left_.get ();
+}
+
+void boundary_conditions::
+left (const left_type& x)
+{
+  this->left_.set (x);
+}
+
+void boundary_conditions::
+left (::std::auto_ptr< left_type > x)
+{
+  this->left_.set (x);
+}
+
+const boundary_conditions::right_type& boundary_conditions::
+right () const
+{
+  return this->right_.get ();
+}
+
+boundary_conditions::right_type& boundary_conditions::
+right ()
+{
+  return this->right_.get ();
+}
+
+void boundary_conditions::
+right (const right_type& x)
+{
+  this->right_.set (x);
+}
+
+void boundary_conditions::
+right (::std::auto_ptr< right_type > x)
+{
+  this->right_.set (x);
+}
+
+const boundary_conditions::top_type& boundary_conditions::
+top () const
+{
+  return this->top_.get ();
+}
+
+boundary_conditions::top_type& boundary_conditions::
+top ()
+{
+  return this->top_.get ();
+}
+
+void boundary_conditions::
+top (const top_type& x)
+{
+  this->top_.set (x);
+}
+
+void boundary_conditions::
+top (::std::auto_ptr< top_type > x)
+{
+  this->top_.set (x);
+}
+
+const boundary_conditions::bottom_type& boundary_conditions::
+bottom () const
+{
+  return this->bottom_.get ();
+}
+
+boundary_conditions::bottom_type& boundary_conditions::
+bottom ()
+{
+  return this->bottom_.get ();
+}
+
+void boundary_conditions::
+bottom (const bottom_type& x)
+{
+  this->bottom_.set (x);
+}
+
+void boundary_conditions::
+bottom (::std::auto_ptr< bottom_type > x)
+{
+  this->bottom_.set (x);
+}
+
+const boundary_conditions::front_optional& boundary_conditions::
+front () const
+{
+  return this->front_;
+}
+
+boundary_conditions::front_optional& boundary_conditions::
+front ()
+{
+  return this->front_;
+}
+
+void boundary_conditions::
+front (const front_type& x)
+{
+  this->front_.set (x);
+}
+
+void boundary_conditions::
+front (const front_optional& x)
+{
+  this->front_ = x;
+}
+
+void boundary_conditions::
+front (::std::auto_ptr< front_type > x)
+{
+  this->front_.set (x);
+}
+
+const boundary_conditions::back_optional& boundary_conditions::
+back () const
+{
+  return this->back_;
+}
+
+boundary_conditions::back_optional& boundary_conditions::
+back ()
+{
+  return this->back_;
+}
+
+void boundary_conditions::
+back (const back_type& x)
+{
+  this->back_.set (x);
+}
+
+void boundary_conditions::
+back (const back_optional& x)
+{
+  this->back_ = x;
+}
+
+void boundary_conditions::
+back (::std::auto_ptr< back_type > x)
+{
+  this->back_.set (x);
 }
 
 
@@ -824,6 +1059,76 @@ z (const z_type& x)
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 
+// boundary_condition_type
+//
+
+boundary_condition_type::
+boundary_condition_type (const ::xercesc::DOMElement& e,
+                         ::xml_schema::flags f,
+                         ::xml_schema::container* c)
+: ::xml_schema::string (e, f, c)
+{
+  _xsd_boundary_condition_type_convert ();
+}
+
+boundary_condition_type::
+boundary_condition_type (const ::xercesc::DOMAttr& a,
+                         ::xml_schema::flags f,
+                         ::xml_schema::container* c)
+: ::xml_schema::string (a, f, c)
+{
+  _xsd_boundary_condition_type_convert ();
+}
+
+boundary_condition_type::
+boundary_condition_type (const ::std::string& s,
+                         const ::xercesc::DOMElement* e,
+                         ::xml_schema::flags f,
+                         ::xml_schema::container* c)
+: ::xml_schema::string (s, e, f, c)
+{
+  _xsd_boundary_condition_type_convert ();
+}
+
+boundary_condition_type* boundary_condition_type::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class boundary_condition_type (*this, f, c);
+}
+
+boundary_condition_type::value boundary_condition_type::
+_xsd_boundary_condition_type_convert () const
+{
+  ::xsd::cxx::tree::enum_comparator< char > c (_xsd_boundary_condition_type_literals_);
+  const value* i (::std::lower_bound (
+                    _xsd_boundary_condition_type_indexes_,
+                    _xsd_boundary_condition_type_indexes_ + 2,
+                    *this,
+                    c));
+
+  if (i == _xsd_boundary_condition_type_indexes_ + 2 || _xsd_boundary_condition_type_literals_[*i] != *this)
+  {
+    throw ::xsd::cxx::tree::unexpected_enumerator < char > (*this);
+  }
+
+  return *i;
+}
+
+const char* const boundary_condition_type::
+_xsd_boundary_condition_type_literals_[2] =
+{
+  "Outflow",
+  "Reflecting"
+};
+
+const boundary_condition_type::value boundary_condition_type::
+_xsd_boundary_condition_type_indexes_[2] =
+{
+  ::boundary_condition_type::Outflow,
+  ::boundary_condition_type::Reflecting
+};
+
 // MolSim
 //
 
@@ -831,6 +1136,7 @@ MolSim::
 MolSim (const simulation_parameters_type& simulation_parameters)
 : ::xml_schema::type (),
   simulation_parameters_ (simulation_parameters, this),
+  boundary_conditions_ (this),
   discs_ (this),
   cuboids_ (this)
 {
@@ -840,6 +1146,7 @@ MolSim::
 MolSim (::std::auto_ptr< simulation_parameters_type > simulation_parameters)
 : ::xml_schema::type (),
   simulation_parameters_ (simulation_parameters, this),
+  boundary_conditions_ (this),
   discs_ (this),
   cuboids_ (this)
 {
@@ -851,6 +1158,7 @@ MolSim (const MolSim& x,
         ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   simulation_parameters_ (x.simulation_parameters_, f, this),
+  boundary_conditions_ (x.boundary_conditions_, f, this),
   discs_ (x.discs_, f, this),
   cuboids_ (x.cuboids_, f, this)
 {
@@ -862,6 +1170,7 @@ MolSim (const ::xercesc::DOMElement& e,
         ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   simulation_parameters_ (this),
+  boundary_conditions_ (this),
   discs_ (this),
   cuboids_ (this)
 {
@@ -892,6 +1201,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       if (!simulation_parameters_.present ())
       {
         this->simulation_parameters_.set (r);
+        continue;
+      }
+    }
+
+    // boundary_conditions
+    //
+    if (n.name () == "boundary_conditions" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< boundary_conditions_type > r (
+        boundary_conditions_traits::create (i, f, this));
+
+      if (!this->boundary_conditions_)
+      {
+        this->boundary_conditions_.set (r);
         continue;
       }
     }
@@ -949,6 +1272,7 @@ operator= (const MolSim& x)
   {
     static_cast< ::xml_schema::type& > (*this) = x;
     this->simulation_parameters_ = x.simulation_parameters_;
+    this->boundary_conditions_ = x.boundary_conditions_;
     this->discs_ = x.discs_;
     this->cuboids_ = x.cuboids_;
   }
@@ -1185,6 +1509,212 @@ operator= (const simulation_parameters& x)
 
 simulation_parameters::
 ~simulation_parameters ()
+{
+}
+
+// boundary_conditions
+//
+
+boundary_conditions::
+boundary_conditions (const left_type& left,
+                     const right_type& right,
+                     const top_type& top,
+                     const bottom_type& bottom)
+: ::xml_schema::type (),
+  left_ (left, this),
+  right_ (right, this),
+  top_ (top, this),
+  bottom_ (bottom, this),
+  front_ (this),
+  back_ (this)
+{
+}
+
+boundary_conditions::
+boundary_conditions (const boundary_conditions& x,
+                     ::xml_schema::flags f,
+                     ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  left_ (x.left_, f, this),
+  right_ (x.right_, f, this),
+  top_ (x.top_, f, this),
+  bottom_ (x.bottom_, f, this),
+  front_ (x.front_, f, this),
+  back_ (x.back_, f, this)
+{
+}
+
+boundary_conditions::
+boundary_conditions (const ::xercesc::DOMElement& e,
+                     ::xml_schema::flags f,
+                     ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  left_ (this),
+  right_ (this),
+  top_ (this),
+  bottom_ (this),
+  front_ (this),
+  back_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void boundary_conditions::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // left
+    //
+    if (n.name () == "left" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< left_type > r (
+        left_traits::create (i, f, this));
+
+      if (!left_.present ())
+      {
+        this->left_.set (r);
+        continue;
+      }
+    }
+
+    // right
+    //
+    if (n.name () == "right" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< right_type > r (
+        right_traits::create (i, f, this));
+
+      if (!right_.present ())
+      {
+        this->right_.set (r);
+        continue;
+      }
+    }
+
+    // top
+    //
+    if (n.name () == "top" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< top_type > r (
+        top_traits::create (i, f, this));
+
+      if (!top_.present ())
+      {
+        this->top_.set (r);
+        continue;
+      }
+    }
+
+    // bottom
+    //
+    if (n.name () == "bottom" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< bottom_type > r (
+        bottom_traits::create (i, f, this));
+
+      if (!bottom_.present ())
+      {
+        this->bottom_.set (r);
+        continue;
+      }
+    }
+
+    // front
+    //
+    if (n.name () == "front" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< front_type > r (
+        front_traits::create (i, f, this));
+
+      if (!this->front_)
+      {
+        this->front_.set (r);
+        continue;
+      }
+    }
+
+    // back
+    //
+    if (n.name () == "back" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< back_type > r (
+        back_traits::create (i, f, this));
+
+      if (!this->back_)
+      {
+        this->back_.set (r);
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!left_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "left",
+      "");
+  }
+
+  if (!right_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "right",
+      "");
+  }
+
+  if (!top_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "top",
+      "");
+  }
+
+  if (!bottom_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "bottom",
+      "");
+  }
+}
+
+boundary_conditions* boundary_conditions::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class boundary_conditions (*this, f, c);
+}
+
+boundary_conditions& boundary_conditions::
+operator= (const boundary_conditions& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->left_ = x.left_;
+    this->right_ = x.right_;
+    this->top_ = x.top_;
+    this->bottom_ = x.bottom_;
+    this->front_ = x.front_;
+    this->back_ = x.back_;
+  }
+
+  return *this;
+}
+
+boundary_conditions::
+~boundary_conditions ()
 {
 }
 

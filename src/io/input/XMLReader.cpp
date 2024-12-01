@@ -48,19 +48,23 @@ void XMLReader::readXMLFile(ParticleContainer &particles,
 
     // Extract simulation parameters
     auto xmlParams = doc->simulation_parameters();
-    simParameters.end_time = (xmlParams.end_time() != simParameters.end_time && simParameters.end_time == 0.0)
+    simParameters.end_time = (xmlParams.end_time() != simParameters.end_time &&
+                              simParameters.end_time == 0.0)
                                  ? xmlParams.end_time()
                                  : simParameters.end_time;
     simParameters.time_delta =
-        (xmlParams.delta_time() != simParameters.time_delta && simParameters.time_delta == 0.0)
+        (xmlParams.delta_time() != simParameters.time_delta &&
+         simParameters.time_delta == 0.0)
             ? xmlParams.delta_time()
             : simParameters.time_delta;
     simParameters.output_path =
-        (xmlParams.output_basename() != simParameters.output_path && simParameters.output_path == "")
+        (xmlParams.output_basename() != simParameters.output_path &&
+         simParameters.output_path == "")
             ? xmlParams.output_basename()
             : simParameters.output_path;
     simParameters.write_frequency =
-        (xmlParams.write_frequency() != simParameters.write_frequency && simParameters.write_frequency == 0)
+        (xmlParams.write_frequency() != simParameters.write_frequency &&
+         simParameters.write_frequency == 0)
             ? xmlParams.write_frequency()
             : simParameters.write_frequency;
     simParameters.r_cutoff_radius = xmlParams.r_cutoff_radius();
@@ -79,7 +83,30 @@ void XMLReader::readXMLFile(ParticleContainer &particles,
     logger.info("Domain Size: " +
                 containerToStrings(simParameters.domain_size));
 
-    // auto cuboids = doc->cuboids();
+    // Read boundary conditions
+    if (doc->boundary_conditions().present()) {
+      const auto &xmlBoundaryConditions = doc->boundary_conditions().get();
+      simParameters.boundaryConditions.left =
+          parseBoundaryCondition(xmlBoundaryConditions.left());
+      simParameters.boundaryConditions.right =
+          parseBoundaryCondition(xmlBoundaryConditions.right());
+      simParameters.boundaryConditions.top =
+          parseBoundaryCondition(xmlBoundaryConditions.top());
+      simParameters.boundaryConditions.bottom =
+          parseBoundaryCondition(xmlBoundaryConditions.bottom());
+
+      if (xmlBoundaryConditions.front().present()) {
+        simParameters.boundaryConditions.front =
+            parseBoundaryCondition(xmlBoundaryConditions.front().get());
+      }
+
+      if (xmlBoundaryConditions.back().present()) {
+        simParameters.boundaryConditions.back =
+            parseBoundaryCondition(xmlBoundaryConditions.back().get());
+      }
+
+      logger.info("Boundary conditions loaded successfully");
+    }
 
     // Extract cuboid specification
     if (doc->cuboids().present()) {
@@ -151,5 +178,15 @@ void XMLReader::readXMLFile(ParticleContainer &particles,
   } catch (const std::exception &e) {
     logger.warn("Error while reading XML file: " + std::string(filename));
     exit(-1);
+  }
+}
+
+BoundaryCondition XMLReader::parseBoundaryCondition(const std::string &value) {
+  if (value == "Outflow") {
+    return BoundaryCondition::Outflow;
+  } else if (value == "Reflecting") {
+    return BoundaryCondition::Reflecting;
+  } else {
+    throw std::runtime_error("Invalid boundary condition: " + value);
   }
 }
