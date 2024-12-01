@@ -206,7 +206,7 @@ public:
    * @brief check if particle is outside the domain.
    */
 
-  bool in_halo;
+  bool left_domain;
 };
 
 /**

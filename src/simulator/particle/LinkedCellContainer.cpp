@@ -25,13 +25,15 @@ LinkedCellContainer::LinkedCellContainer(
       }
 
 void LinkedCellContainer::insert(Particle &p) {
+    ParticlePointer p_ptr = std::make_shared<Particle>(p);
     std::array<double, 3> position = p.getX();
     size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) / r_cutoff_);
     size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) / r_cutoff_);
     size_t k = domain_size_.size() == 3 ? static_cast<size_t>((position[2] - left_corner_coordinates[2]) / r_cutoff_) : 0;
     size_t index = i + j * x + k * x * y;
-    cells[index].particles.push_back(std::make_shared<Particle>(p));
-    emplace_back(p);
+    cells[index].particles.push_back(p_ptr);
+    create_pairs(p_ptr);
+    _particle_container.push_back(p_ptr);
 }
 
 bool LinkedCellContainer::is_within_domain(const std::array<double,3>& position){
@@ -42,17 +44,23 @@ bool LinkedCellContainer::is_within_domain(const std::array<double,3>& position)
 
 
 void LinkedCellContainer::update_particle_location(ParticlePointer p, std::array<double, 3> &old_position) {
-    size_t i = static_cast<size_t>((old_position[0] - left_corner_coordinates[0]) / r_cutoff_);
-    size_t j = static_cast<size_t>((old_position[1] - left_corner_coordinates[1]) / r_cutoff_);
-    size_t k = domain_size_.size() == 3 ? static_cast<size_t>((old_position[2] - left_corner_coordinates[2]) / r_cutoff_) : 0;
-    size_t old_index = i + j * x + k * x * y;
-    cells[old_index].particles.erase(std::remove(cells[old_index].particles.begin(), cells[old_index].particles.end(), p), cells[old_index].particles.end());
-    std::array<double, 3> position = p->getX();
-    i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) / r_cutoff_);
-    j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) / r_cutoff_);
-    k = domain_size_.size() == 3 ? static_cast<size_t>((position[2] - left_corner_coordinates[2]) / r_cutoff_) : 0;
-    size_t index = i + j * x + k * x * y;
-    cells[index].particles.push_back(p);
+    if(is_within_domain(old_position)) {
+        size_t i = static_cast<size_t>((old_position[0] - left_corner_coordinates[0]) / r_cutoff_);
+        size_t j = static_cast<size_t>((old_position[1] - left_corner_coordinates[1]) / r_cutoff_);
+        size_t k = domain_size_.size() == 3 ? static_cast<size_t>((old_position[2] - left_corner_coordinates[2]) / r_cutoff_) : 0;
+        size_t old_index = i + j * x + k * x * y;
+        cells[old_index].particles.erase(std::remove(cells[old_index].particles.begin(), cells[old_index].particles.end(), p), cells[old_index].particles.end());
+    }
+    if(is_within_domain(p->getX())) {
+        size_t i = static_cast<size_t>((p->getX()[0] - left_corner_coordinates[0]) / r_cutoff_);
+        size_t j = static_cast<size_t>((p->getX()[1] - left_corner_coordinates[1]) / r_cutoff_);
+        size_t k = domain_size_.size() == 3 ? static_cast<size_t>((p->getX()[2] - left_corner_coordinates[2]) / r_cutoff_) : 0;
+        size_t index = i + j * x + k * x * y;
+        cells[index].particles.push_back(p);
+    }else{
+        p->left_domain = true;
+    }
+
 }
 
 Cell &LinkedCellContainer::get_cell(size_t index) {

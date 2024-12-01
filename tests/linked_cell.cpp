@@ -36,6 +36,8 @@ TEST_F(LinkedCellTest, LocationTest) {
         }
     }
 
+    //update particle location, make sure it is removed from old cell and inserted into new cell
+
     std::array<double,3>old_position = p1.getX();
 
     container.cells[4][0]->updateX(7.0, 7.0, 0.0);
@@ -51,10 +53,28 @@ TEST_F(LinkedCellTest, LocationTest) {
         }
     }
 
-    //update particle location, make sure it is removed from old cell and inserted into new cell
-    //stay within the domain
+    // leave the domain
 
     
+    std::array<double, 3>another_old_position = container.cells[8][0]->getX();
+    container.cells[8][0]->updateX(10.0, 10.0, 0.0);
+    container.update_particle_location(container.cells[8][0], another_old_position);
+
+    //Ensure that the particle is still within the container
+
+    EXPECT_TRUE(container.size() == 1);
+    
+    // Ensure that the corresponding flag has been set
+
+    EXPECT_TRUE(container[0].left_domain);
+
+    // Ensure that the particle is no longer in the cells
+    
+    for(size_t i = 0; i < container.cells.size(); ++i){
+        EXPECT_EQ(container.cells[i].size(), 0);
+    }
+
+
     
 
 }
