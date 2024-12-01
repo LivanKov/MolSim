@@ -2,5 +2,5 @@
 
 
 class LinkedCellTest : public ::testing::Test {
-
+    
 };
