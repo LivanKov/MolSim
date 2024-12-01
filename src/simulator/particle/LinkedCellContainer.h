@@ -25,7 +25,8 @@ class LinkedCellContainer : public ParticleContainer {
    */
   LinkedCellContainer(const std::vector<double>& domain_size, double r_cutoff,
                       std::array<double, 3> &left_corner_coordinates);
-
+  
+  private:
   const std::vector<double> domain_size_;
   std::array<double, 3> left_corner_coordinates;
   double r_cutoff_;
@@ -33,4 +34,10 @@ class LinkedCellContainer : public ParticleContainer {
   size_t y;
   size_t z;
   std::vector<Cell> unwrapped_cells_;
-};
+  
+  public:
+
+  void insert(Particle &p) override; 
+
+
+  };

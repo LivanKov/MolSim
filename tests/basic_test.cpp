@@ -144,7 +144,7 @@ TEST_F(BasicTest, SimulationBehaviourTest) {
   // std::initializer_list
   Particle p_1{std::array{0.0, 0.0, 0.0}, std::array{1.0, 0.0, 0.0}, 1.0};
 
-  container.insert(std::forward<Particle>(p_1));
+  container.insert(p_1);
 
   // Perform 3 Iterations
 

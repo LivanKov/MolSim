@@ -105,14 +105,6 @@ public:
   virtual void insert(Particle &p);
 
   /**
-   * @brief Inserts a Particle object into the container. Redirects the call to
-   * emplace.
-   * @param p Particle object rvalue reference.
-   */
-
-  virtual void insert(Particle &&p);
-
-  /**
    * @brief Returns the amount of unique particles stored in the container.
    * @return Size_t container size.
    */
