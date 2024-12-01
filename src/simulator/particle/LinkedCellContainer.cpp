@@ -26,12 +26,16 @@ LinkedCellContainer::LinkedCellContainer(
 
 void LinkedCellContainer::insert(Particle &p) {
     ParticlePointer p_ptr = std::make_shared<Particle>(p);
-    std::array<double, 3> position = p.getX();
-    size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) / r_cutoff_);
-    size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) / r_cutoff_);
-    size_t k = domain_size_.size() == 3 ? static_cast<size_t>((position[2] - left_corner_coordinates[2]) / r_cutoff_) : 0;
-    size_t index = i + j * x + k * x * y;
-    cells[index].particles.push_back(p_ptr);
+    if(is_within_domain(p_ptr->getX())){
+        std::array<double, 3> position = p.getX();
+        size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) / r_cutoff_);
+        size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) / r_cutoff_);
+        size_t k = domain_size_.size() == 3 ? static_cast<size_t>((position[2] - left_corner_coordinates[2]) / r_cutoff_) : 0;
+        size_t index = i + j * x + k * x * y;
+        cells[index].particles.push_back(p_ptr);
+    }else{
+        p_ptr->left_domain = true;
+    }
     create_pairs(p_ptr);
     _particle_container.push_back(p_ptr);
 }
