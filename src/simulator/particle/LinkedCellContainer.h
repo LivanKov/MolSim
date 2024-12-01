@@ -36,6 +36,8 @@ class LinkedCellContainer : public ParticleContainer {
 
   bool is_within_domain(const std::array<double, 3> &position);
 
+  void clear() override;
+
   std::vector<ParticlePointer> get_neighbours(Particle& p);
 
   const std::vector<double> domain_size_;

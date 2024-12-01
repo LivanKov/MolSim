@@ -120,7 +120,7 @@ public:
   /**
    * @brief Clears the container.
    */
-  void clear();
+  virtual void clear();
 
   /**
    * @brief Iterator interface for the main iterator.

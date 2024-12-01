@@ -134,6 +134,14 @@ std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
     return neighbours;
 }
 
+void LinkedCellContainer::clear(){
+    for(size_t i = 0; i < cells.size(); ++i){
+        cells[i].particles.clear();
+    }
+    _particle_container.clear();
+    _particle_pair_container.clear();
+}
+
 
 
 

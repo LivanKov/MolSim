@@ -83,4 +83,6 @@ TEST_F(LinkedCellTest, CuboidTest){
     for(size_t i = 0; i < container.cells.size(); ++i){
         EXPECT_EQ(container.cells[i].size(), 1);
     }
+
+    container.clear();
 }
