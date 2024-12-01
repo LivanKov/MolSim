@@ -9,9 +9,9 @@ LinkedCellContainer::LinkedCellContainer(
         if(domain_size.size() != 3 && domain_size.size() != 2) {
             throw std::invalid_argument("Domain size must have 2 or 3 elements");
         }
-        x = static_cast<size_t>(std::ceil(domain_size[0] / r_cutoff));
-        y = static_cast<size_t>(std::ceil(domain_size[1] / r_cutoff));
-        z = domain_size.size() == 3 ? static_cast<size_t>(std::ceil(domain_size[2] / r_cutoff)) : 1;
+        x = static_cast<size_t>(domain_size[0] / r_cutoff);
+        y = static_cast<size_t>(domain_size[1] / r_cutoff);
+        z = domain_size.size() == 3 ? static_cast<size_t>((domain_size[2] / r_cutoff)) : 1;
         unwrapped_cells_ = std::vector<Cell>(x * y * z, Cell());     
       }
 
@@ -46,6 +46,62 @@ std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
     size_t index = i + j * x + k * x * y;
     std::vector<ParticlePointer> neighbours;
     
+    // handle 2d case
+    if(domain_size_.size() == 2) {
+        if(i == x - 1 && j == y -1){
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - 1].particles.begin(), unwrapped_cells_[index - 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x].particles.begin(), unwrapped_cells_[index - x].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x - 1].particles.begin(), unwrapped_cells_[index - x - 1].particles.end());
+        } else if(i == x - 1 && j == 0) {
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - 1].particles.begin(), unwrapped_cells_[index - 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + x].particles.begin(), unwrapped_cells_[index + x].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + x - 1].particles.begin(), unwrapped_cells_[index + x - 1].particles.end());
+        } else if(i == 0 && j == y - 1) {
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + 1].particles.begin(), unwrapped_cells_[index + 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x].particles.begin(), unwrapped_cells_[index - x].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x + 1].particles.begin(), unwrapped_cells_[index - x + 1].particles.end());
+        } else if(i == 0 && j == 0) {
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + 1].particles.begin(), unwrapped_cells_[index + 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + x].particles.begin(), unwrapped_cells_[index + x].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + x + 1].particles.begin(), unwrapped_cells_[index + x + 1].particles.end());
+        } else if(i == x - 1) {
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - 1].particles.begin(), unwrapped_cells_[index - 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + x].particles.begin(), unwrapped_cells_[index + x].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x].particles.begin(), unwrapped_cells_[index - x].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + x - 1].particles.begin(), unwrapped_cells_[index + x - 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x - 1].particles.begin(), unwrapped_cells_[index - x - 1].particles.end());
+        } else if(j == y - 1) {
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + 1].particles.begin(), unwrapped_cells_[index + 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x].particles.begin(), unwrapped_cells_[index - x].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - 1].particles.begin(), unwrapped_cells_[index - 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x + 1].particles.begin(), unwrapped_cells_[index - x + 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x - 1].particles.begin(), unwrapped_cells_[index - x - 1].particles.end());
+        } else if(i == 0) {
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + 1].particles.begin(), unwrapped_cells_[index + 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + x].particles.begin(), unwrapped_cells_[index + x].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x].particles.begin(), unwrapped_cells_[index - x].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + x + 1].particles.begin(), unwrapped_cells_[index + x + 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x + 1].particles.begin(), unwrapped_cells_[index - x + 1].particles.end());
+        } else if(j == 0) {
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + 1].particles.begin(), unwrapped_cells_[index + 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x].particles.begin(), unwrapped_cells_[index - x].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - 1].particles.begin(), unwrapped_cells_[index - 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + x - 1].particles.begin(), unwrapped_cells_[index + x - 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x - 1].particles.begin(), unwrapped_cells_[index - x -1].particles.end());
+        } else {
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + 1].particles.begin(), unwrapped_cells_[index + 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - 1].particles.begin(), unwrapped_cells_[index - 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + x].particles.begin(), unwrapped_cells_[index + x].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x].particles.begin(), unwrapped_cells_[index - x].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + x + 1].particles.begin(), unwrapped_cells_[index + x + 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index + x - 1].particles.begin(), unwrapped_cells_[index + x - 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x + 1].particles.begin(), unwrapped_cells_[index - x + 1].particles.end());
+            neighbours.insert(neighbours.end(), unwrapped_cells_[index - x - 1].particles.begin(), unwrapped_cells_[index - x - 1].particles.end());
+        }
+    } else {
+
+    }
+
     return neighbours;
 }
 
