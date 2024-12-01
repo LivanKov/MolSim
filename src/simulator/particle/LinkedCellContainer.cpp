@@ -34,6 +34,12 @@ void LinkedCellContainer::insert(Particle &p) {
     emplace_back(p);
 }
 
+bool LinkedCellContainer::is_within_domain(const std::array<double,3>& position){
+    return position[0] >= left_corner_coordinates[0] && position[0] <= left_corner_coordinates[0] + domain_size_[0] &&
+           position[1] >= left_corner_coordinates[1] && position[1] <= left_corner_coordinates[1] + domain_size_[1] &&
+           position[2] >= left_corner_coordinates[2] && position[2] <= left_corner_coordinates[2] + domain_size_[2];
+}
+
 
 void LinkedCellContainer::update_particle_location(ParticlePointer p, std::array<double, 3> &old_position) {
     size_t i = static_cast<size_t>((old_position[0] - left_corner_coordinates[0]) / r_cutoff_);

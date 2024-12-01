@@ -34,6 +34,8 @@ class LinkedCellContainer : public ParticleContainer {
 
   void update_particle_location(ParticlePointer p, std::array<double, 3> &old_position);
 
+  bool is_within_domain(const std::array<double, 3> &position);
+
   std::vector<ParticlePointer> get_neighbours(Particle& p);
 
   const std::vector<double> domain_size_;
@@ -45,4 +47,5 @@ class LinkedCellContainer : public ParticleContainer {
   std::vector<Cell> cells;
 
   Cell& get_cell(size_t index);
+
   };
