@@ -17,9 +17,6 @@ TEST_F(LinkedCellTest, LocationTest) {
         EXPECT_EQ(container.cells[i].size(), 0);
     }
     
-    
-    //ParticleGenerator::insertCuboid(std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3, 3}, 3.0, 1.0, std::array<double,3>{0.0, 0.0, 0.0}, 0.0, container);
-
     EXPECT_TRUE(container.cells.size() == 9);    
 
     // single particles insertion test
@@ -73,8 +70,17 @@ TEST_F(LinkedCellTest, LocationTest) {
     for(size_t i = 0; i < container.cells.size(); ++i){
         EXPECT_EQ(container.cells[i].size(), 0);
     }
+}
 
 
-    
+TEST_F(LinkedCellTest, CuboidTest){
 
+    // Insert a 3x3x1 cuboid of particles with a side length of 3.0 and a mass of 1.0
+    ParticleGenerator::insertCuboid(std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3, 1}, 3.0, 1.0, std::array<double,3>{0.0, 0.0, 0.0}, 0.0, container);
+
+    EXPECT_TRUE(container.size() == 9);
+
+    for(size_t i = 0; i < container.cells.size(); ++i){
+        EXPECT_EQ(container.cells[i].size(), 1);
+    }
 }
