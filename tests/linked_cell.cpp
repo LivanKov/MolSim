@@ -222,6 +222,8 @@ TEST_F(LinkedCellTest, RepositioningTest){
 
     container.readjust();
 
-    //EXPECT_TRUE(container.left_corner_coordinates[0] == 2.5 && container.left_corner_coordinates[1] == 2.5 && container.left_corner_coordinates[2] == 0.0);
+    EXPECT_TRUE(container.size() == 4);
+
+    EXPECT_TRUE(container.left_corner_coordinates[0] == 1.5 && container.left_corner_coordinates[1] == 1.5 && container.left_corner_coordinates[2] == 0.0);
 
 }
