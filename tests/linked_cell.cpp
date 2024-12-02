@@ -171,3 +171,8 @@ TEST_F(LinkedCellTest, NeighbourTest){
     EXPECT_TRUE(container_3d.get_neighbours(center_particle).size() == 26);
 
 }
+
+
+TEST_F(LinkedCellTest, UnevenDomainTest){
+    
+}

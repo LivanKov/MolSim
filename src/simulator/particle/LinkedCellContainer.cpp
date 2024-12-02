@@ -29,10 +29,10 @@ LinkedCellContainer::LinkedCellContainer(
   if(std::abs(remainder_z) > DIVISION_TOLERANCE)
     extend_z = true;
 
-  x = static_cast<size_t>(domain_size_[0] / r_cutoff);
-  y = static_cast<size_t>(domain_size_[1] / r_cutoff);
+  x = static_cast<size_t>(domain_size_[0] / r_cutoff) + (extend_x ? 1 : 0);
+  y = static_cast<size_t>(domain_size_[1] / r_cutoff) + (extend_y ? 1 : 0);
   z = domain_size.size() == 3
-          ? static_cast<size_t>((domain_size_[2] / r_cutoff))
+          ? (static_cast<size_t>((domain_size_[2] / r_cutoff)) + (extend_z ? 1 : 0))
           : 1;
   cells = std::vector<Cell>(x * y * z, Cell());
 }
