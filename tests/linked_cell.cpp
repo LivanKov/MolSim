@@ -153,6 +153,17 @@ TEST_F(LinkedCellTest, NeighbourTest){
         return p->getX()[0] == 1.5 && p->getX()[1] == 7.5 && p->getX()[2] == 0.0;
     });
     EXPECT_TRUE(it != neighbours.end());
-}
 
-    // Insert a disc of particles with a radius of 1.5 and a mass of 1.0
+    ParticleGenerator::insertCuboid(std::array<double, 3>{1.5, 1.5, 1.5}, std::array<size_t, 3>{3, 3, 3}, 3.0, 1.0, std::array<double,3>{0.0, 0.0, 0.0}, 0.0, container_3d);
+
+    EXPECT_TRUE(container_3d.size() == 27);
+
+
+    Particle center_particle = container_3d[13];
+
+    //verify that it is a middle particle
+    EXPECT_TRUE(center_particle.getX()[0] == 4.5 && center_particle.getX()[1] == 4.5 && center_particle.getX()[2] == 4.5);
+
+    EXPECT_TRUE(container_3d.get_neighbours(center_particle).size() == 26);
+
+}
