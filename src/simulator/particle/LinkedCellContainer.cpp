@@ -114,69 +114,7 @@ std::vector<ParticlePointer> &LinkedCellContainer::get_neighbours(Particle &p) {
   std::vector<ParticlePointer> neighbours;
 
   // handle 2d case
-  if (domain_size_.size() == 2) {
-    if (i == x - 1 && j == y - 1) {
-      return get_particles_from_indices({index - 1, index - x, index - x - 1});
-    } else if (i == x - 1 && j == 0) {
-      return get_particles_from_indices({index - 1, index + x, index + x - 1});
-    } else if (i == 0 && j == y - 1) {
-      return get_particles_from_indices({index + 1, index - x, index - x + 1});
-    } else if (i == 0 && j == 0) {
-      return get_particles_from_indices({index + 1, index + x, index + x + 1});
-    } else if (i == x - 1) {
-      return get_particles_from_indices(
-          {index - 1, index + x, index - x, index + x - 1, index - x - 1});
-    } else if (j == y - 1) {
-      return get_particles_from_indices(
-          {index + 1, index - x, index - 1, index - x + 1, index - x - 1});
-    } else if (i == 0) {
-      return get_particles_from_indices(
-          {index + 1, index + x, index - x, index + x + 1, index - x + 1});
-    } else if (j == 0) {
-      return get_particles_from_indices(
-          {index + 1, index - x, index - 1, index + x - 1, index - x - 1});
-    } else {
-      return get_particles_from_indices(
-          {index + 1, index - 1, index + x, index - x, index + x + 1,
-           index + x - 1, index - x + 1, index - x - 1});
-    }
-  }
-  // handle 3d case (this is going to be messy)
-  else {
-    if (i == x - 1 && j == y - 1 && k == z - 1) { // top, right, front
-      return get_particles_from_indices(
-          {index - 1, index - x, index - x - 1, index - x * y,
-           index - x * y - 1, index - x * y - x, index - x * y - x - 1});
-    } else if (i == x - 1 && j == y - 1 && k == 0) { // top,right,back
-      return get_particles_from_indices(
-          {index - 1, index - x, index - x - 1, index + x * y,
-           index + x * y - 1, index + x * y - x, index + x * y - x - 1});
-    } else if (i == x - 1 && j == 0 && k == z - 1) { // bottom,right,front
-      return get_particles_from_indices(
-          {index - 1, index + x, index + x - 1, index - x * y,
-           index - x * y - 1, index - x * y + x, index - x * y + x - 1});
-    } else if (i == x - 1 && j == 0 && k == 0) { // bottom,right,back
-      return get_particles_from_indices(
-          {index - 1, index + x, index + x - 1, index + x * y,
-           index + x * y - 1, index - x * y + x, index - x * y + x - 1});
-    } else if (i == 0 && j == y - 1 && k == z - 1) { // top,left,front
-      return get_particles_from_indices(
-          {index + 1, index - x, index - x + 1, index - x * y,
-           index - x * y + 1, index - x * y - x, index - x * y - x + 1});
-    } else if (i == 0 && j == y - 1 && k == 0) { // top,left,back
-      return get_particles_from_indices(
-          {index + 1, index - x, index - x + 1, index + x * y,
-           index + x * y + 1, index + x * y - x, index + x * y - x + 1});
-    } else if (i == 0 && j == 0 && k == z - 1) { // bottom,left,front
-      return get_particles_from_indices(
-          {index + 1, index + x, index + x + 1, index - x * y,
-           index - x * y + 1, index - x * y + x, index - x * y + x + 1});
-    } else if (i == 0 && j == 0 && k == 0) { // bottom,left,back
-      return get_particles_from_indices(
-          {index + 1, index + x, index + x + 1, index + x * y,
-           index + x * y + 1, index + x * y + x, index + x * y + x + 1});
-    }
-  }
+  
 }
 
 void LinkedCellContainer::clear() {
