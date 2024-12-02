@@ -7,9 +7,10 @@
 
 class LinkedCellTest : public ::testing::Test {
 protected:
-    LinkedCellTest() : container{{9.0,9.0}, 3.0, {0.0, 0.0, 0.0}} {}
+    LinkedCellTest() : container{{9.0,9.0}, 3.0, {0.0, 0.0, 0.0}}, container_3d{{9.0, 9.0, 9.0}, 3.0, {0.0, 0.0, 0.0}} {}
     Logger &logger = Logger::getInstance("debug");
     LinkedCellContainer container;
+    LinkedCellContainer container_3d;
 };
 
 TEST_F(LinkedCellTest, LocationTest) {
@@ -104,13 +105,54 @@ TEST_F(LinkedCellTest, NeighbourTest){
 
     EXPECT_TRUE(container.size() == 9);
     
-    Particle p = container[0];
+    Particle p_1 = container[0];
 
-    EXPECT_TRUE(p.getX()[0] == 1.5 && p.getX()[1] == 1.5 && p.getX()[2] == 0.0);
+    EXPECT_TRUE(p_1.getX()[0] == 1.5 && p_1.getX()[1] == 1.5 && p_1.getX()[2] == 0.0);
 
-    EXPECT_TRUE(container.get_neighbours(p).size() == 3);
+    EXPECT_TRUE(container.get_neighbours(p_1).size() == 3);
+
+    Particle p_2 = container[4];
+
+    EXPECT_TRUE(p_2.getX()[0] == 4.5 && p_2.getX()[1] == 4.5 && p_2.getX()[2] == 0.0);
+
+    EXPECT_TRUE(container.get_neighbours(p_2).size() == 8);
+
+    Particle p_3 = container[7];
+
+    EXPECT_TRUE(p_3.getX()[0] == 4.5 && p_3.getX()[1] == 7.5 && p_3.getX()[2] == 0.0);
+
+    EXPECT_TRUE(container.get_neighbours(p_3).size() == 5);
 
 
+    //verify every single neigbour for posterity's sake
+
+    auto neighbours = container.get_neighbours(p_3);
+
+    // check all surrounding coordinates
+    auto it = std::find_if(neighbours.begin(), neighbours.end(), [](ParticlePointer p) {
+        return p->getX()[0] == 7.5 && p->getX()[1] == 7.5 && p->getX()[2] == 0.0;
+    });
+
+    EXPECT_TRUE(it != neighbours.end());
+    it = std::find_if(neighbours.begin(), neighbours.end(), [](ParticlePointer p) {
+        return p->getX()[0] == 7.5 && p->getX()[1] == 4.5 && p->getX()[2] == 0.0;
+    });
+    EXPECT_TRUE(it != neighbours.end());
+
+    it = std::find_if(neighbours.begin(), neighbours.end(), [](ParticlePointer p) {
+        return p->getX()[0] == 4.5 && p->getX()[1] == 4.5 && p->getX()[2] == 0.0;
+    });
+    EXPECT_TRUE(it != neighbours.end());
+
+    it = std::find_if(neighbours.begin(), neighbours.end(), [](ParticlePointer p) {
+        return p->getX()[0] == 1.5 && p->getX()[1] == 4.5 && p->getX()[2] == 0.0;
+    });
+    EXPECT_TRUE(it != neighbours.end());
+
+    it = std::find_if(neighbours.begin(), neighbours.end(), [&](ParticlePointer p) {
+        return p->getX()[0] == 1.5 && p->getX()[1] == 7.5 && p->getX()[2] == 0.0;
+    });
+    EXPECT_TRUE(it != neighbours.end());
 }
 
     // Insert a disc of particles with a radius of 1.5 and a mass of 1.0
