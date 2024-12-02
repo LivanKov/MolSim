@@ -100,7 +100,7 @@ std::vector<ParticlePointer> &LinkedCellContainer::get_particles_from_indices(
   return particles;
 }
 
-std::vector<ParticlePointer> &LinkedCellContainer::get_neighbours(Particle &p) {
+std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
   std::array<double, 3> position = p.getX();
   size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) /
                                  r_cutoff_);

@@ -102,9 +102,13 @@ TEST_F(LinkedCellTest, NeighbourTest){
 
     ParticleGenerator::insertCuboid(std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3, 1}, 3.0, 1.0, std::array<double,3>{0.0, 0.0, 0.0}, 0.0, container);
 
+    EXPECT_TRUE(container.size() == 9);
     
+    Particle p = container[0];
 
+    EXPECT_TRUE(p.getX()[0] == 1.5 && p.getX()[1] == 1.5 && p.getX()[2] == 0.0);
 
+    EXPECT_TRUE(container.get_neighbours(p).size() == 3);
 
 
 }
