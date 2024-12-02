@@ -110,11 +110,37 @@ std::vector<ParticlePointer> &LinkedCellContainer::get_neighbours(Particle &p) {
                  ? static_cast<size_t>(
                        (position[2] - left_corner_coordinates[2]) / r_cutoff_)
                  : 0;
-  size_t index = i + j * x + k * x * y;
+  int index = i + j * x + k * x * y;
   std::vector<ParticlePointer> neighbours;
 
+  int X = static_cast<int>(x);
+  int Y = static_cast<int>(y);
+  int Z = static_cast<int>(z);
   // handle 2d case
-  
+  // Convert 1D index to 3D coordinates
+    i = index / (Y * Z);
+    j = (index % (Y * Z)) / Z;
+    k = index % Z;
+
+    for (int di = -1; di <= 1; ++di) {
+        for (int dj = -1; dj <= 1; ++dj) {
+            for (int dk = -1; dk <= 1; ++dk) {
+                if (di == 0 && dj == 0 && dk == 0) {
+                    continue;
+                }
+                int ni = i + di;
+                int nj = j + dj;
+                int nk = k + dk;
+
+                if (ni >= 0 && ni < X && nj >= 0 && nj < Y && nk >= 0 && nk < Z) {
+                    int neighborIndex = ni * (Y * Z) + nj * Z + nk;
+                    neighbours.insert(neighbours.end(), cells[neighborIndex].particles.begin(), cells[neighborIndex].particles.end());
+                }
+            }
+        }
+    }
+
+    return neighbours;
 }
 
 void LinkedCellContainer::clear() {
