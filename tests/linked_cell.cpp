@@ -178,8 +178,41 @@ TEST_F(LinkedCellTest, UnevenDomainTest){
 
     EXPECT_TRUE(uneven_container.cells.size() == 100);
 
-    Particle p(std::array<double, 3>{8.1, 0.0, 0.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
+    Particle p(std::array<double, 3>{8.1, 1.0, 1.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
     uneven_container.insert(p);
+
+    EXPECT_TRUE(uneven_container.is_within_domain(std::array<double,3>{8.5, 1.0, 1.0}));
+
+    EXPECT_TRUE(uneven_container.size() == 1);
+
+    // check that the particle is placed in the correct cell
+    EXPECT_TRUE(uneven_container.cells[4].size() == 1);
+    EXPECT_TRUE(uneven_container.cells[3].size() == 0);
+
+    //insert another particle
+
+    Particle p_2(std::array<double, 3>{1.0, 7.5, 1.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
+    uneven_container.insert(p_2);
+    
+    EXPECT_TRUE(uneven_container.size() == 2);
+
+    EXPECT_EQ(uneven_container.cells[15].size(), 1);
+
+    //move the particle, ensure it is removed from the old cell and inserted into the new cell
+
+    std::array<double, 3>old_position = p_2.getX();
+
+    uneven_container.cells[15][0]->updateX(1.0, 8.3, 1.0);
+    uneven_container.update_particle_location(uneven_container.cells[15][0], old_position);
+
+    EXPECT_TRUE(uneven_container.size() == 2);
+
+    EXPECT_EQ(uneven_container.cells[15].size(), 0);
+    EXPECT_EQ(uneven_container.cells[20].size(), 1);
+
+
+
+
 
 
 }
