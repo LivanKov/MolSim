@@ -41,7 +41,7 @@ public:
     z = domain_size.size() == 3
             ? static_cast<size_t>((domain_size_[2] / r_cutoff))
             : 1;
-    unwrapped_cells_ = std::vector<Cell>(x * y * z, Cell());
+    unwrapped_cells_ = std::vector<Cell>((x + 1) * (y + 1) * (z + 1), Cell());
   }
 
   void insert(Particle &p) override;
