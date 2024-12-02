@@ -210,9 +210,4 @@ TEST_F(LinkedCellTest, UnevenDomainTest){
     EXPECT_EQ(uneven_container.cells[15].size(), 0);
     EXPECT_EQ(uneven_container.cells[20].size(), 1);
 
-
-
-
-
-
 }

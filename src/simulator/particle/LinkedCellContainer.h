@@ -43,8 +43,16 @@ public:
 
   std::vector<ParticlePointer> get_neighbours(Particle &p);
 
+  void readjust();
+
+  void reinitialize(ParticleContainer& container);
+
+  void reinitialize(std::vector<Particle>& particles);
+
+  void reinitialize(std::vector<ParticlePointer>& particles);
+
   const std::vector<double> domain_size_;
-  const std::vector<double> left_corner_coordinates;
+  std::vector<double> left_corner_coordinates;
   double r_cutoff_;
   size_t x;
   size_t y;
@@ -55,4 +63,6 @@ public:
   bool extend_z;
 
   Cell &get_cell(size_t index);
+private:
+  void readjust_coordinates(std::array<double,3> current_low_left, std::array<double,3> current_up_right);
 };
