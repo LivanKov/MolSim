@@ -35,7 +35,7 @@ public:
   void insert(Particle &p) override;
 
   void update_particle_location(ParticlePointer p,
-                                std::array<double, 3> &old_position);
+                                const std::array<double, 3> &old_position);
 
   bool is_within_domain(const std::array<double, 3> &position);
 

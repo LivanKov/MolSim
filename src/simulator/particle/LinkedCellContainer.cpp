@@ -69,7 +69,7 @@ bool LinkedCellContainer::is_within_domain(
 }
 
 void LinkedCellContainer::update_particle_location(
-    ParticlePointer p, std::array<double, 3> &old_position) {
+    ParticlePointer p, const std::array<double, 3> &old_position) {
   if (is_within_domain(old_position)) {
     size_t i = static_cast<size_t>(
         (old_position[0] - left_corner_coordinates[0]) / r_cutoff_);
@@ -172,9 +172,11 @@ void LinkedCellContainer::reinitialize(ParticleContainer &container) {
     if(p.getX()[0] > current_up_right[0] || p.getX()[1] > current_up_right[1] || p.getX()[2] > current_up_right[2]){
       current_up_right = p.getX();
     }
-    insert(p);
   }
-  readjust_coordinates(current_low_left, current_up_right);  
+  readjust_coordinates(current_low_left, current_up_right);
+  for(auto &p : container){
+    insert(p);
+  }  
 }
 
 void LinkedCellContainer::reinitialize(std::vector<Particle>& particles){
@@ -188,9 +190,11 @@ void LinkedCellContainer::reinitialize(std::vector<Particle>& particles){
     if(p.getX()[0] > current_up_right[0] || p.getX()[1] > current_up_right[1] || p.getX()[2] > current_up_right[2]){
       current_up_right = p.getX();
     }
+  }
+  readjust_coordinates(current_low_left, current_up_right);
+  for(auto &p : particles){
     insert(p);
   }
-  readjust_coordinates(current_low_left, current_up_right);  
 }
 
 
@@ -205,9 +209,11 @@ void LinkedCellContainer::reinitialize(std::vector<ParticlePointer>& particles){
     if(p->getX()[0] > current_up_right[0] || p->getX()[1] > current_up_right[1] || p->getX()[2] > current_up_right[2]){
       current_up_right = p->getX();
     }
-    insert(*p);
   }
   readjust_coordinates(current_low_left, current_up_right);
+  for(auto &p : particles){
+    insert(*p);
+  }
 }
 
 
@@ -233,4 +239,7 @@ void LinkedCellContainer::readjust(){
     }
   }
   readjust_coordinates(current_low_left, current_up_right);
+  for(auto &p : _particle_container){
+    update_particle_location(p, p->getX());
+  }
 }

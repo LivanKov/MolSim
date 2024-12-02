@@ -211,3 +211,19 @@ TEST_F(LinkedCellTest, UnevenDomainTest){
     EXPECT_EQ(uneven_container.cells[20].size(), 1);
 
 }
+
+
+TEST_F(LinkedCellTest, RepositioningTest){
+
+    ParticleGenerator::insertCuboid(std::array<double, 3>{5.0, 5.0, 0.0}, std::array<size_t, 3>{3, 3, 1}, 2.0, 1.0, std::array<double,3>{0.0, 0.0, 0.0}, 0.0, container);
+    
+    EXPECT_TRUE(container.size() == 9);
+
+    container.readjust();
+
+    
+
+
+    
+        
+}
