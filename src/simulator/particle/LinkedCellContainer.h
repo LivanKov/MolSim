@@ -39,7 +39,7 @@ public:
 
   void clear() override;
 
-  std::vector<ParticlePointer> &
+  std::vector<ParticlePointer>
   get_particles_from_indices(std::initializer_list<size_t> indices);
 
   std::vector<ParticlePointer> get_neighbours(Particle &p);

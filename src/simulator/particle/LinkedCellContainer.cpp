@@ -90,7 +90,7 @@ void LinkedCellContainer::update_particle_location(
 
 Cell &LinkedCellContainer::get_cell(size_t index) { return cells[index]; }
 
-std::vector<ParticlePointer> &LinkedCellContainer::get_particles_from_indices(
+std::vector<ParticlePointer> LinkedCellContainer::get_particles_from_indices(
     std::initializer_list<size_t> indices) {
   std::vector<ParticlePointer> particles;
   for (auto index : indices) {
