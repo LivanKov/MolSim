@@ -11,10 +11,11 @@
 
 class LinkedCellTest : public ::testing::Test {
 protected:
-    LinkedCellTest() : container{{9.0,9.0}, 3.0, {0.0, 0.0, 0.0}}, container_3d{{9.0, 9.0, 9.0}, 3.0, {0.0, 0.0, 0.0}} {}
+    LinkedCellTest() : container{{9.0,9.0}, 3.0, {0.0, 0.0, 0.0}}, container_3d{{9.0, 9.0, 9.0}, 3.0, {0.0, 0.0, 0.0}}, uneven_container{{9.0,9.0,8.0}, 2.0, {0.0, 0.0, 0.0}} {}
     Logger &logger = Logger::getInstance("debug");
     LinkedCellContainer container;
     LinkedCellContainer container_3d;
+    LinkedCellContainer uneven_container;
 };
 
 TEST_F(LinkedCellTest, LocationTest) {
@@ -174,5 +175,10 @@ TEST_F(LinkedCellTest, NeighbourTest){
 
 
 TEST_F(LinkedCellTest, UnevenDomainTest){
+
+    EXPECT_TRUE(uneven_container.cells.size() == 100);
+
+    ParticleGenerator::insertCuboid(std::array<double, 3>{1.0, 1.0, 1.0}, std::array<size_t, 3>{3, 3, 3}, 2.0, 1.0, std::array<double,3>{0.0, 0.0, 0.0}, 0.0, uneven_container);
+
     
 }

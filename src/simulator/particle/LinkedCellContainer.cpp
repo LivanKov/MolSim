@@ -17,22 +17,22 @@ LinkedCellContainer::LinkedCellContainer(
 
   double remainder_x = std::fmod(domain_size_[0], r_cutoff);
   double remainder_y = std::fmod(domain_size_[1], r_cutoff);
-  double remainder_z = domain_size.size() == 3
-                          ? std::fmod(domain_size_[2], r_cutoff)
-                          : 0.0;
-  if(std::abs(remainder_x) > DIVISION_TOLERANCE)
+  double remainder_z =
+      domain_size.size() == 3 ? std::fmod(domain_size_[2], r_cutoff) : 0.0;
+  if (std::abs(remainder_x) > DIVISION_TOLERANCE)
     extend_x = true;
 
-  if(std::abs(remainder_y) > DIVISION_TOLERANCE)
+  if (std::abs(remainder_y) > DIVISION_TOLERANCE)
     extend_y = true;
 
-  if(std::abs(remainder_z) > DIVISION_TOLERANCE)
+  if (std::abs(remainder_z) > DIVISION_TOLERANCE)
     extend_z = true;
 
   x = static_cast<size_t>(domain_size_[0] / r_cutoff) + (extend_x ? 1 : 0);
   y = static_cast<size_t>(domain_size_[1] / r_cutoff) + (extend_y ? 1 : 0);
   z = domain_size.size() == 3
-          ? (static_cast<size_t>((domain_size_[2] / r_cutoff)) + (extend_z ? 1 : 0))
+          ? (static_cast<size_t>((domain_size_[2] / r_cutoff)) +
+             (extend_z ? 1 : 0))
           : 1;
   cells = std::vector<Cell>(x * y * z, Cell());
 }
@@ -133,29 +133,31 @@ std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
   int Z = static_cast<int>(z);
   // handle 2d case
   // Convert 1D index to 3D coordinates
-    i = index / (Y * Z);
-    j = (index % (Y * Z)) / Z;
-    k = index % Z;
+  i = index / (Y * Z);
+  j = (index % (Y * Z)) / Z;
+  k = index % Z;
 
-    for (int di = -1; di <= 1; ++di) {
-        for (int dj = -1; dj <= 1; ++dj) {
-            for (int dk = -1; dk <= 1; ++dk) {
-                if (di == 0 && dj == 0 && dk == 0) {
-                    continue;
-                }
-                int ni = i + di;
-                int nj = j + dj;
-                int nk = k + dk;
-
-                if (ni >= 0 && ni < X && nj >= 0 && nj < Y && nk >= 0 && nk < Z) {
-                    int neighborIndex = ni * (Y * Z) + nj * Z + nk;
-                    neighbours.insert(neighbours.end(), cells[neighborIndex].particles.begin(), cells[neighborIndex].particles.end());
-                }
-            }
+  for (int di = -1; di <= 1; ++di) {
+    for (int dj = -1; dj <= 1; ++dj) {
+      for (int dk = -1; dk <= 1; ++dk) {
+        if (di == 0 && dj == 0 && dk == 0) {
+          continue;
         }
-    }
+        int ni = i + di;
+        int nj = j + dj;
+        int nk = k + dk;
 
-    return neighbours;
+        if (ni >= 0 && ni < X && nj >= 0 && nj < Y && nk >= 0 && nk < Z) {
+          int neighborIndex = ni * (Y * Z) + nj * Z + nk;
+          neighbours.insert(neighbours.end(),
+                            cells[neighborIndex].particles.begin(),
+                            cells[neighborIndex].particles.end());
+        }
+      }
+    }
+  }
+
+  return neighbours;
 }
 
 void LinkedCellContainer::clear() {
