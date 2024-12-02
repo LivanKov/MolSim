@@ -97,3 +97,16 @@ TEST_F(LinkedCellTest, CuboidTest){
         EXPECT_EQ(container.cells[i].size(), 1);
     }
 }
+
+TEST_F(LinkedCellTest, NeighbourTest){
+
+    ParticleGenerator::insertCuboid(std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3, 1}, 3.0, 1.0, std::array<double,3>{0.0, 0.0, 0.0}, 0.0, container);
+
+    
+
+
+
+
+}
+
+    // Insert a disc of particles with a radius of 1.5 and a mass of 1.0

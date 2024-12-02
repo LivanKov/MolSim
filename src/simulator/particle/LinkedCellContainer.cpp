@@ -71,7 +71,15 @@ Cell &LinkedCellContainer::get_cell(size_t index) {
     return cells[index];
 }
 
-std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
+std::vector<ParticlePointer>& LinkedCellContainer::get_particles_from_indices(std::initializer_list<size_t> indices) {
+    std::vector<ParticlePointer> particles;
+    for(auto index : indices) {
+        particles.insert(particles.end(), cells[index].particles.begin(), cells[index].particles.end());
+    }
+    return particles;
+}
+
+std::vector<ParticlePointer>& LinkedCellContainer::get_neighbours(Particle &p) {
     std::array<double, 3> position = p.getX();
     size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) / r_cutoff_);
     size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) / r_cutoff_);
@@ -82,57 +90,28 @@ std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
     // handle 2d case
     if(domain_size_.size() == 2) {
         if(i == x - 1 && j == y -1){
-            neighbours.insert(neighbours.end(), cells[index - 1].particles.begin(), cells[index - 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x].particles.begin(), cells[index - x].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x - 1].particles.begin(), cells[index - x - 1].particles.end());
+            return get_particles_from_indices({index - 1, index - x, index - x - 1});
         } else if(i == x - 1 && j == 0) {
-            neighbours.insert(neighbours.end(), cells[index - 1].particles.begin(), cells[index - 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index + x].particles.begin(), cells[index + x].particles.end());
-            neighbours.insert(neighbours.end(), cells[index + x - 1].particles.begin(), cells[index + x - 1].particles.end());
+            return get_particles_from_indices({index - 1, index + x, index + x - 1});
         } else if(i == 0 && j == y - 1) {
-            neighbours.insert(neighbours.end(), cells[index + 1].particles.begin(), cells[index + 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x].particles.begin(), cells[index - x].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x + 1].particles.begin(), cells[index - x + 1].particles.end());
+            return get_particles_from_indices({index + 1, index - x, index - x + 1});
         } else if(i == 0 && j == 0) {
-            neighbours.insert(neighbours.end(), cells[index + 1].particles.begin(), cells[index + 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index + x].particles.begin(), cells[index + x].particles.end());
-            neighbours.insert(neighbours.end(), cells[index + x + 1].particles.begin(), cells[index + x + 1].particles.end());
+            return get_particles_from_indices({index + 1, index + x, index + x + 1});
         } else if(i == x - 1) {
-            neighbours.insert(neighbours.end(), cells[index - 1].particles.begin(), cells[index - 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index + x].particles.begin(), cells[index + x].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x].particles.begin(), cells[index - x].particles.end());
-            neighbours.insert(neighbours.end(), cells[index + x - 1].particles.begin(), cells[index + x - 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x - 1].particles.begin(), cells[index - x - 1].particles.end());
+            return get_particles_from_indices({index - 1, index + x, index - x, index + x - 1, index - x - 1});
         } else if(j == y - 1) {
-            neighbours.insert(neighbours.end(), cells[index + 1].particles.begin(), cells[index + 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x].particles.begin(), cells[index - x].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - 1].particles.begin(), cells[index - 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x + 1].particles.begin(), cells[index - x + 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x - 1].particles.begin(), cells[index - x - 1].particles.end());
+            return get_particles_from_indices({index + 1, index - x, index - 1, index - x + 1, index - x - 1});
         } else if(i == 0) {
-            neighbours.insert(neighbours.end(), cells[index + 1].particles.begin(), cells[index + 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index + x].particles.begin(), cells[index + x].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x].particles.begin(), cells[index - x].particles.end());
-            neighbours.insert(neighbours.end(), cells[index + x + 1].particles.begin(), cells[index + x + 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x + 1].particles.begin(), cells[index - x + 1].particles.end());
+            return get_particles_from_indices({index + 1, index + x, index - x, index + x + 1, index - x + 1});
         } else if(j == 0) {
-            neighbours.insert(neighbours.end(), cells[index + 1].particles.begin(), cells[index + 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x].particles.begin(), cells[index - x].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - 1].particles.begin(), cells[index - 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index + x - 1].particles.begin(), cells[index + x - 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x - 1].particles.begin(), cells[index - x -1].particles.end());
+            return get_particles_from_indices({index + 1, index - x, index - 1, index + x - 1, index - x - 1});
         } else {
-            neighbours.insert(neighbours.end(), cells[index + 1].particles.begin(), cells[index + 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - 1].particles.begin(), cells[index - 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index + x].particles.begin(), cells[index + x].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x].particles.begin(), cells[index - x].particles.end());
-            neighbours.insert(neighbours.end(), cells[index + x + 1].particles.begin(), cells[index + x + 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index + x - 1].particles.begin(), cells[index + x - 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x + 1].particles.begin(), cells[index - x + 1].particles.end());
-            neighbours.insert(neighbours.end(), cells[index - x - 1].particles.begin(), cells[index - x - 1].particles.end());
+            return get_particles_from_indices({index + 1, index - 1, index + x, index - x, index + x + 1, index + x - 1, index - x + 1, index - x - 1});
         }
-    } else {
-
+    } 
+    //handle 3d case (this is going to be messy)
+    else {
+        
     }
 
     return neighbours;
