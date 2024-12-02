@@ -105,15 +105,6 @@ void LinkedCellContainer::update_particle_location(
 
 Cell &LinkedCellContainer::get_cell(size_t index) { return cells[index]; }
 
-std::vector<ParticlePointer> LinkedCellContainer::get_particles_from_indices(
-    std::initializer_list<size_t> indices) {
-  std::vector<ParticlePointer> particles;
-  for (auto index : indices) {
-    particles.insert(particles.end(), cells[index].particles.begin(),
-                     cells[index].particles.end());
-  }
-  return particles;
-}
 
 std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
   std::array<double, 3> position = p.getX();

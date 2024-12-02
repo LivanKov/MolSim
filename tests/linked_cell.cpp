@@ -178,7 +178,8 @@ TEST_F(LinkedCellTest, UnevenDomainTest){
 
     EXPECT_TRUE(uneven_container.cells.size() == 100);
 
-    ParticleGenerator::insertCuboid(std::array<double, 3>{1.0, 1.0, 1.0}, std::array<size_t, 3>{3, 3, 3}, 2.0, 1.0, std::array<double,3>{0.0, 0.0, 0.0}, 0.0, uneven_container);
+    Particle p(std::array<double, 3>{8.1, 0.0, 0.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
+    uneven_container.insert(p);
 
-    
+
 }
