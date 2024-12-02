@@ -4,7 +4,7 @@
 
 #pragma once
 
-#define DIVISION_TOLERANCE = 1e-6
+#define DIVISION_TOLERANCE 1e-6
 
 /**
  * @struct Cell
@@ -53,7 +53,9 @@ public:
   size_t y;
   size_t z;
   std::vector<Cell> cells;
-  bool even_blocks;
+  bool extend_x;
+  bool extend_y;
+  bool extend_z;
 
   Cell &get_cell(size_t index);
 };

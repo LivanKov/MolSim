@@ -19,7 +19,15 @@ LinkedCellContainer::LinkedCellContainer(
   double remainder_y = std::fmod(domain_size_[1], r_cutoff);
   double remainder_z = domain_size.size() == 3
                           ? std::fmod(domain_size_[2], r_cutoff)
-                          : 0;
+                          : 0.0;
+  if(std::abs(remainder_x) > DIVISION_TOLERANCE)
+    extend_x = true;
+
+  if(std::abs(remainder_y) > DIVISION_TOLERANCE)
+    extend_y = true;
+
+  if(std::abs(remainder_z) > DIVISION_TOLERANCE)
+    extend_z = true;
 
   x = static_cast<size_t>(domain_size_[0] / r_cutoff);
   y = static_cast<size_t>(domain_size_[1] / r_cutoff);
