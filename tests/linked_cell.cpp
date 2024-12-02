@@ -7,8 +7,6 @@
 
 
 
-
-
 class LinkedCellTest : public ::testing::Test {
 protected:
     LinkedCellTest() : container{{9.0,9.0}, 3.0, {0.0, 0.0, 0.0}}, container_3d{{9.0, 9.0, 9.0}, 3.0, {0.0, 0.0, 0.0}}, uneven_container{{9.0,9.0,8.0}, 2.0, {0.0, 0.0, 0.0}} {}
@@ -30,6 +28,9 @@ TEST_F(LinkedCellTest, LocationTest) {
     Particle p1(std::array<double, 3>{5.0, 4.0, 0.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
 
     container.insert(p1);
+    EXPECT_TRUE(container.domain_size_.size() == 2);
+
+    EXPECT_TRUE(container.is_within_domain(p1.getX()));
 
     EXPECT_EQ(container.cells[4].size(), 1);
 
@@ -38,7 +39,7 @@ TEST_F(LinkedCellTest, LocationTest) {
             EXPECT_EQ(container.cells[i].size(), 0);
         }
     }
-
+    
     //update particle location, make sure it is removed from old cell and inserted into new cell
 
     std::array<double,3>old_position = p1.getX();
@@ -215,15 +216,12 @@ TEST_F(LinkedCellTest, UnevenDomainTest){
 
 TEST_F(LinkedCellTest, RepositioningTest){
 
-    ParticleGenerator::insertCuboid(std::array<double, 3>{5.0, 5.0, 0.0}, std::array<size_t, 3>{3, 3, 1}, 2.0, 1.0, std::array<double,3>{0.0, 0.0, 0.0}, 0.0, container);
+    ParticleGenerator::insertCuboid(std::array<double, 3>{5.0, 5.0, 0.0}, std::array<size_t, 3>{2, 2, 1}, 2.0, 1.0, std::array<double,3>{0.0, 0.0, 0.0}, 0.0, container);
     
-    EXPECT_TRUE(container.size() == 9);
+    EXPECT_TRUE(container.size() == 4);
 
     container.readjust();
 
-    
+    //EXPECT_TRUE(container.left_corner_coordinates[0] == 2.5 && container.left_corner_coordinates[1] == 2.5 && container.left_corner_coordinates[2] == 0.0);
 
-
-    
-        
 }
