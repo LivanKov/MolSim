@@ -14,6 +14,13 @@ LinkedCellContainer::LinkedCellContainer(
   if (domain_size.size() != 3 && domain_size.size() != 2) {
     throw std::invalid_argument("Domain size must have 2 or 3 elements");
   }
+
+  double remainder_x = std::fmod(domain_size_[0], r_cutoff);
+  double remainder_y = std::fmod(domain_size_[1], r_cutoff);
+  double remainder_z = domain_size.size() == 3
+                          ? std::fmod(domain_size_[2], r_cutoff)
+                          : 0;
+
   x = static_cast<size_t>(domain_size_[0] / r_cutoff);
   y = static_cast<size_t>(domain_size_[1] / r_cutoff);
   z = domain_size.size() == 3

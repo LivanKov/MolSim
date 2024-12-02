@@ -4,6 +4,8 @@
 
 #pragma once
 
+#define DIVISION_TOLERANCE = 1e-6
+
 /**
  * @struct Cell
  * @brief Manages a vector of shared pointers to Particle objects.
@@ -51,6 +53,7 @@ public:
   size_t y;
   size_t z;
   std::vector<Cell> cells;
+  bool even_blocks;
 
   Cell &get_cell(size_t index);
 };
