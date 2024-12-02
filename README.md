@@ -98,6 +98,14 @@ Here is an example of an XML input file:
             <z>0.0</z>
         </domain_size>
     </simulation_parameters>
+    <boundary_conditions>
+        <left>Outflow</left>
+        <right>Outflow</right>
+        <top>Outflow</top>
+        <bottom>Outflow</bottom>
+        <front>Reflecting</front>
+        <back>Reflecting</back>
+    </boundary_conditions>
     <discs>
         <disc>
             <center>
