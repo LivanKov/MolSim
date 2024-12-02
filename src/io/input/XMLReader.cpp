@@ -48,19 +48,23 @@ void XMLReader::readXMLFile(ParticleContainer &particles,
 
     // Extract simulation parameters
     auto xmlParams = doc->simulation_parameters();
-    simParameters.end_time = (xmlParams.end_time() != simParameters.end_time && simParameters.end_time == 0.0)
+    simParameters.end_time = (xmlParams.end_time() != simParameters.end_time &&
+                              simParameters.end_time == 0.0)
                                  ? xmlParams.end_time()
                                  : simParameters.end_time;
     simParameters.time_delta =
-        (xmlParams.delta_time() != simParameters.time_delta && simParameters.time_delta == 0.0)
+        (xmlParams.delta_time() != simParameters.time_delta &&
+         simParameters.time_delta == 0.0)
             ? xmlParams.delta_time()
             : simParameters.time_delta;
     simParameters.output_path =
-        (xmlParams.output_basename() != simParameters.output_path && simParameters.output_path == "")
+        (xmlParams.output_basename() != simParameters.output_path &&
+         simParameters.output_path == "")
             ? xmlParams.output_basename()
             : simParameters.output_path;
     simParameters.write_frequency =
-        (xmlParams.write_frequency() != simParameters.write_frequency && simParameters.write_frequency == 0)
+        (xmlParams.write_frequency() != simParameters.write_frequency &&
+         simParameters.write_frequency == 0)
             ? xmlParams.write_frequency()
             : simParameters.write_frequency;
     simParameters.r_cutoff_radius = xmlParams.r_cutoff_radius();
