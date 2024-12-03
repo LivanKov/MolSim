@@ -1804,88 +1804,6 @@ discs::
 // cuboids
 //
 
-discs::
-discs ()
-: ::xml_schema::type (),
-  disc_ (this)
-{
-}
-
-discs::
-discs (const discs& x,
-       ::xml_schema::flags f,
-       ::xml_schema::container* c)
-: ::xml_schema::type (x, f, c),
-  disc_ (x.disc_, f, this)
-{
-}
-
-discs::
-discs (const ::xercesc::DOMElement& e,
-       ::xml_schema::flags f,
-       ::xml_schema::container* c)
-: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-  disc_ (this)
-{
-  if ((f & ::xml_schema::flags::base) == 0)
-  {
-    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
-    this->parse (p, f);
-  }
-}
-
-void discs::
-parse (::xsd::cxx::xml::dom::parser< char >& p,
-       ::xml_schema::flags f)
-{
-  for (; p.more_content (); p.next_content (false))
-  {
-    const ::xercesc::DOMElement& i (p.cur_element ());
-    const ::xsd::cxx::xml::qualified_name< char > n (
-      ::xsd::cxx::xml::dom::name< char > (i));
-
-    // disc
-    //
-    if (n.name () == "disc" && n.namespace_ ().empty ())
-    {
-      ::std::auto_ptr< disc_type > r (
-        disc_traits::create (i, f, this));
-
-      this->disc_.push_back (r);
-      continue;
-    }
-
-    break;
-  }
-}
-
-discs* discs::
-_clone (::xml_schema::flags f,
-        ::xml_schema::container* c) const
-{
-  return new class discs (*this, f, c);
-}
-
-discs& discs::
-operator= (const discs& x)
-{
-  if (this != &x)
-  {
-    static_cast< ::xml_schema::type& > (*this) = x;
-    this->disc_ = x.disc_;
-  }
-
-  return *this;
-}
-
-discs::
-~discs ()
-{
-}
-
-// cuboids
-//
-
 cuboids::
 cuboids ()
 : ::xml_schema::type (),
@@ -2305,20 +2223,6 @@ disc::
 // disc
 //
 
-disc::
-disc (const center_type& center,
-      const initial_velocity_type& initial_velocity,
-      const radius_type& radius,
-      const mesh_width_type& mesh_width,
-      const mass_type& mass)
-: ::xml_schema::type (),
-  center_ (center, this),
-  initial_velocity_ (initial_velocity, this),
-  radius_ (radius, this),
-  mesh_width_ (mesh_width, this),
-  mass_ (mass, this)
-{
-}
 
 disc::
 disc (::std::auto_ptr< center_type > center,
