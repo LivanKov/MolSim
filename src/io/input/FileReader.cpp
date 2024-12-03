@@ -6,8 +6,8 @@
  */
 
 #include "FileReader.h"
-#include "particleSim/ParticleContainer.h"
-#include "particleSim/ParticleGenerator.h"
+#include "simulator/particle/ParticleContainer.h"
+#include "simulator/particle/ParticleGenerator.h"
 
 #include <cstdlib>
 #include <fstream>
@@ -16,7 +16,7 @@
 #include <sstream>
 #include <string>
 
-#include "logger/Logger.h"
+#include "utils/logger/Logger.h"
 
 FileReader::FileReader() = default;
 
@@ -137,8 +137,7 @@ void FileReader::readFile(ParticleContainer &particles, char *filename) {
       }
     }
   } else {
-    std::cout << "Error: could not open file " << filename << std::endl;
-    // logger.warn("Error: could not open file "  filename);
+    logger.warn("Error: could not open file " + std::string(filename));
     exit(-1);
   }
 }

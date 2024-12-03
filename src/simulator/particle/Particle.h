@@ -52,6 +52,11 @@ private:
    */
   int type;
 
+  /**
+   * Internal flag indicating whether the particle is marked for removal.
+   */
+  bool marked_for_removal;
+
 public:
   /**
    * @brief Constructor.
@@ -134,6 +139,14 @@ public:
    */
 
   bool operator==(const Particle &other) const;
+  /**
+   * @brief overload the inequality (!=) operator to compare particles.
+   * @param other: lvalue reference to another Particle object.
+   * @return true/false corresponding to whether or not the function operator
+   * and the operand are not equal .
+   */
+
+  bool operator!=(const Particle &other) const;
 
   /**
    * @brief returns string representation of the particle.
@@ -193,17 +206,26 @@ public:
    * @param force: allowed the method to accept a std::array<double, 3>.
    */
   void updateOldF(const std::array<double, 3> &force);
-};
 
-/**
- * @brief custom hash function for the Particle class, based on the hashable
- * class attributes.
- * @param p: lvalue reference to the Particle object.
- * @return size_t variable containing the parameter's hash.
- */
+  /**
+   * @brief check if particle is outside the domain.
+   */
 
-template <> struct std::hash<Particle> {
-  size_t operator()(const Particle &p) const noexcept;
+  bool left_domain;
+
+  /**
+   * @brief Marks the particle for removal from the container.
+   *
+   * This method sets an internal flag indicating that the particle is scheduled
+   * for removal.
+   */
+  void markForRemoval() { marked_for_removal = true; }
+
+  /**
+   * @brief Checks if the particle is marked for removal.
+   * @return True if the particle is marked for removal, otherwise false.
+   */
+  bool isMarkedForRemoval() const { return marked_for_removal; }
 };
 
 /**

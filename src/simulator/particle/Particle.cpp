@@ -10,7 +10,7 @@
 #include "utils/ArrayUtils.h"
 #include <iostream>
 
-#include "logger/Logger.h"
+#include "utils/logger/Logger.h"
 
 Particle::Particle(int type_arg) {
   type = type_arg;
@@ -41,10 +41,7 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   Logger::getInstance().trace("Particle generated!");
 }
 
-Particle::~Particle() {
-  // std::cout << "Particle destructed!" << std::endl;
-  // Logger::getInstance().info("Particle destructed!");
-}
+Particle::~Particle() { Logger::getInstance().trace("Particle destroyed!"); }
 
 const std::array<double, 3> &Particle::getX() const { return x; }
 
@@ -70,10 +67,8 @@ bool Particle::operator==(const Particle &other) const {
          (type == other.type) and (m == other.m) and (old_f == other.old_f);
 }
 
-size_t std::hash<Particle>::operator()(const Particle &p) const noexcept {
-  size_t h1 = std::hash<double>{}(p.getM());
-  size_t h2 = std::hash<int>{}(p.getType());
-  return h1 ^ (h2 << 1);
+bool Particle::operator!=(const Particle &other) const {
+  return !(*this == other);
 }
 
 std::ostream &operator<<(std::ostream &stream, Particle &p) {

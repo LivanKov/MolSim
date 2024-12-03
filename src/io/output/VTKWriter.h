@@ -7,35 +7,25 @@
 
 #pragma once
 
-#include "outputWriter/vtk-unstructured.h"
-#include "particleSim/Particle.h"
+#include "io/output/FileWriter.h"
+#include "outputUtils/vtk-unstructured.h"
+#include "simulator/particle/Particle.h"
 
 #include <list>
 
-namespace outputWriter {
+namespace output {
 
 /**
  * This class implements the functionality to generate vtk output from
  * particles.
  */
-class VTKWriter {
+class VTKWriter : public FileWriter {
 
 public:
-  VTKWriter();
-
-  virtual ~VTKWriter();
-
   /**
    * set up internal data structures and prepare to plot a particle.
    */
-  void initializeOutput(int numParticles);
-
-  /**
-   * plot type, mass, position, velocity and force of a particle.
-   *
-   * @note: initializeOutput() must have been called before.
-   */
-  void plotParticle(Particle &p);
+  VTKWriter(ParticleContainer &particles);
 
   /**
    * writes the final output file.
@@ -44,10 +34,21 @@ public:
    * @param iteration the number of the current iteration,
    *        which is used to generate an unique filename
    */
-  void writeFile(const std::string &filename, int iteration);
+
+  void plot_particles(const std::string &filename, int iteration) override;
 
 private:
+  /**
+   * plot type, mass, position, velocity and force of a particle.
+   *
+   * @note: initializeOutput() must have been called before.
+   */
+
+  void plotParticle(Particle &p);
+
   VTKFile_t *vtkFile;
+
+  std::string out_name{"MD_vtk"};
 };
 
-} // namespace outputWriter
+} // namespace output

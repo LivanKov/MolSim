@@ -11,20 +11,17 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <string>
 
-#include "logger/Logger.h"
+#include "utils/logger/Logger.h"
 
-namespace outputWriter {
+namespace output {
 
-VTKWriter::VTKWriter() = default;
+VTKWriter::VTKWriter(ParticleContainer &particles) : FileWriter(particles) {}
 
-VTKWriter::~VTKWriter() = default;
-
-void VTKWriter::initializeOutput(int numParticles) {
-
+void VTKWriter::plot_particles(const std::string &filename, int iteration) {
   vtkFile = new VTKFile_t("UnstructuredGrid");
-
   // per point, we add type, position, velocity and force
   PointData pointData;
   DataArray_t mass(type::Float32, "mass", 1);
@@ -49,15 +46,15 @@ void VTKWriter::initializeOutput(int numParticles) {
   cells.DataArray().push_back(cells_data);
 
   PieceUnstructuredGrid_t piece(pointData, cellData, points, cells,
-                                numParticles, 0);
+                                particles.size(), 0);
   UnstructuredGrid_t unstructuredGrid(piece);
   vtkFile->UnstructuredGrid(unstructuredGrid);
-}
-
-void VTKWriter::writeFile(const std::string &filename, int iteration) {
   std::stringstream strstr;
-  strstr << filename << "_" << std::setfill('0') << std::setw(4) << iteration
-         << ".vtu";
+  strstr << filename << "/" << out_name << "_" << std::setfill('0')
+         << std::setw(4) << iteration << ".vtu";
+  for (auto &p : particles) {
+    plotParticle(p);
+  }
 
   std::ofstream file(strstr.str().c_str());
   VTKFile(file, *vtkFile);
@@ -66,10 +63,8 @@ void VTKWriter::writeFile(const std::string &filename, int iteration) {
 
 void VTKWriter::plotParticle(Particle &p) {
   if (vtkFile->UnstructuredGrid().present()) {
-    // std::cout << "UnstructuredGrid is present" << std::endl;
     Logger::getInstance().debug("UnstructuredGrid is present");
   } else {
-    // std::cout << "ERROR: No UnstructuredGrid present" << std::endl;
     Logger::getInstance().error("ERROR: No UnstructuredGrid present");
   }
 
@@ -78,19 +73,15 @@ void VTKWriter::plotParticle(Particle &p) {
   PointData::DataArray_iterator dataIterator = pointDataSequence.begin();
 
   dataIterator->push_back(p.getM());
-  // cout << "Appended mass data in: " << dataIterator->Name();
-
   dataIterator++;
   dataIterator->push_back(p.getV()[0]);
   dataIterator->push_back(p.getV()[1]);
   dataIterator->push_back(p.getV()[2]);
-  // cout << "Appended velocity data in: " << dataIterator->Name();
 
   dataIterator++;
   dataIterator->push_back(p.getOldF()[0]);
   dataIterator->push_back(p.getOldF()[1]);
   dataIterator->push_back(p.getOldF()[2]);
-  // cout << "Appended force data in: " << dataIterator->Name();
 
   dataIterator++;
   dataIterator->push_back(p.getType());
@@ -103,4 +94,4 @@ void VTKWriter::plotParticle(Particle &p) {
   pointsIterator->push_back(p.getX()[2]);
 }
 
-} // namespace outputWriter
+} // namespace output
