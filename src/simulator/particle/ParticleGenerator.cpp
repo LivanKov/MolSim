@@ -41,16 +41,16 @@ void ParticleGenerator::insertCuboid(
   Logger::getInstance().info("New cuboid generated");
 }
 
-void ParticleGenerator::insertDisc(
-     const std::array<double, 3> &center,
-     const std::array<double, 3> &initialVelocity,
-     size_t radius, double h, double mass,
-     ParticleContainer &particles) {
+void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
+                                   const std::array<double, 3> &initialVelocity,
+                                   size_t radius, double h, double mass,
+                                   ParticleContainer &particles) {
 
   // start on the point with the leftest x point then go the rightest x point
   for (double x = center[0] - radius * h; x <= center[0] + radius * h; x += h) {
     // same for y with lowest and highest point
-    for (double y = center[1] - radius * h; y <= center[1] + radius * h; y += h) {
+    for (double y = center[1] - radius * h; y <= center[1] + radius * h;
+         y += h) {
 
       double d_x = x - center[0];
       double d_y = y - center[1];

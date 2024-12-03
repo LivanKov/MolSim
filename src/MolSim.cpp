@@ -9,6 +9,6 @@ int main(int argc, char *argsv[]) {
   ParticleContainer particles = Simulation::readFile(parameters);
   auto simulation = Simulation::generate_simulation(parameters);
   simulation->run(particles);
- //   simulation->runDisc();
+  //   simulation->runDisc();
   return 0;
 }

@@ -39,22 +39,20 @@ public:
                            double averageVelocity,
                            ParticleContainer &particles);
 
-
-/**
- * @brief Generate a disc of particles. The disc gets plotted along the XY-plane.
- * @param center Coordinates of the center.
- * @param initialVelocity Contains an array with individual velocity in 3d
- * space. Applied to all particles in the container.
- * @param radius Number of particles along the radius.
- * @param h Distance between particles.
- * @param mass Mass of an individual particle.
- * @param particles Container of particles that form the disc.
- * @return ParticleContainer in accordance to the arguments passed.
- */
-static void insertDisc(const std::array<double, 3> &center,
-                       const std::array<double, 3> &initialVelocity,
-                       size_t radius,
-                       double h,
-                       double mass,
-                       ParticleContainer &particles);
+  /**
+   * @brief Generate a disc of particles. The disc gets plotted along the
+   * XY-plane.
+   * @param center Coordinates of the center.
+   * @param initialVelocity Contains an array with individual velocity in 3d
+   * space. Applied to all particles in the container.
+   * @param radius Number of particles along the radius.
+   * @param h Distance between particles.
+   * @param mass Mass of an individual particle.
+   * @param particles Container of particles that form the disc.
+   * @return ParticleContainer in accordance to the arguments passed.
+   */
+  static void insertDisc(const std::array<double, 3> &center,
+                         const std::array<double, 3> &initialVelocity,
+                         size_t radius, double h, double mass,
+                         ParticleContainer &particles);
 };

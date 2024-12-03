@@ -5,6 +5,7 @@
 #include "io/output/VTKWriter.h"
 #include "io/output/XYZWriter.h"
 #include "particle/ParticleContainer.h"
+#include "particle/ParticleGenerator.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"
 #include "simulator/calculations/Position.h"
@@ -14,8 +15,6 @@
 #include <memory>
 #include <spdlog/spdlog.h>
 #include <utility>
-#include "io/input/XMLReader.h"
-#include "particle/ParticleGenerator.h"
 
 std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
   std::unique_ptr<Simulation> ptr = std::make_unique<Simulation>(params);
@@ -75,4 +74,3 @@ void Simulation::run(ParticleContainer &particles) {
 
   logger.warn("Simulation finished.");
 };
-

@@ -120,7 +120,7 @@ public:
   /**
    * @brief Clears the container.
    */
-  void clear();
+  virtual void clear();
 
   /**
    * @brief Iterator interface for the main iterator.
@@ -139,14 +139,16 @@ public:
    */
   std::vector<ParticlePair>::iterator pair_end();
 
-private:
+protected:
   /**
    * @brief Creates particle pairs for newly inserted particle.
    * @param new_particle Reference to a pointer managing the newly inserted
    * Particle.
    */
+
   void create_pairs(const ParticlePointer &new_particle);
 
+protected:
   /**
    * @brief Main underlying container. Manages pointers to Particle objects.
    */
