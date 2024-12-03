@@ -4,7 +4,7 @@
  *@brief Enum class for boundary conditions
  */
 
-enum class BoundaryCondition { Outflow, Reflecting };
+enum BoundaryCondition { Outflow, Reflecting };
 
 /**
  *@brief Struct for domain boundary conditions

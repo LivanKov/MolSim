@@ -7,9 +7,9 @@ ParticlePointer Cell::operator[](size_t index) { return particles[index]; }
 
 LinkedCellContainer::LinkedCellContainer(
     std::initializer_list<double> domain_size, double r_cutoff,
-    std::initializer_list<double> left_corner_coordinates)
+    std::initializer_list<double> left_corner_coordinates,const DomainBoundaryConditions &boundary_conditions)
     : domain_size_{domain_size}, r_cutoff_{r_cutoff},
-      left_corner_coordinates{left_corner_coordinates}, x{0}, y{0}, z{0},
+      left_corner_coordinates{left_corner_coordinates}, x{0}, y{0}, z{0}, boundary_conditions_{boundary_conditions},
       ParticleContainer{} {
   if (domain_size.size() != 3 && domain_size.size() != 2) {
     throw std::invalid_argument("Domain size must have 2 or 3 elements");
@@ -346,7 +346,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
 }
 
 void LinkedCellContainer::removeOutflowParticles() {
-  for (auto &cell : unwrapped_cells_) {
+  for (auto &cell : cells) {
     cell.particles.erase(std::remove_if(cell.particles.begin(),
                                         cell.particles.end(),
                                         [](const ParticlePointer &p) {
@@ -357,7 +357,7 @@ void LinkedCellContainer::removeOutflowParticles() {
 }
 
 void LinkedCellContainer::updateParticles() {
-  for (auto &cell : unwrapped_cells_) {
+  for (auto &cell : cells) {
     for (auto &p : cell.particles) {
       handleBoundaryConditions(*p);
     }

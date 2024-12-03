@@ -36,35 +36,20 @@ class LinkedCellContainer : public ParticleContainer {
    * @throws std::invalid_argument If the domain size is not 2D or 3D.
    */
 public:
-public:
   LinkedCellContainer(std::initializer_list<double> domain_size,
                       double r_cutoff,
                       std::initializer_list<double> left_corner_coordinates,
-                      const DomainBoundaryConditions &boundary_conditions)
-      : domain_size_(domain_size),
-        left_corner_coordinates(left_corner_coordinates), r_cutoff_(r_cutoff),
-        boundary_conditions_(boundary_conditions) {
-    if (domain_size.size() != 3 && domain_size.size() != 2) {
-      throw std::invalid_argument("Domain size must have 2 or 3 elements");
-    }
-    x = static_cast<size_t>(domain_size_[0] / r_cutoff);
-    y = static_cast<size_t>(domain_size_[1] / r_cutoff);
-    z = domain_size.size() == 3
-            ? static_cast<size_t>((domain_size_[2] / r_cutoff))
-            : 1;
-    unwrapped_cells_ = std::vector<Cell>((x + 1) * (y + 1) * (z + 1), Cell());
-  }
+                      const DomainBoundaryConditions &boundary_conditions = {BoundaryCondition::Outflow,
+                                                                            BoundaryCondition::Outflow,
+                                                                            BoundaryCondition::Outflow,
+                                                                            BoundaryCondition::Outflow,
+                                                                            BoundaryCondition::Outflow,
+                                                                            BoundaryCondition::Outflow});
 
   /**
    * @brief Inserts a particle into the container.
    * @param p The particle to be inserted.
    */
-
-public:
-  LinkedCellContainer(std::initializer_list<double> domain_size,
-                      double r_cutoff,
-                      std::initializer_list<double> left_corner_coordinates);
-
   void insert(Particle &p) override;
 
   void update_particle_location(ParticlePointer p,
@@ -147,6 +132,11 @@ public:
    */
   size_t z;
 
+  /**
+   * @brief A vector of all cells in the domain, stored unwrapped for easy
+   * indexing.
+   */
+
   std::vector<Cell> cells;
   bool extend_x;
   bool extend_y;
@@ -157,11 +147,6 @@ private:
   void readjust_coordinates(std::array<double, 3> current_low_left,
                             std::array<double, 3> current_up_right);
 
-  /**
-   * @brief A vector of all cells in the domain, stored unwrapped for easy
-   * indexing.
-   */
-  std::vector<Cell> unwrapped_cells_;
 
   /**
    * @brief The boundary conditions for the simulation domain.
