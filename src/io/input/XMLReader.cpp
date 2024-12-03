@@ -190,4 +190,3 @@ BoundaryCondition XMLReader::parseBoundaryCondition(const std::string &value) {
     throw std::runtime_error("Invalid boundary condition: " + value);
   }
 }
-

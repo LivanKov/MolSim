@@ -1,8 +1,8 @@
 #include "BoundaryCondition.h"
 #include "ParticleContainer.h"
+#include "utils/logger/Logger.h"
 #include <array>
 #include <initializer_list>
-#include "utils/logger/Logger.h"
 
 #pragma once
 
@@ -74,8 +74,6 @@ public:
 
   void clear() override;
 
-  std::vector<ParticlePointer> get_neighbours(Particle &p);
-
   void readjust();
 
   void reinitialize(ParticleContainer &container);
@@ -83,11 +81,6 @@ public:
   void reinitialize(std::vector<Particle> &particles);
 
   void reinitialize(std::vector<ParticlePointer> &particles);
-
-  const std::vector<double> domain_size_;
-  std::vector<double> left_corner_coordinates;
-
-  void insert(Particle &p) override;
 
   /**
    * @brief Updates the location of a particle within the container based on its
@@ -123,7 +116,6 @@ public:
    */
   void updateParticles();
 
-private:
   /**
    * @brief The size of the simulation domain.
    */
@@ -132,7 +124,7 @@ private:
   /**
    * @brief The coordinates of the domain's lower left corner.
    */
-  const std::vector<double> left_corner_coordinates;
+  std::vector<double> left_corner_coordinates;
 
   /**
    * @brief The cutoff radius for particle interactions.
@@ -160,8 +152,6 @@ private:
   bool extend_y;
   bool extend_z;
   Logger &logger = Logger::getInstance();
-
-  Cell &get_cell(size_t index);
 
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,

@@ -1,6 +1,6 @@
+#include "simulator/particle/BoundaryCondition.h"
 #include <array>
 #include <string>
-#include "simulator/particle/BoundaryCondition.h"
 #pragma once
 
 struct SimParams {

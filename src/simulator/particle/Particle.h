@@ -51,7 +51,7 @@ private:
    * molecules belonging to different bodies, matters, and so on)
    */
   int type;
-  
+
   /**
    * Internal flag indicating whether the particle is marked for removal.
    */
@@ -219,17 +219,13 @@ public:
    * This method sets an internal flag indicating that the particle is scheduled
    * for removal.
    */
-  void markForRemoval() {
-    marked_for_removal = true;
-  }
+  void markForRemoval() { marked_for_removal = true; }
 
   /**
    * @brief Checks if the particle is marked for removal.
    * @return True if the particle is marked for removal, otherwise false.
    */
-  bool isMarkedForRemoval() const {
-    return marked_for_removal;
-  }
+  bool isMarkedForRemoval() const { return marked_for_removal; }
 };
 
 /**
