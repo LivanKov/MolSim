@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MolSim>
     <simulation_parameters>
-        <end_time>20</end_time>
-        <delta_time>0.0005</delta_time>
-        <output_basename>../output/MD_vtk</output_basename>
+        <end_time>5</end_time>
+        <delta_time>0.0002</delta_time>
+        <output_basename>../output</output_basename>
         <write_frequency>10</write_frequency>
         <r_cutoff_radius>3.0</r_cutoff_radius>
         <domain_size>
@@ -12,24 +12,17 @@
             <z>0.0</z>
         </domain_size>
     </simulation_parameters>
-
-     <boundary_conditions>
-        <left>Outflow</left>
-        <right>Outflow</right>
-        <top>Outflow</top>
-        <bottom>Outflow</bottom>
-    </boundary_conditions>
-
+    
     <cuboids>
         <cuboid>
             <coordinate>
-                <x>20.0</x>
-                <y>20.0</y>
+                <x>0.0</x>
+                <y>0.0</y>
                 <z>0.0</z>
             </coordinate>
             <dimensions>
-                <x>100</x>
-                <y>20</y>
+                <x>40</x>
+                <y>8</y>
                 <z>1</z>
             </dimensions>
             <mesh_width>1.1225</mesh_width>
@@ -44,13 +37,13 @@
 
         <cuboid>
             <coordinate>
-                <x>70.0</x>
-                <y>60.0</y>
+                <x>15.0</x>
+                <y>15.0</y>
                 <z>0.0</z>
             </coordinate>
             <dimensions>
-                <x>20</x>
-                <y>20</y>
+                <x>8</x>
+                <y>8</y>
                 <z>1</z>
             </dimensions>
             <mesh_width>1.1225</mesh_width>

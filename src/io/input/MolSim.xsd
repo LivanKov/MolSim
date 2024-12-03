@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:simpleType name="boundary_condition_type">
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="Outflow"/>
+                        <xs:enumeration value="Reflecting"/>
+                    </xs:restriction>
+                </xs:simpleType>
+
+                
     <xs:element name="MolSim">
         <xs:complexType>
             <xs:sequence>
@@ -20,6 +29,18 @@
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="boundary_conditions" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="left" type="boundary_condition_type"/>
+                            <xs:element name="right" type="boundary_condition_type"/>
+                            <xs:element name="top" type="boundary_condition_type"/>
+                            <xs:element name="bottom" type="boundary_condition_type"/>
+                            <xs:element name="front" type="boundary_condition_type" minOccurs="0"/>
+                            <xs:element name="back" type="boundary_condition_type" minOccurs="0"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>

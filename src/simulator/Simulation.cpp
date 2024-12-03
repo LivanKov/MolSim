@@ -1,5 +1,6 @@
 #include "Simulation.h"
 #include "io/input/FileReader.h"
+#include "io/input/XMLReader.h"
 #include "io/output/FileWriter.h"
 #include "io/output/VTKWriter.h"
 #include "io/output/XYZWriter.h"
@@ -23,10 +24,10 @@ std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
 
 Simulation::Simulation(SimParams &params) : params_(params) {}
 
-ParticleContainer Simulation::readFile(char *argsv1, SimParams &params) {
+ParticleContainer Simulation::readFile(SimParams &params) {
   ParticleContainer particles{};
   // FileReader::readFile(particles, params_.input_path.data());
-  XMLReader::readXMLFile(particles, params, argsv1);
+  XMLReader::readXMLFile(particles, params);
 
   return particles;
 }
@@ -54,12 +55,14 @@ void Simulation::run(ParticleContainer &particles) {
 
   while (current_time < params_.end_time) {
 
+    // Update particles and handle boundary conditions
+    // particles.updateParticles(); 
     Calculation<Position>::run(particles, params_.time_delta);
     Calculation<Force>::run(particles, FORCE_TYPE);
     Calculation<Velocity>::run(particles, params_.time_delta);
 
     iteration++;
-    if (iteration % params_.write_frequency == 0 && !params_.disable_output){
+    if (iteration % params_.write_frequency == 0 && !params_.disable_output) {
       writer->plot_particles(params_.output_path, iteration);
     }
 
@@ -72,3 +75,4 @@ void Simulation::run(ParticleContainer &particles) {
 
   logger.warn("Simulation finished.");
 };
+

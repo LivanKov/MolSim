@@ -71,12 +71,6 @@ bool Particle::operator!=(const Particle &other) const {
   return !(*this == other);
 }
 
-size_t std::hash<Particle>::operator()(const Particle &p) const noexcept {
-  size_t h1 = std::hash<double>{}(p.getM());
-  size_t h2 = std::hash<int>{}(p.getType());
-  return h1 ^ (h2 << 1);
-}
-
 std::ostream &operator<<(std::ostream &stream, Particle &p) {
   stream << p.toString();
   return stream;

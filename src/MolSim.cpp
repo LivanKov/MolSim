@@ -5,9 +5,10 @@
 
 int main(int argc, char *argsv[]) {
   SimParams parameters{};
-  ParticleContainer particles = Simulation::readFile(argsv[1], parameters);
-  SimParams overridedParams = CommandParser::parse(argc, argsv, parameters);
-  auto simulation = Simulation::generate_simulation(overridedParams);
+  CommandParser::parse(argc, argsv, parameters);
+  ParticleContainer particles = Simulation::readFile(parameters);
+  auto simulation = Simulation::generate_simulation(parameters);
   simulation->run(particles);
+ //   simulation->runDisc();
   return 0;
 }

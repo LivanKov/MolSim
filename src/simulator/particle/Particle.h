@@ -51,6 +51,11 @@ private:
    * molecules belonging to different bodies, matters, and so on)
    */
   int type;
+  
+  /**
+   * Internal flag indicating whether the particle is marked for removal.
+   */
+  bool marked_for_removal;
 
 public:
   /**
@@ -201,17 +206,30 @@ public:
    * @param force: allowed the method to accept a std::array<double, 3>.
    */
   void updateOldF(const std::array<double, 3> &force);
-};
 
-/**
- * @brief custom hash function for the Particle class, based on the hashable
- * class attributes.
- * @param p: lvalue reference to the Particle object.
- * @return size_t variable containing the parameter's hash.
- */
+  /**
+   * @brief check if particle is outside the domain.
+   */
 
-template <> struct std::hash<Particle> {
-  size_t operator()(const Particle &p) const noexcept;
+  bool in_halo;
+
+  /**
+   * @brief Marks the particle for removal from the container.
+   *
+   * This method sets an internal flag indicating that the particle is scheduled
+   * for removal.
+   */
+  void markForRemoval() {
+    marked_for_removal = true;
+  }
+
+  /**
+   * @brief Checks if the particle is marked for removal.
+   * @return True if the particle is marked for removal, otherwise false.
+   */
+  bool isMarkedForRemoval() const {
+    return marked_for_removal;
+  }
 };
 
 /**
