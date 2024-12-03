@@ -19,7 +19,7 @@
         <bottom>Outflow</bottom>
         <front>Reflecting</front>
         <back>Reflecting</back>
-    </boundary_conditions>
+  </boundary_conditions>
     <discs>
         <disc>
             <center>

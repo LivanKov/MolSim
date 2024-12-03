@@ -569,6 +569,7 @@ class simulation_parameters: public ::xml_schema::type
   ::xsd::cxx::tree::one< domain_size_type > domain_size_;
 };
 
+
 class boundary_conditions: public ::xml_schema::type
 {
   public:
