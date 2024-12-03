@@ -54,9 +54,10 @@ void Simulation::run(LinkedCellContainer &particles) {
   while (current_time < params_.end_time) {
 
     // Update particles and handle boundary conditions
-    // particles.updateParticles();
+    particles.updateParticles();
     Calculation<Position>::run(particles, params_.time_delta);
     Calculation<Force>::run(particles, FORCE_TYPE, OPTIONS::LINKED_CELLS);
+    std::cout << "Check" << std::endl;
     Calculation<Velocity>::run(particles, params_.time_delta);
 
     iteration++;
@@ -64,7 +65,7 @@ void Simulation::run(LinkedCellContainer &particles) {
       writer->plot_particles(params_.output_path, iteration);
     }
 
-    //logger.info("Iteration " + std::to_string(iteration) + " finished.");
+    logger.info("Iteration " + std::to_string(iteration) + " finished.");
     current_time += params_.time_delta;
   }
   logger.info("output written. Terminating...");

@@ -1,6 +1,6 @@
 #include "io/input/cli/SimParams.h"
-#include "particle/ParticleContainer.h"
 #include "particle/LinkedCellContainer.h"
+#include "particle/ParticleContainer.h"
 #include <memory>
 
 #pragma once

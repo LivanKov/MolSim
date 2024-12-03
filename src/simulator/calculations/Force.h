@@ -1,5 +1,5 @@
-#include "../particle/ParticleContainer.h"
 #include "../particle/LinkedCellContainer.h"
+#include "../particle/ParticleContainer.h"
 #include "Calculation.h"
 
 #define EPSILON 5.0
@@ -16,7 +16,8 @@ enum ForceType { LENNARD_JONES, VERLET };
  * @brief Struct, that provides functions for force calculation.
  **/
 struct Force : AbstractPolicy {
-  static void run(LinkedCellContainer &particles, ForceType type, OPTIONS OPTION);
+  static void run(LinkedCellContainer &particles, ForceType type,
+                  OPTIONS OPTION);
 
 private:
   /***

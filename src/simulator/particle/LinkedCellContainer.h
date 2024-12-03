@@ -36,20 +36,17 @@ class LinkedCellContainer : public ParticleContainer {
    * @throws std::invalid_argument If the domain size is not 2D or 3D.
    */
 public:
-  LinkedCellContainer(std::initializer_list<double> domain_size,
-                      double r_cutoff,
-                      std::initializer_list<double> left_corner_coordinates,
-                      const DomainBoundaryConditions &boundary_conditions = {BoundaryCondition::Outflow,
-                                                                            BoundaryCondition::Outflow,
-                                                                            BoundaryCondition::Outflow,
-                                                                            BoundaryCondition::Outflow,
-                                                                            BoundaryCondition::Outflow,
-                                                                            BoundaryCondition::Outflow});
+  LinkedCellContainer(
+      std::initializer_list<double> domain_size, double r_cutoff,
+      std::initializer_list<double> left_corner_coordinates,
+      const DomainBoundaryConditions &boundary_conditions = {
+          BoundaryCondition::Outflow, BoundaryCondition::Outflow,
+          BoundaryCondition::Outflow, BoundaryCondition::Outflow,
+          BoundaryCondition::Outflow, BoundaryCondition::Outflow});
 
-
-  /** 
+  /**
    * @brief Default constructor for LinkedCellContainer.
-  */
+   */
   LinkedCellContainer();
   /**
    * @brief Inserts a particle into the container.
@@ -151,7 +148,6 @@ public:
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,
                             std::array<double, 3> current_up_right);
-
 
   /**
    * @brief The boundary conditions for the simulation domain.
