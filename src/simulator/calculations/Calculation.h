@@ -9,7 +9,7 @@
  * types.
  */
 
-enum OPTIONS { NONE, LINKED_CELLS_BOUNDARY };
+enum OPTIONS { NONE, LINKED_CELLS };
 
 struct AbstractPolicy {
   virtual ~AbstractPolicy() = 0;

@@ -37,6 +37,10 @@ LinkedCellContainer::LinkedCellContainer(
   cells = std::vector<Cell>(x * y * z, Cell());
 }
 
+LinkedCellContainer::LinkedCellContainer()
+    : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0, 0, 0},
+      x{0}, y{0}, z{0}, boundary_conditions_{}, ParticleContainer{} {}
+
 void LinkedCellContainer::insert(Particle &p) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
   if (is_within_domain(p_ptr->getX())) {

@@ -23,15 +23,14 @@ std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
 
 Simulation::Simulation(SimParams &params) : params_(params) {}
 
-ParticleContainer Simulation::readFile(SimParams &params) {
-  ParticleContainer particles{};
+LinkedCellContainer Simulation::readFile(SimParams &params) {
+  LinkedCellContainer particles{};
   // FileReader::readFile(particles, params_.input_path.data());
   XMLReader::readXMLFile(particles, params);
-
   return particles;
 }
 
-void Simulation::run(ParticleContainer &particles) {
+void Simulation::run(LinkedCellContainer &particles) {
 
   Logger &logger = Logger::getInstance(params_.log_level);
 
@@ -57,7 +56,7 @@ void Simulation::run(ParticleContainer &particles) {
     // Update particles and handle boundary conditions
     // particles.updateParticles();
     Calculation<Position>::run(particles, params_.time_delta);
-    Calculation<Force>::run(particles, FORCE_TYPE);
+    Calculation<Force>::run(particles, FORCE_TYPE, OPTIONS::LINKED_CELLS);
     Calculation<Velocity>::run(particles, params_.time_delta);
 
     iteration++;
@@ -65,7 +64,7 @@ void Simulation::run(ParticleContainer &particles) {
       writer->plot_particles(params_.output_path, iteration);
     }
 
-    logger.info("Iteration " + std::to_string(iteration) + " finished.");
+    //logger.info("Iteration " + std::to_string(iteration) + " finished.");
     current_time += params_.time_delta;
   }
   logger.info("output written. Terminating...");

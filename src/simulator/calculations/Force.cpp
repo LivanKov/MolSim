@@ -2,18 +2,20 @@
 #include "../particle/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 
-void Force::run(ParticleContainer &particles, ForceType type) {
+void Force::run(LinkedCellContainer &particles, ForceType type, OPTIONS OPTION) {
   switch (type) {
   case LENNARD_JONES:
-    lennard_jones(particles);
+    lennard_jones(particles, OPTION);
     break;
   case VERLET:
-    verlet(particles);
+    verlet(particles, OPTION);
     break;
   }
 }
 
-void Force::lennard_jones(ParticleContainer &particles) {
+void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
+  if(OPTION == OPTIONS::NONE){
+
   for (auto &p : particles) {
     p.updateOldF(p.getF());
     p.updateF(0, 0, 0);
@@ -34,9 +36,35 @@ void Force::lennard_jones(ParticleContainer &particles) {
     it->first->updateF(it->first->getF() + force);
     it->second->updateF(it->second->getF() - force);
   }
+  }
+  else if(OPTION == OPTIONS::LINKED_CELLS){
+    for (auto &p : particles) {
+    p.updateOldF(p.getF());
+    p.updateF(0, 0, 0);
+    }
+
+
+    for(auto& particle : particles){
+      for(auto neighbour : particles.get_neighbours(particle)){
+        auto r12 = neighbour->getX() - particle.getX();
+        double distance = ArrayUtils::L2Norm(r12);
+
+        double totalForce;
+        double term = SIGMA / distance;
+        double term6 = pow(term, 6);
+        double term12 = pow(term, 12);
+        totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
+
+        auto force = (totalForce / distance) * r12;
+
+        particle.updateF(particle.getF() + force);
+        neighbour->updateF(neighbour->getF() - force);
+      }
+    }
+  }
 }
 
-void Force::verlet(ParticleContainer &particles) {
+void Force::verlet(LinkedCellContainer &particles, OPTIONS OPTION) {
   // store the current force as the old force and reset current to 0
   for (auto &p : particles) {
     p.updateOldF(p.getF());

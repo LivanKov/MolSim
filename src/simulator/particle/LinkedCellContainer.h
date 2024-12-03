@@ -46,6 +46,11 @@ public:
                                                                             BoundaryCondition::Outflow,
                                                                             BoundaryCondition::Outflow});
 
+
+  /** 
+   * @brief Default constructor for LinkedCellContainer.
+  */
+  LinkedCellContainer();
   /**
    * @brief Inserts a particle into the container.
    * @param p The particle to be inserted.

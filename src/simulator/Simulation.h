@@ -1,5 +1,6 @@
 #include "io/input/cli/SimParams.h"
 #include "particle/ParticleContainer.h"
+#include "particle/LinkedCellContainer.h"
 #include <memory>
 
 #pragma once
@@ -31,14 +32,14 @@ public:
    * @param particles ParticleContainer reference, pass the particle container
    * initialized in readFile.
    */
-  void run(ParticleContainer &particles);
+  void run(LinkedCellContainer &particles);
   /**
    * @brief read file from XML input, initialize particles.
    * @param simParams SimParams reference, pass the initial simulation
    * parameters by XML input.
    * @return ParticleContainer initialized particle container.
    */
-  static ParticleContainer readFile(SimParams &simParams);
+  static LinkedCellContainer readFile(SimParams &simParams);
 
   // void runDisc();
 };
