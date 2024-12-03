@@ -83,7 +83,30 @@ void XMLReader::readXMLFile(ParticleContainer &particles,
     logger.info("Domain Size: " +
                 containerToStrings(simParameters.domain_size));
 
-    // auto cuboids = doc->cuboids();
+    // Read boundary conditions
+    if (doc->boundary_conditions().present()) {
+      const auto &xmlBoundaryConditions = doc->boundary_conditions().get();
+      simParameters.boundaryConditions.left =
+          parseBoundaryCondition(xmlBoundaryConditions.left());
+      simParameters.boundaryConditions.right =
+          parseBoundaryCondition(xmlBoundaryConditions.right());
+      simParameters.boundaryConditions.top =
+          parseBoundaryCondition(xmlBoundaryConditions.top());
+      simParameters.boundaryConditions.bottom =
+          parseBoundaryCondition(xmlBoundaryConditions.bottom());
+
+      if (xmlBoundaryConditions.front().present()) {
+        simParameters.boundaryConditions.front =
+            parseBoundaryCondition(xmlBoundaryConditions.front().get());
+      }
+
+      if (xmlBoundaryConditions.back().present()) {
+        simParameters.boundaryConditions.back =
+            parseBoundaryCondition(xmlBoundaryConditions.back().get());
+      }
+
+      logger.info("Boundary conditions loaded successfully");
+    }
 
     // Extract cuboid specification
     if (doc->cuboids().present()) {
@@ -157,3 +180,14 @@ void XMLReader::readXMLFile(ParticleContainer &particles,
     exit(-1);
   }
 }
+
+BoundaryCondition XMLReader::parseBoundaryCondition(const std::string &value) {
+  if (value == "Outflow") {
+    return BoundaryCondition::Outflow;
+  } else if (value == "Reflecting") {
+    return BoundaryCondition::Reflecting;
+  } else {
+    throw std::runtime_error("Invalid boundary condition: " + value);
+  }
+}
+

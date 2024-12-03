@@ -54,6 +54,8 @@ void Simulation::run(ParticleContainer &particles) {
 
   while (current_time < params_.end_time) {
 
+    // Update particles and handle boundary conditions
+    // particles.updateParticles(); 
     Calculation<Position>::run(particles, params_.time_delta);
     Calculation<Force>::run(particles, FORCE_TYPE);
     Calculation<Velocity>::run(particles, params_.time_delta);
@@ -71,33 +73,4 @@ void Simulation::run(ParticleContainer &particles) {
   logger.info("Number of particles: " + std::to_string(particles.size()));
 
   logger.warn("Simulation finished.");
-}
-
-/*void Simulation::runDisc() {
-
-  const std::array<double, 3> &center{10,10,0};
-  const std::array<double, 3> &initialVelocity{0,0,0};
-  size_t radius{15};
-  double h{2^(1/6)};
-  double mass{1.0};
-  ParticleContainer particles{};
-
-  ParticleGenerator::insertDisc(center,initialVelocity,radius,h,mass,particles);
-
-  const std::array<double, 3> &center2{0,0,1};
-  const std::array<double, 3> &initialVelocity2{0,0,0};
-  size_t radius2{3};
-  double h2{2^(1/6)};
-  double mass2{1.0};
-
-  ParticleGenerator::insertDisc(center2,initialVelocity2,radius2,h2,mass2,particles);
-
-
-  std::unique_ptr<output::FileWriter> writer;
-  writer = std::make_unique<output::VTKWriter>(particles);
-  writer->plot_particles(params_.output_path,1);
-
-
-
-}*/
-;
+};

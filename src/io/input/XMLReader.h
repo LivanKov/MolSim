@@ -12,4 +12,6 @@ public:
   ~XMLReader();
 
   static void readXMLFile(ParticleContainer &particles, SimParams &simParams);
+
+  static BoundaryCondition parseBoundaryCondition(const std::string &value);
 };

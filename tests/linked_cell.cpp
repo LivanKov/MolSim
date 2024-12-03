@@ -7,6 +7,7 @@
 
 
 
+
 class LinkedCellTest : public ::testing::Test {
 protected:
     LinkedCellTest() : container{{9.0,9.0}, 3.0, {0.0, 0.0, 0.0}}, container_3d{{9.0, 9.0, 9.0}, 3.0, {0.0, 0.0, 0.0}}, uneven_container{{9.0,9.0,8.0}, 2.0, {0.0, 0.0, 0.0}} {}
@@ -15,6 +16,7 @@ protected:
     LinkedCellContainer container_3d;
     LinkedCellContainer uneven_container;
 };
+
 
 TEST_F(LinkedCellTest, LocationTest) {
     for(size_t i = 0; i < container.cells.size(); ++i){

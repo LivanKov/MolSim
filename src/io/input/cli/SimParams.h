@@ -1,5 +1,6 @@
 #include <array>
 #include <string>
+#include "simulator/particle/BoundaryCondition.h"
 #pragma once
 
 struct SimParams {
@@ -14,4 +15,5 @@ struct SimParams {
   bool disable_output;
   std::string log_level;
   std::array<double, 3> domain_size;
+  DomainBoundaryConditions boundaryConditions;
 };

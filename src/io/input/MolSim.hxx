@@ -222,8 +222,10 @@ namespace xml_schema
 
 // Forward declarations.
 //
+class boundary_condition_type;
 class MolSim;
 class simulation_parameters;
+class boundary_conditions;
 class discs;
 class cuboids;
 class domain_size;
@@ -247,6 +249,62 @@ class dimensions;
 
 #include <xsd/cxx/xml/dom/parsing-header.hxx>
 
+class boundary_condition_type: public ::xml_schema::string
+{
+  public:
+  enum value
+  {
+    Outflow,
+    Reflecting
+  };
+
+  boundary_condition_type (value v);
+
+  boundary_condition_type (const char* v);
+
+  boundary_condition_type (const ::std::string& v);
+
+  boundary_condition_type (const ::xml_schema::string& v);
+
+  boundary_condition_type (const ::xercesc::DOMElement& e,
+                           ::xml_schema::flags f = 0,
+                           ::xml_schema::container* c = 0);
+
+  boundary_condition_type (const ::xercesc::DOMAttr& a,
+                           ::xml_schema::flags f = 0,
+                           ::xml_schema::container* c = 0);
+
+  boundary_condition_type (const ::std::string& s,
+                           const ::xercesc::DOMElement* e,
+                           ::xml_schema::flags f = 0,
+                           ::xml_schema::container* c = 0);
+
+  boundary_condition_type (const boundary_condition_type& x,
+                           ::xml_schema::flags f = 0,
+                           ::xml_schema::container* c = 0);
+
+  virtual boundary_condition_type*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  boundary_condition_type&
+  operator= (value v);
+
+  virtual
+  operator value () const
+  {
+    return _xsd_boundary_condition_type_convert ();
+  }
+
+  protected:
+  value
+  _xsd_boundary_condition_type_convert () const;
+
+  public:
+  static const char* const _xsd_boundary_condition_type_literals_[2];
+  static const value _xsd_boundary_condition_type_indexes_[2];
+};
+
 class MolSim: public ::xml_schema::type
 {
   public:
@@ -266,6 +324,27 @@ class MolSim: public ::xml_schema::type
 
   void
   simulation_parameters (::std::auto_ptr< simulation_parameters_type > p);
+
+  // boundary_conditions
+  //
+  typedef ::boundary_conditions boundary_conditions_type;
+  typedef ::xsd::cxx::tree::optional< boundary_conditions_type > boundary_conditions_optional;
+  typedef ::xsd::cxx::tree::traits< boundary_conditions_type, char > boundary_conditions_traits;
+
+  const boundary_conditions_optional&
+  boundary_conditions () const;
+
+  boundary_conditions_optional&
+  boundary_conditions ();
+
+  void
+  boundary_conditions (const boundary_conditions_type& x);
+
+  void
+  boundary_conditions (const boundary_conditions_optional& x);
+
+  void
+  boundary_conditions (::std::auto_ptr< boundary_conditions_type > p);
 
   // discs
   //
@@ -342,6 +421,7 @@ class MolSim: public ::xml_schema::type
 
   protected:
   ::xsd::cxx::tree::one< simulation_parameters_type > simulation_parameters_;
+  boundary_conditions_optional boundary_conditions_;
   discs_optional discs_;
   cuboids_optional cuboids_;
 };
@@ -487,6 +567,161 @@ class simulation_parameters: public ::xml_schema::type
   ::xsd::cxx::tree::one< write_frequency_type > write_frequency_;
   ::xsd::cxx::tree::one< r_cutoff_radius_type > r_cutoff_radius_;
   ::xsd::cxx::tree::one< domain_size_type > domain_size_;
+};
+
+
+class boundary_conditions: public ::xml_schema::type
+{
+  public:
+  // left
+  //
+  typedef ::boundary_condition_type left_type;
+  typedef ::xsd::cxx::tree::traits< left_type, char > left_traits;
+
+  const left_type&
+  left () const;
+
+  left_type&
+  left ();
+
+  void
+  left (const left_type& x);
+
+  void
+  left (::std::auto_ptr< left_type > p);
+
+  // right
+  //
+  typedef ::boundary_condition_type right_type;
+  typedef ::xsd::cxx::tree::traits< right_type, char > right_traits;
+
+  const right_type&
+  right () const;
+
+  right_type&
+  right ();
+
+  void
+  right (const right_type& x);
+
+  void
+  right (::std::auto_ptr< right_type > p);
+
+  // top
+  //
+  typedef ::boundary_condition_type top_type;
+  typedef ::xsd::cxx::tree::traits< top_type, char > top_traits;
+
+  const top_type&
+  top () const;
+
+  top_type&
+  top ();
+
+  void
+  top (const top_type& x);
+
+  void
+  top (::std::auto_ptr< top_type > p);
+
+  // bottom
+  //
+  typedef ::boundary_condition_type bottom_type;
+  typedef ::xsd::cxx::tree::traits< bottom_type, char > bottom_traits;
+
+  const bottom_type&
+  bottom () const;
+
+  bottom_type&
+  bottom ();
+
+  void
+  bottom (const bottom_type& x);
+
+  void
+  bottom (::std::auto_ptr< bottom_type > p);
+
+  // front
+  //
+  typedef ::boundary_condition_type front_type;
+  typedef ::xsd::cxx::tree::optional< front_type > front_optional;
+  typedef ::xsd::cxx::tree::traits< front_type, char > front_traits;
+
+  const front_optional&
+  front () const;
+
+  front_optional&
+  front ();
+
+  void
+  front (const front_type& x);
+
+  void
+  front (const front_optional& x);
+
+  void
+  front (::std::auto_ptr< front_type > p);
+
+  // back
+  //
+  typedef ::boundary_condition_type back_type;
+  typedef ::xsd::cxx::tree::optional< back_type > back_optional;
+  typedef ::xsd::cxx::tree::traits< back_type, char > back_traits;
+
+  const back_optional&
+  back () const;
+
+  back_optional&
+  back ();
+
+  void
+  back (const back_type& x);
+
+  void
+  back (const back_optional& x);
+
+  void
+  back (::std::auto_ptr< back_type > p);
+
+  // Constructors.
+  //
+  boundary_conditions (const left_type&,
+                       const right_type&,
+                       const top_type&,
+                       const bottom_type&);
+
+  boundary_conditions (const ::xercesc::DOMElement& e,
+                       ::xml_schema::flags f = 0,
+                       ::xml_schema::container* c = 0);
+
+  boundary_conditions (const boundary_conditions& x,
+                       ::xml_schema::flags f = 0,
+                       ::xml_schema::container* c = 0);
+
+  virtual boundary_conditions*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  boundary_conditions&
+  operator= (const boundary_conditions& x);
+
+  virtual 
+  ~boundary_conditions ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< left_type > left_;
+  ::xsd::cxx::tree::one< right_type > right_;
+  ::xsd::cxx::tree::one< top_type > top_;
+  ::xsd::cxx::tree::one< bottom_type > bottom_;
+  front_optional front_;
+  back_optional back_;
 };
 
 class discs: public ::xml_schema::type
