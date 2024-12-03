@@ -55,6 +55,8 @@ void Simulation::run(ParticleContainer &particles) {
 
   while (current_time < params_.end_time) {
 
+    // Update particles and handle boundary conditions
+    // particles.updateParticles(); 
     Calculation<Position>::run(particles, params_.time_delta);
     Calculation<Force>::run(particles, FORCE_TYPE);
     Calculation<Velocity>::run(particles, params_.time_delta);
