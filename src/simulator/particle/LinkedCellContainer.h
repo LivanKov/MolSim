@@ -1,6 +1,7 @@
 #include "ParticleContainer.h"
 #include <array>
 #include <initializer_list>
+#include "utils/logger/Logger.h"
 
 #pragma once
 
@@ -45,11 +46,11 @@ public:
 
   void readjust();
 
-  void reinitialize(ParticleContainer& container);
+  void reinitialize(ParticleContainer &container);
 
-  void reinitialize(std::vector<Particle>& particles);
+  void reinitialize(std::vector<Particle> &particles);
 
-  void reinitialize(std::vector<ParticlePointer>& particles);
+  void reinitialize(std::vector<ParticlePointer> &particles);
 
   const std::vector<double> domain_size_;
   std::vector<double> left_corner_coordinates;
@@ -61,8 +62,11 @@ public:
   bool extend_x;
   bool extend_y;
   bool extend_z;
+  Logger &logger = Logger::getInstance();
 
   Cell &get_cell(size_t index);
+
 private:
-  void readjust_coordinates(std::array<double,3> current_low_left, std::array<double,3> current_up_right);
+  void readjust_coordinates(std::array<double, 3> current_low_left,
+                            std::array<double, 3> current_up_right);
 };

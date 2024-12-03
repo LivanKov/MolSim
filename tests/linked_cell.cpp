@@ -226,4 +226,14 @@ TEST_F(LinkedCellTest, RepositioningTest){
 
     EXPECT_TRUE(container.left_corner_coordinates[0] == 1.5 && container.left_corner_coordinates[1] == 1.5 && container.left_corner_coordinates[2] == 0.0);
 
+    EXPECT_EQ(container.cells[0].size(), 0);
+    EXPECT_EQ(container.cells[1].size(), 0);
+    EXPECT_EQ(container.cells[2].size(), 0);
+    EXPECT_EQ(container.cells[3].size(), 0);
+    EXPECT_EQ(container.cells[4].size(), 4);
+    container.update_particle_location(container.cells[5][0], container.cells[5][0]->getX());
+    EXPECT_EQ(container.cells[5].size(), 0);
+    //EXPECT_EQ(container.cells[6].size(), 0);
+    //EXPECT_EQ(container.cells[7].size(), 0);
+    //EXPECT_EQ(container.cells[8].size(), 0);
 }

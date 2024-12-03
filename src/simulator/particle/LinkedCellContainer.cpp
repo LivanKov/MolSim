@@ -65,8 +65,9 @@ bool LinkedCellContainer::is_within_domain(
          position[1] >= left_corner_coordinates[1] &&
          position[1] < left_corner_coordinates[1] + domain_size_[1] &&
          position[2] >= left_corner_coordinates[2] &&
-         (domain_size_.size() == 3 ? 
-         position[2] < left_corner_coordinates[2] + domain_size_[2] : position[2] < left_corner_coordinates[2] + r_cutoff_);
+         (domain_size_.size() == 3
+              ? position[2] < left_corner_coordinates[2] + domain_size_[2]
+              : position[2] < left_corner_coordinates[2] + r_cutoff_);
 }
 
 void LinkedCellContainer::update_particle_location(
@@ -105,7 +106,6 @@ void LinkedCellContainer::update_particle_location(
 }
 
 Cell &LinkedCellContainer::get_cell(size_t index) { return cells[index]; }
-
 
 std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
   std::array<double, 3> position = p.getX();
@@ -160,66 +160,78 @@ void LinkedCellContainer::clear() {
   _particle_pair_container.clear();
 }
 
-
-//needs to find the leftmost and rightmost corner
+// needs to find the leftmost and rightmost corner
 void LinkedCellContainer::reinitialize(ParticleContainer &container) {
   clear();
   auto current_low_left = container[0].getX();
   auto current_up_right = container[0].getX();
-  for(auto &p : container){
-    if(p.getX()[0] < current_low_left[0] || p.getX()[1] < current_low_left[1] || p.getX()[2] < current_low_left[2]){
+  for (auto &p : container) {
+    if (p.getX()[0] < current_low_left[0] ||
+        p.getX()[1] < current_low_left[1] ||
+        p.getX()[2] < current_low_left[2]) {
       current_low_left = p.getX();
     }
-    if(p.getX()[0] > current_up_right[0] || p.getX()[1] > current_up_right[1] || p.getX()[2] > current_up_right[2]){
+    if (p.getX()[0] > current_up_right[0] ||
+        p.getX()[1] > current_up_right[1] ||
+        p.getX()[2] > current_up_right[2]) {
       current_up_right = p.getX();
     }
   }
   readjust_coordinates(current_low_left, current_up_right);
-  for(auto &p : container){
+  for (auto &p : container) {
     insert(p);
-  }  
+  }
 }
 
-void LinkedCellContainer::reinitialize(std::vector<Particle>& particles){
+void LinkedCellContainer::reinitialize(std::vector<Particle> &particles) {
   clear();
   auto current_low_left = particles[0].getX();
   auto current_up_right = particles[0].getX();
-  for(auto &p : particles){
-    if(p.getX()[0] < current_low_left[0] || p.getX()[1] < current_low_left[1] || p.getX()[2] < current_low_left[2]){
+  for (auto &p : particles) {
+    if (p.getX()[0] < current_low_left[0] ||
+        p.getX()[1] < current_low_left[1] ||
+        p.getX()[2] < current_low_left[2]) {
       current_low_left = p.getX();
     }
-    if(p.getX()[0] > current_up_right[0] || p.getX()[1] > current_up_right[1] || p.getX()[2] > current_up_right[2]){
+    if (p.getX()[0] > current_up_right[0] ||
+        p.getX()[1] > current_up_right[1] ||
+        p.getX()[2] > current_up_right[2]) {
       current_up_right = p.getX();
     }
   }
   readjust_coordinates(current_low_left, current_up_right);
-  for(auto &p : particles){
+  for (auto &p : particles) {
     insert(p);
   }
 }
 
-
-void LinkedCellContainer::reinitialize(std::vector<ParticlePointer>& particles){
+void LinkedCellContainer::reinitialize(
+    std::vector<ParticlePointer> &particles) {
   clear();
   auto current_low_left = particles[0]->getX();
   auto current_up_right = particles[0]->getX();
-  for(auto &p : particles){
-    if(p->getX()[0] < current_low_left[0] || p->getX()[1] < current_low_left[1] || p->getX()[2] < current_low_left[2]){
+  for (auto &p : particles) {
+    if (p->getX()[0] < current_low_left[0] ||
+        p->getX()[1] < current_low_left[1] ||
+        p->getX()[2] < current_low_left[2]) {
       current_low_left = p->getX();
     }
-    if(p->getX()[0] > current_up_right[0] || p->getX()[1] > current_up_right[1] || p->getX()[2] > current_up_right[2]){
+    if (p->getX()[0] > current_up_right[0] ||
+        p->getX()[1] > current_up_right[1] ||
+        p->getX()[2] > current_up_right[2]) {
       current_up_right = p->getX();
     }
   }
   readjust_coordinates(current_low_left, current_up_right);
-  for(auto &p : particles){
+  for (auto &p : particles) {
     insert(*p);
   }
 }
 
-
-void LinkedCellContainer::readjust_coordinates(std::array<double,3>current_low_left, std::array<double,3> current_up_right){
-  std::array<double,3> midpoint{};
+void LinkedCellContainer::readjust_coordinates(
+    std::array<double, 3> current_low_left,
+    std::array<double, 3> current_up_right) {
+  std::array<double, 3> midpoint{};
   for (size_t i = 0; i < 3; ++i) {
     midpoint[i] = (current_low_left[i] + current_up_right[i]) / 2.0;
   }
@@ -228,19 +240,23 @@ void LinkedCellContainer::readjust_coordinates(std::array<double,3>current_low_l
   }
 }
 
-void LinkedCellContainer::readjust(){
-  std::array<double,3> current_low_left = _particle_container[0]->getX();
-  std::array<double,3> current_up_right = _particle_container[0]->getX();
-  for(auto &p : _particle_container){
-    if(p->getX()[0] < current_low_left[0] || p->getX()[1] < current_low_left[1] || p->getX()[2] < current_low_left[2]){
+void LinkedCellContainer::readjust() {
+  std::array<double, 3> current_low_left = _particle_container[0]->getX();
+  std::array<double, 3> current_up_right = _particle_container[0]->getX();
+  for (auto &p : _particle_container) {
+    if (p->getX()[0] < current_low_left[0] ||
+        p->getX()[1] < current_low_left[1] ||
+        p->getX()[2] < current_low_left[2]) {
       current_low_left = p->getX();
     }
-    if(p->getX()[0] > current_up_right[0] || p->getX()[1] > current_up_right[1] || p->getX()[2] > current_up_right[2]){
+    if (p->getX()[0] > current_up_right[0] ||
+        p->getX()[1] > current_up_right[1] ||
+        p->getX()[2] > current_up_right[2]) {
       current_up_right = p->getX();
     }
   }
   readjust_coordinates(current_low_left, current_up_right);
-  for(auto &p : _particle_container){
+  for (auto &p : _particle_container) {
     update_particle_location(p, p->getX());
   }
 }
