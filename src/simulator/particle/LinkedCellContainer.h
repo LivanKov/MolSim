@@ -54,9 +54,6 @@ public:
    */
   void insert(Particle &p) override;
 
-  void update_particle_location(ParticlePointer p,
-                                const std::array<double, 3> &old_position);
-
   bool is_within_domain(const std::array<double, 3> &position);
 
   void clear() override;
@@ -75,8 +72,8 @@ public:
    * @param p The particle whose location is updated.
    * @param old_position The particle's previous position.
    */
-  void update_particle_location(Particle &p,
-                                std::array<double, 3> &old_position);
+  void update_particle_location(ParticlePointer p,
+                                const std::array<double, 3> &old_position);
 
   /**
    * @brief Retrieves neighboring particles of a given particle within the
