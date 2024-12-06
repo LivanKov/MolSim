@@ -8,8 +8,8 @@ void Force::run(LinkedCellContainer &particles, ForceType type,
   case LENNARD_JONES:
     lennard_jones(particles, OPTION);
     break;
-  case VERLET:
-    verlet(particles, OPTION);
+  case GRAVITATIONAL:
+    gravitational(particles, OPTION);
     break;
   }
 }
@@ -63,7 +63,7 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
   }
 }
 
-void Force::verlet(LinkedCellContainer &particles, OPTIONS OPTION) {
+void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
   // store the current force as the old force and reset current to 0
 
   if (OPTION == OPTIONS::NONE) {

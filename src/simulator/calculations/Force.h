@@ -9,7 +9,7 @@
  * @enum ForceType
  * @brief Enum class for the force calculation type.
  */
-enum ForceType { LENNARD_JONES, VERLET };
+enum ForceType { LENNARD_JONES, GRAVITATIONAL };
 
 /***
  * @struct Force
@@ -26,8 +26,8 @@ private:
    **/
   static void lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION);
   /**
-   * @brief Verlet force calculation.
+   * @brief Gravitational force calculation.
    * @param particles ParticleContainer reference.
    */
-  static void verlet(LinkedCellContainer &particles, OPTIONS OPTION);
+  static void gravitational(LinkedCellContainer &particles, OPTIONS OPTION);
 };

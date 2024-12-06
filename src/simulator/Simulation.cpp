@@ -42,7 +42,7 @@ void Simulation::run(LinkedCellContainer &particles) {
   double current_time{0};
 
   ForceType FORCE_TYPE = params_.calculate_grav_force
-                             ? ForceType::VERLET
+                             ? ForceType::GRAVITATIONAL
                              : ForceType::LENNARD_JONES;
   std::unique_ptr<output::FileWriter> writer;
   if (params_.xyz_output) {
