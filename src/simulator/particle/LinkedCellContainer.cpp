@@ -131,9 +131,9 @@ std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
   int Z = static_cast<int>(z);
   // handle 2d case
   // Convert 1D index to 3D coordinates
-  i = index / (Y * Z);
-  j = (index % (Y * Z)) / Z;
-  k = index % Z;
+  size_t i_ = index / (Y * Z);
+  size_t j_ = (index % (Y * Z)) / Z;
+  size_t k_ = index % Z;
 
   for (int di = -1; di <= 1; ++di) {
     for (int dj = -1; dj <= 1; ++dj) {
@@ -141,9 +141,9 @@ std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
         if (di == 0 && dj == 0 && dk == 0) {
           continue;
         }
-        int ni = i + di;
-        int nj = j + dj;
-        int nk = k + dk;
+        int ni = i_ + di;
+        int nj = j_ + dj;
+        int nk = k_ + dk;
 
         if (ni >= 0 && ni < X && nj >= 0 && nj < Y && nk >= 0 && nk < Z) {
           int neighborIndex = ni * (Y * Z) + nj * Z + nk;
@@ -346,6 +346,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
     }
   }
 
+  //optimize for later
   p.updateX(position[0], position[1], position[2]);
   p.updateV(velocity[0], velocity[1], velocity[2]);
 }
