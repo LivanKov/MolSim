@@ -29,6 +29,7 @@ LinkedCellContainer::LinkedCellContainer(
   if (std::abs(remainder_z) > DIVISION_TOLERANCE)
     extend_z = true;
 
+  //TODO rework this
   x = static_cast<size_t>(domain_size_[0] / r_cutoff) + (extend_x ? 1 : 0);
   y = static_cast<size_t>(domain_size_[1] / r_cutoff) + (extend_y ? 1 : 0);
   z = domain_size.size() == 3
@@ -346,7 +347,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
     }
   }
 
-  //optimize for later
+  //TODO optimize later
   p.updateX(position[0], position[1], position[2]);
   p.updateV(velocity[0], velocity[1], velocity[2]);
 }
