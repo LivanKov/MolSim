@@ -15,7 +15,7 @@ void Force::run(LinkedCellContainer &particles, ForceType type,
 }
 
 void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
-  if (OPTION == OPTIONS::NONE) {
+  if (OPTION == OPTIONS::DIRECT_SUM) {
 
     for (auto &p : particles) {
       p.updateOldF(p.getF());
@@ -66,7 +66,7 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
 void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
   // store the current force as the old force and reset current to 0
 
-  if (OPTION == OPTIONS::NONE) {
+  if (OPTION == OPTIONS::DIRECT_SUM) {
     for (auto &p : particles) {
       p.updateOldF(p.getF());
       p.updateF(0, 0, 0);
