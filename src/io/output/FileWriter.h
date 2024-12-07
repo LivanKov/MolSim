@@ -2,7 +2,7 @@
 #define FILEWRITER_H
 
 #include <memory>
-#include <simulator/particle/ParticleContainer.h>
+#include "simulator/particle/container/ParticleContainer.h"
 #include <string>
 
 namespace output {

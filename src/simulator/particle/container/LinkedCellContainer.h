@@ -1,4 +1,4 @@
-#include "BoundaryCondition.h"
+#include "../BoundaryCondition.h"
 #include "ParticleContainer.h"
 #include "utils/logger/Logger.h"
 #include <array>

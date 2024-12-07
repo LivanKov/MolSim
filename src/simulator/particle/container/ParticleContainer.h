@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Particle.h"
+#include "../Particle.h"
 #include <array>
 #include <memory>
 #include <stdexcept>

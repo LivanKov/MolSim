@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "simulator/particle/LinkedCellContainer.h"
+#include "simulator/particle/container/LinkedCellContainer.h"
 #include "simulator/particle/ParticleGenerator.h"
 #include "utils/logger/Logger.h"
 #include <array>

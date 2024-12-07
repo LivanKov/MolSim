@@ -6,8 +6,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 enable_testing()
-add_executable(basic_test basic_test.cpp generator_test.cpp linked_cell.cpp boundary_conditions_test.cpp ../src/simulator/particle/ParticleContainer.cpp ../src/simulator/particle/Particle.cpp ../src/utils/logger/Logger.cpp
-        ../src/simulator/particle/ParticleGenerator.cpp ../src/simulator/particle/LinkedCellContainer.cpp)
+add_executable(basic_test basic_test.cpp generator_test.cpp linked_cell.cpp boundary_conditions_test.cpp ../src/simulator/particle/container/ParticleContainer.cpp ../src/simulator/particle/Particle.cpp ../src/utils/logger/Logger.cpp
+        ../src/simulator/particle/ParticleGenerator.cpp ../src/simulator/particle/container/LinkedCellContainer.cpp)
 
 target_include_directories(basic_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 

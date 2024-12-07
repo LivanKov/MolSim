@@ -4,7 +4,7 @@
 #include "io/output/FileWriter.h"
 #include "io/output/VTKWriter.h"
 #include "io/output/XYZWriter.h"
-#include "particle/ParticleContainer.h"
+#include "particle/container/ParticleContainer.h"
 #include "particle/ParticleGenerator.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"

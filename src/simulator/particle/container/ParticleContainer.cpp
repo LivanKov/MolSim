@@ -1,5 +1,5 @@
 #include "ParticleContainer.h"
-#include "Particle.h"
+#include "../Particle.h"
 #include "utils/ArrayUtils.h"
 #include <concepts>
 #include <utility>

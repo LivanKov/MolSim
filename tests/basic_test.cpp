@@ -1,5 +1,5 @@
 #include "simulator/particle/Particle.h"
-#include "simulator/particle/ParticleContainer.h"
+#include "simulator/particle/container/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 #include "utils/logger/Logger.h"
 #include <array>

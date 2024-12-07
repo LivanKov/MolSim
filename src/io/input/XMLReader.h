@@ -1,7 +1,7 @@
 #pragma once
 
 #include "cli/SimParams.h"
-#include "simulator/particle/ParticleContainer.h"
+#include "simulator/particle/container/ParticleContainer.h"
 #include <iostream>
 #include <sstream>
 

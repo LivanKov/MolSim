@@ -3,7 +3,7 @@
  */
 
 #include "ParticleGenerator.h"
-#include "ParticleContainer.h"
+#include "container/ParticleContainer.h"
 #include "utils/MaxwellBoltzmannDistribution.h"
 
 #include <random>

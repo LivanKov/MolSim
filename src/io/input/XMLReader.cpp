@@ -1,7 +1,7 @@
 #include "XMLReader.h"
 #include "MolSim.hxx"
 #include "cli/SimParams.h"
-#include "simulator/particle/ParticleContainer.h"
+#include "simulator/particle/container/ParticleContainer.h"
 #include "simulator/particle/ParticleGenerator.h"
 #include "utils/logger/Logger.h"
 

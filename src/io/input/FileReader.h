@@ -8,7 +8,7 @@
 #pragma once
 
 #include "simulator/particle/Particle.h"
-#include "simulator/particle/ParticleContainer.h"
+#include "simulator/particle/container/ParticleContainer.h"
 
 #include <list>
 

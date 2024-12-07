@@ -1,5 +1,5 @@
 #include "Force.h"
-#include "../particle/ParticleContainer.h"
+#include "../particle/container/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 
 void Force::run(LinkedCellContainer &particles, ForceType type,

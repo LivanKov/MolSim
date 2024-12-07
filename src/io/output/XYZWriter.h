@@ -8,7 +8,7 @@
 #pragma once
 
 #include "FileWriter.h"
-#include "simulator/particle/ParticleContainer.h"
+#include "simulator/particle/container/ParticleContainer.h"
 
 #include <fstream>
 #include <list>

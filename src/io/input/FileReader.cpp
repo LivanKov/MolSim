@@ -6,7 +6,7 @@
  */
 
 #include "FileReader.h"
-#include "simulator/particle/ParticleContainer.h"
+#include "simulator/particle/container/ParticleContainer.h"
 #include "simulator/particle/ParticleGenerator.h"
 
 #include <cstdlib>
