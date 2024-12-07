@@ -32,7 +32,7 @@ public:
    * @param particles ParticleContainer reference, pass the particle container
    * initialized in readFile.
    */
-  void run(LinkedCellContainer &particles);
+  void run(ParticleContainer &particles);
   /**
    * @brief read file from XML input, initialize particles.
    * @param simParams SimParams reference, pass the initial simulation

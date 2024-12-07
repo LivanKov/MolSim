@@ -30,7 +30,7 @@ LinkedCellContainer Simulation::readFile(SimParams &params) {
   return particles;
 }
 
-void Simulation::run(LinkedCellContainer &particles) {
+void Simulation::run(ParticleContainer &particles) {
 
   Logger &logger = Logger::getInstance(params_.log_level);
 
@@ -54,11 +54,11 @@ void Simulation::run(LinkedCellContainer &particles) {
   while (current_time < params_.end_time) {
 
     // Update particles and handle boundary conditions
-    particles.updateParticles();
-    Calculation<Position>::run(particles, params_.time_delta);
-    Calculation<Force>::run(particles, FORCE_TYPE, OPTIONS::LINKED_CELLS);
+    //particles.updateParticles();
+    //Calculation<Position>::run(particles, params_.time_delta);
+    //Calculation<Force>::run(particles, FORCE_TYPE, OPTIONS::LINKED_CELLS);
     std::cout << "Check" << std::endl;
-    Calculation<Velocity>::run(particles, params_.time_delta);
+    //Calculation<Velocity>::run(particles, params_.time_delta);
 
     iteration++;
     if (iteration % params_.write_frequency == 0 && !params_.disable_output) {
