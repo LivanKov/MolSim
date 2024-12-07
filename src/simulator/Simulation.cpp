@@ -4,7 +4,7 @@
 #include "io/output/FileWriter.h"
 #include "io/output/VTKWriter.h"
 #include "io/output/XYZWriter.h"
-#include "particle/container/ParticleContainer.h"
+#include "particle/container/DirectSumContainer.h"
 #include "particle/ParticleGenerator.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"
@@ -30,7 +30,7 @@ LinkedCellContainer Simulation::readFile(SimParams &params) {
   return particles;
 }
 
-void Simulation::run(ParticleContainer &particles) {
+void Simulation::run(DirectSumContainer &particles) {
 
   Logger &logger = Logger::getInstance(params_.log_level);
 

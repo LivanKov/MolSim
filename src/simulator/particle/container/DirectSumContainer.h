@@ -1,5 +1,5 @@
 /*
- * ParticleContainer.h
+ * DirectSumContainer.h
  */
 
 #pragma once
@@ -47,7 +47,7 @@ struct ParticlePair {
 
 /**
  * @class ParticleIterator
- * @brief Provides an iterator interface for the ParticleContainer class.
+ * @brief Provides an iterator interface for the DirectSumContainer class.
  * Based on the now deprecated std::iterator. See
  * https://en.cppreference.com/w/cpp/iterator/iterator for more details.
  */
@@ -69,19 +69,19 @@ private:
 };
 
 /**
- * @class ParticleContainer
+ * @class DirectSumContainer
  * @brief Main container class, contains an intuitive api for storing particles
  * and running unit tests. Stores unique particles and corresponding unique
  * pairs, managed by shared pointers.
  */
 
-class ParticleContainer {
+class DirectSumContainer {
 
 public:
   /**
    * @brief Constructor.
    */
-  ParticleContainer();
+  DirectSumContainer();
 
   /**
    * @brief Create a Particle object in-place and insert it into the underlying

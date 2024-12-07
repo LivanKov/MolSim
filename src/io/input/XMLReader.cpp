@@ -1,7 +1,7 @@
 #include "XMLReader.h"
 #include "MolSim.hxx"
 #include "cli/SimParams.h"
-#include "simulator/particle/container/ParticleContainer.h"
+#include "simulator/particle/container/DirectSumContainer.h"
 #include "simulator/particle/ParticleGenerator.h"
 #include "utils/logger/Logger.h"
 
@@ -31,7 +31,7 @@ auto containerToStrings = [](const auto &container) {
   return oss.str();
 };
 
-void XMLReader::readXMLFile(ParticleContainer &particles,
+void XMLReader::readXMLFile(DirectSumContainer &particles,
                             SimParams &simParameters) {
   Logger &logger = Logger::getInstance(simParameters.log_level);
   std::string filename = simParameters.input_path;

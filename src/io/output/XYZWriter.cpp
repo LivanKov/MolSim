@@ -11,7 +11,7 @@
 
 namespace output {
 
-XYZWriter::XYZWriter(ParticleContainer &particles) : FileWriter(particles) {}
+XYZWriter::XYZWriter(DirectSumContainer &particles) : FileWriter(particles) {}
 
 void XYZWriter::plot_particles(const std::string &filename, int iteration) {
 

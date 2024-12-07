@@ -2,7 +2,7 @@
 #define FILEWRITER_H
 
 #include <memory>
-#include "simulator/particle/container/ParticleContainer.h"
+#include "simulator/particle/container/DirectSumContainer.h"
 #include <string>
 
 namespace output {
@@ -16,9 +16,9 @@ class FileWriter {
 public:
   /**
    * @brief Constructor, should be overriden by the derived classes.
-   * @param particles ParticleContainer reference.
+   * @param particles DirectSumContainer reference.
    */
-  FileWriter(ParticleContainer &particles);
+  FileWriter(DirectSumContainer &particles);
 
   /**
    * @brief Virtual function to plot particles, should be overriden by the
@@ -29,9 +29,9 @@ public:
   virtual void plot_particles(const std::string &filepath, int iteration);
 
   /**
-   * @brief ParticleContainer reference
+   * @brief DirectSumContainer reference
    */
-  ParticleContainer &particles;
+  DirectSumContainer &particles;
 };
 } // namespace output
 #endif

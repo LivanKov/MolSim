@@ -1,5 +1,5 @@
 #include "../particle/container/LinkedCellContainer.h"
-#include "../particle/container/ParticleContainer.h"
+#include "../particle/container/DirectSumContainer.h"
 #include "Calculation.h"
 
 #define EPSILON 5.0
@@ -22,12 +22,12 @@ struct Force : AbstractPolicy {
 private:
   /***
    * @brief Lennard-Jones force calculation.
-   * @param particles ParticleContainer reference.
+   * @param particles DirectSumContainer reference.
    **/
   static void lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION);
   /**
    * @brief Gravitational force calculation.
-   * @param particles ParticleContainer reference.
+   * @param particles DirectSumContainer reference.
    */
   static void gravitational(LinkedCellContainer &particles, OPTIONS OPTION);
 };

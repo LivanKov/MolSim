@@ -11,7 +11,7 @@ LinkedCellContainer::LinkedCellContainer(
     const DomainBoundaryConditions &boundary_conditions)
     : domain_size_{domain_size}, r_cutoff_{r_cutoff},
       left_corner_coordinates{left_corner_coordinates}, x{0}, y{0}, z{0},
-      boundary_conditions_{boundary_conditions}, ParticleContainer{} {
+      boundary_conditions_{boundary_conditions}, DirectSumContainer{} {
   if (domain_size.size() != 3 && domain_size.size() != 2) {
     throw std::invalid_argument("Domain size must have 2 or 3 elements");
   }
@@ -41,7 +41,7 @@ LinkedCellContainer::LinkedCellContainer(
 
 LinkedCellContainer::LinkedCellContainer()
     : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0, 0, 0},
-      x{0}, y{0}, z{0}, boundary_conditions_{}, ParticleContainer{} {}
+      x{0}, y{0}, z{0}, boundary_conditions_{}, DirectSumContainer{} {}
 
 void LinkedCellContainer::insert(Particle &p) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
@@ -168,7 +168,7 @@ void LinkedCellContainer::clear() {
 }
 
 // needs to find the leftmost and rightmost corner
-void LinkedCellContainer::reinitialize(ParticleContainer &container) {
+void LinkedCellContainer::reinitialize(DirectSumContainer &container) {
   clear();
   auto current_low_left = container[0].getX();
   auto current_up_right = container[0].getX();

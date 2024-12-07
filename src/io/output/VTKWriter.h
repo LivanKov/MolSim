@@ -25,7 +25,7 @@ public:
   /**
    * set up internal data structures and prepare to plot a particle.
    */
-  VTKWriter(ParticleContainer &particles);
+  VTKWriter(DirectSumContainer &particles);
 
   /**
    * writes the final output file.

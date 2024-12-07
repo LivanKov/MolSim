@@ -1,4 +1,4 @@
-#include "simulator/particle/container/ParticleContainer.h"
+#include "simulator/particle/container/DirectSumContainer.h"
 #include "simulator/particle/ParticleGenerator.h"
 #include "utils/logger/Logger.h"
 #include <gtest/gtest.h>
@@ -8,7 +8,7 @@
 class CuboidTest : public testing::Test {
 protected:
   CuboidTest() : container{} {}
-  ParticleContainer container;
+  DirectSumContainer container;
 };
 
 // simple test for the cuboid
@@ -74,7 +74,7 @@ TEST_F(CuboidTest, MultipleCuboidsTest) {
 class DiscTest : public testing::Test {
 protected:
   DiscTest() : container{} {}
-  ParticleContainer container;
+  DirectSumContainer container;
 };
 
 // Disc test case: checks if correct amount of particles got inserted

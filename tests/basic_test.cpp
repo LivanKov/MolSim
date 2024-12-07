@@ -1,5 +1,5 @@
 #include "simulator/particle/Particle.h"
-#include "simulator/particle/container/ParticleContainer.h"
+#include "simulator/particle/container/DirectSumContainer.h"
 #include "utils/ArrayUtils.h"
 #include "utils/logger/Logger.h"
 #include <array>
@@ -17,7 +17,7 @@ class BasicTest : public testing::Test {
 protected:
   BasicTest() : container{}, starting_coord{1.0}, delta_t{1.0} {}
 
-  ParticleContainer container;
+  DirectSumContainer container;
   double starting_coord;
   double delta_t;
   bool calculateLJForce = true;

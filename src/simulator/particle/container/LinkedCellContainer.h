@@ -1,5 +1,5 @@
 #include "../BoundaryCondition.h"
-#include "ParticleContainer.h"
+#include "DirectSumContainer.h"
 #include "utils/logger/Logger.h"
 #include <array>
 #include <initializer_list>
@@ -21,9 +21,9 @@ struct Cell {
 /**
  * @class LinkedCellContainer
  * @brief Class that provides a container for particles that uses linked cells
- * to speed up the computation.Inherits from ParticleContainer.
+ * to speed up the computation.Inherits from DirectSumContainer.
  */
-class LinkedCellContainer : public ParticleContainer {
+class LinkedCellContainer : public DirectSumContainer {
   /**
    * @brief Constructor for LinkedCellContainer.
    * @param domain_size The size of the simulation domain (e.g., {x, y, z}
@@ -60,7 +60,7 @@ public:
 
   void readjust();
 
-  void reinitialize(ParticleContainer &container);
+  void reinitialize(DirectSumContainer &container);
 
   void reinitialize(std::vector<Particle> &particles);
 

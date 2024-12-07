@@ -1,7 +1,7 @@
 #pragma once
 
 #include "cli/SimParams.h"
-#include "simulator/particle/container/ParticleContainer.h"
+#include "simulator/particle/container/DirectSumContainer.h"
 #include <iostream>
 #include <sstream>
 
@@ -11,7 +11,7 @@ public:
   XMLReader();
   ~XMLReader();
 
-  static void readXMLFile(ParticleContainer &particles, SimParams &simParams);
+  static void readXMLFile(DirectSumContainer &particles, SimParams &simParams);
 
   static BoundaryCondition parseBoundaryCondition(const std::string &value);
 };
