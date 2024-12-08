@@ -21,7 +21,7 @@ public:
 
   /**
    * @brief Generate a cuboid consisting of particles, based on arguments.
-   * @param lowerFrontCorner Coordinates of the lower left point of the cuboid
+   * @param lowerLeftFrontCorner Coordinates of the lower left point of the cuboid
    * in 3d space.
    * @param dimensions Amount of particles in height, width and depth of the
    * cuboid.
@@ -30,6 +30,7 @@ public:
    * @param initialVelocity contains an array with individual velocity in 3d
    * space. Applied to all particles in the container.
    * @param averageVelocity Mean value of the velocity of the Brownian Motion.
+   * @param particles Container of particles that form the disc.
    * @return ParticleContainer in accordance to the arguments passed.
    */
   static void insertCuboid(const std::array<double, 3> &lowerLeftFrontCorner,

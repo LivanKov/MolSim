@@ -41,5 +41,4 @@ public:
    */
   static LinkedCellContainer readFile(SimParams &simParams);
 
-  // void runDisc();
 };

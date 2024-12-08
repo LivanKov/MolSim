@@ -30,7 +30,7 @@ ParticleContainer::ParticleContainer()
 
 void ParticleContainer::insert(Particle &p) { emplace_back(p); }
 
-size_t ParticleContainer::size() { return _particle_container.size(); }
+size_t ParticleContainer::size() const { return _particle_container.size(); }
 
 Particle &ParticleContainer::operator[](size_t index) {
   return *(_particle_container[index]);

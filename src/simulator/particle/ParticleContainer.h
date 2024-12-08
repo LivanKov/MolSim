@@ -27,7 +27,7 @@ struct ParticlePair {
   /**
    * @brief Constructor.
    * @param first Pointer managing an instance of Particle class.
-   * @param secondd Pointer managing an instance of Particle class.
+   * @param second Pointer managing an instance of Particle class.
    */
   ParticlePair(const ParticlePointer first, const ParticlePointer second);
 
@@ -108,7 +108,7 @@ public:
    * @brief Returns the amount of unique particles stored in the container.
    * @return Size_t container size.
    */
-  size_t size();
+  size_t size() const;
 
   /**
    * @brief Returns a Particle object stored at index.
