@@ -65,6 +65,9 @@ SimParams parse(int argc, char **argv, SimParams &parameters) {
     case 'n':
       parameters.disable_output = true;
       break;
+    case 'u':
+      parameters.linked_cells = true;
+      break;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argv[0]);
     }

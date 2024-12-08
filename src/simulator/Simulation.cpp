@@ -50,13 +50,14 @@ void Simulation::run(LinkedCellContainer &particles) {
     writer = std::make_unique<output::VTKWriter>(particles);
   }
 
+  OPTIONS option = params_.linked_cells ? OPTIONS::LINKED_CELLS : OPTIONS::DIRECT_SUM;
+
   while (current_time < params_.end_time) {
 
     // Update particles and handle boundary conditions
     // particles.updateParticles();
     Calculation<Position>::run(particles, params_.time_delta);
-    Calculation<Force>::run(particles, FORCE_TYPE, OPTIONS::LINKED_CELLS);
-    std::cout << "Check" << std::endl;
+    Calculation<Force>::run(particles, FORCE_TYPE, option);
     Calculation<Velocity>::run(particles, params_.time_delta);
 
     iteration++;
