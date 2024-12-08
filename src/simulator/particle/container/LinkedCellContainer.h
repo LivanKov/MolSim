@@ -23,7 +23,7 @@ struct Cell {
  * @brief Class that provides a container for particles that uses linked cells
  * to speed up the computation.Inherits from DirectSumContainer.
  */
-class LinkedCellContainer : public DirectSumContainer {
+class LinkedCellContainer {
   /**
    * @brief Constructor for LinkedCellContainer.
    * @param domain_size The size of the simulation domain (e.g., {x, y, z}
@@ -52,11 +52,11 @@ public:
    * @brief Inserts a particle into the container.
    * @param p The particle to be inserted.
    */
-  void insert(Particle &p) override;
+  void insert(Particle &p);
 
   bool is_within_domain(const std::array<double, 3> &position);
 
-  void clear() override;
+  void clear();
 
   void readjust();
 
@@ -137,10 +137,15 @@ public:
    */
 
   std::vector<Cell> cells;
+  DirectSumContainer particles;
   bool extend_x;
   bool extend_y;
   bool extend_z;
   Logger &logger = Logger::getInstance();
+
+  size_t size();
+
+  Particle& operator[](size_t index);
 
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,

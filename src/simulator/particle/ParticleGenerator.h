@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "container/DirectSumContainer.h"
+#include "container/LinkedCellContainer.h"
 #include <array>
 
 /**
@@ -37,7 +37,7 @@ public:
                            double mass,
                            const std::array<double, 3> &initialVelocity,
                            double averageVelocity,
-                           DirectSumContainer &particles);
+                           LinkedCellContainer &particles);
 
   /**
    * @brief Generate a disc of particles. The disc gets plotted along the
@@ -54,5 +54,5 @@ public:
   static void insertDisc(const std::array<double, 3> &center,
                          const std::array<double, 3> &initialVelocity,
                          size_t radius, double h, double mass,
-                         DirectSumContainer &particles);
+                         LinkedCellContainer &particles);
 };

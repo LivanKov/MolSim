@@ -32,7 +32,7 @@ public:
    * @param particles DirectSumContainer reference, pass the particle container
    * initialized in readFile.
    */
-  void run(DirectSumContainer &particles);
+  void run(LinkedCellContainer &particles);
   /**
    * @brief read file from XML input, initialize particles.
    * @param simParams SimParams reference, pass the initial simulation

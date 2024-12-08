@@ -82,27 +82,16 @@ public:
    * @brief Constructor.
    */
   DirectSumContainer();
-
-  /**
-   * @brief Create a Particle object in-place and insert it into the underlying
-   * containers, allocates place for more pairs.
-   * @param args Particle object constructor arguments.
-   */
-
-  template <typename... Args>
-  requires std::constructible_from<Particle, Args...>
-  void emplace_back(Args... args) {
-    ParticlePointer p = std::make_shared<Particle>(std::forward<Args>(args)...);
-    create_pairs(p);
-    _particle_container.push_back(p);
-  }
   /**
    * @brief Inserts a Particle object into the container. Redirects the call to
    * emplace.
    * @param p Particle object reference.
    */
 
-  virtual void insert(Particle &p);
+  void insert(Particle &p);
+
+
+  void insert(ParticlePointer &p);
 
   /**
    * @brief Returns the amount of unique particles stored in the container.
@@ -120,7 +109,7 @@ public:
   /**
    * @brief Clears the container.
    */
-  virtual void clear();
+  void clear();
 
   /**
    * @brief Iterator interface for the main iterator.

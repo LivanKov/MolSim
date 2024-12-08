@@ -2,7 +2,7 @@
 #define FILEWRITER_H
 
 #include <memory>
-#include "simulator/particle/container/DirectSumContainer.h"
+#include "simulator/particle/container/LinkedCellContainer.h"
 #include <string>
 
 namespace output {
@@ -18,7 +18,7 @@ public:
    * @brief Constructor, should be overriden by the derived classes.
    * @param particles DirectSumContainer reference.
    */
-  FileWriter(DirectSumContainer &particles);
+  FileWriter(LinkedCellContainer &particles);
 
   /**
    * @brief Virtual function to plot particles, should be overriden by the
@@ -31,7 +31,7 @@ public:
   /**
    * @brief DirectSumContainer reference
    */
-  DirectSumContainer &particles;
+  LinkedCellContainer &particles;
 };
 } // namespace output
 #endif

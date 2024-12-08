@@ -3,7 +3,7 @@
  */
 
 #include "ParticleGenerator.h"
-#include "container/DirectSumContainer.h"
+#include "container/LinkedCellContainer.h"
 #include "utils/MaxwellBoltzmannDistribution.h"
 
 #include <random>
@@ -16,7 +16,7 @@ void ParticleGenerator::insertCuboid(
     const std::array<double, 3> &lowerLeftFrontCorner,
     const std::array<size_t, 3> &dimensions, double h, double m,
     const std::array<double, 3> &initialVelocity, double averageVelocity,
-    DirectSumContainer &particles) {
+    LinkedCellContainer &particles) {
   for (size_t i = 0; i < dimensions[2]; ++i) {
     for (size_t j = 0; j < dimensions[1]; ++j) {
       for (size_t k = 0; k < dimensions[0]; ++k) {
@@ -44,7 +44,7 @@ void ParticleGenerator::insertCuboid(
 void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
                                    const std::array<double, 3> &initialVelocity,
                                    size_t radius, double h, double mass,
-                                   DirectSumContainer &particles) {
+                                   LinkedCellContainer &particles) {
 
   // start on the point with the leftest x point then go the rightest x point
   for (double x = center[0] - radius * h; x <= center[0] + radius * h; x += h) {

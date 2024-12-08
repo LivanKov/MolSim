@@ -18,7 +18,7 @@
 
 namespace output {
 
-VTKWriter::VTKWriter(DirectSumContainer &particles) : FileWriter(particles) {}
+VTKWriter::VTKWriter(LinkedCellContainer &particles) : FileWriter(particles) {}
 
 void VTKWriter::plot_particles(const std::string &filename, int iteration) {
   vtkFile = new VTKFile_t("UnstructuredGrid");
@@ -52,7 +52,7 @@ void VTKWriter::plot_particles(const std::string &filename, int iteration) {
   std::stringstream strstr;
   strstr << filename << "/" << out_name << "_" << std::setfill('0')
          << std::setw(4) << iteration << ".vtu";
-  for (auto &p : particles) {
+  for (auto &p : particles.particles) {
     plotParticle(p);
   }
 

@@ -11,7 +11,7 @@ LinkedCellContainer::LinkedCellContainer(
     const DomainBoundaryConditions &boundary_conditions)
     : domain_size_{domain_size}, r_cutoff_{r_cutoff},
       left_corner_coordinates{left_corner_coordinates}, x{0}, y{0}, z{0},
-      boundary_conditions_{boundary_conditions}, DirectSumContainer{} {
+      boundary_conditions_{boundary_conditions}, particles{} {
   if (domain_size.size() != 3 && domain_size.size() != 2) {
     throw std::invalid_argument("Domain size must have 2 or 3 elements");
   }
@@ -41,7 +41,7 @@ LinkedCellContainer::LinkedCellContainer(
 
 LinkedCellContainer::LinkedCellContainer()
     : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0, 0, 0},
-      x{0}, y{0}, z{0}, boundary_conditions_{}, DirectSumContainer{} {}
+      x{0}, y{0}, z{0}, boundary_conditions_{} {}
 
 void LinkedCellContainer::insert(Particle &p) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
@@ -60,8 +60,7 @@ void LinkedCellContainer::insert(Particle &p) {
   } else {
     p_ptr->left_domain = true;
   }
-  create_pairs(p_ptr);
-  _particle_container.push_back(p_ptr);
+  particles.insert(p_ptr);
 }
 
 bool LinkedCellContainer::is_within_domain(
@@ -163,8 +162,7 @@ void LinkedCellContainer::clear() {
   for (size_t i = 0; i < cells.size(); ++i) {
     cells[i].particles.clear();
   }
-  _particle_container.clear();
-  _particle_pair_container.clear();
+  particles.clear();
 }
 
 // needs to find the leftmost and rightmost corner
@@ -248,18 +246,18 @@ void LinkedCellContainer::readjust_coordinates(
 }
 
 void LinkedCellContainer::readjust() {
-  std::array<double, 3> current_low_left = _particle_container[0]->getX();
-  std::array<double, 3> current_up_right = _particle_container[0]->getX();
-  for (auto &p : _particle_container) {
-    if (p->getX()[0] < current_low_left[0] ||
-        p->getX()[1] < current_low_left[1] ||
-        p->getX()[2] < current_low_left[2]) {
-      current_low_left = p->getX();
+  std::array<double, 3> current_low_left = particles[0].getX();
+  std::array<double, 3> current_up_right = particles[0].getX();
+  for (auto &p : particles) {
+    if (p.getX()[0] < current_low_left[0] ||
+        p.getX()[1] < current_low_left[1] ||
+        p.getX()[2] < current_low_left[2]) {
+      current_low_left = p.getX();
     }
-    if (p->getX()[0] > current_up_right[0] ||
-        p->getX()[1] > current_up_right[1] ||
-        p->getX()[2] > current_up_right[2]) {
-      current_up_right = p->getX();
+    if (p.getX()[0] > current_up_right[0] ||
+        p.getX()[1] > current_up_right[1] ||
+        p.getX()[2] > current_up_right[2]) {
+      current_up_right = p.getX();
     }
   }
   logger.debug("Current low left: " + std::to_string(current_low_left[0]) +
@@ -269,10 +267,10 @@ void LinkedCellContainer::readjust() {
                " " + std::to_string(current_up_right[1]) + " " +
                std::to_string(current_up_right[2]));
   readjust_coordinates(current_low_left, current_up_right);
-  auto particles = _particle_container;
+  auto particles_ = particles;
   clear();
-  for (auto &p : particles) {
-    insert(*p);
+  for (auto &p : particles_) {
+    insert(p);
   }
   logger.debug("New low left: " + std::to_string(left_corner_coordinates[0]) +
                " " + std::to_string(left_corner_coordinates[1]) + " " +
@@ -371,4 +369,10 @@ void LinkedCellContainer::updateParticles() {
   }
 
   removeOutflowParticles();
+}
+
+size_t LinkedCellContainer::size() { return particles.size(); }
+
+Particle& LinkedCellContainer::operator[](size_t index) {
+  return particles[index];
 }

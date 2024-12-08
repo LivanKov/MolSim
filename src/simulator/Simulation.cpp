@@ -25,12 +25,11 @@ Simulation::Simulation(SimParams &params) : params_(params) {}
 
 LinkedCellContainer Simulation::readFile(SimParams &params) {
   LinkedCellContainer particles{};
-  // FileReader::readFile(particles, params_.input_path.data());
   XMLReader::readXMLFile(particles, params);
   return particles;
 }
 
-void Simulation::run(DirectSumContainer &particles) {
+void Simulation::run(LinkedCellContainer &particles) {
 
   Logger &logger = Logger::getInstance(params_.log_level);
 
@@ -55,10 +54,10 @@ void Simulation::run(DirectSumContainer &particles) {
 
     // Update particles and handle boundary conditions
     //particles.updateParticles();
-    //Calculation<Position>::run(particles, params_.time_delta);
-    //Calculation<Force>::run(particles, FORCE_TYPE, OPTIONS::LINKED_CELLS);
+    Calculation<Position>::run(particles, params_.time_delta);
+    Calculation<Force>::run(particles, FORCE_TYPE, OPTIONS::LINKED_CELLS);
     std::cout << "Check" << std::endl;
-    //Calculation<Velocity>::run(particles, params_.time_delta);
+    Calculation<Velocity>::run(particles, params_.time_delta);
 
     iteration++;
     if (iteration % params_.write_frequency == 0 && !params_.disable_output) {

@@ -8,7 +8,7 @@
 #pragma once
 
 #include "FileWriter.h"
-#include "simulator/particle/container/DirectSumContainer.h"
+#include "simulator/particle/container/LinkedCellContainer.h"
 
 #include <fstream>
 #include <list>
@@ -18,7 +18,7 @@ namespace output {
 class XYZWriter : public FileWriter {
 
 public:
-  XYZWriter(DirectSumContainer &particles);
+  XYZWriter(LinkedCellContainer &particles);
 
   void plot_particles(const std::string &filename, int iteration) override;
 

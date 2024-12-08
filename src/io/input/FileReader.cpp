@@ -6,7 +6,7 @@
  */
 
 #include "FileReader.h"
-#include "simulator/particle/container/DirectSumContainer.h"
+#include "simulator/particle/container/LinkedCellContainer.h"
 #include "simulator/particle/ParticleGenerator.h"
 
 #include <cstdlib>
@@ -37,7 +37,7 @@ auto containerToString = [](const auto &container) {
   return oss.str();
 };
 
-void FileReader::readFile(DirectSumContainer &particles, char *filename) {
+void FileReader::readFile(LinkedCellContainer &particles, char *filename) {
   std::array<double, 3> x;
   std::array<size_t, 3> mesh;
   double d;
@@ -86,7 +86,8 @@ void FileReader::readFile(DirectSumContainer &particles, char *filename) {
           exit(-1);
         }
         datastream >> m;
-        particles.emplace_back(x, v, m);
+        Particle p(x, v, m);
+        particles.insert(p);
 
         getline(input_file, tmp_string);
         logger.info("Read line: " + tmp_string);
