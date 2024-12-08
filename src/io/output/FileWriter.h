@@ -1,8 +1,8 @@
 #ifndef FILEWRITER_H
 #define FILEWRITER_H
 
-#include <memory>
 #include "simulator/particle/container/LinkedCellContainer.h"
+#include <memory>
 #include <string>
 
 namespace output {

@@ -1,8 +1,8 @@
 #include "XMLReader.h"
 #include "MolSim.hxx"
 #include "cli/SimParams.h"
-#include "simulator/particle/container/LinkedCellContainer.h"
 #include "simulator/particle/ParticleGenerator.h"
+#include "simulator/particle/container/LinkedCellContainer.h"
 #include "utils/logger/Logger.h"
 
 #include <cstdlib>

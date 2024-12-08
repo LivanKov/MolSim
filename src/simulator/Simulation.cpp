@@ -4,8 +4,8 @@
 #include "io/output/FileWriter.h"
 #include "io/output/VTKWriter.h"
 #include "io/output/XYZWriter.h"
-#include "particle/container/DirectSumContainer.h"
 #include "particle/ParticleGenerator.h"
+#include "particle/container/DirectSumContainer.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"
 #include "simulator/calculations/Position.h"
@@ -53,7 +53,7 @@ void Simulation::run(LinkedCellContainer &particles) {
   while (current_time < params_.end_time) {
 
     // Update particles and handle boundary conditions
-    //particles.updateParticles();
+    // particles.updateParticles();
     Calculation<Position>::run(particles, params_.time_delta);
     Calculation<Force>::run(particles, FORCE_TYPE, OPTIONS::LINKED_CELLS);
     std::cout << "Check" << std::endl;

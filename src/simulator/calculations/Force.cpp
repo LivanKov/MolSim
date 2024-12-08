@@ -22,7 +22,8 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       p.updateF(0, 0, 0);
     }
 
-    for (auto it = particles.particles.pair_begin(); it != particles.particles.pair_end(); ++it) {
+    for (auto it = particles.particles.pair_begin();
+         it != particles.particles.pair_end(); ++it) {
       auto r12 = it->second->getX() - it->first->getX();
       double distance = ArrayUtils::L2Norm(r12);
 
@@ -73,7 +74,8 @@ void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
     }
 
     // Iterate each pair
-    for (auto it = particles.particles.pair_begin(); it != particles.particles.pair_end(); ++it) {
+    for (auto it = particles.particles.pair_begin();
+         it != particles.particles.pair_end(); ++it) {
       ParticlePair &pair = *it;
       Particle &p1 = *(pair.first);
       Particle &p2 = *(pair.second);

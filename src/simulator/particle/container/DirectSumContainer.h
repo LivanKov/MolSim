@@ -90,7 +90,6 @@ public:
 
   void insert(Particle &p);
 
-
   void insert(ParticlePointer &p);
 
   /**

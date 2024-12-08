@@ -145,7 +145,7 @@ public:
 
   size_t size();
 
-  Particle& operator[](size_t index);
+  Particle &operator[](size_t index);
 
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,

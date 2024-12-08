@@ -28,13 +28,13 @@ std::string ParticlePair::toString() const {
 DirectSumContainer::DirectSumContainer()
     : _particle_container{}, _particle_pair_container{} {}
 
-void DirectSumContainer::insert(Particle &p) { 
+void DirectSumContainer::insert(Particle &p) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
   _particle_container.push_back(p_ptr);
   create_pairs(p_ptr);
- }
+}
 
-void DirectSumContainer::insert(ParticlePointer& p) {
+void DirectSumContainer::insert(ParticlePointer &p) {
   _particle_container.push_back(p);
   create_pairs(p);
 }

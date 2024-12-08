@@ -1,5 +1,5 @@
-#include "../particle/container/LinkedCellContainer.h"
 #include "../particle/container/DirectSumContainer.h"
+#include "../particle/container/LinkedCellContainer.h"
 #include "Calculation.h"
 
 #define EPSILON 5.0
