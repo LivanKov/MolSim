@@ -290,7 +290,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
       position[0] = 2 * left_corner_coordinates[0] - position[0];
       velocity[0] = -velocity[0];
     } else if (boundary_conditions_.left == BoundaryCondition::Outflow) {
-      p.markForRemoval();
+      p.left_domain = true;
     }
   }
 
@@ -301,7 +301,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
           2 * (left_corner_coordinates[0] + domain_size_[0]) - position[0];
       velocity[0] = -velocity[0];
     } else if (boundary_conditions_.right == BoundaryCondition::Outflow) {
-      p.markForRemoval();
+      p.left_domain = true;
     }
   }
 
@@ -311,7 +311,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
       position[1] = 2 * left_corner_coordinates[1] - position[1];
       velocity[1] = -velocity[1];
     } else if (boundary_conditions_.bottom == BoundaryCondition::Outflow) {
-      p.markForRemoval();
+      p.left_domain = true;
     }
   }
 
@@ -322,7 +322,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
           2 * (left_corner_coordinates[1] + domain_size_[1]) - position[1];
       velocity[1] = -velocity[1];
     } else if (boundary_conditions_.top == BoundaryCondition::Outflow) {
-      p.markForRemoval();
+      p.left_domain = true;
     }
   }
 
@@ -333,7 +333,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
         position[2] = 2 * left_corner_coordinates[2] - position[2];
         velocity[2] = -velocity[2];
       } else if (boundary_conditions_.front == BoundaryCondition::Outflow) {
-        p.markForRemoval();
+        p.left_domain = true;
       }
     }
     // Back boundary
@@ -343,7 +343,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
             2 * (left_corner_coordinates[2] + domain_size_[2]) - position[2];
         velocity[2] = -velocity[2];
       } else if (boundary_conditions_.back == BoundaryCondition::Outflow) {
-        p.markForRemoval();
+        p.left_domain = true;
       }
     }
   }
@@ -358,7 +358,7 @@ void LinkedCellContainer::removeOutflowParticles() {
     cell.particles.erase(std::remove_if(cell.particles.begin(),
                                         cell.particles.end(),
                                         [](const ParticlePointer &p) {
-                                          return p->isMarkedForRemoval();
+                                          return p->left_domain;
                                         }),
                          cell.particles.end());
   }

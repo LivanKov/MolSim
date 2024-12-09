@@ -212,20 +212,6 @@ public:
    */
 
   bool left_domain;
-
-  /**
-   * @brief Marks the particle for removal from the container.
-   *
-   * This method sets an internal flag indicating that the particle is scheduled
-   * for removal.
-   */
-  void markForRemoval() { marked_for_removal = true; }
-
-  /**
-   * @brief Checks if the particle is marked for removal.
-   * @return True if the particle is marked for removal, otherwise false.
-   */
-  bool isMarkedForRemoval() const { return marked_for_removal; }
 };
 
 /**

@@ -39,7 +39,7 @@ TEST_F(BoundaryConditionsTest, OutflowBoundary) {
   container.handleBoundaryConditions(p);
 
   // Particle should be marked for removal
-  EXPECT_TRUE(p.isMarkedForRemoval());
+  EXPECT_TRUE(p.left_domain);
 }
 
 // Test that particles reflect correctly off the bottom boundary and crossing the top boundary are marked for removal
@@ -76,7 +76,7 @@ TEST_F(BoundaryConditionsTest, NoBoundaryViolation) {
   EXPECT_NEAR(p.getX()[1], 5.0, 1e-6);
   EXPECT_NEAR(p.getV()[0], 0.0, 1e-6);
   EXPECT_NEAR(p.getV()[1], 0.0, 1e-6);
-  EXPECT_FALSE(p.isMarkedForRemoval());
+  EXPECT_FALSE(p.left_domain);
 }
 
 TEST_F(BoundaryConditionsTest, CornerCrossing) {
