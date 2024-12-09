@@ -195,28 +195,33 @@ TEST_F(LinkedCellTest, UnevenDomainTest){
 
     // check that the particle is placed in the correct cell. Seems wrong fix later pls
     EXPECT_EQ(uneven_container.cells[3].size(), 1);
-    //EXPECT_TRUE(uneven_container.cells[3].size() == 0);
+    
+    for(size_t i = 0; i < 64; ++i){
+        if(i != 3){
+            EXPECT_EQ(uneven_container.cells[i].size(), 0);
+        }
+    }
 
     //insert another particle
 
-    /*Particle p_2(std::array<double, 3>{1.0, 7.5, 1.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
+    Particle p_2(std::array<double, 3>{1.0, 7.5, 1.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
     uneven_container.insert(p_2, true);
     
     EXPECT_TRUE(uneven_container.size() == 2);
 
-    EXPECT_EQ(uneven_container.cells[15].size(), 1);
+    EXPECT_EQ(uneven_container.cells[12].size(), 1);
 
     //move the particle, ensure it is removed from the old cell and inserted into the new cell
 
     std::array<double, 3>old_position = p_2.getX();
 
-    uneven_container.cells[15][0]->updateX(1.0, 8.3, 1.0);
-    uneven_container.update_particle_location(uneven_container.cells[15][0], old_position);
+    uneven_container.cells[12][0]->updateX(2.26, 8.3, 1.0);
+    uneven_container.update_particle_location(uneven_container.cells[12][0], old_position);
 
     EXPECT_TRUE(uneven_container.size() == 2);
 
-    EXPECT_EQ(uneven_container.cells[15].size(), 0);
-    EXPECT_EQ(uneven_container.cells[20].size(), 1);*/
+    EXPECT_EQ(uneven_container.cells[12].size(), 0);
+    EXPECT_EQ(uneven_container.cells[13].size(), 1);
 
 }
 
