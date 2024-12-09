@@ -231,18 +231,18 @@ TEST_F(LinkedCellTest, RepositioningTest){
     ParticleGenerator::insertCuboid(std::array<double, 3>{5.0, 5.0, 0.0}, std::array<size_t, 3>{2, 2, 1}, 2.0, 1.0, std::array<double,3>{0.0, 0.0, 0.0}, 0.0, container);
     
     EXPECT_TRUE(container.size() == 4);
-
-    container.readjust();
-
-    EXPECT_TRUE(container.size() == 4);
-
+    
     EXPECT_EQ(container.cells[0].size(), 0);
     EXPECT_EQ(container.cells[1].size(), 0);
     EXPECT_EQ(container.cells[2].size(), 0);
     EXPECT_EQ(container.cells[3].size(), 0);
-    //EXPECT_EQ(container.cells[4].size(), 0);
-    //EXPECT_EQ(container.cells[5].size(), 0);
-    //EXPECT_EQ(container.cells[6].size(), 0);
-    //EXPECT_EQ(container.cells[7].size(), 0);
-    //EXPECT_EQ(container.cells[8].size(), 0);
+    EXPECT_EQ(container.cells[4].size(), 4);
+    EXPECT_EQ(container.cells[5].size(), 0);
+    EXPECT_EQ(container.cells[6].size(), 0);
+    EXPECT_EQ(container.cells[7].size(), 0);
+    EXPECT_EQ(container.cells[8].size(), 0);
+
+    EXPECT_EQ(container.left_corner_coordinates[0], 1.5);
+    EXPECT_EQ(container.left_corner_coordinates[1], 1.5);
+    EXPECT_EQ(container.left_corner_coordinates[2], 1.5);
 }
