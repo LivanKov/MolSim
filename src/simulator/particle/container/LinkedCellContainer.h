@@ -38,7 +38,6 @@ class LinkedCellContainer {
 public:
   LinkedCellContainer(
       std::initializer_list<double> domain_size, double r_cutoff,
-      std::initializer_list<double> left_corner_coordinates,
       const DomainBoundaryConditions &boundary_conditions = {
           BoundaryCondition::Outflow, BoundaryCondition::Outflow,
           BoundaryCondition::Outflow, BoundaryCondition::Outflow,

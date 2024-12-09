@@ -7,10 +7,9 @@ ParticlePointer Cell::operator[](size_t index) { return particles[index]; }
 
 LinkedCellContainer::LinkedCellContainer(
     std::initializer_list<double> domain_size, double r_cutoff,
-    std::initializer_list<double> left_corner_coordinates,
     const DomainBoundaryConditions &boundary_conditions)
     : domain_size_{domain_size}, r_cutoff_{r_cutoff},
-      left_corner_coordinates{left_corner_coordinates}, x{0}, y{0}, z{0},
+      left_corner_coordinates{0.0, 0.0, 0.0}, x{0}, y{0}, z{0},
       boundary_conditions_{boundary_conditions}, particles{} {
   if (domain_size.size() != 3 && domain_size.size() != 2) {
     throw std::invalid_argument("Domain size must have 2 or 3 elements");

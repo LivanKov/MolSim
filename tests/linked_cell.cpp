@@ -10,7 +10,7 @@
 
 class LinkedCellTest : public ::testing::Test {
 protected:
-    LinkedCellTest() : container{{9.0,9.0}, 3.0, {0.0, 0.0, 0.0}}, container_3d{{9.0, 9.0, 9.0}, 3.0, {0.0, 0.0, 0.0}}, uneven_container{{9.0,9.0,8.0}, 2.0, {0.0, 0.0, 0.0}} {}
+    LinkedCellTest() : container{{9.0,9.0}, 3.0}, container_3d{{9.0, 9.0, 9.0}, 3.0}, uneven_container{{9.0,9.0,8.0}, 2.0} {}
     Logger &logger = Logger::getInstance("debug");
     LinkedCellContainer container;
     LinkedCellContainer container_3d;
@@ -18,7 +18,7 @@ protected:
 };
 
 
-/*TEST_F(LinkedCellTest, LocationTest) {
+TEST_F(LinkedCellTest, LocationTest) {
     for(size_t i = 0; i < container.cells.size(); ++i){
         EXPECT_EQ(container.cells[i].size(), 0);
     }
@@ -213,7 +213,7 @@ TEST_F(LinkedCellTest, UnevenDomainTest){
     EXPECT_EQ(uneven_container.cells[15].size(), 0);
     EXPECT_EQ(uneven_container.cells[20].size(), 1);
 
-}*/
+}
 
 
 TEST_F(LinkedCellTest, RepositioningTest){

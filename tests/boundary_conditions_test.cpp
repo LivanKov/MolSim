@@ -7,7 +7,7 @@ protected:
   LinkedCellContainer container;
 
   BoundaryConditionsTest()
-      : container({10.0, 10.0}, 1.0, {0.0, 0.0},
+      : container({10.0, 10.0}, 1.0,
                   {BoundaryCondition::Reflecting, // Left
                    BoundaryCondition::Outflow,    // Right
                    BoundaryCondition::Outflow, // Top
@@ -91,7 +91,7 @@ TEST_F(BoundaryConditionsTest, CornerCrossing) {
       BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
       BoundaryCondition::Reflecting, BoundaryCondition::Reflecting};
 
-  LinkedCellContainer container(domain_size, cutoff_radius, left_corner,
+  LinkedCellContainer container(domain_size, cutoff_radius,
                                 boundary_conditions);
 
   // Create a particle near the corner
