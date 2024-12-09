@@ -78,13 +78,13 @@ void LinkedCellContainer::update_particle_location(
     ParticlePointer p, const std::array<double, 3> &old_position) {
   if (is_within_domain(old_position)) {
     size_t i = static_cast<size_t>(
-        (old_position[0] - left_corner_coordinates[0]) / r_cutoff_);
+        (old_position[0] - left_corner_coordinates[0]) / r_cutoff_x);
     size_t j = static_cast<size_t>(
-        (old_position[1] - left_corner_coordinates[1]) / r_cutoff_);
+        (old_position[1] - left_corner_coordinates[1]) / r_cutoff_y);
     size_t k =
         domain_size_.size() == 3
             ? static_cast<size_t>(
-                  (old_position[2] - left_corner_coordinates[2]) / r_cutoff_)
+                  (old_position[2] - left_corner_coordinates[2]) / r_cutoff_z)
             : 0;
     size_t old_index = i + j * x + k * x * y;
     cells[old_index].particles.erase(
@@ -94,13 +94,13 @@ void LinkedCellContainer::update_particle_location(
   }
   if (is_within_domain(p->getX())) {
     size_t i = static_cast<size_t>((p->getX()[0] - left_corner_coordinates[0]) /
-                                   r_cutoff_);
+                                   r_cutoff_x);
     size_t j = static_cast<size_t>((p->getX()[1] - left_corner_coordinates[1]) /
-                                   r_cutoff_);
+                                   r_cutoff_y);
     size_t k =
         domain_size_.size() == 3
             ? static_cast<size_t>((p->getX()[2] - left_corner_coordinates[2]) /
-                                  r_cutoff_)
+                                  r_cutoff_z)
             : 0;
     size_t index = i + j * x + k * x * y;
     cells[index].particles.push_back(p);
@@ -114,12 +114,12 @@ Cell &LinkedCellContainer::get_cell(size_t index) { return cells[index]; }
 std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
   std::array<double, 3> position = p.getX();
   size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) /
-                                 r_cutoff_);
+                                 r_cutoff_x);
   size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) /
-                                 r_cutoff_);
+                                 r_cutoff_y);
   size_t k = domain_size_.size() == 3
                  ? static_cast<size_t>(
-                       (position[2] - left_corner_coordinates[2]) / r_cutoff_)
+                       (position[2] - left_corner_coordinates[2]) / r_cutoff_z)
                  : 0;
 
   int index = i + j * x + k * x * y;
