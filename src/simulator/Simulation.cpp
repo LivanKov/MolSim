@@ -56,7 +56,7 @@ void Simulation::run(LinkedCellContainer &particles) {
 
     // Update particles and handle boundary conditions
     // particles.updateParticles();
-    Calculation<Position>::run(particles, params_.time_delta);
+    Calculation<Position>::run(particles, params_.time_delta, option);
     Calculation<Force>::run(particles, FORCE_TYPE, option);
     Calculation<Velocity>::run(particles, params_.time_delta);
 
