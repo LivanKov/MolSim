@@ -21,13 +21,13 @@ LinkedCellContainer::LinkedCellContainer(
   double remainder_z =
       domain_size.size() == 3 ? std::fmod(domain_size_[2], r_cutoff) : 0.0;
   if (std::abs(remainder_x) > DIVISION_TOLERANCE)
-    r_cutoff_x = remainder_x/(domain_size_[0]/r_cutoff);
+    r_cutoff_x += remainder_x/(std::floor(domain_size_[0]/r_cutoff));
   
   if (std::abs(remainder_y) > DIVISION_TOLERANCE)
-    r_cutoff_y = remainder_y/(domain_size_[1]/r_cutoff);
+    r_cutoff_y += remainder_y/(std::floor(domain_size_[1]/r_cutoff));
 
   if (std::abs(remainder_z) > DIVISION_TOLERANCE)
-    r_cutoff_z = remainder_z/(domain_size_[1]/r_cutoff);
+    r_cutoff_z += remainder_z/(std::floor(domain_size_[1]/r_cutoff));
 
   // TODO rework this
   x = static_cast<size_t>(domain_size_[0] / r_cutoff);
