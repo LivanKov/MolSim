@@ -31,7 +31,7 @@ TEST_F(LinkedCellTest, LocationTest) {
     Particle p1(std::array<double, 3>{5.0, 4.0, 0.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
 
     container.insert(p1, true);
-    EXPECT_TRUE(container.domain_size_.size() == 2);
+    EXPECT_TRUE(container.domain_size_.size() == 3);
 
     EXPECT_TRUE(container.is_within_domain(p1.getX()));
 
@@ -242,7 +242,9 @@ TEST_F(LinkedCellTest, RepositioningTest){
     EXPECT_EQ(container.cells[7].size(), 0);
     EXPECT_EQ(container.cells[8].size(), 0);
 
+    EXPECT_EQ(container.domain_size_.size(), 3);
+
     EXPECT_EQ(container.left_corner_coordinates[0], 1.5);
     EXPECT_EQ(container.left_corner_coordinates[1], 1.5);
-    EXPECT_EQ(container.left_corner_coordinates[2], 1.5);
+    EXPECT_EQ(container.left_corner_coordinates[2], -1.5);
 }

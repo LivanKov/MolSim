@@ -102,7 +102,7 @@ public:
   /**
    * @brief The size of the simulation domain.
    */
-  const std::vector<double> domain_size_;
+  std::vector<double> domain_size_;
 
   /**
    * @brief The coordinates of the domain's lower left corner.
