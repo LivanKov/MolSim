@@ -137,9 +137,9 @@ public:
 
   std::vector<Cell> cells;
   DirectSumContainer particles;
-  bool extend_x;
-  bool extend_y;
-  bool extend_z;
+  double r_cutoff_x;
+  double r_cutoff_y;
+  double r_cutoff_z;
   Logger &logger = Logger::getInstance();
 
   size_t size();

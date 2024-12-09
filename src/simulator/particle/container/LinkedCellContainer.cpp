@@ -9,6 +9,7 @@ LinkedCellContainer::LinkedCellContainer(
     std::initializer_list<double> domain_size, double r_cutoff,
     const DomainBoundaryConditions &boundary_conditions)
     : domain_size_{domain_size}, r_cutoff_{r_cutoff},
+      r_cutoff_x{r_cutoff}, r_cutoff_y{r_cutoff}, r_cutoff_z{r_cutoff},
       left_corner_coordinates{0.0, 0.0, 0.0}, x{0}, y{0}, z{0},
       boundary_conditions_{boundary_conditions}, particles{} {
   if (domain_size.size() != 3 && domain_size.size() != 2) {
@@ -20,26 +21,25 @@ LinkedCellContainer::LinkedCellContainer(
   double remainder_z =
       domain_size.size() == 3 ? std::fmod(domain_size_[2], r_cutoff) : 0.0;
   if (std::abs(remainder_x) > DIVISION_TOLERANCE)
-    extend_x = true;
-
+    r_cutoff_x = remainder_x/(domain_size_[0]/r_cutoff);
+  
   if (std::abs(remainder_y) > DIVISION_TOLERANCE)
-    extend_y = true;
+    r_cutoff_y = remainder_y/(domain_size_[1]/r_cutoff);
 
   if (std::abs(remainder_z) > DIVISION_TOLERANCE)
-    extend_z = true;
+    r_cutoff_z = remainder_z/(domain_size_[1]/r_cutoff);
 
   // TODO rework this
-  x = static_cast<size_t>(domain_size_[0] / r_cutoff) + (extend_x ? 1 : 0);
-  y = static_cast<size_t>(domain_size_[1] / r_cutoff) + (extend_y ? 1 : 0);
+  x = static_cast<size_t>(domain_size_[0] / r_cutoff);
+  y = static_cast<size_t>(domain_size_[1] / r_cutoff);
   z = domain_size.size() == 3
-          ? (static_cast<size_t>((domain_size_[2] / r_cutoff)) +
-             (extend_z ? 1 : 0))
+          ? (static_cast<size_t>((domain_size_[2] / r_cutoff)))
           : 1;
   cells = std::vector<Cell>(x * y * z, Cell());
 }
 
 LinkedCellContainer::LinkedCellContainer()
-    : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0, 0, 0},
+    : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0.0, 0.0, 0.0},
       x{0}, y{0}, z{0}, boundary_conditions_{} {}
 
 void LinkedCellContainer::insert(Particle &p) {
