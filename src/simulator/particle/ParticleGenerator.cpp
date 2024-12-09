@@ -38,6 +38,7 @@ void ParticleGenerator::insertCuboid(
       }
     }
   }
+  particles.readjust();
   Logger::getInstance().info("New cuboid generated");
 }
 
@@ -71,5 +72,6 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
       }
     }
   }
+  particles.readjust();
   Logger::getInstance().info("New disk generated");
 }
