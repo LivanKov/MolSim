@@ -47,12 +47,12 @@ void LinkedCellContainer::insert(Particle &p, bool placement) {
   if (placement && is_within_domain(p_ptr->getX())) {
     std::array<double, 3> position = p.getX();
     size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) /
-                                   r_cutoff_);
+                                   r_cutoff_x);
     size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) /
-                                   r_cutoff_);
+                                   r_cutoff_y);
     size_t k = domain_size_.size() == 3
                    ? static_cast<size_t>(
-                         (position[2] - left_corner_coordinates[2]) / r_cutoff_)
+                         (position[2] - left_corner_coordinates[2]) / r_cutoff_z)
                    : 0;
     size_t index = i + j * x + k * x * y;
     cells[index].particles.push_back(p_ptr);
@@ -71,7 +71,7 @@ bool LinkedCellContainer::is_within_domain(
          position[2] >= left_corner_coordinates[2] &&
          (domain_size_.size() == 3
               ? position[2] < left_corner_coordinates[2] + domain_size_[2]
-              : position[2] < left_corner_coordinates[2] + r_cutoff_);
+              : position[2] < left_corner_coordinates[2] + r_cutoff_z);
 }
 
 void LinkedCellContainer::update_particle_location(

@@ -189,19 +189,17 @@ TEST_F(LinkedCellTest, UnevenDomainTest){
 
     EXPECT_TRUE(uneven_container.size() == 1);
 
-    EXPECT_EQ(std::fmod(9.0,2.0), 1.0);
-
     EXPECT_EQ(uneven_container.r_cutoff_x, 2.25);
     EXPECT_EQ(uneven_container.r_cutoff_y, 2.25);
     EXPECT_EQ(uneven_container.r_cutoff_z, 2.0);
 
     // check that the particle is placed in the correct cell. Seems wrong fix later pls
-    /*EXPECT_TRUE(uneven_container.cells[4].size() == 1);
-    EXPECT_TRUE(uneven_container.cells[3].size() == 0);
+    EXPECT_EQ(uneven_container.cells[3].size(), 1);
+    //EXPECT_TRUE(uneven_container.cells[3].size() == 0);
 
     //insert another particle
 
-    Particle p_2(std::array<double, 3>{1.0, 7.5, 1.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
+    /*Particle p_2(std::array<double, 3>{1.0, 7.5, 1.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
     uneven_container.insert(p_2, true);
     
     EXPECT_TRUE(uneven_container.size() == 2);
