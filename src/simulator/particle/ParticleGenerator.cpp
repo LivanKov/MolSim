@@ -33,7 +33,7 @@ void ParticleGenerator::insertCuboid(
 
         Particle particle(position, velocity, m, 0);
         Logger::getInstance().trace("New Particle generated");
-        particles.insert(particle);
+        particles.insert(particle, false);
         Logger::getInstance().trace("New Particle inserted into container");
       }
     }
@@ -66,7 +66,7 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
 
         Particle particle(position, velocity, mass, 0);
         Logger::getInstance().trace("New Particle generated");
-        particles.insert(particle);
+        particles.insert(particle, false);
         Logger::getInstance().trace("New Particle inserted into container");
       }
     }

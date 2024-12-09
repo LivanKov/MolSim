@@ -42,9 +42,9 @@ LinkedCellContainer::LinkedCellContainer()
     : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0.0, 0.0, 0.0},
       x{0}, y{0}, z{0}, boundary_conditions_{} {}
 
-void LinkedCellContainer::insert(Particle &p) {
+void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
-  if (is_within_domain(p_ptr->getX())) {
+  if (placement && is_within_domain(p_ptr->getX())) {
     std::array<double, 3> position = p.getX();
     size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) /
                                    r_cutoff_);
@@ -56,7 +56,7 @@ void LinkedCellContainer::insert(Particle &p) {
                    : 0;
     size_t index = i + j * x + k * x * y;
     cells[index].particles.push_back(p_ptr);
-  } else {
+  } else if(!is_within_domain(p_ptr->getX())) {
     p_ptr->left_domain = true;
   }
   particles.insert(p_ptr);
@@ -183,7 +183,7 @@ void LinkedCellContainer::reinitialize(DirectSumContainer &container) {
   }
   readjust_coordinates(current_low_left, current_up_right);
   for (auto &p : container) {
-    insert(p);
+    insert(p, true);
   }
 }
 
@@ -205,7 +205,7 @@ void LinkedCellContainer::reinitialize(std::vector<Particle> &particles) {
   }
   readjust_coordinates(current_low_left, current_up_right);
   for (auto &p : particles) {
-    insert(p);
+    insert(p, true);
   }
 }
 
@@ -228,7 +228,7 @@ void LinkedCellContainer::reinitialize(
   }
   readjust_coordinates(current_low_left, current_up_right);
   for (auto &p : particles) {
-    insert(*p);
+    insert(*p, true);
   }
 }
 
@@ -269,7 +269,7 @@ void LinkedCellContainer::readjust() {
   auto particles_ = particles;
   clear();
   for (auto &p : particles_) {
-    insert(p);
+    insert(p, true);
   }
   logger.debug("New low left: " + std::to_string(left_corner_coordinates[0]) +
                " " + std::to_string(left_corner_coordinates[1]) + " " +

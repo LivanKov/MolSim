@@ -87,7 +87,7 @@ void FileReader::readFile(LinkedCellContainer &particles, char *filename) {
         }
         datastream >> m;
         Particle p(x, v, m);
-        particles.insert(p);
+        particles.insert(p,false);
 
         getline(input_file, tmp_string);
         logger.info("Read line: " + tmp_string);

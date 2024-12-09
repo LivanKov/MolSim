@@ -21,7 +21,7 @@ protected:
 TEST_F(BoundaryConditionsTest, ReflectingBoundary) {
   // Particle heading towards the left boundary
   Particle p({-0.5, 5.0, 0.0}, {-1.0, 0.0, 0.0}, 1.0);
-  container.insert(p);
+  container.insert(p, true);
 
   container.handleBoundaryConditions(p);
 
@@ -34,7 +34,7 @@ TEST_F(BoundaryConditionsTest, ReflectingBoundary) {
 TEST_F(BoundaryConditionsTest, OutflowBoundary) {
   // Particle exiting the right boundary
   Particle p({10.5, 5.0, 0.0}, {1.0, 0.0, 0.0}, 1.0);
-  container.insert(p);
+  container.insert(p, true);
 
   container.handleBoundaryConditions(p);
 
@@ -46,11 +46,11 @@ TEST_F(BoundaryConditionsTest, OutflowBoundary) {
 TEST_F(BoundaryConditionsTest, BottomReflectingTopOutflow) {
   // Particle heading towards the bottom (reflecting)
   Particle p_bottom({5.0, -0.5, 0.0}, {0.0, -1.0, 0.0}, 1.0);
-  container.insert(p_bottom);
+  container.insert(p_bottom, true);
 
   // Particle heading towards the top (outflow)
   Particle p_top({5.0, 10.5, 0.0}, {0.0, 1.0, 0.0}, 1.0);
-  container.insert(p_top);
+  container.insert(p_top, true);
 
   container.handleBoundaryConditions(p_bottom);
   // container.handleBoundaryConditions(p_top);
@@ -67,7 +67,7 @@ TEST_F(BoundaryConditionsTest, BottomReflectingTopOutflow) {
 TEST_F(BoundaryConditionsTest, NoBoundaryViolation) {
   // Particle within the domain
   Particle p({5.0, 5.0, 0.0}, {0.0, 0.0, 0.0}, 1.0);
-  container.insert(p);
+  container.insert(p, true);
 
   container.handleBoundaryConditions(p);
 

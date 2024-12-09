@@ -51,7 +51,7 @@ public:
    * @brief Inserts a particle into the container.
    * @param p The particle to be inserted.
    */
-  void insert(Particle &p);
+  void insert(Particle &p, bool placement = false);
 
   bool is_within_domain(const std::array<double, 3> &position);
 

@@ -29,7 +29,7 @@ TEST_F(LinkedCellTest, LocationTest) {
 
     Particle p1(std::array<double, 3>{5.0, 4.0, 0.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
 
-    container.insert(p1);
+    container.insert(p1, true);
     EXPECT_TRUE(container.domain_size_.size() == 2);
 
     EXPECT_TRUE(container.is_within_domain(p1.getX()));
@@ -182,7 +182,7 @@ TEST_F(LinkedCellTest, UnevenDomainTest){
     EXPECT_TRUE(uneven_container.cells.size() == 100);
 
     Particle p(std::array<double, 3>{8.1, 1.0, 1.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
-    uneven_container.insert(p);
+    uneven_container.insert(p, true);
 
     EXPECT_TRUE(uneven_container.is_within_domain(std::array<double,3>{8.5, 1.0, 1.0}));
 
@@ -195,7 +195,7 @@ TEST_F(LinkedCellTest, UnevenDomainTest){
     //insert another particle
 
     Particle p_2(std::array<double, 3>{1.0, 7.5, 1.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
-    uneven_container.insert(p_2);
+    uneven_container.insert(p_2, true);
     
     EXPECT_TRUE(uneven_container.size() == 2);
 
