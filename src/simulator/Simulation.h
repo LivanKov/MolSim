@@ -5,6 +5,18 @@
 
 #pragma once
 
+
+/** 
+ * @brief Global variables for particle tracking.
+ * @particles_left_domain: Number of particles left in the domain.
+ * @particle_id: Particle ID.
+*/
+  
+namespace {
+  static size_t particles_left_domain = 0;
+  static size_t particle_id = 0;
+}
+
 /**
  * @class Simulation
  * @brief Main simulation class, provides an interface to run the simulation.
