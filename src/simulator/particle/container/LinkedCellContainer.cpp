@@ -1,5 +1,6 @@
 #include "LinkedCellContainer.h"
 #include <cmath>
+#include "../../Simulation.h"
 
 size_t Cell::size() const { return particles.size(); }
 
@@ -62,6 +63,7 @@ void LinkedCellContainer::insert(Particle &p, bool placement) {
     cells[index].particles.push_back(p_ptr);
   } else if(!is_within_domain(p_ptr->getX())) {
     p_ptr->left_domain = true;
+    particles_left_domain++;
   }
   particles.insert(p_ptr);
 }
@@ -110,6 +112,7 @@ void LinkedCellContainer::update_particle_location(
     cells[index].particles.push_back(p);
   } else {
     p->left_domain = true;
+    particles_left_domain++;
   }
 }
 
@@ -296,6 +299,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
       velocity[0] = -velocity[0];
     } else if (boundary_conditions_.left == BoundaryCondition::Outflow) {
       p.left_domain = true;
+      particles_left_domain++;
     }
   }
 
@@ -307,6 +311,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
       velocity[0] = -velocity[0];
     } else if (boundary_conditions_.right == BoundaryCondition::Outflow) {
       p.left_domain = true;
+      particles_left_domain++;
     }
   }
 
@@ -317,6 +322,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
       velocity[1] = -velocity[1];
     } else if (boundary_conditions_.bottom == BoundaryCondition::Outflow) {
       p.left_domain = true;
+      particles_left_domain++;
     }
   }
 
@@ -328,6 +334,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
       velocity[1] = -velocity[1];
     } else if (boundary_conditions_.top == BoundaryCondition::Outflow) {
       p.left_domain = true;
+      particles_left_domain++;
     }
   }
 
@@ -339,6 +346,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
         velocity[2] = -velocity[2];
       } else if (boundary_conditions_.front == BoundaryCondition::Outflow) {
         p.left_domain = true;
+        particles_left_domain++;
       }
     }
     // Back boundary
@@ -349,6 +357,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
         velocity[2] = -velocity[2];
       } else if (boundary_conditions_.back == BoundaryCondition::Outflow) {
         p.left_domain = true;
+        particles_left_domain++;
       }
     }
   }

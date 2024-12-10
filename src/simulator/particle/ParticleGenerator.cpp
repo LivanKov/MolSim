@@ -5,7 +5,7 @@
 #include "ParticleGenerator.h"
 #include "container/LinkedCellContainer.h"
 #include "utils/MaxwellBoltzmannDistribution.h"
-#include "Simulation.h"
+#include "../Simulation.h"
 
 #include <random>
 
@@ -66,7 +66,7 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
         std::array position = {x, y, z};
         std::array<double, 3> velocity = initialVelocity;
 
-        Particle particle(position, velocity, mass, 0);
+        Particle particle(position, velocity, mass, particle_id++);
         Logger::getInstance().trace("New Particle generated");
         particles.insert(particle, true);
         Logger::getInstance().trace("New Particle inserted into container");
@@ -76,3 +76,5 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
   particles.readjust();
   Logger::getInstance().info("New disk generated");
 }
+
+
