@@ -127,7 +127,12 @@ std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
                  : 0;
 
   int index = i + j * x + k * x * y;
-  std::vector<ParticlePointer> neighbours(cells[index].particles);
+  std::vector<ParticlePointer> neighbours{};
+  for(auto &s : cells[index].particles){
+    if(*s != p){
+      neighbours.push_back(s);
+    }
+  }
 
   int X = static_cast<int>(x);
   int Y = static_cast<int>(y);

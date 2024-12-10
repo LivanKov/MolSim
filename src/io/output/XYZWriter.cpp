@@ -27,9 +27,6 @@ void XYZWriter::plot_particles(const std::string &filename, int iteration) {
        << std::endl;
 
   for (auto &p : particles.particles) {
-    if(p.left_domain){
-      continue;
-    }
     std::array<double, 3> x = p.getX();
     file << "Ar ";
     file.setf(std::ios_base::showpoint);

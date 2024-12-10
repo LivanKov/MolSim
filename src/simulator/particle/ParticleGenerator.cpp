@@ -5,6 +5,7 @@
 #include "ParticleGenerator.h"
 #include "container/LinkedCellContainer.h"
 #include "utils/MaxwellBoltzmannDistribution.h"
+#include "Simulation.h"
 
 #include <random>
 
@@ -31,7 +32,7 @@ void ParticleGenerator::insertCuboid(
           velocity[dim] += randomVelocity[dim];
         }
 
-        Particle particle(position, velocity, m, 0);
+        Particle particle(position, velocity, m, particle_id++);
         Logger::getInstance().trace("New Particle generated");
         particles.insert(particle, true);
         Logger::getInstance().trace("New Particle inserted into container");

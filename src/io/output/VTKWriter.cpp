@@ -53,9 +53,7 @@ void VTKWriter::plot_particles(const std::string &filename, int iteration) {
   strstr << filename << "/" << out_name << "_" << std::setfill('0')
          << std::setw(4) << iteration << ".vtu";
   for (auto &p : particles.particles) {
-    if(!p.left_domain) {
       plotParticle(p);
-    }
   }
 
   std::ofstream file(strstr.str().c_str());
