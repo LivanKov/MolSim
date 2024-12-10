@@ -78,3 +78,15 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
 }
 
 
+void ParticleGenerator::insertSingleMolecule(const std::array<double, 3> &position,
+                                             const std::array<double, 3> &velocity,
+                                             double mass, LinkedCellContainer &particles) {
+  Particle particle(position, velocity, mass, particle_id++);
+  Logger::getInstance().trace("New Particle generated");
+  particles.insert(particle, true);
+  Logger::getInstance().trace("New Particle inserted into container");
+  particles.readjust();
+  Logger::getInstance().info("New single molecule generated");
+}
+
+

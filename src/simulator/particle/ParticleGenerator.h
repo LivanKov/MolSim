@@ -55,4 +55,10 @@ public:
                          const std::array<double, 3> &initialVelocity,
                          size_t radius, double h, double mass,
                          LinkedCellContainer &particles);
+
+
+
+   static void insertSingleMolecule(const std::array<double, 3> &position,
+                                    const std::array<double, 3> &velocity,
+                                    double mass, LinkedCellContainer &particles);
 };
