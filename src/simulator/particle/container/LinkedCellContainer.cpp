@@ -135,18 +135,25 @@ void LinkedCellContainer::update_particle_location(
 LinkedCellContainer::Cell &LinkedCellContainer::get_cell(size_t index) { return cells[index]; }
 
 std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(int particle_id) {
-  //logger.info("Amount of Cells: " + std::to_string(cells.size()));
-  //logger.info("Available particles: " + std::to_string(particles.size()));
-  //logger.info("left domain particles: " + std::to_string(particles_left_domain));
+  /*logger.info("Amount of Cells: " + std::to_string(cells.size()));
+  logger.info("Available particles: " + std::to_string(particles.size()));
+  logger.info("left domain particles: " + std::to_string(particles_left_domain));
+  logger.info("Current particle id: " + std::to_string(particle_id));*/
+
+
+  /*for(size_t i = 0; i < cells.size(); i++){
+    if(cells[i].size() > 0){
+      logger.info("New cell: "+ std::to_string(i));
+      for(auto& p : cells[i].particle_ids){
+        logger.info("Particle ID: " + std::to_string(p));
+      }
+    }
+  }*/
   std::vector<ParticlePointer> neighbours{};
   if(cells_map[particle_id]->left_domain){
-    //logger.info("Particle left domain");
-    //logger.info("Particle: " + p.toString());
     return neighbours;
   }
   std::array<double, 3> position = cells_map[particle_id]->getX();
-  //logger.info("Function call");
-  //logger.info("Particle: " + p.toString());
   size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) /
                                  r_cutoff_x);                         
   size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) /
@@ -157,20 +164,18 @@ std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(int particle_id
                  : 0;
 
   int index = i + j * x + k * x * y;
-  //logger.info("Index: " + std::to_string(index));
-  //logger.info("Particle: " + p.toString());
+
+  //logger.info("Current cell index: " + std::to_string(index));
   for(auto &i : cells[index].particle_ids){
       neighbours.push_back(cells_map[i]);
   }
 
-  int X = static_cast<int>(x);
-  int Y = static_cast<int>(y);
-  int Z = static_cast<int>(z);
-  // handle 2d case
-  // Convert 1D index to 3D coordinates
-  size_t i_ = index / (Y * Z);
-  size_t j_ = (index % (Y * Z)) / Z;
-  size_t k_ = index % Z;
+  //logger.info("X: " + std::to_string(x));
+  //logger.info("Y: " + std::to_string(y));
+  //logger.info("Z: " + std::to_string(z));
+
+
+  //logger.info("Current cell index: " + std::to_string(i) + " " + std::to_string(j) + " " + std::to_string(k));
 
   for (int di = -1; di <= 1; ++di) {
     for (int dj = -1; dj <= 1; ++dj) {
@@ -178,12 +183,14 @@ std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(int particle_id
         if (di == 0 && dj == 0 && dk == 0) {
           continue;
         }
-        int ni = i_ + di;
-        int nj = j_ + dj;
-        int nk = k_ + dk;
+        int ni = i + di;
+        int nj = j + dj;
+        int nk = k + dk;
         
-        if (ni >= 0 && ni < X && nj >= 0 && nj < Y && nk >= 0 && nk < Z) {
-          int neighborIndex = ni * (Y * Z) + nj * Z + nk;
+        if (ni >= 0 && ni < x && nj >= 0 && nj < y && nk >= 0 && nk < z) {
+          int neighborIndex = ni + (nj * x) + nk * x * y;
+
+          //logger.info("Neighbour cell index: " + std::to_string(neighborIndex));
           for(auto &s : cells[neighborIndex].particle_ids){
             neighbours.push_back(cells_map[s]);
           }
@@ -191,19 +198,19 @@ std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(int particle_id
       }
     }
   }
-  logger.info("Neighbours size: " + std::to_string(neighbours.size()));
-  logger.info("Cells size" + std::to_string(cells.size()));
+  //logger.info("Neighbours size: " + std::to_string(neighbours.size()));
+  //logger.info("Cells size" + std::to_string(cells.size()));
   
-  for(auto &n : neighbours){
+  /*for(auto &n : neighbours){
     if(n -> getType() != particle_id)
       logger.info("Neighbour: " + n->toString());
   }
   for(auto &n : particles.get_all_particles()){
     if(n->getType() != particle_id)
       logger.info("Particle: " + n->toString());
-  }
+  }*/
 
-  logger.info("Checkpoint");
+  //logger.info("Checkpoint");
   return neighbours;
 }
 

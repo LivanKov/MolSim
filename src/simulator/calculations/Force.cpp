@@ -61,7 +61,6 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       p.updateOldF(p.getF());
       p.updateF(0, 0, 0);
     }
-
     for (auto &particle : particles.particles) {
       for (auto& neighbour : particles.get_neighbours(particle.getType())){ {
         if(*neighbour != particle){
