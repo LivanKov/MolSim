@@ -27,7 +27,7 @@ public:
  double target_temperature = -1.0,  // when no target temperature got inserted
  size_t dimensions = 3, // by default 3 dimensions
  double delta_temperature = std::numeric_limits<double>::infinity(),  // Default to infinity
- bool gradual = false, // default is false
+ bool gradual = true, // default is true
  bool enable_brownian = true); // by default initialized with brownian motion
 
 

@@ -516,6 +516,24 @@ TEST_F(ThermostatTest, ApplySmallerGradualTest) {
     ASSERT_NEAR(unit_thermostat.get_current_temperature(), 100 + 0.0005, 1e-11);
 }
 
+// checks if delta_t is not set -> delta_t = infinity
+// in theory gradual application would act as direct application
+TEST_F(ThermostatTest, ApplyDeltaTInfTest) {
+
+    ParticleGenerator::insertCuboid(
+         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 7, 13}, 1.0, 53.9,
+         std::array<double, 3>{13.3, 412.41, -4123.2}, 0, particles);
+
+    // here gradual is set to true
+    Thermostat unit_thermostat(particles, 100, 150, 3);
+
+    unit_thermostat.initialize();
+
+    unit_thermostat.apply();
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 150, 1e-11);
+}
+
 
 //---------------------- tests for cooling, heating and holding the temperature ----------------------------------------
 
