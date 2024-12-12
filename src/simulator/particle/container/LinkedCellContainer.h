@@ -164,6 +164,9 @@ public:
    */
   DomainBoundaryConditions boundary_conditions_;
 
+
+  bool reflective_flag;
+
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,
                             std::array<double, 3> current_up_right);

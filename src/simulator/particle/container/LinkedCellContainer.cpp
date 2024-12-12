@@ -16,7 +16,7 @@ LinkedCellContainer::LinkedCellContainer(
       left_corner_coordinates{0.0, 0.0, 0.0}, x{0}, y{0}, z{0},
       boundary_conditions_{boundary_conditions}, particles{}, cells_map{},
       particle_id{0}, particles_left_domain{0}, is_wrapper{false}, halo_count{
-                                                                       0} {
+                                                                       0}, reflective_flag{false} {
   if (domain_size.size() != 3 && domain_size.size() != 2) {
     throw std::invalid_argument("Domain size must have 2 or 3 elements");
   }
@@ -49,13 +49,15 @@ LinkedCellContainer::LinkedCellContainer(
   for (auto &p : particles.get_all_particles()) {
     cells_map[p->getType()] = p;
   }
+
+  mark_halo_cells();
 }
 
 LinkedCellContainer::LinkedCellContainer()
     : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0.0, 0.0,
                                                                    0.0},
       x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{}, particle_id{0},
-      particles_left_domain{0}, is_wrapper{false}, halo_count{0} {}
+      particles_left_domain{0}, is_wrapper{false}, halo_count{0}, reflective_flag{false} {}
 
 void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
@@ -127,6 +129,11 @@ void LinkedCellContainer::update_particle_location(
     }
     if (is_within_domain(cells_map[particle_id]->getX())) {
       cells[current_index].insert(cells_map[particle_id]->getType());
+
+      if(cells[current_index].is_halo && reflective_flag){
+        handleBoundaryConditions(*cells_map[particle_id]);
+      }
+
     } else {
       cells_map[particle_id]->left_domain = true;
       particles_left_domain++;
@@ -140,20 +147,6 @@ LinkedCellContainer::Cell &LinkedCellContainer::get_cell(size_t index) {
 
 std::vector<ParticlePointer>
 LinkedCellContainer::get_neighbours(int particle_id) {
-  /*logger.info("Amount of Cells: " + std::to_string(cells.size()));
-  logger.info("Available particles: " + std::to_string(particles.size()));
-  logger.info("left domain particles: " +
-  std::to_string(particles_left_domain)); logger.info("Current particle id: " +
-  std::to_string(particle_id));*/
-
-  /*for(size_t i = 0; i < cells.size(); i++){
-    if(cells[i].size() > 0){
-      logger.info("New cell: "+ std::to_string(i));
-      for(auto& p : cells[i].particle_ids){
-        logger.info("Particle ID: " + std::to_string(p));
-      }
-    }
-  }*/
   std::vector<ParticlePointer> neighbours{};
   if (cells_map[particle_id]->left_domain) {
     return neighbours;
@@ -446,9 +439,17 @@ Particle &LinkedCellContainer::operator[](size_t index) {
 }
 
 void LinkedCellContainer::mark_halo_cells() {
-  for (size_t i = 0; i < cells.size(); i++) {
-    if (i <= x || i % x == 0 || i < x || i >= x * (y - 1)) {
-      cells[i].is_halo = true;
+  for(size_t i = 0; i < x; i++) {
+    for(size_t j = 0; j < y; j++) {
+      for(size_t k = 0; k < z; k++) {
+        if(i == 0 || i == x - 1 ||    
+           j == 0 || j == y - 1 ||    
+           (z > 1 && (k == 0 || k == z - 1))) { 
+          size_t index = i + j * x + k * x * y;
+          cells[index].is_halo = true;
+          halo_count++;
+        }
+      }
     }
   }
 }
