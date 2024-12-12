@@ -93,17 +93,6 @@ public:
   void handleBoundaryConditions(Particle &p);
 
   /**
-   * @brief Removes particles that have crossed outflow boundaries.
-   */
-  void removeOutflowParticles();
-
-  /**
-   * @brief Updates particle positions and handles boundary conditions.
-   * This function integrates particle updates and boundary management.
-   */
-  void updateParticles();
-
-  /**
    * @brief The size of the simulation domain.
    */
   std::vector<double> domain_size_;

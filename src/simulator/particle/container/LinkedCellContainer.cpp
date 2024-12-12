@@ -411,27 +411,6 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
   p.updateV(velocity[0], velocity[1], velocity[2]);
 }
 
-void LinkedCellContainer::removeOutflowParticles() {
-  /*for (auto &cell : cells) {
-    cell.particles.erase(std::remove_if(cell.particles.begin(),
-                                        cell.particles.end(),
-                                        [](const ParticlePointer &p) {
-                                          return p->left_domain;
-                                        }),
-                         cell.particles.end());
-  }*/
-}
-
-void LinkedCellContainer::updateParticles() {
-  /*for (auto &cell : cells) {
-    for (auto &p : cell.particles) {
-      handleBoundaryConditions(*p);
-    }
-  }
-
-  removeOutflowParticles();*/
-}
-
 size_t LinkedCellContainer::size() { return particles.size(); }
 
 Particle &LinkedCellContainer::operator[](size_t index) {
