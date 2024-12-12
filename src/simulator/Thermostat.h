@@ -12,12 +12,14 @@ class Thermostat {
 public:
 
 
-    Thermostat(ParticleContainer& particles,
-        double initial_temperature,
-        double target_temperature,
-        double delta_temperature,
-        bool gradual,
-        size_t dimensions);
+    Thermostat(
+    ParticleContainer& particles,
+    double initial_temperature,
+    double target_temperature = -1.0,  // when no target temperature got inserted
+    size_t dimensions = 3, // by default 3 dimensions
+    double delta_temperature = std::numeric_limits<double>::infinity(),  // Default to infinity
+    bool gradual = false, // default is false
+    bool enable_brownian = true); // by default initialized with brownian motion
 
 
     /**
@@ -40,24 +42,34 @@ public:
      */
     void calculate_scaling_factor(double new_temperature);
 
-    void initialize_brownian(size_t dimensions);
+    void initialize_brownian();
 
     double get_current_temperature();
+
+    size_t get_dimensions() const;
+
+    double get_target_temperature() const;
+
+    bool get_gradual() const;
 
     void initialize();
 
 
-    void apply(bool gradual);
+    void apply();
+
+
 
 
 private:
     ParticleContainer& particles_;
-    double initial_temperature_;         /*! initial temperature of system */
+    double initial_temperature_;        /*! initial temperature of system */
     double target_temperature_;         /*! the final temperature that system should have */
-    double current_temperature_;        /*! current temperature of system */
-    double scaling_factor_;             /*! scaling factor for velocities based on new and current temperature */
-    double delta_temperature_;          /*! maximal absolute temperature change that is allowed per application */
-    bool gradual_;                      /*! is true when the velocity scaling should be gradual */
     size_t dimensions_;
+    double delta_temperature_;          /*! maximal absolute temperature change that is allowed per application */
+    bool gradual_;
+    double scaling_factor_;             /*! scaling factor for velocities based on new and current temperature */
+    double current_temperature_;        /*! current temperature of system */
+
+
 
 };

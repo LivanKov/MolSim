@@ -20,30 +20,77 @@ protected:
 
     void SetUp() override {
         particles = ParticleContainer();
-        thermostat = std::make_unique<Thermostat>(particles,300, 350, 0.5, false, 3);
+        thermostat = std::make_unique<Thermostat>(particles,300, 350, 3, 0.5, false, false);
     }
 
 
 };
 
+// ------------------------- constructor and brownian initialization tests ---------------------------------------------
 
-TEST_F(ThermostatTest, ConstructorTest) {
+TEST_F(ThermostatTest, CheckValidConstructorTest) {
+    Thermostat unit_thermostat(particles, 300, 350, 3, 0.5, false, true);
 
-    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
-    particles.insert(particle1);
-
-    Thermostat unit_thermostat(particles, 100, 110, 0.5, true, 3);
-
-
-    // this is the temp of the particle with its initial values
-    double current_temp = 1.5 * 2 / 3 * 1;
-
-    double scaling_factor = std::sqrt(100 / current_temp);
-
-    std::array<double, 3> new_v{1 * scaling_factor, 1 * scaling_factor, 1 * scaling_factor};
-
-    ASSERT_EQ(particles[0].getV(), new_v);
+    EXPECT_EQ(unit_thermostat.get_current_temperature(), 0); // Initially 0 until particles' velocity is calculated
+    EXPECT_EQ(unit_thermostat.get_dimensions(), 3);
+    EXPECT_EQ(unit_thermostat.get_gradual(), false);
+    EXPECT_EQ(unit_thermostat.get_target_temperature(), 350.0);
 }
+
+// tests if invalid dim argument gets recognized
+TEST_F(ThermostatTest, InvalidDimensionFourThrowsExceptionTest) {
+    EXPECT_THROW(
+        Thermostat unit_thermostat(particles, 300, 350, 4), // Invalid dimension: 4
+        std::invalid_argument
+    );
+}
+
+// tests if invalid dim argument gets recognized
+TEST_F(ThermostatTest, InvalidDimensionZeroThrowsExceptionTest) {
+    EXPECT_THROW(
+        Thermostat unit_thermostat(particles, 300, 350, 0), // Invalid dimension: 0
+        std::invalid_argument
+    );
+}
+
+
+
+// this tests checks if the current temperature gets set near to the initial temperature
+// means it checks if the initialization with brownian motion is correct
+TEST_F(ThermostatTest, BoltzmannFirstTest) {
+    ParticleGenerator::insertCuboid(
+   std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{9, 13, 9}, 1.0, 10.0,
+   std::array<double, 3>{0, 0, 0}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 100, 110, 3, 0.5, true, true);
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 100, 5);
+}
+
+TEST_F(ThermostatTest, BoltzmannSecondTest) {
+    ParticleGenerator::insertCuboid(
+   std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{9, 13, 9}, 1.0, 10.0,
+   std::array<double, 3>{0, 0, 0}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 500, 600, 3, 0.5, true, true);
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 500, 15);
+}
+
+// checks for a smaller value
+TEST_F(ThermostatTest, BoltzmannThirdTest) {
+    ParticleGenerator::insertCuboid(
+   std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{5, 5, 5}, 1.0, 5,
+   std::array<double, 3>{0, 0, 0}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 5, 100, 3, 0.5, true, true);
+
+    unit_thermostat.calculate_current_temperature();
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 5, 0.5);
+}
+
+
 
 // ---------------------------- tests for calculate_kinetic_energy() ---------------------------------------------------
 
@@ -80,6 +127,7 @@ TEST_F(ThermostatTest, KineticEnergyZeroMassTest) {
     ASSERT_EQ(thermostat->calculate_kinetic_energy(), 0.0);
 }
 
+// tests for particle with 0 velocity -> E_kin should be 0
 TEST_F(ThermostatTest, KineticEnergyZeroVelocityTest) {
     // insert particle with
     Particle particle{{-10,5,30},{0.0, 0.0, 0.0},2.7};
@@ -88,6 +136,7 @@ TEST_F(ThermostatTest, KineticEnergyZeroVelocityTest) {
     ASSERT_EQ(thermostat->calculate_kinetic_energy(), 0.0);
 }
 
+// tests for dimension of 2
 TEST_F(ThermostatTest, KineticEnergyTwoDimensionsTest) {
     Particle particle1{{0.0, 0.0}, {1.5, 2.0}, 2.0};
     particles.insert(particle1);
@@ -98,6 +147,7 @@ TEST_F(ThermostatTest, KineticEnergyTwoDimensionsTest) {
     ASSERT_EQ(thermostat->calculate_kinetic_energy(), e_kin);
 }
 
+// tests for two different particles with different values
 TEST_F(ThermostatTest, KineticEnergyMixedParticlesTest) {
     Particle particle1{{0.0, 0.0, 0.0}, {1.5, 2.0, 0.5}, 2.0};
     particles.insert(particle1);
@@ -111,13 +161,11 @@ TEST_F(ThermostatTest, KineticEnergyMixedParticlesTest) {
     ASSERT_NEAR(thermostat->calculate_kinetic_energy(), expected_energy, 1e-6);
 }
 
-
 // tests for a large amount of particles 10*10*10 = 1_000
 TEST_F(ThermostatTest, KineticEnergyLargeNumberOfParticlesTest) {
     ParticleGenerator::insertCuboid(
     std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 10}, 1.0, 1.0,
     std::array<double, 3>{1.0, 1.0, 1.0}, 0, particles);
-    thermostat->calculate_kinetic_energy();
     // E_kin must be 1_000 * 3 / 2
     ASSERT_EQ(thermostat->calculate_kinetic_energy(), 1000 * 3 / 2);
 }
@@ -132,6 +180,7 @@ TEST_F(ThermostatTest, KineticEnergyMoreComplexParticleTest) {
     ASSERT_NEAR(thermostat->calculate_kinetic_energy(), expected_result, 1e-6);
 }
 
+// now we test here with 5 different particles
 TEST_F(ThermostatTest, KineticEnergyFiveParticlesTest) {
     // we insert 5 particles with all of them having different values
     Particle particle1{{0.5, 0.5, 0.5}, {2.0, -1.5, 0.5}, 1.5};
@@ -164,15 +213,13 @@ TEST_F(ThermostatTest, KineticEnergyFiveParticlesTest) {
 
 
 
-
-
 // ---------------------------- calculate_current_temperature() --------------------------------------------------------
 
 // tests calculate_current_temperature() for zero particles -> edge case
 TEST_F(ThermostatTest, CurrentTemperatureNoParticlesTest) {
- //   thermostat->calculate_current_temperature(3);
+    thermostat->calculate_current_temperature();
 
-    ASSERT_EQ(thermostat->get_current_temperature(), 100);  // must be 300 with using 300 as initial temperature
+    ASSERT_EQ(thermostat->get_current_temperature(), 0);  // must be 0 since 0 particles in system
     // the warning method gets also displayed from the logger
 }
 
@@ -190,42 +237,6 @@ TEST_F(ThermostatTest, CurrentTemperatureOneParticleTest) {
     thermostat->calculate_current_temperature();
     ASSERT_EQ(thermostat->get_current_temperature(), expected_temperature);
 }
-
-// tests the case if dimensions is set to 0
-TEST_F(ThermostatTest, CurrentTemperatureZeroDimensionsTest) {
-    ParticleGenerator::insertCuboid(
-        std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{1, 1, 1}, 1.0, 1.0,
-        std::array<double, 3>{1, 1, 1}, 0, particles);
-
-  //  thermostat->calculate_current_temperature(0);
-    // must be the initial temperature value
-    ASSERT_EQ(thermostat->get_current_temperature(), 100);
-}
-
-// tests the case if dimensions is set to 4 -> invalid value for dimensions
-TEST_F(ThermostatTest, CurrentTemperatureFourDimensionsTest) {
-    ParticleGenerator::insertCuboid(
-        std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{1, 1, 1}, 1.0, 1.0,
-        std::array<double, 3>{1, 1, 1}, 0, particles);
-
-   // thermostat->calculate_current_temperature(4);
-    // must be the initial temperature value
-    ASSERT_EQ(thermostat->get_current_temperature(), 100);
-}
-
-// case: particles have velocity of 0
-TEST_F(ThermostatTest, CurrentTemperatureZeroVelocityParticlesTest) {
-    // All particles have zero velocity, no kinetic energy should be present
-    ParticleGenerator::insertCuboid(
-        std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{3, 3, 3}, 1.0, 0.0,
-        std::array<double, 3>{0.0, 0.0, 0.0}, 0, particles);
-
-    thermostat->calculate_current_temperature();
-
-    // Since the kinetic energy is 0, the temperature should also be 0
-    ASSERT_EQ(thermostat->get_current_temperature(), 0.0);
-}
-
 
 // simple test for calculate_current_temperature()
 TEST_F(ThermostatTest, CurrentTemperatureSimpleTest) {
@@ -273,81 +284,387 @@ TEST_F(ThermostatTest, CurrentTemperatureHighVelocityTest) {
 
 // this tests for dimensions = 2
 TEST_F(ThermostatTest, TwoDimensionalCurrentTemperatureTest) {
-
-
     ParticleGenerator::insertCuboid(
         std::array<double, 3>{0, 0}, std::array<size_t, 3>{3, 3, 3}, 1.0, 1.0,
         std::array<double, 3>{1.0, 1.0}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 100, 150, 2, 0.5,true,false);
 
     double expected_kinetic_energy = thermostat->calculate_kinetic_energy();
     // we change the dim param to 2  in the temperature formula
     double expected_temperature = (expected_kinetic_energy * 2) / (2 * particles.size());
 
  //   thermostat->calculate_current_temperature(2);
-    ASSERT_NEAR(thermostat->get_current_temperature(), expected_temperature, 1e-6);
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), expected_temperature, 1e-6);
 }
+
+
+// ------------------------------- tests for initialize() --------------------------------------------------------------
+
+// simple test to check if particle's velocity gets scaled according to init_temp
+TEST_F(ThermostatTest, InitializeSimpleTest) {
+
+    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
+    particles.insert(particle1);
+
+    Thermostat unit_thermostat(particles, 100, 110, 3, 0.5, true, false);
+
+    // ensures that the particles have the velocity that applies to the initial temperature
+    unit_thermostat.initialize();
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 100, 1e-6);
+}
+
+// with random more complex values
+TEST_F(ThermostatTest, InitializeMediumTest) {
+
+    Particle particle1{{0,0,0}, {-37, 43.5, 12.4}, 54.5};
+    particles.insert(particle1);
+
+    Thermostat unit_thermostat(particles, 537, 110, 3, 10, true, false);
+
+    // ensures that the particles have the velocity that applies to the initial temperature
+    unit_thermostat.initialize();
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 537, 1e-6);
+}
+
+// with different velocities of two particles
+TEST_F(ThermostatTest, InitializeDifferentVelocitiesTest) {
+
+    Particle particle1{{0,0,0}, {-37, 43.5, 12.4}, 54.5};
+    particles.insert(particle1);
+
+    Particle particle2{{0,0,0}, {-43, -20, 64.4}, 70.3};
+    particles.insert(particle1);
+
+    Thermostat unit_thermostat(particles, 129, 110, 3, 10, true, false);
+
+    // ensures that the particles have the velocity that applies to the initial temperature
+    unit_thermostat.initialize();
+
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 129, 1e-6);
+}
+
+// tests for multiple particles with random values
+TEST_F(ThermostatTest, InitializeManyParticlesTest) {
+    ParticleGenerator::insertCuboid(
+         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 7, 13}, 1.0, 53.9,
+         std::array<double, 3>{13.3, 412.41, -4123.2}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 1231, 10000, 3, 0.000002, true, false);
+
+    // ensures that the particles have the velocity that applies to the initial temperature
+    unit_thermostat.initialize();
+
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 1231, 1e-6);
+}
+
+
 
 //-------------------------------------- tests for apply() -------------------------------------------------------------
 
 
-// check this
-TEST_F(ThermostatTest, ApplyZeroVelocityTest) {
-    ParticleGenerator::insertCuboid(
-        std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{3, 3, 3}, 1.0, 1.0,
-        std::array<double, 3>{0, 0, 0}, 0, particles);
-
-    Thermostat unit_thermostat(particles, 100, 150, 0.5,false, 3);
-
-    unit_thermostat.apply(true);
-
-    ASSERT_EQ(unit_thermostat.get_current_temperature(), 0);
-}
-
+// we check here if the gradual application works, firstly with a large delta_t
 TEST_F(ThermostatTest, ApplyCheckGradualTest) {
     Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
     particles.insert(particle1);
 
-    Thermostat unit_thermostat(particles, 100, 150, 0.5,true,3);
+    Thermostat unit_thermostat(particles, 100, 150,3, 0.5,true,false);
 
-    unit_thermostat.apply(true);
+    // this method is only used to test the apply() method (at least at the moment)
+    // this method ensures to scale the velocities that lead to a kinetic energy
+    // that leads to a current temperature of 100
+    unit_thermostat.initialize();
+
+    // now the thermostat gets applied. since we use gradual, the temperature must be 100.5 now. (init_t + delta_t)
+    unit_thermostat.apply();
 
     ASSERT_NEAR(unit_thermostat.get_current_temperature(), 100.5, 1e-8);
 }
 
+// checks for dimension 2
+TEST_F(ThermostatTest, ApplyCheckGradualDimensionTwoTest) {
+    Particle particle1{{0,0}, {1.0, 1.0}, 1};
+    particles.insert(particle1);
+
+    Thermostat unit_thermostat(particles, 100, 150,2, 0.5,true,false);
+
+    // this method is only used to test the apply() method (at least at the moment)
+    // this method ensures to scale the velocities that lead to a kinetic energy
+    // that leads to a current temperature of 100
+    unit_thermostat.initialize();
+
+    // now the thermostat gets applied. since we use gradual, the temperature must be 100.5 now. (init_t + delta_t)
+    unit_thermostat.apply();
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 100.5, 1e-8);
+}
+
+// we check here if the gradual application works with initialization with brown
+TEST_F(ThermostatTest, ApplyCheckGradualBrownTest) {
+    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
+    particles.insert(particle1);
+
+    Thermostat unit_thermostat(particles, 100, 150,3, 0.5, true, true);
+
+    // this is the current temp before application
+    double current_temp = unit_thermostat.get_current_temperature();
+
+    unit_thermostat.apply();
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), current_temp + 0.5, 1e-8);
+}
+
+// here we apply 2 times with gradual
 TEST_F(ThermostatTest, ApplyCheckGradualTwoTimesTest) {
     Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
     particles.insert(particle1);
 
-    Thermostat unit_thermostat(particles, 100, 150, 0.5,true,3);
+    Thermostat unit_thermostat(particles, 100, 150, 3, 0.000001,true,false);
 
-    unit_thermostat.apply(true);
-    unit_thermostat.apply(true);
+    unit_thermostat.initialize();
 
+    unit_thermostat.apply();
+    unit_thermostat.apply();
 
-    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 101, 1e-8);
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 100.000002, 1e-12);
 }
 
+// now we turned gradual off -> after one application we must be directly at temperature of 150
 TEST_F(ThermostatTest, ApplyDirectlyTest) {
     Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
     particles.insert(particle1);
 
-    Thermostat unit_thermostat(particles, 100, 150, 0.5,false,3);
+    Thermostat unit_thermostat(particles, 100, 150, 3, 0.5,false,false);
 
-    unit_thermostat.apply(false);
-
+    unit_thermostat.apply();
 
     ASSERT_NEAR(unit_thermostat.get_current_temperature(), 150, 1e-8);
 }
 
+// the same as above with dimension 2
+TEST_F(ThermostatTest, ApplyDirectlyDimensionTwoTest) {
+    Particle particle1{{0,0}, {1.0, 1.0}, 1};
+    particles.insert(particle1);
+
+    Thermostat unit_thermostat(particles, 100, 150, 2, 0.5, false, false);
+
+    unit_thermostat.apply();
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 150, 1e-8);
+}
+
+// now the same as above but with brown initialization
+TEST_F(ThermostatTest, ApplyDirectlyBrownTest) {
+    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
+    particles.insert(particle1);
+
+    Thermostat unit_thermostat(particles, 100, 150, 3, 0.5, false, true);
+
+    unit_thermostat.apply();
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 150, 1e-8);
+}
+
+// tests if after applying 2 times thermostat if temperature stays the same
 TEST_F(ThermostatTest, ApplyDirectlyTwoTimesTest) {
     Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
     particles.insert(particle1);
 
-    Thermostat unit_thermostat(particles, 100, 150, 0.5,false,3);
+    Thermostat unit_thermostat(particles, 100, 150, 3, 0.5,false,false);
 
-    unit_thermostat.apply(false);
-    unit_thermostat.apply(false);
+    unit_thermostat.initialize();
 
+    unit_thermostat.apply();
+    unit_thermostat.apply();
 
     ASSERT_NEAR(unit_thermostat.get_current_temperature(), 150, 1e-8);
+}
+
+// tests with many particles
+TEST_F(ThermostatTest, ApplyDirectlyManyParticlesTest) {
+
+    ParticleGenerator::insertCuboid(
+         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 7, 13}, 1.0, 53.9,
+         std::array<double, 3>{13.3, 412.41, -4123.2}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 100, 150, 3, 0.5, false, false);
+
+    unit_thermostat.initialize();
+
+    unit_thermostat.apply();
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 150, 1e-8);
+}
+
+// checks for a smaller delta_t
+TEST_F(ThermostatTest, ApplySmallerGradualTest) {
+
+    ParticleGenerator::insertCuboid(
+         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 7, 13}, 1.0, 53.9,
+         std::array<double, 3>{13.3, 412.41, -4123.2}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 100, 150, 3, 0.0005, true, false);
+
+    unit_thermostat.initialize();
+
+    unit_thermostat.apply();
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 100 + 0.0005, 1e-11);
+}
+
+
+//---------------------- tests for cooling, heating and holding the temperature ----------------------------------------
+
+// for the following tests we use multiple particles small delta T and dimension 3
+
+// we heat the temperature directly to 150
+TEST_F(ThermostatTest, HeatingDirectlyTest) {
+
+    ParticleGenerator::insertCuboid(
+         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
+         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 100, 150, 3, 0.0001, false, true);
+
+    unit_thermostat.apply();
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 150, 1e-8);
+}
+
+// tests if it cools directly to 50
+TEST_F(ThermostatTest, CoolingDirectlyTest) {
+
+    ParticleGenerator::insertCuboid(
+         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
+         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 100, 50, 3, 0.0001, false, true);
+
+    unit_thermostat.apply();
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 50, 1e-8);
+}
+
+// tests if temperature holds
+TEST_F(ThermostatTest, HoldingDirectlyTest) {
+
+    ParticleGenerator::insertCuboid(
+         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
+         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 100, 100, 3, 0.0001, false, true);
+
+    unit_thermostat.apply();
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 100, 1e-8);
+}
+
+// tests if temperature gets heated gradually
+TEST_F(ThermostatTest, HeatingGraduallyTest) {
+
+    ParticleGenerator::insertCuboid(
+         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
+         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 100, 110, 3, 0.0001, true, true);
+
+    // with this call we ensure that the real init temp is very near to 100
+    // better for testing purposes
+    unit_thermostat.initialize();
+
+    // here the thermostat gets 100_000 times applied. with our delta t the temperature must rise from 100 to 110
+    for (int i = 0; i < 100000; ++i) {
+        unit_thermostat.apply();
+    }
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 110, 1e-8);
+}
+
+// same as above but with cooling down
+TEST_F(ThermostatTest, CoolingGraduallyTest) {
+
+    ParticleGenerator::insertCuboid(
+         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
+         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 100, 90, 3, 0.0001, true, true);
+
+    // with this call we ensure that the real init temp is very near to 100
+    // better for testing purposes
+    unit_thermostat.initialize();
+
+    // here the thermostat gets 100_000 times applied. with our delta t the temperature must drop from 100 to 90
+    for (int i = 0; i < 100000; ++i) {
+        unit_thermostat.apply();
+    }
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 90, 1e-8);
+}
+
+// now with holding the temperature
+TEST_F(ThermostatTest, HoldingGraduallyTest) {
+
+    ParticleGenerator::insertCuboid(
+         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
+         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 100, 100, 3, 0.0001, true, true);
+
+    // with this call we ensure that the real init temp is very near to 100
+    // better for testing purposes
+    unit_thermostat.initialize();
+
+    // here the thermostat gets 100_000 times applied
+    for (int i = 0; i < 100000; ++i) {
+        unit_thermostat.apply();
+    }
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 100, 1e-8);
+}
+
+// now it’s interesting if the temperature gets hold at the target temperature,
+// since target gets reached after 50_000 applications
+TEST_F(ThermostatTest, HeatingAndHoldingGraduallyTest) {
+
+    ParticleGenerator::insertCuboid(
+         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
+         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 100, 105, 3, 0.0001, true, true);
+
+    // with this call we ensure that the real init temp is very near to 100
+    // better for testing purposes
+    unit_thermostat.initialize();
+
+    // here the thermostat gets 100_000 times applied
+    for (int i = 0; i < 100000; ++i) {
+        unit_thermostat.apply();
+    }
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 105, 1e-8);
+}
+
+// now same with cooling
+TEST_F(ThermostatTest, CoolingAndHoldingGraduallyTest) {
+
+    ParticleGenerator::insertCuboid(
+         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
+         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+
+    Thermostat unit_thermostat(particles, 100, 95, 3, 0.0001, true, true);
+
+    // with this call we ensure that the real init temp is very near to 100
+    // better for testing purposes
+    unit_thermostat.initialize();
+
+    // here the thermostat gets 100_000 times applied
+    for (int i = 0; i < 100000; ++i) {
+        unit_thermostat.apply();
+    }
+
+    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 95, 1e-8);
 }
