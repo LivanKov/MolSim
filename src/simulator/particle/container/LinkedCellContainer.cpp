@@ -131,7 +131,9 @@ void LinkedCellContainer::update_particle_location(
       cells[current_index].insert(cells_map[particle_id]->getType());
 
       if(cells[current_index].is_halo && reflective_flag){
-        handleBoundaryConditions(*cells_map[particle_id]);
+        //handle_boundary_conditions(particle_id);
+        auto vel = cells_map[particle_id]->getV();
+        cells_map[particle_id]->updateV(-vel[0], -vel[1], -vel[2]); 
       }
 
     } else {
@@ -323,9 +325,9 @@ void LinkedCellContainer::readjust() {
   }
 }
 
-void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
-  auto position = p.getX();
-  auto velocity = p.getV();
+void LinkedCellContainer::handle_boundary_conditions(int particle_id) {
+  auto position = cells_map[particle_id]->getX();
+  auto velocity = cells_map[particle_id]->getV();
 
   // left boundary
   if (position[0] < left_corner_coordinates[0]) {
@@ -333,7 +335,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
       position[0] = 2 * left_corner_coordinates[0] - position[0];
       velocity[0] = -velocity[0];
     } else if (boundary_conditions_.left == BoundaryCondition::Outflow) {
-      p.left_domain = true;
+      cells_map[particle_id]->left_domain = true;
       particles_left_domain++;
     }
   }
@@ -345,7 +347,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
           2 * (left_corner_coordinates[0] + domain_size_[0]) - position[0];
       velocity[0] = -velocity[0];
     } else if (boundary_conditions_.right == BoundaryCondition::Outflow) {
-      p.left_domain = true;
+      cells_map[particle_id]->left_domain = true;
       particles_left_domain++;
     }
   }
@@ -356,7 +358,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
       position[1] = 2 * left_corner_coordinates[1] - position[1];
       velocity[1] = -velocity[1];
     } else if (boundary_conditions_.bottom == BoundaryCondition::Outflow) {
-      p.left_domain = true;
+      cells_map[particle_id]->left_domain = true;
       particles_left_domain++;
     }
   }
@@ -368,7 +370,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
           2 * (left_corner_coordinates[1] + domain_size_[1]) - position[1];
       velocity[1] = -velocity[1];
     } else if (boundary_conditions_.top == BoundaryCondition::Outflow) {
-      p.left_domain = true;
+      cells_map[particle_id]->left_domain = true;
       particles_left_domain++;
     }
   }
@@ -380,7 +382,7 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
         position[2] = 2 * left_corner_coordinates[2] - position[2];
         velocity[2] = -velocity[2];
       } else if (boundary_conditions_.front == BoundaryCondition::Outflow) {
-        p.left_domain = true;
+        cells_map[particle_id]->left_domain = true;
         particles_left_domain++;
       }
     }
@@ -391,15 +393,15 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
             2 * (left_corner_coordinates[2] + domain_size_[2]) - position[2];
         velocity[2] = -velocity[2];
       } else if (boundary_conditions_.back == BoundaryCondition::Outflow) {
-        p.left_domain = true;
+        cells_map[particle_id]->left_domain = true;
         particles_left_domain++;
       }
     }
   }
 
   // TODO optimize later
-  p.updateX(position[0], position[1], position[2]);
-  p.updateV(velocity[0], velocity[1], velocity[2]);
+  cells_map[particle_id]->updateX(position[0], position[1], position[2]);
+  cells_map[particle_id]->updateV(velocity[0], velocity[1], velocity[2]);
 }
 
 size_t LinkedCellContainer::size() { return particles.size(); }

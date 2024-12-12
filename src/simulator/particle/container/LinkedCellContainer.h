@@ -90,7 +90,7 @@ public:
    * @brief Applies the specified boundary conditions to a particle.
    * @param p The particle to which boundary conditions are applied.
    */
-  void handleBoundaryConditions(Particle &p);
+  void handle_boundary_conditions(int particle_id);
 
   /**
    * @brief The size of the simulation domain.

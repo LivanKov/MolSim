@@ -23,7 +23,7 @@ TEST_F(BoundaryConditionsTest, ReflectingBoundary) {
   Particle p({-0.5, 5.0, 0.0}, {-1.0, 0.0, 0.0}, 1.0);
   container.insert(p, true);
 
-  container.handleBoundaryConditions(p);
+  container.handle_boundary_conditions(p.getType());
 
   // Position and velocity should reflect
   EXPECT_NEAR(p.getX()[0], 0.5, 1e-6);
@@ -36,7 +36,7 @@ TEST_F(BoundaryConditionsTest, OutflowBoundary) {
   Particle p({10.5, 5.0, 0.0}, {1.0, 0.0, 0.0}, 1.0);
   container.insert(p, true);
 
-  container.handleBoundaryConditions(p);
+  container.handle_boundary_conditions(p.getType());
 
   // Particle should be marked for removal
   EXPECT_TRUE(p.left_domain);
@@ -52,8 +52,8 @@ TEST_F(BoundaryConditionsTest, BottomReflectingTopOutflow) {
   Particle p_top({5.0, 10.5, 0.0}, {0.0, 1.0, 0.0}, 1.0);
   container.insert(p_top, true);
 
-  container.handleBoundaryConditions(p_bottom);
-  // container.handleBoundaryConditions(p_top);
+  container.handle_boundary_conditions(p_bottom.getType());
+  // container.handle_boundary_conditions(p_top);
 
   // Check bottom boundary
   EXPECT_NEAR(p_bottom.getX()[1], 0.5, 1e-6); // Reflected position
@@ -69,7 +69,7 @@ TEST_F(BoundaryConditionsTest, NoBoundaryViolation) {
   Particle p({5.0, 5.0, 0.0}, {0.0, 0.0, 0.0}, 1.0);
   container.insert(p, true);
 
-  container.handleBoundaryConditions(p);
+  container.handle_boundary_conditions(p.getType());
 
   // Position and velocity should remain unchanged
   EXPECT_NEAR(p.getX()[0], 5.0, 1e-6);
@@ -99,7 +99,7 @@ TEST_F(BoundaryConditionsTest, CornerCrossing) {
   container.insert(particle);
 
   // Apply boundary handling
-  container.handleBoundaryConditions(particle);
+  container.handle_boundary_conditions(particle.getType());
 
   // Check the particle is correctly reflected from the corner
   auto position = particle.getX();
