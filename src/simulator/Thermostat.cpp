@@ -61,6 +61,53 @@ Thermostat::Thermostat(
     );
 }
 
+// application method of thermostat
+
+void Thermostat::apply() {
+    calculate_current_temperature();
+
+    // calculate the temperature difference between current and target temperature
+    double temp_diff = target_temperature_ - current_temperature_;
+
+    if (std::abs(temp_diff) < 1e-5) {
+        Logger::getInstance().debug("No change in temperature, since current and target are nearly the same");
+        return;
+    }
+
+    // if we apply the thermostat gradual we ensure that the temperature change is maximum delta T
+    if(gradual_) {
+        // checks if temperature difference is greater than delta T
+        if (std::abs(temp_diff) > delta_temperature_) {
+            // if yes, we calculate our permitted temp_diff in one application of the thermostat
+            temp_diff = (temp_diff > 0) ? delta_temperature_ : -delta_temperature_;
+        }
+    }
+
+    // we now calculate the scaling factor with the permitted temperature difference for one application
+    calculate_scaling_factor(current_temperature_ + temp_diff);
+
+    // avoid loop if no scaling is applied
+    if (scaling_factor_ == 1.0) {
+        Logger::getInstance().debug("No scaling required, because scaling_factor is 1.0");
+        return;
+    }
+
+    // in the very end we apply our scaling factor to the particles
+    for (auto& p : particles_) {
+        auto& current_velocity = p.getV();
+
+        std::array<double, 3> new_velocity{};
+        for (size_t i = 0; i < dimensions_; ++i) {
+            new_velocity[i] = current_velocity[i] * scaling_factor_;
+        }
+        p.updateV(new_velocity);
+    }
+    Logger::getInstance().debug("Thermostat applied. The new temperature is now: " + std::to_string(get_current_temperature()));
+}
+
+
+
+// ----------------- helper methods -----------------------------------
 
 double Thermostat::calculate_kinetic_energy() const {
     double kinetic_energy = 0.0;
@@ -127,57 +174,8 @@ void Thermostat::initialize_brownian() {
 }
 
 
-double Thermostat::get_current_temperature() {
-    calculate_current_temperature();
-    return current_temperature_;
-}
 
-
-
-
-void Thermostat::apply() {
-    calculate_current_temperature();
-
-    // calculate the temperature difference between current and target temperature
-    double temp_diff = target_temperature_ - current_temperature_;
-
-    if (std::abs(temp_diff) < 1e-5) {
-        Logger::getInstance().debug("No change in temperature, since current and target are nearly the same");
-        return;
-    }
-
-    // if we apply the thermostat gradual we ensure that the temperature change is maximum delta T
-    if(gradual_) {
-        // checks if temperature difference is greater than delta T
-        if (std::abs(temp_diff) > delta_temperature_) {
-            // if yes, we calculate our permitted temp_diff in one application of the thermostat
-            temp_diff = (temp_diff > 0) ? delta_temperature_ : -delta_temperature_;
-        }
-    }
-
-    // we now calculate the scaling factor with the permitted temperature difference for one application
-    calculate_scaling_factor(current_temperature_ + temp_diff);
-
-    // avoid loop if no scaling is applied
-    if (scaling_factor_ == 1.0) {
-        Logger::getInstance().debug("No scaling required, because scaling_factor is 1.0");
-        return;
-    }
-
-    // in the very end we apply our scaling factor to the particles
-    for (auto& p : particles_) {
-        auto& current_velocity = p.getV();
-
-        std::array<double, 3> new_velocity{};
-        for (size_t i = 0; i < dimensions_; ++i) {
-            new_velocity[i] = current_velocity[i] * scaling_factor_;
-        }
-        p.updateV(new_velocity);
-    }
-    Logger::getInstance().debug("Thermostat applied. The new temperature is now: " + std::to_string(get_current_temperature()));
-}
-
-
+// -------- for testing purposes -------------------------------------
 
 void Thermostat::initialize() {
     // we check the temperature according to the particles velocity's
@@ -202,6 +200,14 @@ void Thermostat::initialize() {
     }
 }
 
+
+// ------------- getters  --------------------------------------------
+
+double Thermostat::get_current_temperature() {
+    calculate_current_temperature();
+    return current_temperature_;
+}
+
 size_t Thermostat::get_dimensions() const {
     return dimensions_;
 }
@@ -213,5 +219,10 @@ double Thermostat::get_target_temperature() const {
 bool Thermostat::get_gradual() const {
     return gradual_;
 }
+
+
+
+
+
 
 
