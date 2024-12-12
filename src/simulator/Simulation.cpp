@@ -24,7 +24,7 @@ std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
 Simulation::Simulation(SimParams &params) : params_(params) {}
 
 LinkedCellContainer Simulation::readFile(SimParams &params) {
-  LinkedCellContainer particles{{180.0, 90.0}, 3.0};
+  LinkedCellContainer particles{{90.0, 45.0}, 3.0};
   XMLReader::readXMLFile(particles, params);
   return particles;
 }

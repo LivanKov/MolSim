@@ -46,14 +46,16 @@ void VTKWriter::plot_particles(const std::string &filename, int iteration) {
   cells.DataArray().push_back(cells_data);
 
   PieceUnstructuredGrid_t piece(pointData, cellData, points, cells,
-                                particles.size(), 0);
+                                particles.size() - particles.particles_left_domain, 0);
   UnstructuredGrid_t unstructuredGrid(piece);
   vtkFile->UnstructuredGrid(unstructuredGrid);
   std::stringstream strstr;
   strstr << filename << "/" << out_name << "_" << std::setfill('0')
          << std::setw(4) << iteration << ".vtu";
   for (auto &p : particles.particles) {
-      plotParticle(p);
+    if(!p.left_domain){
+       plotParticle(p);
+    }
   }
 
   std::ofstream file(strstr.str().c_str());
