@@ -1,6 +1,7 @@
 #include "Force.h"
 #include "../particle/container/DirectSumContainer.h"
 #include "utils/ArrayUtils.h"
+#include <iostream>
 
 void Force::run(LinkedCellContainer &particles, ForceType type,
                 OPTIONS OPTION) {
@@ -22,7 +23,7 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       p.updateF(0, 0, 0);
     }
 
-    for (auto it = particles.particles.pair_begin();
+    /*for (auto it = particles.particles.pair_begin();
          it != particles.particles.pair_end(); ++it) {
       auto r12 = it->second->getX() - it->first->getX();
       double distance = ArrayUtils::L2Norm(r12);
@@ -37,7 +38,24 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
 
       it->first->updateF(it->first->getF() + force);
       it->second->updateF(it->second->getF() - force);
+    }*/
+    for(auto& p : particles.particles){
+      for(auto& f : particles.particles){
+        if(f != p){
+          auto r12 = f.getX() - p.getX();
+          double distance = ArrayUtils::L2Norm(r12);
+          double totalForce;
+          double term = SIGMA / distance;
+          double term6 = pow(term, 6);
+          double term12 = pow(term, 12);
+          totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
+          auto force = (totalForce / distance) * r12;
+          p.updateF(p.getF() + force);
+          f.updateF(f.getF() - force);
+        }
+      }
     }
+  
   } else {
     for (auto &p : particles.particles) {
       p.updateOldF(p.getF());
@@ -45,10 +63,11 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
     }
 
     for (auto &particle : particles.particles) {
-      for (auto neighbour : particles.get_neighbours(particle)) {
+      for (auto& neighbour : particles.get_neighbours(particle.getType())){ {
+        if(*neighbour != particle){
         auto r12 = neighbour->getX() - particle.getX();
         double distance = ArrayUtils::L2Norm(r12);
-
+      
         double totalForce;
         double term = SIGMA / distance;
         double term6 = pow(term, 6);
@@ -59,9 +78,11 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
 
         particle.updateF(particle.getF() + force);
         neighbour->updateF(neighbour->getF() - force);
+        }
       }
     }
   }
+}
 }
 
 void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
@@ -95,9 +116,8 @@ void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
       p.updateOldF(p.getF());
       p.updateF(0, 0, 0);
     }
-
     for (auto &particle : particles.particles) {
-      for (auto neighbour : particles.get_neighbours(particle)) {
+      for (auto neighbour : particles.get_neighbours(particle.getType())) {
         auto r12 = neighbour->getX() - particle.getX();
         double distance = ArrayUtils::L2Norm(r12);
 

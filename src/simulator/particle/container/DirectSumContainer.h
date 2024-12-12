@@ -127,6 +127,8 @@ public:
    */
   std::vector<ParticlePair>::iterator pair_end();
 
+  std::vector<ParticlePointer>&  get_all_particles();
+
 protected:
   /**
    * @brief Creates particle pairs for newly inserted particle.
@@ -136,7 +138,6 @@ protected:
 
   void create_pairs(const ParticlePointer &new_particle);
 
-protected:
   /**
    * @brief Main underlying container. Manages pointers to Particle objects.
    */

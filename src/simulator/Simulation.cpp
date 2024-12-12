@@ -24,7 +24,7 @@ std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
 Simulation::Simulation(SimParams &params) : params_(params) {}
 
 LinkedCellContainer Simulation::readFile(SimParams &params) {
-  LinkedCellContainer particles{{180.0, 90.0}, 3.0};
+  LinkedCellContainer particles{{180.0,90.0}, 3.0};
   XMLReader::readXMLFile(particles, params);
   return particles;
 }
@@ -53,7 +53,7 @@ void Simulation::run(LinkedCellContainer &particles) {
   OPTIONS option = params_.linked_cells ? OPTIONS::LINKED_CELLS : OPTIONS::DIRECT_SUM;
 
   while (current_time < params_.end_time) {
-
+  
     // Update particles and handle boundary conditions
     // particles.updateParticles();
     Calculation<Position>::run(particles, params_.time_delta, option);

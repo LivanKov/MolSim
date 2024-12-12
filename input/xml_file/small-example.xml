@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MolSim>
     <simulation_parameters>
-        <end_time>1</end_time>
+        <end_time>5</end_time>
         <delta_time>0.002</delta_time>
         <output_basename>../output</output_basename>
         <write_frequency>10</write_frequency>
         <r_cutoff_radius>3.0</r_cutoff_radius>
         <domain_size>
-            <x>180.0</x>
-            <y>90.0</y>
+            <x>9.0</x>
+            <y>9.0</y>
             <z>0.0</z>
         </domain_size>
     </simulation_parameters>
@@ -16,20 +16,20 @@
     <cuboids>
         <cuboid>
             <coordinate>
-                <x>15.0</x>
-                <y>15.0</y>
+                <x>0.0</x>
+                <y>0.0</y>
                 <z>0.0</z>
             </coordinate>
             <dimensions>
-                <x>4</x>
-                <y>4</y>
+                <x>3</x>
+                <y>3</y>
                 <z>1</z>
             </dimensions>
-            <mesh_width>1.1225</mesh_width>
+            <mesh_width>1</mesh_width>
             <mass>1.0</mass>
             <initial_velocity>
                 <x>0.0</x>
-                <y>-10.0</y>
+                <y>0.0</y>
                 <z>0.0</z>
             </initial_velocity>
             <average_velocity>0.0</average_velocity>

@@ -3,20 +3,12 @@
 #include "utils/logger/Logger.h"
 #include <array>
 #include <initializer_list>
+#include <unordered_set>
+#include <unordered_map>
 
 #pragma once
 
 #define DIVISION_TOLERANCE 1e-6
-
-/**
- * @struct Cell
- * @brief Manages a vector of shared pointers to Particle objects.
- */
-struct Cell {
-  std::vector<ParticlePointer> particles;
-  size_t size() const;
-  ParticlePointer operator[](size_t index);
-};
 
 /**
  * @class LinkedCellContainer
@@ -24,6 +16,17 @@ struct Cell {
  * to speed up the computation.Inherits from DirectSumContainer.
  */
 class LinkedCellContainer {
+
+  /** @struct Cell
+ *    @brief Manages a vector of shared pointers to Particle objects.
+ */
+struct Cell {
+  std::unordered_set<int>particle_ids;
+  size_t size() const;
+  void insert(int id);
+  void remove(int id);
+};
+
   /**
    * @brief Constructor for LinkedCellContainer.
    * @param domain_size The size of the simulation domain (e.g., {x, y, z}
@@ -71,7 +74,7 @@ public:
    * @param p The particle whose location is updated.
    * @param old_position The particle's previous position.
    */
-  void update_particle_location(ParticlePointer p,
+  void update_particle_location(int particle_id,
                                 const std::array<double, 3> &old_position);
 
   /**
@@ -80,7 +83,7 @@ public:
    * @param p The particle for which neighbors are retrieved.
    * @return A vector of shared pointers to neighboring particles.
    */
-  std::vector<ParticlePointer> get_neighbours(Particle &p);
+  std::vector<ParticlePointer> get_neighbours(int particle_id);
 
   /**
    * @brief Applies the specified boundary conditions to a particle.
@@ -145,6 +148,8 @@ public:
   size_t size();
 
   Particle &operator[](size_t index);
+
+   std::unordered_map<int,ParticlePointer> cells_map;
 
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,

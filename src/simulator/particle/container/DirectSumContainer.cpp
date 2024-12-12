@@ -94,6 +94,10 @@ std::vector<ParticlePair>::iterator DirectSumContainer::pair_end() {
   return _particle_pair_container.end();
 }
 
+std::vector<ParticlePointer> &DirectSumContainer::get_all_particles() {
+  return _particle_container;
+}
+
 void DirectSumContainer::create_pairs(const ParticlePointer &new_particle) {
   for (auto const &p : _particle_container) {
     if (*new_particle != *p)

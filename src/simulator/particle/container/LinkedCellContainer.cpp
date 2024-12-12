@@ -2,9 +2,11 @@
 #include <cmath>
 #include "../../Simulation.h"
 
-size_t Cell::size() const { return particles.size(); }
+size_t LinkedCellContainer::Cell::size() const { return particle_ids.size(); }
 
-ParticlePointer Cell::operator[](size_t index) { return particles[index]; }
+void LinkedCellContainer::Cell::insert(int id) { particle_ids.insert(id); }
+
+void LinkedCellContainer::Cell::remove(int id) { particle_ids.erase(id); }
 
 LinkedCellContainer::LinkedCellContainer(
     std::initializer_list<double> domain_size, double r_cutoff,
@@ -12,7 +14,7 @@ LinkedCellContainer::LinkedCellContainer(
     : domain_size_{domain_size}, r_cutoff_{r_cutoff},
       r_cutoff_x{r_cutoff}, r_cutoff_y{r_cutoff}, r_cutoff_z{r_cutoff},
       left_corner_coordinates{0.0, 0.0, 0.0}, x{0}, y{0}, z{0},
-      boundary_conditions_{boundary_conditions}, particles{} {
+      boundary_conditions_{boundary_conditions}, particles{}, cells_map{} {
   if (domain_size.size() != 3 && domain_size.size() != 2) {
     throw std::invalid_argument("Domain size must have 2 or 3 elements");
   }
@@ -41,11 +43,16 @@ LinkedCellContainer::LinkedCellContainer(
           ? (static_cast<size_t>((domain_size_[2] / r_cutoff)))
           : 1;
   cells = std::vector<Cell>(x * y * z, Cell());
+
+  for(auto& p : particles.get_all_particles()){
+    cells_map[p->getType()] = p;
+  }
+
 }
 
 LinkedCellContainer::LinkedCellContainer()
     : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0.0, 0.0, 0.0},
-      x{0}, y{0}, z{0}, boundary_conditions_{} {}
+      x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{} {}
 
 void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
@@ -60,16 +67,17 @@ void LinkedCellContainer::insert(Particle &p, bool placement) {
                          (position[2] - left_corner_coordinates[2]) / r_cutoff_z)
                    : 0;
     size_t index = i + j * x + k * x * y;
-    cells[index].particles.push_back(p_ptr);
+    cells[index].insert(p_ptr->getType());
   } else if(!is_within_domain(p_ptr->getX())) {
     p_ptr->left_domain = true;
     particles_left_domain++;
   }
   particles.insert(p_ptr);
+  cells_map[p_ptr->getType()] = p_ptr;
 }
 
 bool LinkedCellContainer::is_within_domain(
-    const std::array<double, 3> &position) {
+    const std::array<double, 3> &position) {      
   return position[0] >= left_corner_coordinates[0] &&
          position[0] < left_corner_coordinates[0] + domain_size_[0] &&
          position[1] >= left_corner_coordinates[1] &&
@@ -81,9 +89,10 @@ bool LinkedCellContainer::is_within_domain(
 }
 
 void LinkedCellContainer::update_particle_location(
-    ParticlePointer p, const std::array<double, 3> &old_position) {
-  if (is_within_domain(old_position)) {
-    size_t i = static_cast<size_t>(
+    int particle_id, const std::array<double, 3> &old_position) {
+
+    //compute previous index
+      size_t i = static_cast<size_t>(
         (old_position[0] - left_corner_coordinates[0]) / r_cutoff_x);
     size_t j = static_cast<size_t>(
         (old_position[1] - left_corner_coordinates[1]) / r_cutoff_y);
@@ -93,35 +102,53 @@ void LinkedCellContainer::update_particle_location(
                   (old_position[2] - left_corner_coordinates[2]) / r_cutoff_z)
             : 0;
     size_t old_index = i + j * x + k * x * y;
-    cells[old_index].particles.erase(
-        std::remove(cells[old_index].particles.begin(),
-                    cells[old_index].particles.end(), p),
-        cells[old_index].particles.end());
-  }
-  if (is_within_domain(p->getX())) {
-    size_t i = static_cast<size_t>((p->getX()[0] - left_corner_coordinates[0]) /
+
+
+    size_t q = static_cast<size_t>((cells_map[particle_id]->getX()[0] - left_corner_coordinates[0]) /
                                    r_cutoff_x);
-    size_t j = static_cast<size_t>((p->getX()[1] - left_corner_coordinates[1]) /
+    size_t v = static_cast<size_t>((cells_map[particle_id]->getX()[1] - left_corner_coordinates[1]) /
                                    r_cutoff_y);
-    size_t k =
+    size_t w =
         domain_size_.size() == 3
-            ? static_cast<size_t>((p->getX()[2] - left_corner_coordinates[2]) /
+            ? static_cast<size_t>((cells_map[particle_id]->getX()[2] - left_corner_coordinates[2]) /
                                   r_cutoff_z)
             : 0;
-    size_t index = i + j * x + k * x * y;
-    cells[index].particles.push_back(p);
+    size_t current_index = q + v * x + w * x * y;
+
+
+    //compute current index
+  if(current_index != old_index){
+    
+  if (is_within_domain(old_position)) {
+     cells[old_index].remove(cells_map[particle_id]->getType());
+  } 
+  if (is_within_domain(cells_map[particle_id]->getX())) {
+
+    cells[current_index].insert(cells_map[particle_id]->getType());
   } else {
-    p->left_domain = true;
+    cells_map[particle_id]->left_domain = true;
     particles_left_domain++;
+  }
   }
 }
 
-Cell &LinkedCellContainer::get_cell(size_t index) { return cells[index]; }
+LinkedCellContainer::Cell &LinkedCellContainer::get_cell(size_t index) { return cells[index]; }
 
-std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
-  std::array<double, 3> position = p.getX();
+std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(int particle_id) {
+  //logger.info("Amount of Cells: " + std::to_string(cells.size()));
+  //logger.info("Available particles: " + std::to_string(particles.size()));
+  //logger.info("left domain particles: " + std::to_string(particles_left_domain));
+  std::vector<ParticlePointer> neighbours{};
+  if(cells_map[particle_id]->left_domain){
+    //logger.info("Particle left domain");
+    //logger.info("Particle: " + p.toString());
+    return neighbours;
+  }
+  std::array<double, 3> position = cells_map[particle_id]->getX();
+  //logger.info("Function call");
+  //logger.info("Particle: " + p.toString());
   size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) /
-                                 r_cutoff_x);
+                                 r_cutoff_x);                         
   size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) /
                                  r_cutoff_y);
   size_t k = domain_size_.size() == 3
@@ -130,11 +157,10 @@ std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
                  : 0;
 
   int index = i + j * x + k * x * y;
-  std::vector<ParticlePointer> neighbours{};
-  for(auto &s : cells[index].particles){
-    if(*s != p){
-      neighbours.push_back(s);
-    }
+  //logger.info("Index: " + std::to_string(index));
+  //logger.info("Particle: " + p.toString());
+  for(auto &i : cells[index].particle_ids){
+      neighbours.push_back(cells_map[i]);
   }
 
   int X = static_cast<int>(x);
@@ -155,23 +181,35 @@ std::vector<ParticlePointer> LinkedCellContainer::get_neighbours(Particle &p) {
         int ni = i_ + di;
         int nj = j_ + dj;
         int nk = k_ + dk;
-
+        
         if (ni >= 0 && ni < X && nj >= 0 && nj < Y && nk >= 0 && nk < Z) {
           int neighborIndex = ni * (Y * Z) + nj * Z + nk;
-          neighbours.insert(neighbours.end(),
-                            cells[neighborIndex].particles.begin(),
-                            cells[neighborIndex].particles.end());
+          for(auto &s : cells[neighborIndex].particle_ids){
+            neighbours.push_back(cells_map[s]);
+          }
         }
       }
     }
   }
+  logger.info("Neighbours size: " + std::to_string(neighbours.size()));
+  logger.info("Cells size" + std::to_string(cells.size()));
+  
+  for(auto &n : neighbours){
+    if(n -> getType() != particle_id)
+      logger.info("Neighbour: " + n->toString());
+  }
+  for(auto &n : particles.get_all_particles()){
+    if(n->getType() != particle_id)
+      logger.info("Particle: " + n->toString());
+  }
 
+  logger.info("Checkpoint");
   return neighbours;
 }
 
 void LinkedCellContainer::clear() {
   for (size_t i = 0; i < cells.size(); ++i) {
-    cells[i].particles.clear();
+    cells[i].particle_ids.clear();
   }
   particles.clear();
 }
@@ -368,24 +406,24 @@ void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
 }
 
 void LinkedCellContainer::removeOutflowParticles() {
-  for (auto &cell : cells) {
+  /*for (auto &cell : cells) {
     cell.particles.erase(std::remove_if(cell.particles.begin(),
                                         cell.particles.end(),
                                         [](const ParticlePointer &p) {
                                           return p->left_domain;
                                         }),
                          cell.particles.end());
-  }
+  }*/
 }
 
 void LinkedCellContainer::updateParticles() {
-  for (auto &cell : cells) {
+  /*for (auto &cell : cells) {
     for (auto &p : cell.particles) {
       handleBoundaryConditions(*p);
     }
   }
 
-  removeOutflowParticles();
+  removeOutflowParticles();*/
 }
 
 size_t LinkedCellContainer::size() { return particles.size(); }

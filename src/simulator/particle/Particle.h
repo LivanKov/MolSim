@@ -52,11 +52,6 @@ private:
    */
   int type;
 
-  /**
-   * Internal flag indicating whether the particle is marked for removal.
-   */
-  bool marked_for_removal;
-
 public:
   /**
    * @brief Constructor.

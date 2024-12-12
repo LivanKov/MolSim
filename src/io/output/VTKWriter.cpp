@@ -62,6 +62,9 @@ void VTKWriter::plot_particles(const std::string &filename, int iteration) {
 }
 
 void VTKWriter::plotParticle(Particle &p) {
+  if(std::isnan(p.getV()[0]) || std::isnan(p.getV()[1]) || std::isnan(p.getV()[2])){
+    Logger::getInstance().error("ERROR: NaN velocity");
+  }
   if (vtkFile->UnstructuredGrid().present()) {
     Logger::getInstance().debug("UnstructuredGrid is present");
   } else {
