@@ -315,21 +315,12 @@ void LinkedCellContainer::readjust() {
       current_up_right = p.getX();
     }
   }
-  logger.debug("Current low left: " + std::to_string(current_low_left[0]) +
-               " " + std::to_string(current_low_left[1]) + " " +
-               std::to_string(current_low_left[2]));
-  logger.debug("Current up right: " + std::to_string(current_up_right[0]) +
-               " " + std::to_string(current_up_right[1]) + " " +
-               std::to_string(current_up_right[2]));
   readjust_coordinates(current_low_left, current_up_right);
   auto particles_ = particles;
   clear();
   for (auto &p : particles_) {
     insert(p, true);
   }
-  logger.debug("New low left: " + std::to_string(left_corner_coordinates[0]) +
-               " " + std::to_string(left_corner_coordinates[1]) + " " +
-               std::to_string(left_corner_coordinates[2]));
 }
 
 void LinkedCellContainer::handleBoundaryConditions(Particle &p) {
