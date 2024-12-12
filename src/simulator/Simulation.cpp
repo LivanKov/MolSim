@@ -24,8 +24,14 @@ std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
 Simulation::Simulation(SimParams &params) : params_(params) {}
 
 LinkedCellContainer Simulation::readFile(SimParams &params) {
-  LinkedCellContainer particles{{90.0, 45.0}, 3.0};
+  LinkedCellContainer particles{{180.0, 90.0}, 3.0};
   XMLReader::readXMLFile(particles, params);
+  if (params.reflective) {
+    particles.boundary_conditions_ = DomainBoundaryConditions{
+        BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
+        BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
+        BoundaryCondition::Reflecting, BoundaryCondition::Reflecting};
+  }
   return particles;
 }
 
@@ -50,10 +56,11 @@ void Simulation::run(LinkedCellContainer &particles) {
     writer = std::make_unique<output::VTKWriter>(particles);
   }
 
-  OPTIONS option = params_.linked_cells ? OPTIONS::LINKED_CELLS : OPTIONS::DIRECT_SUM;
+  OPTIONS option =
+      params_.linked_cells ? OPTIONS::LINKED_CELLS : OPTIONS::DIRECT_SUM;
 
   while (current_time < params_.end_time) {
-  
+
     // Update particles and handle boundary conditions
     // particles.updateParticles();
     Calculation<Position>::run(particles, params_.time_delta, option);
@@ -72,7 +79,8 @@ void Simulation::run(LinkedCellContainer &particles) {
 
   logger.info("Number of particles: " + std::to_string(particles.size()));
 
-  logger.info("Particles left the domain: " + std::to_string(particles.particles_left_domain));
+  logger.info("Particles left the domain: " +
+              std::to_string(particles.particles_left_domain));
 
   logger.warn("Simulation finished.");
 };

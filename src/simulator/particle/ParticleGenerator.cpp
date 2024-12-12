@@ -3,9 +3,9 @@
  */
 
 #include "ParticleGenerator.h"
+#include "../Simulation.h"
 #include "container/LinkedCellContainer.h"
 #include "utils/MaxwellBoltzmannDistribution.h"
-#include "../Simulation.h"
 
 #include <random>
 
@@ -79,10 +79,10 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
   Logger::getInstance().info("New disk generated");
 }
 
-
-void ParticleGenerator::insertSingleMolecule(const std::array<double, 3> &position,
-                                             const std::array<double, 3> &velocity,
-                                             double mass, LinkedCellContainer &particles) {
+void ParticleGenerator::insertSingleMolecule(
+    const std::array<double, 3> &position,
+    const std::array<double, 3> &velocity, double mass,
+    LinkedCellContainer &particles) {
   Particle particle(position, velocity, mass, particles.particle_id);
   particles.particle_id++;
   Logger::getInstance().trace("New Particle generated");
@@ -91,5 +91,3 @@ void ParticleGenerator::insertSingleMolecule(const std::array<double, 3> &positi
   particles.readjust();
   Logger::getInstance().info("New single molecule generated");
 }
-
-

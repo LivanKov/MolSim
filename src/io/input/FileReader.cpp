@@ -86,7 +86,7 @@ void FileReader::readFile(LinkedCellContainer &particles, char *filename) {
           exit(-1);
         }
         datastream >> m;
-        ParticleGenerator::insertSingleMolecule(x, v, m,particles);
+        ParticleGenerator::insertSingleMolecule(x, v, m, particles);
         getline(input_file, tmp_string);
         logger.info("Read line: " + tmp_string);
       }

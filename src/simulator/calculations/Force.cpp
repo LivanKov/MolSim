@@ -39,9 +39,9 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       it->first->updateF(it->first->getF() + force);
       it->second->updateF(it->second->getF() - force);
     }*/
-    for(auto& p : particles.particles){
-      for(auto& f : particles.particles){
-        if(f != p){
+    for (auto &p : particles.particles) {
+      for (auto &f : particles.particles) {
+        if (f != p) {
           auto r12 = f.getX() - p.getX();
           double distance = ArrayUtils::L2Norm(r12);
           double totalForce;
@@ -55,33 +55,32 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
         }
       }
     }
-  
+
   } else {
     for (auto &p : particles.particles) {
       p.updateOldF(p.getF());
       p.updateF(0, 0, 0);
     }
     for (auto &particle : particles.particles) {
-      for (auto& neighbour : particles.get_neighbours(particle.getType())){ {
-        if(*neighbour != particle){
-        auto r12 = neighbour->getX() - particle.getX();
-        double distance = ArrayUtils::L2Norm(r12);
-      
-        double totalForce;
-        double term = SIGMA / distance;
-        double term6 = pow(term, 6);
-        double term12 = pow(term, 12);
-        totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
+      for (auto &neighbour : particles.get_neighbours(particle.getType())) {
+        if (*neighbour != particle) {
+          auto r12 = neighbour->getX() - particle.getX();
+          double distance = ArrayUtils::L2Norm(r12);
 
-        auto force = (totalForce / distance) * r12;
+          double totalForce;
+          double term = SIGMA / distance;
+          double term6 = pow(term, 6);
+          double term12 = pow(term, 12);
+          totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
 
-        particle.updateF(particle.getF() + force);
-        neighbour->updateF(neighbour->getF() - force);
+          auto force = (totalForce / distance) * r12;
+
+          particle.updateF(particle.getF() + force);
+          neighbour->updateF(neighbour->getF() - force);
         }
       }
     }
   }
-}
 }
 
 void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {

@@ -127,7 +127,7 @@ public:
    */
   std::vector<ParticlePair>::iterator pair_end();
 
-  std::vector<ParticlePointer>&  get_all_particles();
+  std::vector<ParticlePointer> &get_all_particles();
 
 protected:
   /**

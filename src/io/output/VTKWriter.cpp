@@ -45,16 +45,17 @@ void VTKWriter::plot_particles(const std::string &filename, int iteration) {
   DataArray_t cells_data(type::Float32, "types", 0);
   cells.DataArray().push_back(cells_data);
 
-  PieceUnstructuredGrid_t piece(pointData, cellData, points, cells,
-                                particles.size() - particles.particles_left_domain, 0);
+  PieceUnstructuredGrid_t piece(
+      pointData, cellData, points, cells,
+      particles.size() - particles.particles_left_domain, 0);
   UnstructuredGrid_t unstructuredGrid(piece);
   vtkFile->UnstructuredGrid(unstructuredGrid);
   std::stringstream strstr;
   strstr << filename << "/" << out_name << "_" << std::setfill('0')
          << std::setw(4) << iteration << ".vtu";
   for (auto &p : particles.particles) {
-    if(!p.left_domain){
-       plotParticle(p);
+    if (!p.left_domain) {
+      plotParticle(p);
     }
   }
 
@@ -64,7 +65,8 @@ void VTKWriter::plot_particles(const std::string &filename, int iteration) {
 }
 
 void VTKWriter::plotParticle(Particle &p) {
-  if(std::isnan(p.getV()[0]) || std::isnan(p.getV()[1]) || std::isnan(p.getV()[2])){
+  if (std::isnan(p.getV()[0]) || std::isnan(p.getV()[1]) ||
+      std::isnan(p.getV()[2])) {
     Logger::getInstance().error("ERROR: NaN velocity");
   }
   if (vtkFile->UnstructuredGrid().present()) {

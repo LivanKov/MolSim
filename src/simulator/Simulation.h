@@ -5,18 +5,16 @@
 
 #pragma once
 
-
-/** 
+/**
  * @brief Global variables for particle tracking.
  * @particles_left_domain: Number of particles left in the domain.
  * @particle_id: Particle ID.
-*/
+ */
 
 /**
  * @class Simulation
  * @brief Main simulation class, provides an interface to run the simulation.
  */
-
 
 class Simulation {
 private:

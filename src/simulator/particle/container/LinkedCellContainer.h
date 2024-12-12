@@ -3,8 +3,8 @@
 #include "utils/logger/Logger.h"
 #include <array>
 #include <initializer_list>
-#include <unordered_set>
 #include <unordered_map>
+#include <unordered_set>
 
 #pragma once
 
@@ -18,14 +18,15 @@
 class LinkedCellContainer {
 
   /** @struct Cell
- *    @brief Manages a vector of shared pointers to Particle objects.
- */
-struct Cell {
-  std::unordered_set<int>particle_ids;
-  size_t size() const;
-  void insert(int id);
-  void remove(int id);
-};
+   *    @brief Manages a vector of shared pointers to Particle objects.
+   */
+  struct Cell {
+    std::unordered_set<int> particle_ids;
+    size_t size() const;
+    void insert(int id);
+    void remove(int id);
+    bool is_halo = false;
+  };
 
   /**
    * @brief Constructor for LinkedCellContainer.
@@ -149,21 +150,23 @@ public:
 
   Particle &operator[](size_t index);
 
-   std::unordered_map<int,ParticlePointer> cells_map;
+  std::unordered_map<int, ParticlePointer> cells_map;
 
   size_t particles_left_domain;
   size_t particle_id;
 
   bool is_wrapper;
 
-private:
-  void readjust_coordinates(std::array<double, 3> current_low_left,
-                            std::array<double, 3> current_up_right);
+  size_t halo_count;
 
   /**
    * @brief The boundary conditions for the simulation domain.
    */
   DomainBoundaryConditions boundary_conditions_;
+
+private:
+  void readjust_coordinates(std::array<double, 3> current_low_left,
+                            std::array<double, 3> current_up_right);
 
   /**
    * @brief Retrieves a cell by its index in the unwrapped cell array.
@@ -171,4 +174,9 @@ private:
    * @return A reference to the cell at the specified index.
    */
   Cell &get_cell(size_t index);
+
+  /**
+   * @brief Assigns halo status to cells at the border of the array
+   */
+  void mark_halo_cells();
 };

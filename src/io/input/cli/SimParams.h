@@ -17,4 +17,5 @@ struct SimParams {
   std::array<double, 3> domain_size;
   bool linked_cells;
   DomainBoundaryConditions boundaryConditions;
+  bool reflective;
 };
