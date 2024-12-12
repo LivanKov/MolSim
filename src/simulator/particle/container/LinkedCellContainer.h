@@ -151,6 +151,11 @@ public:
 
    std::unordered_map<int,ParticlePointer> cells_map;
 
+  size_t particles_left_domain;
+  size_t particle_id;
+
+  bool is_wrapper;
+
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,
                             std::array<double, 3> current_up_right);

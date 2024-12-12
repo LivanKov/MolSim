@@ -14,7 +14,7 @@ LinkedCellContainer::LinkedCellContainer(
     : domain_size_{domain_size}, r_cutoff_{r_cutoff},
       r_cutoff_x{r_cutoff}, r_cutoff_y{r_cutoff}, r_cutoff_z{r_cutoff},
       left_corner_coordinates{0.0, 0.0, 0.0}, x{0}, y{0}, z{0},
-      boundary_conditions_{boundary_conditions}, particles{}, cells_map{} {
+      boundary_conditions_{boundary_conditions}, particles{}, cells_map{}, particle_id{0}, particles_left_domain{0}, is_wrapper{false} {
   if (domain_size.size() != 3 && domain_size.size() != 2) {
     throw std::invalid_argument("Domain size must have 2 or 3 elements");
   }
@@ -52,7 +52,7 @@ LinkedCellContainer::LinkedCellContainer(
 
 LinkedCellContainer::LinkedCellContainer()
     : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0.0, 0.0, 0.0},
-      x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{} {}
+      x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{}, particle_id{0}, particles_left_domain{0}, is_wrapper{false} {}
 
 void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
@@ -114,8 +114,6 @@ void LinkedCellContainer::update_particle_location(
                                   r_cutoff_z)
             : 0;
     size_t current_index = q + v * x + w * x * y;
-
-
     //compute current index
   if(current_index != old_index){
     
@@ -123,7 +121,6 @@ void LinkedCellContainer::update_particle_location(
      cells[old_index].remove(cells_map[particle_id]->getType());
   } 
   if (is_within_domain(cells_map[particle_id]->getX())) {
-
     cells[current_index].insert(cells_map[particle_id]->getType());
   } else {
     cells_map[particle_id]->left_domain = true;

@@ -24,7 +24,7 @@ std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
 Simulation::Simulation(SimParams &params) : params_(params) {}
 
 LinkedCellContainer Simulation::readFile(SimParams &params) {
-  LinkedCellContainer particles{{180.0,90.0}, 3.0};
+  LinkedCellContainer particles{{180.0, 90.0}, 3.0};
   XMLReader::readXMLFile(particles, params);
   return particles;
 }
@@ -71,6 +71,8 @@ void Simulation::run(LinkedCellContainer &particles) {
   logger.info("output written. Terminating...");
 
   logger.info("Number of particles: " + std::to_string(particles.size()));
+
+  logger.info("Particles left the domain: " + std::to_string(particles.particles_left_domain));
 
   logger.warn("Simulation finished.");
 };

@@ -32,7 +32,8 @@ void ParticleGenerator::insertCuboid(
           velocity[dim] += randomVelocity[dim];
         }
 
-        Particle particle(position, velocity, m, particle_id++);
+        Particle particle(position, velocity, m, particles.particle_id);
+        particles.particle_id++;
         Logger::getInstance().trace("New Particle generated");
         particles.insert(particle, true);
         Logger::getInstance().trace("New Particle inserted into container");
@@ -66,7 +67,8 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
         std::array position = {x, y, z};
         std::array<double, 3> velocity = initialVelocity;
 
-        Particle particle(position, velocity, mass, particle_id++);
+        Particle particle(position, velocity, mass, particles.particle_id);
+        particles.particle_id++;
         Logger::getInstance().trace("New Particle generated");
         particles.insert(particle, true);
         Logger::getInstance().trace("New Particle inserted into container");
@@ -81,7 +83,8 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
 void ParticleGenerator::insertSingleMolecule(const std::array<double, 3> &position,
                                              const std::array<double, 3> &velocity,
                                              double mass, LinkedCellContainer &particles) {
-  Particle particle(position, velocity, mass, particle_id++);
+  Particle particle(position, velocity, mass, particles.particle_id);
+  particles.particle_id++;
   Logger::getInstance().trace("New Particle generated");
   particles.insert(particle, true);
   Logger::getInstance().trace("New Particle inserted into container");
