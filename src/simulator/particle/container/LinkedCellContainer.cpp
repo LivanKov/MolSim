@@ -404,6 +404,8 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id) {
 
 void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
                                                               int cell_index) {
+  
+  //this is way too long and needs to be refactored
   if (z == 1) {
     // handle corner case
     if (cell_index == 0) {
@@ -539,6 +541,30 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
                    cells_map[particle_id]->getSigma()};
       insert(p_1, false);
       insert(p_2, false);
+    } else if( cell_index % x == 0){
+      cells_map[particle_id]->updateX(
+          cells_map[particle_id]->getX()[0] + domain_size_[0],
+          cells_map[particle_id]->getX()[1],
+          cells_map[particle_id]->getX()[2]);
+      cells_map[particle_id]->left_domain = true;
+    } else if( (cell_index + 1) % x == 0){
+      cells_map[particle_id]->updateX(
+          cells_map[particle_id]->getX()[0] - domain_size_[0],
+          cells_map[particle_id]->getX()[1],
+          cells_map[particle_id]->getX()[2]);
+      cells_map[particle_id]->left_domain = true;
+    } else if( cell_index < x){
+      cells_map[particle_id]->updateX(
+          cells_map[particle_id]->getX()[0],
+          cells_map[particle_id]->getX()[1] + domain_size_[1],
+          cells_map[particle_id]->getX()[2]);
+      cells_map[particle_id]->left_domain = true;
+    } else if( cell_index >= x * (y - 1)){
+      cells_map[particle_id]->updateX(
+          cells_map[particle_id]->getX()[0],
+          cells_map[particle_id]->getX()[1] - domain_size_[1],
+          cells_map[particle_id]->getX()[2]);
+      cells_map[particle_id]->left_domain = true;
     }
   }
   // determine if corner cel
