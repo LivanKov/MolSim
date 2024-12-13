@@ -17,6 +17,19 @@ LinkedCellContainer::LinkedCellContainer(
       boundary_conditions_{boundary_conditions}, particles{}, cells_map{},
       particle_id{0}, particles_left_domain{0}, is_wrapper{false},
       halo_count{0}, reflective_flag{false} {
+LinkedCellContainer::LinkedCellContainer()
+    : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0.0, 0.0,
+                                                                   0.0},
+      x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{}, particle_id{0},
+      particles_left_domain{0}, is_wrapper{false}, halo_count{0} {}
+
+void LinkedCellContainer::initialize(
+    const std::initializer_list<double> &domain_size, double r_cutoff,
+    const DomainBoundaryConditions &boundary_conditions) {
+  domain_size_ = std::vector<double>(domain_size);
+  r_cutoff_ = r_cutoff;
+  boundary_conditions_ = boundary_conditions;
+
   if (domain_size.size() != 3 && domain_size.size() != 2) {
     throw std::invalid_argument("Domain size must have 2 or 3 elements");
   }
@@ -52,13 +65,6 @@ LinkedCellContainer::LinkedCellContainer(
 
   mark_halo_cells();
 }
-
-LinkedCellContainer::LinkedCellContainer()
-    : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0.0, 0.0,
-                                                                   0.0},
-      x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{}, particle_id{0},
-      particles_left_domain{0}, is_wrapper{false}, halo_count{0},
-      reflective_flag{false} {}
 
 void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
@@ -131,11 +137,12 @@ void LinkedCellContainer::update_particle_location(
     if (is_within_domain(cells_map[particle_id]->getX())) {
       cells[current_index].insert(cells_map[particle_id]->getType());
 
-      if (cells[current_index].is_halo && reflective_flag) {
-        // handle_boundary_conditions(particle_id);
-        auto vel = cells_map[particle_id]->getV();
-        cells_map[particle_id]->updateV(-vel[0], -vel[1], -vel[2]);
-      }
+      // if (cells[current_index].is_halo && reflective_flag) {
+        if (cells[current_index].is_halo) {
+          // handle_boundary_conditions(particle_id);
+          auto vel = cells_map[particle_id]->getV();
+          cells_map[particle_id]->updateV(-vel[0], -vel[1], -vel[2]);
+        }
 
     } else {
       cells_map[particle_id]->left_domain = true;

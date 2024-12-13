@@ -28,35 +28,29 @@ class LinkedCellContainer {
     bool is_halo = false;
   };
 
-  /**
-   * @brief Constructor for LinkedCellContainer.
-   * @param domain_size The size of the simulation domain (e.g., {x, y, z}
-   * dimensions).
-   * @param r_cutoff The cutoff radius for interactions.
-   * @param left_corner_coordinates The coordinates of the domain's lower left
-   * corner.
-   * @param boundary_conditions The boundary conditions for the simulation
-   * domain.
-   * @throws std::invalid_argument If the domain size is not 2D or 3D.
-   */
 public:
-  LinkedCellContainer(
-      std::initializer_list<double> domain_size, double r_cutoff,
-      const DomainBoundaryConditions &boundary_conditions = {
-          BoundaryCondition::Outflow, BoundaryCondition::Outflow,
-          BoundaryCondition::Outflow, BoundaryCondition::Outflow,
-          BoundaryCondition::Outflow, BoundaryCondition::Outflow});
-
   /**
    * @brief Default constructor for LinkedCellContainer.
    */
   LinkedCellContainer();
+
+  /**
+   * @brief Initialize the container with domain size, cutoff radius, and
+   * boundary conditions.
+   * @param domain_size The size of the simulation domain.
+   * @param r_cutoff The cutoff radius for interactions.
+   * @param boundary_conditions The boundary conditions for the domain.
+   */
+  void initialize(const std::initializer_list<double> &domain_size,
+                  double r_cutoff,
+                  const DomainBoundaryConditions &boundary_conditions);
+
   /**
    * @brief Inserts a particle into the container.
    * @param p The particle to be inserted.
    */
   void insert(Particle &p, bool placement = false);
-
+  
   bool is_within_domain(const std::array<double, 3> &position);
 
   void clear();
@@ -152,8 +146,6 @@ public:
    * @brief The boundary conditions for the simulation domain.
    */
   DomainBoundaryConditions boundary_conditions_;
-
-  bool reflective_flag;
 
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,

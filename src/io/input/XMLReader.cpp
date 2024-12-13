@@ -108,6 +108,11 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
       logger.info("Boundary conditions loaded successfully");
     }
 
+    // Initialize the linkedcellcontainer with received parameters from XMLinput
+    particles.initialize(to_initializer_list(simParameters.domain_size),
+                         simParameters.r_cutoff_radius,
+                         simParameters.boundaryConditions);
+
     // Extract cuboid specification
     if (doc->cuboids().present()) {
       logger.info("Number of cuboids found: " +
@@ -191,4 +196,9 @@ BoundaryCondition XMLReader::parseBoundaryCondition(const std::string &value) {
   } else {
     throw std::runtime_error("Invalid boundary condition: " + value);
   }
+}
+
+std::initializer_list<double>
+to_initializer_list(const std::array<double, 3> &arr) {
+  return {arr[0], arr[1], arr[2]};
 }
