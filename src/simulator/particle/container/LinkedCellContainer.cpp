@@ -136,7 +136,7 @@ void LinkedCellContainer::update_particle_location(
         auto vel = cells_map[particle_id]->getV();
         cells_map[particle_id]->updateV(-vel[0], -vel[1], -vel[2]);
       } else if (cells[current_index].is_halo && periodic_flag) {
-        handle_periodic_boundary_conditions(particle_id, current_index);
+        //handle_periodic_boundary_conditions(particle_id, current_index);
       }
 
     } else {
