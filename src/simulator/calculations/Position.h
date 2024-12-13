@@ -1,4 +1,4 @@
-#include "../particle/LinkedCellContainer.h"
+#include "../particle/container/LinkedCellContainer.h"
 #include "Calculation.h"
 
 /**
@@ -6,5 +6,6 @@
  * @brief Struct, that provides functions for position calculation.
  */
 struct Position : AbstractPolicy {
-  static void run(LinkedCellContainer &particles, double time_delta);
+  static void run(LinkedCellContainer &particles, double time_delta,
+                  OPTIONS option);
 };

@@ -53,9 +53,14 @@ private:
   int type;
 
   /**
-   * Internal flag indicating whether the particle is marked for removal.
+   * @brief Lennard-Jones potential parameter epsilon
    */
-  bool marked_for_removal;
+  double epsilon;
+
+  /**
+   * @brief Lennard-Jones potential parameter sigma
+   */
+  double sigma;
 
 public:
   /**
@@ -81,7 +86,7 @@ public:
       // for visualization, we need always 3 coordinates
       // -> in case of 2d, we use only the first and the second
       std::array<double, 3> x_arg, std::array<double, 3> v_arg, double m_arg,
-      int type = 0);
+      int type = 0, double epsilon_arg = 5.0, double sigma_arg = 1.0);
 
   /**
    * @brief Destructor
@@ -130,6 +135,19 @@ public:
    */
 
   int getType() const;
+
+  /**
+   * @brief returns the value, that correponds to particle epsilon.
+   * @return double variable containing the epsilon of the particle.
+   */
+
+  double getEpsilon() const;
+
+  /**
+   * @brief returns the value, that correponds to particle sigma.
+   * @return double variable containing the sigma of the particle.
+   */
+  double getSigma() const;
 
   /**
    * @brief overload the equality (==) operator to compare particles.
@@ -212,20 +230,6 @@ public:
    */
 
   bool left_domain;
-
-  /**
-   * @brief Marks the particle for removal from the container.
-   *
-   * This method sets an internal flag indicating that the particle is scheduled
-   * for removal.
-   */
-  void markForRemoval() { marked_for_removal = true; }
-
-  /**
-   * @brief Checks if the particle is marked for removal.
-   * @return True if the particle is marked for removal, otherwise false.
-   */
-  bool isMarkedForRemoval() const { return marked_for_removal; }
 };
 
 /**

@@ -10,6 +10,7 @@
 #include "io/output/FileWriter.h"
 #include "outputUtils/vtk-unstructured.h"
 #include "simulator/particle/Particle.h"
+#include "simulator/particle/container/LinkedCellContainer.h"
 
 #include <list>
 
@@ -25,7 +26,7 @@ public:
   /**
    * set up internal data structures and prepare to plot a particle.
    */
-  VTKWriter(ParticleContainer &particles);
+  VTKWriter(LinkedCellContainer &particles);
 
   /**
    * writes the final output file.

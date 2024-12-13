@@ -1,29 +1,33 @@
-#include "BoundaryCondition.h"
-#include "ParticleContainer.h"
+#include "../BoundaryCondition.h"
+#include "DirectSumContainer.h"
 #include "utils/logger/Logger.h"
 #include <array>
 #include <initializer_list>
+#include <unordered_map>
+#include <unordered_set>
 
 #pragma once
 
 #define DIVISION_TOLERANCE 1e-6
 
 /**
- * @struct Cell
- * @brief Manages a vector of shared pointers to Particle objects.
- */
-struct Cell {
-  std::vector<ParticlePointer> particles;
-  size_t size() const;
-  ParticlePointer operator[](size_t index);
-};
-
-/**
  * @class LinkedCellContainer
  * @brief Class that provides a container for particles that uses linked cells
- * to speed up the computation.Inherits from ParticleContainer.
+ * to speed up the computation.Inherits from DirectSumContainer.
  */
-class LinkedCellContainer : public ParticleContainer {
+class LinkedCellContainer {
+
+  /** @struct Cell
+   *    @brief Manages a vector of shared pointers to Particle objects.
+   */
+  struct Cell {
+    std::unordered_set<int> particle_ids;
+    size_t size() const;
+    void insert(int id);
+    void remove(int id);
+    bool is_halo = false;
+  };
+
   /**
    * @brief Constructor for LinkedCellContainer.
    * @param domain_size The size of the simulation domain (e.g., {x, y, z}
@@ -38,7 +42,6 @@ class LinkedCellContainer : public ParticleContainer {
 public:
   LinkedCellContainer(
       std::initializer_list<double> domain_size, double r_cutoff,
-      std::initializer_list<double> left_corner_coordinates,
       const DomainBoundaryConditions &boundary_conditions = {
           BoundaryCondition::Outflow, BoundaryCondition::Outflow,
           BoundaryCondition::Outflow, BoundaryCondition::Outflow,
@@ -52,18 +55,15 @@ public:
    * @brief Inserts a particle into the container.
    * @param p The particle to be inserted.
    */
-  void insert(Particle &p) override;
-
-  void update_particle_location(ParticlePointer p,
-                                const std::array<double, 3> &old_position);
+  void insert(Particle &p, bool placement = false);
 
   bool is_within_domain(const std::array<double, 3> &position);
 
-  void clear() override;
+  void clear();
 
   void readjust();
 
-  void reinitialize(ParticleContainer &container);
+  void reinitialize(DirectSumContainer &container);
 
   void reinitialize(std::vector<Particle> &particles);
 
@@ -75,8 +75,8 @@ public:
    * @param p The particle whose location is updated.
    * @param old_position The particle's previous position.
    */
-  void update_particle_location(Particle &p,
-                                std::array<double, 3> &old_position);
+  void update_particle_location(int particle_id,
+                                const std::array<double, 3> &old_position);
 
   /**
    * @brief Retrieves neighboring particles of a given particle within the
@@ -84,29 +84,18 @@ public:
    * @param p The particle for which neighbors are retrieved.
    * @return A vector of shared pointers to neighboring particles.
    */
-  std::vector<ParticlePointer> get_neighbours(Particle &p);
+  std::vector<ParticlePointer> get_neighbours(int particle_id);
 
   /**
    * @brief Applies the specified boundary conditions to a particle.
    * @param p The particle to which boundary conditions are applied.
    */
-  void handleBoundaryConditions(Particle &p);
-
-  /**
-   * @brief Removes particles that have crossed outflow boundaries.
-   */
-  void removeOutflowParticles();
-
-  /**
-   * @brief Updates particle positions and handles boundary conditions.
-   * This function integrates particle updates and boundary management.
-   */
-  void updateParticles();
+  void handle_boundary_conditions(int particle_id);
 
   /**
    * @brief The size of the simulation domain.
    */
-  const std::vector<double> domain_size_;
+  std::vector<double> domain_size_;
 
   /**
    * @brief The coordinates of the domain's lower left corner.
@@ -140,19 +129,36 @@ public:
    */
 
   std::vector<Cell> cells;
-  bool extend_x;
-  bool extend_y;
-  bool extend_z;
+  DirectSumContainer particles;
+  double r_cutoff_x;
+  double r_cutoff_y;
+  double r_cutoff_z;
   Logger &logger = Logger::getInstance();
 
-private:
-  void readjust_coordinates(std::array<double, 3> current_low_left,
-                            std::array<double, 3> current_up_right);
+  size_t size();
+
+  Particle &operator[](size_t index);
+
+  std::unordered_map<int, ParticlePointer> cells_map;
+
+  size_t particles_left_domain;
+  size_t particle_id;
+
+  bool is_wrapper;
+
+  size_t halo_count;
 
   /**
    * @brief The boundary conditions for the simulation domain.
    */
   DomainBoundaryConditions boundary_conditions_;
+
+
+  bool reflective_flag;
+
+private:
+  void readjust_coordinates(std::array<double, 3> current_low_left,
+                            std::array<double, 3> current_up_right);
 
   /**
    * @brief Retrieves a cell by its index in the unwrapped cell array.
@@ -160,4 +166,9 @@ private:
    * @return A reference to the cell at the specified index.
    */
   Cell &get_cell(size_t index);
+
+  /**
+   * @brief Assigns halo status to cells at the border of the array
+   */
+  void mark_halo_cells();
 };

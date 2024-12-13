@@ -6,8 +6,8 @@
  */
 
 #include "FileReader.h"
-#include "simulator/particle/ParticleContainer.h"
 #include "simulator/particle/ParticleGenerator.h"
+#include "simulator/particle/container/LinkedCellContainer.h"
 
 #include <cstdlib>
 #include <fstream>
@@ -37,7 +37,7 @@ auto containerToString = [](const auto &container) {
   return oss.str();
 };
 
-void FileReader::readFile(ParticleContainer &particles, char *filename) {
+void FileReader::readFile(LinkedCellContainer &particles, char *filename) {
   std::array<double, 3> x;
   std::array<size_t, 3> mesh;
   double d;
@@ -86,8 +86,7 @@ void FileReader::readFile(ParticleContainer &particles, char *filename) {
           exit(-1);
         }
         datastream >> m;
-        particles.emplace_back(x, v, m);
-
+        ParticleGenerator::insertSingleMolecule(x, v, m, particles);
         getline(input_file, tmp_string);
         logger.info("Read line: " + tmp_string);
       }

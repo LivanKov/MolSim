@@ -15,5 +15,8 @@ struct SimParams {
   bool disable_output;
   std::string log_level;
   std::array<double, 3> domain_size;
+  bool linked_cells;
   DomainBoundaryConditions boundaryConditions;
+  bool reflective;
+  bool periodic;
 };

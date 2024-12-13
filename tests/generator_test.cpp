@@ -1,4 +1,4 @@
-#include "simulator/particle/ParticleContainer.h"
+#include "simulator/particle/container/LinkedCellContainer.h"
 #include "simulator/particle/ParticleGenerator.h"
 #include "utils/logger/Logger.h"
 #include <gtest/gtest.h>
@@ -8,7 +8,7 @@
 class CuboidTest : public testing::Test {
 protected:
   CuboidTest() : container{} {}
-  ParticleContainer container;
+  LinkedCellContainer container;
 };
 
 // simple test for the cuboid
@@ -74,7 +74,7 @@ TEST_F(CuboidTest, MultipleCuboidsTest) {
 class DiscTest : public testing::Test {
 protected:
   DiscTest() : container{} {}
-  ParticleContainer container;
+  LinkedCellContainer container;
 };
 
 // Disc test case: checks if correct amount of particles got inserted
@@ -86,7 +86,7 @@ TEST_F(DiscTest, SizeSimpleDiscTest) {
   double h{2^(1/6)};
   double mass{1.0};
 
-  ParticleGenerator::insertDisc(center,initialVelocity,radius,h,mass,container);
+  ParticleGenerator::insertDisc(center,initialVelocity,radius,h,mass, container);
 
   ASSERT_EQ(container.size(), 5);
 }

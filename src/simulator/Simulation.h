@@ -1,14 +1,21 @@
 #include "io/input/cli/SimParams.h"
-#include "particle/LinkedCellContainer.h"
-#include "particle/ParticleContainer.h"
+#include "particle/container/DirectSumContainer.h"
+#include "particle/container/LinkedCellContainer.h"
 #include <memory>
 
 #pragma once
 
 /**
+ * @brief Global variables for particle tracking.
+ * @particles_left_domain: Number of particles left in the domain.
+ * @particle_id: Particle ID.
+ */
+
+/**
  * @class Simulation
  * @brief Main simulation class, provides an interface to run the simulation.
  */
+
 class Simulation {
 private:
   SimParams &params_;
@@ -29,7 +36,7 @@ public:
   /**
    * @brief Run the simulation, contains all the necessary logic for the
    * simulation.
-   * @param particles ParticleContainer reference, pass the particle container
+   * @param particles DirectSumContainer reference, pass the particle container
    * initialized in readFile.
    */
   void run(LinkedCellContainer &particles);
@@ -37,7 +44,7 @@ public:
    * @brief read file from XML input, initialize particles.
    * @param simParams SimParams reference, pass the initial simulation
    * parameters by XML input.
-   * @return ParticleContainer initialized particle container.
+   * @return DirectSumContainer initialized particle container.
    */
   static LinkedCellContainer readFile(SimParams &simParams);
 

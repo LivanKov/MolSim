@@ -8,7 +8,7 @@
 #pragma once
 
 #include "simulator/particle/Particle.h"
-#include "simulator/particle/ParticleContainer.h"
+#include "simulator/particle/container/LinkedCellContainer.h"
 
 #include <list>
 
@@ -20,5 +20,5 @@ public:
   FileReader();
   virtual ~FileReader() = 0;
 
-  static void readFile(ParticleContainer &particles, char *filename);
+  static void readFile(LinkedCellContainer &particles, char *filename);
 };

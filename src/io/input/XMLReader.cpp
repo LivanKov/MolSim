@@ -1,8 +1,8 @@
 #include "XMLReader.h"
 #include "MolSim.hxx"
 #include "cli/SimParams.h"
-#include "simulator/particle/ParticleContainer.h"
 #include "simulator/particle/ParticleGenerator.h"
+#include "simulator/particle/container/LinkedCellContainer.h"
 #include "utils/logger/Logger.h"
 
 #include <cstdlib>
@@ -31,7 +31,7 @@ auto containerToStrings = [](const auto &container) {
   return oss.str();
 };
 
-void XMLReader::readXMLFile(ParticleContainer &particles,
+void XMLReader::readXMLFile(LinkedCellContainer &particles,
                             SimParams &simParameters) {
   Logger &logger = Logger::getInstance(simParameters.log_level);
   std::string filename = simParameters.input_path;
@@ -145,6 +145,8 @@ void XMLReader::readXMLFile(ParticleContainer &particles,
         ParticleGenerator::insertCuboid(position, dimensions, mesh_width, mass,
                                         initial_velocity, avg_velocity,
                                         particles);
+        logger.info("Particles check" + std::to_string(particles.size()));
+        logger.info("Particles check" + std::to_string(particles.cells.size()));
       }
     }
 

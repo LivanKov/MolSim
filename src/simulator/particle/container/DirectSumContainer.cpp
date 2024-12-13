@@ -1,5 +1,5 @@
-#include "ParticleContainer.h"
-#include "Particle.h"
+#include "DirectSumContainer.h"
+#include "../Particle.h"
 #include "utils/ArrayUtils.h"
 #include <concepts>
 #include <utility>
@@ -25,14 +25,24 @@ std::string ParticlePair::toString() const {
   return stream.str();
 }
 
-ParticleContainer::ParticleContainer()
+DirectSumContainer::DirectSumContainer()
     : _particle_container{}, _particle_pair_container{} {}
 
-void ParticleContainer::insert(Particle &p) { emplace_back(p); }
+void DirectSumContainer::insert(Particle &p) {
+  ParticlePointer p_ptr = std::make_shared<Particle>(p);
+  _particle_container.push_back(p_ptr);
+  create_pairs(p_ptr);
+}
 
-size_t ParticleContainer::size() const { return _particle_container.size(); }
 
-Particle &ParticleContainer::operator[](size_t index) {
+void DirectSumContainer::insert(ParticlePointer &p) {
+  _particle_container.push_back(p);
+  create_pairs(p);
+}
+
+size_t DirectSumContainer::size() { return _particle_container.size(); }
+
+Particle &DirectSumContainer::operator[](size_t index) {
   return *(_particle_container[index]);
 }
 
@@ -63,29 +73,33 @@ ParticleIterator::PReferenceType ParticleIterator::operator*() const {
   return **_ptr;
 }
 
-ParticleIterator ParticleContainer::begin() {
+ParticleIterator DirectSumContainer::begin() {
   return ParticleIterator(_particle_container.data());
 }
 
-ParticleIterator ParticleContainer::end() {
+ParticleIterator DirectSumContainer::end() {
   return ParticleIterator(_particle_container.data() +
                           _particle_container.size());
 }
 
-void ParticleContainer::clear() {
+void DirectSumContainer::clear() {
   _particle_container.clear();
   _particle_pair_container.clear();
 }
 
-std::vector<ParticlePair>::iterator ParticleContainer::pair_begin() {
+std::vector<ParticlePair>::iterator DirectSumContainer::pair_begin() {
   return _particle_pair_container.begin();
 }
 
-std::vector<ParticlePair>::iterator ParticleContainer::pair_end() {
+std::vector<ParticlePair>::iterator DirectSumContainer::pair_end() {
   return _particle_pair_container.end();
 }
 
-void ParticleContainer::create_pairs(const ParticlePointer &new_particle) {
+std::vector<ParticlePointer> &DirectSumContainer::get_all_particles() {
+  return _particle_container;
+}
+
+void DirectSumContainer::create_pairs(const ParticlePointer &new_particle) {
   for (auto const &p : _particle_container) {
     if (*new_particle != *p)
       _particle_pair_container.push_back(ParticlePair(new_particle, p));

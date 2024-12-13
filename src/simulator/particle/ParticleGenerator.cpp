@@ -3,7 +3,8 @@
  */
 
 #include "ParticleGenerator.h"
-#include "ParticleContainer.h"
+#include "../Simulation.h"
+#include "container/LinkedCellContainer.h"
 #include "utils/MaxwellBoltzmannDistribution.h"
 
 #include <random>
@@ -16,7 +17,7 @@ void ParticleGenerator::insertCuboid(
     const std::array<double, 3> &lowerLeftFrontCorner,
     const std::array<size_t, 3> &dimensions, double h, double m,
     const std::array<double, 3> &initialVelocity, double averageVelocity,
-    ParticleContainer &particles) {
+    LinkedCellContainer &particles) {
   for (size_t i = 0; i < dimensions[2]; ++i) {
     for (size_t j = 0; j < dimensions[1]; ++j) {
       for (size_t k = 0; k < dimensions[0]; ++k) {
@@ -31,20 +32,22 @@ void ParticleGenerator::insertCuboid(
           velocity[dim] += randomVelocity[dim];
         }
 
-        Particle particle(position, velocity, m, 0);
+        Particle particle(position, velocity, m, particles.particle_id);
+        particles.particle_id++;
         Logger::getInstance().trace("New Particle generated");
-        particles.insert(particle);
+        particles.insert(particle, true);
         Logger::getInstance().trace("New Particle inserted into container");
       }
     }
   }
+  particles.readjust();
   Logger::getInstance().info("New cuboid generated");
 }
 
 void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
                                    const std::array<double, 3> &initialVelocity,
                                    size_t radius, double h, double mass,
-                                   ParticleContainer &particles) {
+                                   LinkedCellContainer &particles) {
 
   // start on the point with the leftest x point then go the rightest x point
   for (double x = center[0] - radius * h; x <= center[0] + radius * h; x += h) {
@@ -64,12 +67,27 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
         std::array position = {x, y, z};
         std::array<double, 3> velocity = initialVelocity;
 
-        Particle particle(position, velocity, mass, 0);
+        Particle particle(position, velocity, mass, particles.particle_id);
+        particles.particle_id++;
         Logger::getInstance().trace("New Particle generated");
-        particles.insert(particle);
+        particles.insert(particle, true);
         Logger::getInstance().trace("New Particle inserted into container");
       }
     }
   }
+  particles.readjust();
   Logger::getInstance().info("New disk generated");
+}
+
+void ParticleGenerator::insertSingleMolecule(
+    const std::array<double, 3> &position,
+    const std::array<double, 3> &velocity, double mass,
+    LinkedCellContainer &particles) {
+  Particle particle(position, velocity, mass, particles.particle_id);
+  particles.particle_id++;
+  Logger::getInstance().trace("New Particle generated");
+  particles.insert(particle, true);
+  Logger::getInstance().trace("New Particle inserted into container");
+  particles.readjust();
+  Logger::getInstance().info("New single molecule generated");
 }

@@ -4,8 +4,8 @@
 #include "io/output/FileWriter.h"
 #include "io/output/VTKWriter.h"
 #include "io/output/XYZWriter.h"
-#include "particle/ParticleContainer.h"
 #include "particle/ParticleGenerator.h"
+#include "particle/container/DirectSumContainer.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"
 #include "simulator/calculations/Position.h"
@@ -24,9 +24,15 @@ std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
 Simulation::Simulation(SimParams &params) : params_(params) {}
 
 LinkedCellContainer Simulation::readFile(SimParams &params) {
-  LinkedCellContainer particles{};
-  // FileReader::readFile(particles, params_.input_path.data());
+  LinkedCellContainer particles{{90.0, 45.0}, 3.0};
   XMLReader::readXMLFile(particles, params);
+  if (params.reflective) {
+    particles.reflective_flag = true;
+    particles.boundary_conditions_ = DomainBoundaryConditions{BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting};
+  }
+  if(params.periodic){
+    particles.boundary_conditions_ = DomainBoundaryConditions{BoundaryCondition::Periodic, BoundaryCondition::Periodic, BoundaryCondition::Periodic, BoundaryCondition::Periodic, BoundaryCondition::Periodic, BoundaryCondition::Periodic};
+  }
   return particles;
 }
 
@@ -42,7 +48,7 @@ void Simulation::run(LinkedCellContainer &particles) {
   double current_time{0};
 
   ForceType FORCE_TYPE = params_.calculate_grav_force
-                             ? ForceType::VERLET
+                             ? ForceType::GRAVITATIONAL
                              : ForceType::LENNARD_JONES;
   std::unique_ptr<output::FileWriter> writer;
   if (params_.xyz_output) {
@@ -51,13 +57,13 @@ void Simulation::run(LinkedCellContainer &particles) {
     writer = std::make_unique<output::VTKWriter>(particles);
   }
 
+  OPTIONS option =
+      params_.linked_cells ? OPTIONS::LINKED_CELLS : OPTIONS::DIRECT_SUM;
+
   while (current_time < params_.end_time) {
 
-    // Update particles and handle boundary conditions
-    particles.updateParticles();
-    Calculation<Position>::run(particles, params_.time_delta);
-    Calculation<Force>::run(particles, FORCE_TYPE, OPTIONS::LINKED_CELLS);
-    std::cout << "Check" << std::endl;
+    Calculation<Position>::run(particles, params_.time_delta, option);
+    Calculation<Force>::run(particles, FORCE_TYPE, option);
     Calculation<Velocity>::run(particles, params_.time_delta);
 
     iteration++;
@@ -71,6 +77,11 @@ void Simulation::run(LinkedCellContainer &particles) {
   logger.info("output written. Terminating...");
 
   logger.info("Number of particles: " + std::to_string(particles.size()));
+
+  logger.info("Particles left the domain: " +
+              std::to_string(particles.particles_left_domain));
+
+  logger.info("Amount of halo particles:"+ std::to_string(particles.halo_count));
 
   logger.warn("Simulation finished.");
 };

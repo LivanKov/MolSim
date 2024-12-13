@@ -1,10 +1,10 @@
 /*
- * ParticleContainer.h
+ * DirectSumContainer.h
  */
 
 #pragma once
 
-#include "Particle.h"
+#include "../Particle.h"
 #include <array>
 #include <memory>
 #include <stdexcept>
@@ -47,7 +47,7 @@ struct ParticlePair {
 
 /**
  * @class ParticleIterator
- * @brief Provides an iterator interface for the ParticleContainer class.
+ * @brief Provides an iterator interface for the DirectSumContainer class.
  * Based on the now deprecated std::iterator. See
  * https://en.cppreference.com/w/cpp/iterator/iterator for more details.
  */
@@ -69,40 +69,28 @@ private:
 };
 
 /**
- * @class ParticleContainer
+ * @class DirectSumContainer
  * @brief Main container class, contains an intuitive api for storing particles
  * and running unit tests. Stores unique particles and corresponding unique
  * pairs, managed by shared pointers.
  */
 
-class ParticleContainer {
+class DirectSumContainer {
 
 public:
   /**
    * @brief Constructor.
    */
-  ParticleContainer();
-
-  /**
-   * @brief Create a Particle object in-place and insert it into the underlying
-   * containers, allocates place for more pairs.
-   * @param args Particle object constructor arguments.
-   */
-
-  template <typename... Args>
-  requires std::constructible_from<Particle, Args...>
-  void emplace_back(Args... args) {
-    ParticlePointer p = std::make_shared<Particle>(std::forward<Args>(args)...);
-    create_pairs(p);
-    _particle_container.push_back(p);
-  }
+  DirectSumContainer();
   /**
    * @brief Inserts a Particle object into the container. Redirects the call to
    * emplace.
    * @param p Particle object reference.
    */
 
-  virtual void insert(Particle &p);
+  void insert(Particle &p);
+
+  void insert(ParticlePointer &p);
 
   /**
    * @brief Returns the amount of unique particles stored in the container.
@@ -120,7 +108,7 @@ public:
   /**
    * @brief Clears the container.
    */
-  virtual void clear();
+  void clear();
 
   /**
    * @brief Iterator interface for the main iterator.
@@ -139,6 +127,8 @@ public:
    */
   std::vector<ParticlePair>::iterator pair_end();
 
+  std::vector<ParticlePointer> &get_all_particles();
+
 protected:
   /**
    * @brief Creates particle pairs for newly inserted particle.
@@ -148,7 +138,6 @@ protected:
 
   void create_pairs(const ParticlePointer &new_particle);
 
-protected:
   /**
    * @brief Main underlying container. Manages pointers to Particle objects.
    */
