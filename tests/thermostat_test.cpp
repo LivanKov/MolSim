@@ -16,10 +16,9 @@ class ThermostatTest : public testing::Test {
 protected:
 
     std::unique_ptr<Thermostat> thermostat;
-    ParticleContainer particles;
+    LinkedCellContainer particles{};
 
     void SetUp() override {
-        particles = ParticleContainer();
         thermostat = std::make_unique<Thermostat>(particles,300, 350, 3, 0.5, false, false);
     }
 

@@ -4,7 +4,7 @@
 #pragma once
 
 # include "Thermostat.h"
-#include "particle/ParticleContainer.h"
+#include "particle/container/LinkedCellContainer.h"
 #include "utils/MaxwellBoltzmannDistribution.h"
 
 class Thermostat {
@@ -22,7 +22,7 @@ public:
   * @param enable_brownian Whether particles should be initialized with brownian motion.
   */
  Thermostat(
- ParticleContainer& particles,
+ LinkedCellContainer& particles,
  double initial_temperature,
  double target_temperature = -1.0,  // when no target temperature got inserted
  size_t dimensions = 3, // by default 3 dimensions
@@ -116,7 +116,7 @@ public:
 
 private:
  /** @brief Reference to the ParticleContainer holding all particles in the system. */
- ParticleContainer& particles_;
+ LinkedCellContainer& particles_;
 
  /** @brief The initial temperature of the system. */
  double initial_temperature_;

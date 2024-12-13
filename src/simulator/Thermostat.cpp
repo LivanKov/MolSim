@@ -3,14 +3,14 @@
 //
 
 #include "Thermostat.h"
-#include "particle/ParticleContainer.h"
 #include "utils/logger/Logger.h"
 #include <cmath>
+#include "particle/container/LinkedCellContainer.h"
 
 
 
 Thermostat::Thermostat(
-    ParticleContainer& particles,
+    LinkedCellContainer& particles,
     double initial_temperature,
     double target_temperature,
     size_t dimensions,
@@ -93,7 +93,7 @@ void Thermostat::apply() {
     }
 
     // in the very end we apply our scaling factor to the particles
-    for (auto& p : particles_) {
+   /* for (auto& p : particles_) {
         auto& current_velocity = p.getV();
 
         std::array<double, 3> new_velocity{};
@@ -101,7 +101,19 @@ void Thermostat::apply() {
             new_velocity[i] = current_velocity[i] * scaling_factor_;
         }
         p.updateV(new_velocity);
+    } */
+    for (size_t i = 0; i < particles_.size(); ++i) {
+        auto& p = particles_[i];
+        auto& current_velocity = p.getV();
+
+        std::array<double, 3> new_velocity{};
+        for (size_t j = 0; j < dimensions_; ++j) {
+            new_velocity[j] = current_velocity[j] * scaling_factor_;
+        }
+
+        p.updateV(new_velocity);
     }
+
     Logger::getInstance().debug("Thermostat applied. The new temperature is now: " + std::to_string(get_current_temperature()));
 }
 
@@ -150,7 +162,7 @@ void Thermostat::calculate_scaling_factor(double new_temperature) {
 
 
 void Thermostat::initialize_brownian() {
-    for (auto &particle : particles_) {
+    /*for (auto &particle : particles_) {
         auto mass = particle.getM();
         if(mass <= 0) {
             Logger::getInstance().error("Mass of particle must be positive");
@@ -168,6 +180,28 @@ void Thermostat::initialize_brownian() {
         for (size_t i = 0; i < dimensions_; ++i) {
             current_velocity[i] += random_velocity[i];
         }
+        particle.updateV(current_velocity);
+    } */
+    for (size_t i = 0; i < particles_.size(); ++i) {
+        auto& particle = particles_[i];
+        auto mass = particle.getM();
+        if (mass <= 0) {
+            Logger::getInstance().error("Mass of particle must be positive");
+            return;
+        }
+
+        // factor for the Maxwell-Boltzmann distribution
+        double average_velocity = std::sqrt(initial_temperature_ / mass);
+
+        // Generate random velocity for the particle
+        std::array<double, 3> random_velocity = maxwellBoltzmannDistributedVelocity(average_velocity, dimensions_);
+
+        auto current_velocity = particle.getV();
+
+        for (size_t j = 0; j < dimensions_; ++j) {
+            current_velocity[j] += random_velocity[j];
+        }
+
         particle.updateV(current_velocity);
     }
     Logger::getInstance().info("Particles initialized with Brownian motion.");
@@ -189,12 +223,22 @@ void Thermostat::initialize() {
         return;
     }
     // in the very end we apply our scaling factor to the particles
-    for (auto& p : particles_) {
+    /*for (auto& p : particles_) {
         auto& current_velocity = p.getV();
 
         std::array<double, 3> new_velocity{};
         for (size_t i = 0; i < 3; ++i) {
             new_velocity[i] = current_velocity[i] * scaling_factor_;
+        }
+        p.updateV(new_velocity);
+    } */
+    for (size_t i = 0; i < particles_.size(); ++i) {
+        auto& p = particles_[i];
+        auto& current_velocity = p.getV();
+
+        std::array<double, 3> new_velocity{};
+        for (size_t j = 0; j < 3; ++j) {
+            new_velocity[j] = current_velocity[j] * scaling_factor_;
         }
         p.updateV(new_velocity);
     }
