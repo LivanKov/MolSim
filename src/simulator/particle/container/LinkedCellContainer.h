@@ -93,6 +93,13 @@ public:
   void handle_boundary_conditions(int particle_id);
 
   /**
+   * @brief Applies periodic boundary conditions to a particle.
+   * @param particle_id The ID of the particle to which periodic boundary
+   * @param cell_index The index of the cell in which the particle is located.
+   */
+  void handle_periodic_boundary_conditions(int particle_id, int cell_index);
+
+  /**
    * @brief The size of the simulation domain.
    */
   std::vector<double> domain_size_;
@@ -153,8 +160,9 @@ public:
    */
   DomainBoundaryConditions boundary_conditions_;
 
-
   bool reflective_flag;
+
+  bool periodic_flag;
 
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,

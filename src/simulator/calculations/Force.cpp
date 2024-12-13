@@ -25,7 +25,7 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
 
     for (auto it = particles.particles.pair_begin();
          it != particles.particles.pair_end(); ++it) {
-      double sigma = (it->first->getSigma() + it->second->getSigma())/2;
+      double sigma = (it->first->getSigma() + it->second->getSigma()) / 2;
       double epsilon = sqrt(it->first->getEpsilon() * it->second->getEpsilon());
       auto r12 = it->second->getX() - it->first->getX();
       double distance = ArrayUtils::L2Norm(r12);
@@ -49,8 +49,9 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
     for (auto &particle : particles.particles) {
       for (auto &neighbour : particles.get_neighbours(particle.getType())) {
         if (*neighbour != particle) {
-          double sigma = (particle.getSigma() + neighbour->getSigma())/2;
-          double epsilon = sqrt(particle.getEpsilon() * neighbour->getEpsilon());
+          double sigma = (particle.getSigma() + neighbour->getSigma()) / 2;
+          double epsilon =
+              sqrt(particle.getEpsilon() * neighbour->getEpsilon());
           auto r12 = neighbour->getX() - particle.getX();
           double distance = ArrayUtils::L2Norm(r12);
 

@@ -28,10 +28,18 @@ LinkedCellContainer Simulation::readFile(SimParams &params) {
   XMLReader::readXMLFile(particles, params);
   if (params.reflective) {
     particles.reflective_flag = true;
-    particles.boundary_conditions_ = DomainBoundaryConditions{BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting};
+    particles.boundary_conditions_ = DomainBoundaryConditions{
+        BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
+        BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
+        BoundaryCondition::Reflecting, BoundaryCondition::Reflecting};
   }
-  if(params.periodic){
-    particles.boundary_conditions_ = DomainBoundaryConditions{BoundaryCondition::Periodic, BoundaryCondition::Periodic, BoundaryCondition::Periodic, BoundaryCondition::Periodic, BoundaryCondition::Periodic, BoundaryCondition::Periodic};
+  if (params.periodic) {
+    particles.reflective_flag = false;
+    particles.periodic_flag = true;
+    particles.boundary_conditions_ = DomainBoundaryConditions{
+        BoundaryCondition::Periodic, BoundaryCondition::Periodic,
+        BoundaryCondition::Periodic, BoundaryCondition::Periodic,
+        BoundaryCondition::Periodic, BoundaryCondition::Periodic};
   }
   return particles;
 }
@@ -81,7 +89,8 @@ void Simulation::run(LinkedCellContainer &particles) {
   logger.info("Particles left the domain: " +
               std::to_string(particles.particles_left_domain));
 
-  logger.info("Amount of halo particles:"+ std::to_string(particles.halo_count));
+  logger.info("Amount of halo particles:" +
+              std::to_string(particles.halo_count));
 
   logger.warn("Simulation finished.");
 };
