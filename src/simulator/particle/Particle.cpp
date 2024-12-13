@@ -33,7 +33,7 @@ Particle::Particle(const Particle &other) {
 
 // Todo: maybe use initializater list instead of copy?
 Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
-                   double m_arg, int type_arg) {
+                   double m_arg, int type_arg, double epsilon_arg, double sigma_arg) {
   x = x_arg;
   v = v_arg;
   m = m_arg;
@@ -42,6 +42,8 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   old_f = {0., 0., 0.};
   Logger::getInstance().trace("Particle generated!");
   left_domain = false;
+  epsilon = epsilon_arg;
+  sigma = sigma_arg;
 }
 
 Particle::~Particle() { Logger::getInstance().trace("Particle destroyed!"); }
@@ -57,6 +59,10 @@ const std::array<double, 3> &Particle::getOldF() const { return old_f; }
 double Particle::getM() const { return m; }
 
 int Particle::getType() const { return type; }
+
+double Particle::getEpsilon() const { return epsilon; }
+
+double Particle::getSigma() const { return sigma; }
 
 std::string Particle::toString() const {
   std::stringstream stream;

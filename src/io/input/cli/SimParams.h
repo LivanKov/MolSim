@@ -18,4 +18,5 @@ struct SimParams {
   bool linked_cells;
   DomainBoundaryConditions boundaryConditions;
   bool reflective;
+  bool periodic;
 };

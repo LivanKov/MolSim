@@ -30,6 +30,9 @@ LinkedCellContainer Simulation::readFile(SimParams &params) {
     particles.reflective_flag = true;
     particles.boundary_conditions_ = DomainBoundaryConditions{BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting};
   }
+  if(params.periodic){
+    particles.boundary_conditions_ = DomainBoundaryConditions{BoundaryCondition::Periodic, BoundaryCondition::Periodic, BoundaryCondition::Periodic, BoundaryCondition::Periodic, BoundaryCondition::Periodic, BoundaryCondition::Periodic};
+  }
   return particles;
 }
 
