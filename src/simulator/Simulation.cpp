@@ -28,6 +28,7 @@ LinkedCellContainer Simulation::readFile(SimParams &params) {
   XMLReader::readXMLFile(particles, params);
   if (params.reflective) {
     particles.reflective_flag = true;
+    particles.boundary_conditions_ = DomainBoundaryConditions{BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting, BoundaryCondition::Reflecting};
   }
   return particles;
 }

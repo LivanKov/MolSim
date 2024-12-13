@@ -329,14 +329,12 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id) {
   auto position = cells_map[particle_id]->getX();
   auto velocity = cells_map[particle_id]->getV();
 
-  // left boundary
   if (position[0] < left_corner_coordinates[0]) {
     if (boundary_conditions_.left == BoundaryCondition::Reflecting) {
       position[0] = 2 * left_corner_coordinates[0] - position[0];
       velocity[0] = -velocity[0];
     } else if (boundary_conditions_.left == BoundaryCondition::Outflow) {
       cells_map[particle_id]->left_domain = true;
-      particles_left_domain++;
     }
   }
 
@@ -348,7 +346,6 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id) {
       velocity[0] = -velocity[0];
     } else if (boundary_conditions_.right == BoundaryCondition::Outflow) {
       cells_map[particle_id]->left_domain = true;
-      particles_left_domain++;
     }
   }
 
@@ -359,7 +356,6 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id) {
       velocity[1] = -velocity[1];
     } else if (boundary_conditions_.bottom == BoundaryCondition::Outflow) {
       cells_map[particle_id]->left_domain = true;
-      particles_left_domain++;
     }
   }
 
@@ -371,7 +367,6 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id) {
       velocity[1] = -velocity[1];
     } else if (boundary_conditions_.top == BoundaryCondition::Outflow) {
       cells_map[particle_id]->left_domain = true;
-      particles_left_domain++;
     }
   }
 
@@ -383,7 +378,6 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id) {
         velocity[2] = -velocity[2];
       } else if (boundary_conditions_.front == BoundaryCondition::Outflow) {
         cells_map[particle_id]->left_domain = true;
-        particles_left_domain++;
       }
     }
     // Back boundary
@@ -394,12 +388,13 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id) {
         velocity[2] = -velocity[2];
       } else if (boundary_conditions_.back == BoundaryCondition::Outflow) {
         cells_map[particle_id]->left_domain = true;
-        particles_left_domain++;
       }
     }
   }
 
-  // TODO optimize later
+  if(cells_map[particle_id]->left_domain){
+    particles_left_domain++;
+  }
   cells_map[particle_id]->updateX(position[0], position[1], position[2]);
   cells_map[particle_id]->updateV(velocity[0], velocity[1], velocity[2]);
 }
