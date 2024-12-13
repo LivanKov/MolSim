@@ -140,8 +140,10 @@ void LinkedCellContainer::update_particle_location(
       }
 
     } else {
-      cells_map[particle_id]->left_domain = true;
-      particles_left_domain++;
+      if(cells_map[particle_id]->left_domain == false){
+        cells_map[particle_id]->left_domain = true;
+        particles_left_domain++;
+      }
     }
   }
 }
