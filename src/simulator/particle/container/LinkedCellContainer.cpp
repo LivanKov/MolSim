@@ -479,12 +479,66 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
           cells_map[particle_id]->getX()[2]);
       cells_map[particle_id]->left_domain = true;
 
+      particle_id++;
+      Particle p_1{std::array<double, 3>{cells_map[particle_id]->getX()[0] -
+                                             domain_size_[0],
+                                         cells_map[particle_id]->getX()[1],
+                                         cells_map[particle_id]->getX()[2]},
+                   std::array<double, 3>{-cells_map[particle_id]->getV()[0],
+                                         cells_map[particle_id]->getV()[1],
+                                         cells_map[particle_id]->getV()[2]},
+                   cells_map[particle_id]->getM(),
+                   particle_id,
+                   cells_map[particle_id]->getEpsilon(),
+                   cells_map[particle_id]->getSigma()};
+      particle_id++;
+      Particle p_2{std::array<double, 3>{cells_map[particle_id]->getX()[0],
+                                         cells_map[particle_id]->getX()[1] -
+                                             domain_size_[1],
+                                         cells_map[particle_id]->getX()[2]},
+                   std::array<double, 3>{cells_map[particle_id]->getV()[0],
+                                         -cells_map[particle_id]->getV()[1],
+                                         cells_map[particle_id]->getV()[2]},
+                   cells_map[particle_id]->getM(),
+                   particle_id,
+                   cells_map[particle_id]->getEpsilon(),
+                   cells_map[particle_id]->getSigma()};
+      insert(p_1, false);
+      insert(p_2, false);
+
     } else if (cell_index == x * y - x) {
       cells_map[particle_id]->updateX(
           cells_map[particle_id]->getX()[0] + domain_size_[0],
           cells_map[particle_id]->getX()[1] - domain_size_[1],
           cells_map[particle_id]->getX()[2]);
       cells_map[particle_id]->left_domain = true;
+
+      particle_id++;
+      Particle p_1{std::array<double, 3>{cells_map[particle_id]->getX()[0] +
+                                             domain_size_[0],
+                                         cells_map[particle_id]->getX()[1],
+                                         cells_map[particle_id]->getX()[2]},
+                   std::array<double, 3>{-cells_map[particle_id]->getV()[0],
+                                         cells_map[particle_id]->getV()[1],
+                                         cells_map[particle_id]->getV()[2]},
+                   cells_map[particle_id]->getM(),
+                   particle_id,
+                   cells_map[particle_id]->getEpsilon(),
+                   cells_map[particle_id]->getSigma()};
+      particle_id++;
+      Particle p_2{std::array<double, 3>{cells_map[particle_id]->getX()[0],
+                                         cells_map[particle_id]->getX()[1] -
+                                             domain_size_[1],
+                                         cells_map[particle_id]->getX()[2]},
+                   std::array<double, 3>{cells_map[particle_id]->getV()[0],
+                                         -cells_map[particle_id]->getV()[1],
+                                         cells_map[particle_id]->getV()[2]},
+                   cells_map[particle_id]->getM(),
+                   particle_id,
+                   cells_map[particle_id]->getEpsilon(),
+                   cells_map[particle_id]->getSigma()};
+      insert(p_1, false);
+      insert(p_2, false);
     }
   }
   // determine if corner cel
