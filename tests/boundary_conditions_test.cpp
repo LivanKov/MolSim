@@ -7,12 +7,15 @@ protected:
   LinkedCellContainer container;
 
   BoundaryConditionsTest()
-      : container({10.0, 10.0}, 1.0,
+      : container{}   
+  {
+    container.initialize({10.0, 10.0}, 1.0,
                   {BoundaryCondition::Reflecting, // Left
                    BoundaryCondition::Outflow,    // Right
                    BoundaryCondition::Outflow, // Top
-                   BoundaryCondition::Reflecting})   // Bottom
-  {}
+                   BoundaryCondition::Reflecting // Bottom 
+                   });
+  }
 
   ~BoundaryConditionsTest() override = default;
 };
@@ -123,7 +126,8 @@ TEST_F(BoundaryConditionsTest, CornerCrossing) {
       BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
       BoundaryCondition::Reflecting, BoundaryCondition::Reflecting};
 
-  LinkedCellContainer container(domain_size, cutoff_radius,
+  LinkedCellContainer container{};
+  container.initialize(domain_size, cutoff_radius,
                                 boundary_conditions);
 
   // Create a particle near the corner

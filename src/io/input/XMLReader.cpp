@@ -108,8 +108,10 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
       logger.info("Boundary conditions loaded successfully");
     }
 
+    std::initializer_list<double> init_list = {simParameters.domain_size[0], simParameters.domain_size[1], simParameters.domain_size[2]};
+
     // Initialize the linkedcellcontainer with received parameters from XMLinput
-    particles.initialize(to_initializer_list(simParameters.domain_size),
+    particles.initialize(init_list,
                          simParameters.r_cutoff_radius,
                          simParameters.boundaryConditions);
 
@@ -196,9 +198,4 @@ BoundaryCondition XMLReader::parseBoundaryCondition(const std::string &value) {
   } else {
     throw std::runtime_error("Invalid boundary condition: " + value);
   }
-}
-
-std::initializer_list<double>
-to_initializer_list(const std::array<double, 3> &arr) {
-  return {arr[0], arr[1], arr[2]};
 }
