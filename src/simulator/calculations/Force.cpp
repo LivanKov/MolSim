@@ -31,10 +31,10 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       double distance = ArrayUtils::L2Norm(r12);
 
       double totalForce;
-      double term = sigma / distance;
+      double term = SIGMA / distance;
       double term6 = pow(term, 6);
       double term12 = pow(term, 12);
-      totalForce = 24 * epsilon * (term6 - 2 * term12) / distance;
+      totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
 
       auto force = (totalForce / distance) * r12;
 
@@ -50,16 +50,15 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       for (auto &neighbour : particles.get_neighbours(particle.getType())) {
         if (*neighbour != particle) {
           double sigma = (particle.getSigma() + neighbour->getSigma()) / 2;
-          double epsilon =
-              sqrt(particle.getEpsilon() * neighbour->getEpsilon());
+          double epsilon = sqrt(particle.getEpsilon() * neighbour->getEpsilon());
           auto r12 = neighbour->getX() - particle.getX();
           double distance = ArrayUtils::L2Norm(r12);
 
           double totalForce;
-          double term = sigma / distance;
+          double term = SIGMA / distance;
           double term6 = pow(term, 6);
           double term12 = pow(term, 12);
-          totalForce = 24 * epsilon * (term6 - 2 * term12) / distance;
+          totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
 
           auto force = (totalForce / distance) * r12;
 
