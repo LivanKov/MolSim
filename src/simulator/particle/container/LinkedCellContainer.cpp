@@ -333,7 +333,7 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
   }
 
   auto& velocity = cells_map[particle_id]->getV();
-
+  logger.debug("Checking");
   // Left boundary
   if (cell_id % x == 0) {
     if (boundary_conditions_.left == BoundaryCondition::Reflecting) {
@@ -356,7 +356,11 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
     if (x * y * i <= cell_id && cell_id < x * y * i + x) {
       if (boundary_conditions_.bottom == BoundaryCondition::Reflecting) {
         logger.debug("Reflecting bottom boundary");
+        logger.debug("Particle location: " + std::to_string(cells_map[particle_id]->getX()[0]) + " " + std::to_string(cells_map[particle_id]->getX()[1]) + " " + std::to_string(cells_map[particle_id]->getX()[2]));  
+        logger.debug("Velocity: " + std::to_string(cells_map[particle_id]->getV()[0]) + " " + std::to_string(cells_map[particle_id]->getV()[1]) + " " + std::to_string(cells_map[particle_id]->getV()[2]));
         cells_map[particle_id]->updateV(velocity[0], -velocity[1], velocity[2]);
+        logger.debug("Velocity: " + std::to_string(cells_map[particle_id]->getV()[0]) + " " + std::to_string(cells_map[particle_id]->getV()[1]) + " " + std::to_string(cells_map[particle_id]->getV()[2]));
+
       }
     }
   }
