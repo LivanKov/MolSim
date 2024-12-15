@@ -326,75 +326,62 @@ void LinkedCellContainer::readjust() {
   }
 }
 
-void LinkedCellContainer::handle_boundary_conditions(int particle_id) {
+void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_id) {
+  //ensure that the particle is in halo cell
+  if(!cells[cell_id].is_halo){
+    return;
+  }
+
   auto position = cells_map[particle_id]->getX();
   auto velocity = cells_map[particle_id]->getV();
 
-  if (position[0] < left_corner_coordinates[0]) {
+
+
+  // Left boundary
+  if (cell_id % x == 0) {
     if (boundary_conditions_.left == BoundaryCondition::Reflecting) {
-      position[0] = 2 * left_corner_coordinates[0] - position[0];
       velocity[0] = -velocity[0];
-    } else if (boundary_conditions_.left == BoundaryCondition::Outflow) {
-      cells_map[particle_id]->left_domain = true;
     }
   }
 
   // Right boundary
-  if (position[0] > left_corner_coordinates[0] + domain_size_[0]) {
+  if ((cell_id + 1) % x == 0) { 
     if (boundary_conditions_.right == BoundaryCondition::Reflecting) {
-      position[0] =
-          2 * (left_corner_coordinates[0] + domain_size_[0]) - position[0];
       velocity[0] = -velocity[0];
-    } else if (boundary_conditions_.right == BoundaryCondition::Outflow) {
-      cells_map[particle_id]->left_domain = true;
     }
   }
 
   // Bottom boundary
-  if (position[1] < left_corner_coordinates[1]) {
-    if (boundary_conditions_.bottom == BoundaryCondition::Reflecting) {
-      position[1] = 2 * left_corner_coordinates[1] - position[1];
-      velocity[1] = -velocity[1];
-    } else if (boundary_conditions_.bottom == BoundaryCondition::Outflow) {
-      cells_map[particle_id]->left_domain = true;
+  for(size_t i = 0; i < z; i++){
+    if (x * y * i <= cell_id && cell_id < x * y * i + x) {
+      if (boundary_conditions_.bottom == BoundaryCondition::Reflecting) {
+        velocity[1] = -velocity[1];
+      }
     }
   }
 
   // Top boundary
-  if (position[1] > left_corner_coordinates[1] + domain_size_[1]) {
-    if (boundary_conditions_.top == BoundaryCondition::Reflecting) {
-      position[1] =
-          2 * (left_corner_coordinates[1] + domain_size_[1]) - position[1];
-      velocity[1] = -velocity[1];
-    } else if (boundary_conditions_.top == BoundaryCondition::Outflow) {
-      cells_map[particle_id]->left_domain = true;
+  for(size_t i = 1; i <= z; i++){
+    if (x * y * i - x <= cell_id && cell_id < x * y * i) {
+      if (boundary_conditions_.top == BoundaryCondition::Reflecting) {
+        velocity[1] = -velocity[1];
+      }
     }
   }
 
-  if (domain_size_.size() > 2) {
+  if (z > 1) {
     // Front boundary
-    if (position[2] < left_corner_coordinates[2]) {
+    if (cell_id < x * y) {
       if (boundary_conditions_.front == BoundaryCondition::Reflecting) {
-        position[2] = 2 * left_corner_coordinates[2] - position[2];
         velocity[2] = -velocity[2];
-      } else if (boundary_conditions_.front == BoundaryCondition::Outflow) {
-        cells_map[particle_id]->left_domain = true;
       }
     }
     // Back boundary
-    if (position[2] > left_corner_coordinates[2] + domain_size_[2]) {
+    if (cell_id >= x * y * (z - 1)) {
       if (boundary_conditions_.back == BoundaryCondition::Reflecting) {
-        position[2] =
-            2 * (left_corner_coordinates[2] + domain_size_[2]) - position[2];
         velocity[2] = -velocity[2];
-      } else if (boundary_conditions_.back == BoundaryCondition::Outflow) {
-        cells_map[particle_id]->left_domain = true;
       }
     }
-  }
-
-  if (cells_map[particle_id]->left_domain) {
-    particles_left_domain++;
   }
   cells_map[particle_id]->updateX(position[0], position[1], position[2]);
   cells_map[particle_id]->updateV(velocity[0], velocity[1], velocity[2]);
