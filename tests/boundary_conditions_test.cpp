@@ -20,7 +20,7 @@ protected:
 // Test that particles reflect correctly off the left boundary
 TEST_F(BoundaryConditionsTest, ReflectingBoundary) {
   // Particle heading towards the left boundary
-  Particle p({-0.5, 5.0, 0.0}, {-1.0, 0.0, 0.0}, 1.0);
+  Particle p({-0.5, 5.0, 0.0}, {-1.0, 0.0, 0.0}, 1.0, 0);
   container.insert(p, true);
 
   container.handle_boundary_conditions(p.getType());
@@ -33,7 +33,7 @@ TEST_F(BoundaryConditionsTest, ReflectingBoundary) {
 // Test that particles crossing the right boundary are marked for removal
 TEST_F(BoundaryConditionsTest, OutflowBoundary) {
   // Particle exiting the right boundary
-  Particle p({10.5, 5.0, 0.0}, {1.0, 0.0, 0.0}, 1.0);
+  Particle p({10.5, 5.0, 0.0}, {1.0, 0.0, 0.0}, 1.0, 0);
   container.insert(p, true);
 
   container.handle_boundary_conditions(p.getType());
@@ -45,11 +45,11 @@ TEST_F(BoundaryConditionsTest, OutflowBoundary) {
 // Test that particles reflect correctly off the bottom boundary and crossing the top boundary are marked for removal
 TEST_F(BoundaryConditionsTest, BottomReflectingTopOutflow) {
   // Particle heading towards the bottom (reflecting)
-  Particle p_bottom({5.0, -0.5, 0.0}, {0.0, -1.0, 0.0}, 1.0);
+  Particle p_bottom({5.0, -0.5, 0.0}, {0.0, -1.0, 0.0}, 1.0, 0);
   container.insert(p_bottom, true);
 
   // Particle heading towards the top (outflow)
-  Particle p_top({5.0, 10.5, 0.0}, {0.0, 1.0, 0.0}, 1.0);
+  Particle p_top({5.0, 10.5, 0.0}, {0.0, 1.0, 0.0}, 1.0, 0);
   container.insert(p_top, true);
 
   container.handle_boundary_conditions(p_bottom.getType());
@@ -66,7 +66,7 @@ TEST_F(BoundaryConditionsTest, BottomReflectingTopOutflow) {
 // Test that particle within the domain should remain unchanged
 TEST_F(BoundaryConditionsTest, NoBoundaryViolation) {
   // Particle within the domain
-  Particle p({5.0, 5.0, 0.0}, {0.0, 0.0, 0.0}, 1.0);
+  Particle p({5.0, 5.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 1);
   container.insert(p, true);
 
   container.handle_boundary_conditions(p.getType());
@@ -95,7 +95,7 @@ TEST_F(BoundaryConditionsTest, CornerCrossing) {
                                 boundary_conditions);
 
   // Create a particle near the corner
-  Particle particle({9.9, 9.9, 9.9}, {-1.0, -1.0, -1.0}, 1.0);
+  Particle particle({9.9, 9.9, 9.9}, {-1.0, -1.0, -1.0}, 1.0, 0);
   container.insert(particle);
 
   // Apply boundary handling

@@ -111,7 +111,7 @@ TEST_F(ThermostatTest, KineticEnergyZeroParticlesTest) {
 // tests if the correct E_kin gets calculated with one single particle
 TEST_F(ThermostatTest, KineticEnergySingleParticleTest) {
     // insert particle with
-    Particle particle{{0,0,0},{2.0, 0, 0},5.0};
+    Particle particle{{0,0,0},{2.0, 0, 0},5.0, 0};
     particles.insert(particle);
     // E_kin = 1 * 5 * (2^2 +0+0) / 2 = 10
     ASSERT_EQ(thermostat->calculate_kinetic_energy(), 10.0);
@@ -120,7 +120,7 @@ TEST_F(ThermostatTest, KineticEnergySingleParticleTest) {
 // checks if E_kin is 0 when mass 0
 TEST_F(ThermostatTest, KineticEnergyZeroMassTest) {
     // insert particle with
-    Particle particle{{10,10,10},{2.0, 3.0, -1.0},0.0};
+    Particle particle{{10,10,10},{2.0, 3.0, -1.0},0.0, 0};
     particles.insert(particle);
     // must be 0
     ASSERT_EQ(thermostat->calculate_kinetic_energy(), 0.0);
@@ -129,7 +129,7 @@ TEST_F(ThermostatTest, KineticEnergyZeroMassTest) {
 // tests for particle with 0 velocity -> E_kin should be 0
 TEST_F(ThermostatTest, KineticEnergyZeroVelocityTest) {
     // insert particle with
-    Particle particle{{-10,5,30},{0.0, 0.0, 0.0},2.7};
+    Particle particle{{-10,5,30},{0.0, 0.0, 0.0},2.7, 0};
     particles.insert(particle);
     // must be 0
     ASSERT_EQ(thermostat->calculate_kinetic_energy(), 0.0);
@@ -137,7 +137,7 @@ TEST_F(ThermostatTest, KineticEnergyZeroVelocityTest) {
 
 // tests for dimension of 2
 TEST_F(ThermostatTest, KineticEnergyTwoDimensionsTest) {
-    Particle particle1{{0.0, 0.0}, {1.5, 2.0}, 2.0};
+    Particle particle1{{0.0, 0.0}, {1.5, 2.0}, 2.0, 0};
     particles.insert(particle1);
 
     // we take our formula: E_kin =
@@ -148,10 +148,10 @@ TEST_F(ThermostatTest, KineticEnergyTwoDimensionsTest) {
 
 // tests for two different particles with different values
 TEST_F(ThermostatTest, KineticEnergyMixedParticlesTest) {
-    Particle particle1{{0.0, 0.0, 0.0}, {1.5, 2.0, 0.5}, 2.0};
+    Particle particle1{{0.0, 0.0, 0.0}, {1.5, 2.0, 0.5}, 2.0, 0};
     particles.insert(particle1);
 
-    Particle particle2{{1.0, 1.0, 1.0}, {3.0, 1.0, -2.0}, 1.0};
+    Particle particle2{{1.0, 1.0, 1.0}, {3.0, 1.0, -2.0}, 1.0, 0};
     particles.insert(particle2);
 
     // Particle 1: E_kin = 2 * (1.5^2 + 2^2 + 0.5^2) / 2 = 6.5
@@ -182,19 +182,19 @@ TEST_F(ThermostatTest, KineticEnergyMoreComplexParticleTest) {
 // now we test here with 5 different particles
 TEST_F(ThermostatTest, KineticEnergyFiveParticlesTest) {
     // we insert 5 particles with all of them having different values
-    Particle particle1{{0.5, 0.5, 0.5}, {2.0, -1.5, 0.5}, 1.5};
+    Particle particle1{{0.5, 0.5, 0.5}, {2.0, -1.5, 0.5}, 1.5, 0};
     particles.insert(particle1);
 
-    Particle particle2{{-1.0, 0.0, 1.0}, {0.5, 3.0, 1.0}, 2.0};
+    Particle particle2{{-1.0, 0.0, 1.0}, {0.5, 3.0, 1.0}, 2.0, 1};
     particles.insert(particle2);
 
-    Particle particle3{{1.0, 2.0, 3.0}, {1.0, 1.0, -2.0}, 2.5};
+    Particle particle3{{1.0, 2.0, 3.0}, {1.0, 1.0, -2.0}, 2.5, 2};
     particles.insert(particle3);
 
-    Particle particle4{{-1.5, -1.5, -1.5}, {3.5, 2.0, -1.0}, 1.0};
+    Particle particle4{{-1.5, -1.5, -1.5}, {3.5, 2.0, -1.0}, 1.0, 3};
     particles.insert(particle4);
 
-    Particle particle5{{2.5, -2.5, 0.0}, {-2.0, 0.0, 2.0}, 1.8};
+    Particle particle5{{2.5, -2.5, 0.0}, {-2.0, 0.0, 2.0}, 1.8, 4};
     particles.insert(particle5);
 
     double expected_kinetic_energy = 0;
@@ -303,7 +303,7 @@ TEST_F(ThermostatTest, TwoDimensionalCurrentTemperatureTest) {
 // simple test to check if particle's velocity gets scaled according to init_temp
 TEST_F(ThermostatTest, InitializeSimpleTest) {
 
-    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
+    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1, 0};
     particles.insert(particle1);
 
     Thermostat unit_thermostat(particles, 100, 110, 3, 0.5, true, false);
@@ -317,7 +317,7 @@ TEST_F(ThermostatTest, InitializeSimpleTest) {
 // with random more complex values
 TEST_F(ThermostatTest, InitializeMediumTest) {
 
-    Particle particle1{{0,0,0}, {-37, 43.5, 12.4}, 54.5};
+    Particle particle1{{0,0,0}, {-37, 43.5, 12.4}, 54.5, 0};
     particles.insert(particle1);
 
     Thermostat unit_thermostat(particles, 537, 110, 3, 10, true, false);
@@ -331,10 +331,10 @@ TEST_F(ThermostatTest, InitializeMediumTest) {
 // with different velocities of two particles
 TEST_F(ThermostatTest, InitializeDifferentVelocitiesTest) {
 
-    Particle particle1{{0,0,0}, {-37, 43.5, 12.4}, 54.5};
+    Particle particle1{{0,0,0}, {-37, 43.5, 12.4}, 54.5, 0};
     particles.insert(particle1);
 
-    Particle particle2{{0,0,0}, {-43, -20, 64.4}, 70.3};
+    Particle particle2{{0,0,0}, {-43, -20, 64.4}, 70.3, 1};
     particles.insert(particle1);
 
     Thermostat unit_thermostat(particles, 129, 110, 3, 10, true, false);
@@ -368,7 +368,7 @@ TEST_F(ThermostatTest, InitializeManyParticlesTest) {
 
 // we check here if the gradual application works, firstly with a large delta_t
 TEST_F(ThermostatTest, ApplyCheckGradualTest) {
-    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
+    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1, 0};
     particles.insert(particle1);
 
     Thermostat unit_thermostat(particles, 100, 150,3, 0.5,true,false);
@@ -386,7 +386,7 @@ TEST_F(ThermostatTest, ApplyCheckGradualTest) {
 
 // checks for dimension 2
 TEST_F(ThermostatTest, ApplyCheckGradualDimensionTwoTest) {
-    Particle particle1{{0,0}, {1.0, 1.0}, 1};
+    Particle particle1{{0,0}, {1.0, 1.0}, 1, 0};
     particles.insert(particle1);
 
     Thermostat unit_thermostat(particles, 100, 150,2, 0.5,true,false);
@@ -404,7 +404,7 @@ TEST_F(ThermostatTest, ApplyCheckGradualDimensionTwoTest) {
 
 // we check here if the gradual application works with initialization with brown
 TEST_F(ThermostatTest, ApplyCheckGradualBrownTest) {
-    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
+    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1, 0};
     particles.insert(particle1);
 
     Thermostat unit_thermostat(particles, 100, 150,3, 0.5, true, true);
@@ -419,7 +419,7 @@ TEST_F(ThermostatTest, ApplyCheckGradualBrownTest) {
 
 // here we apply 2 times with gradual
 TEST_F(ThermostatTest, ApplyCheckGradualTwoTimesTest) {
-    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
+    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1, 0};
     particles.insert(particle1);
 
     Thermostat unit_thermostat(particles, 100, 150, 3, 0.000001,true,false);
@@ -434,7 +434,7 @@ TEST_F(ThermostatTest, ApplyCheckGradualTwoTimesTest) {
 
 // now we turned gradual off -> after one application we must be directly at temperature of 150
 TEST_F(ThermostatTest, ApplyDirectlyTest) {
-    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
+    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1, 0};
     particles.insert(particle1);
 
     Thermostat unit_thermostat(particles, 100, 150, 3, 0.5,false,false);
@@ -446,7 +446,7 @@ TEST_F(ThermostatTest, ApplyDirectlyTest) {
 
 // the same as above with dimension 2
 TEST_F(ThermostatTest, ApplyDirectlyDimensionTwoTest) {
-    Particle particle1{{0,0}, {1.0, 1.0}, 1};
+    Particle particle1{{0,0}, {1.0, 1.0}, 1, 0};
     particles.insert(particle1);
 
     Thermostat unit_thermostat(particles, 100, 150, 2, 0.5, false, false);
@@ -458,7 +458,7 @@ TEST_F(ThermostatTest, ApplyDirectlyDimensionTwoTest) {
 
 // now the same as above but with brown initialization
 TEST_F(ThermostatTest, ApplyDirectlyBrownTest) {
-    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
+    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1, 0};
     particles.insert(particle1);
 
     Thermostat unit_thermostat(particles, 100, 150, 3, 0.5, false, true);
@@ -470,7 +470,7 @@ TEST_F(ThermostatTest, ApplyDirectlyBrownTest) {
 
 // tests if after applying 2 times thermostat if temperature stays the same
 TEST_F(ThermostatTest, ApplyDirectlyTwoTimesTest) {
-    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1};
+    Particle particle1{{0,0,0}, {1.0, 1.0, 1.0}, 1, 0};
     particles.insert(particle1);
 
     Thermostat unit_thermostat(particles, 100, 150, 3, 0.5,false,false);

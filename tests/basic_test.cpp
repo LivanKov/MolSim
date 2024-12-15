@@ -98,21 +98,24 @@ protected:
 // excessive objects are created
 TEST_F(BasicTest, ContainerBehaviourTest) {
 
-  Particle p_1{std::array{1.0, 0.0, 0.0}, std::array{1.0, 0.0, 0.0}, 1.0};
-  Particle p_2{std::array{2.0, 0.0, 0.0}, std::array{1.0, 0.0, 0.0}, 1.0};
-  Particle p_3{std::array{3.0, 0.0, 0.0}, std::array{1.0, 0.0, 0.0}, 1.0};
+  Particle p_1{std::array{1.0, 0.0, 0.0}, std::array{1.0, 0.0, 0.0}, 1.0, 0};
+  Particle p_2{std::array{2.0, 0.0, 0.0}, std::array{1.0, 0.0, 0.0}, 1.0, 1};
+  Particle p_3{std::array{3.0, 0.0, 0.0}, std::array{1.0, 0.0, 0.0}, 1.0, 2};
 
   container.insert(p_1);
   container.insert(p_2);
   container.insert(p_3);
 
+  int id = 0;
   for (auto const &p : container) {
     Particle dummy_particle{std::array{starting_coord, 0.0, 0.0},
-                            std::array{1.0, 0.0, 0.0}, 1.0};
+                            std::array{1.0, 0.0, 0.0}, 1.0, id};
     EXPECT_EQ(p, dummy_particle);
+    id++;
     starting_coord++;
   }
 
+  
   // check that the correct amount of pairs have been created
 
   size_t counter = 0;
@@ -132,9 +135,9 @@ TEST_F(BasicTest, ContainerBehaviourTest) {
       ParticlePair(std::make_shared<Particle>(p_2),
                    std::make_shared<Particle>(p_3))};
 
-  for (auto it = container.pair_begin(); it != container.pair_end(); ++it)
-    EXPECT_TRUE(std::find(dummy_pairs.begin(), dummy_pairs.end(), *it) !=
-                dummy_pairs.end());
+  for (auto it = container.pair_begin(); it != container.pair_end(); ++it){
+    EXPECT_TRUE(std::find(dummy_pairs.begin(), dummy_pairs.end(), *it) != dummy_pairs.end());
+  }
 
   // check that every particle maps onto correct pair
 }
@@ -142,7 +145,7 @@ TEST_F(BasicTest, ContainerBehaviourTest) {
 TEST_F(BasicTest, SimulationBehaviourTest) {
   // this in place initialization looks super ugly, perhaps we can use
   // std::initializer_list
-  Particle p_1{std::array{0.0, 0.0, 0.0}, std::array{1.0, 0.0, 0.0}, 1.0};
+  Particle p_1{std::array{0.0, 0.0, 0.0}, std::array{1.0, 0.0, 0.0}, 1.0, 0};
 
   container.insert(p_1);
 
@@ -164,8 +167,8 @@ TEST_F(BasicTest, CalculateFTest) {
   delta_t = 0.02;
 
   // Initialize two particles
-  Particle p_1{std::array{0.0, 0.0, 0.0}, std::array{0.0, 0.0, 0.0}, 1.0};
-  Particle p_2{std::array{1.2, 0.0, 0.0}, std::array{0.0, 0.0, 0.0}, 1.0};
+  Particle p_1{std::array{0.0, 0.0, 0.0}, std::array{0.0, 0.0, 0.0}, 1.0, 0};
+  Particle p_2{std::array{1.2, 0.0, 0.0}, std::array{0.0, 0.0, 0.0}, 1.0, 1};
 
   container.insert(p_1);
   container.insert(p_2);
