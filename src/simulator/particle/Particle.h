@@ -62,6 +62,11 @@ private:
    */
   double sigma;
 
+  /**
+   * @brief Flag to indicate if the particle is a copy handled during the periodic boundary conditions
+   */
+  bool is_periodic_copy;
+
 public:
   /**
    * @brief Constructor.

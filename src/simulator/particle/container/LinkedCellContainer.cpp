@@ -130,8 +130,14 @@ void LinkedCellContainer::update_particle_location(
     }
     if (is_within_domain(cells_map[particle_id]->getX())) {
       cells[current_index].insert(cells_map[particle_id]->getType());
+      if(cells_map[particle_id]->left_domain){
+        cells_map[particle_id]->left_domain = false;
+        particles_left_domain--;
+      }
       if (reflective_flag) {
         handle_boundary_conditions(particle_id, current_index);
+      } else if(periodic_flag){
+        handle_periodic_boundary_conditions(particle_id, current_index);
       }
     } else {
       if(cells_map[particle_id]->left_domain == false){
@@ -393,11 +399,18 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
 
 void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
                                                               int cell_index) {
-  
+  if(!cells[cell_index].is_halo){
+    return;
+  }
+
+  logger.info("Handling periodic boundary conditions");
+
   //this is way too long and needs to be refactored
   if (z == 1) {
+    logger.info("2D periodic boundary conditions");
     // handle corner case
     if (cell_index == 0) {
+      logger.info("Bottom left corner");
       cells_map[particle_id]->updateX(
           cells_map[particle_id]->getX()[0] + domain_size_[0],
           cells_map[particle_id]->getX()[1] + domain_size_[1],
@@ -431,6 +444,7 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
       insert(p_2, false);
 
     } else if (cell_index == x - 1) {
+      logger.info("Bottom right corner");
       cells_map[particle_id]->updateX(
           cells_map[particle_id]->getX()[0] - domain_size_[0],
           cells_map[particle_id]->getX()[1] + domain_size_[1],
@@ -464,6 +478,7 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
       insert(p_2, false);
 
     } else if (cell_index == x * y - 1) {
+      logger.info("Top right corner");
       cells_map[particle_id]->updateX(
           cells_map[particle_id]->getX()[0] - domain_size_[0],
           cells_map[particle_id]->getX()[1] - domain_size_[1],
@@ -498,6 +513,7 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
       insert(p_2, false);
 
     } else if (cell_index == x * y - x) {
+      logger.info("Top left corner");
       cells_map[particle_id]->updateX(
           cells_map[particle_id]->getX()[0] + domain_size_[0],
           cells_map[particle_id]->getX()[1] - domain_size_[1],
@@ -531,24 +547,29 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
       insert(p_1, false);
       insert(p_2, false);
     } else if( cell_index % x == 0){
+      logger.info("Left boundary");
       cells_map[particle_id]->updateX(
           cells_map[particle_id]->getX()[0] + domain_size_[0],
           cells_map[particle_id]->getX()[1],
           cells_map[particle_id]->getX()[2]);
       cells_map[particle_id]->left_domain = true;
     } else if( (cell_index + 1) % x == 0){
+      logger.info("Right boundary");
       cells_map[particle_id]->updateX(
           cells_map[particle_id]->getX()[0] - domain_size_[0],
           cells_map[particle_id]->getX()[1],
           cells_map[particle_id]->getX()[2]);
       cells_map[particle_id]->left_domain = true;
     } else if( cell_index < x){
+      logger.info("Bottom boundary");
       cells_map[particle_id]->updateX(
           cells_map[particle_id]->getX()[0],
           cells_map[particle_id]->getX()[1] + domain_size_[1],
           cells_map[particle_id]->getX()[2]);
       cells_map[particle_id]->left_domain = true;
+      particles_left_domain++;
     } else if( cell_index >= x * (y - 1)){
+      logger.info("Top boundary");
       cells_map[particle_id]->updateX(
           cells_map[particle_id]->getX()[0],
           cells_map[particle_id]->getX()[1] - domain_size_[1],
