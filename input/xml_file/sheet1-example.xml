@@ -65,4 +65,5 @@
             </velocity>
             <mass>1.1225</mass>
         </particle>
+    </particles>
 </MolSim>

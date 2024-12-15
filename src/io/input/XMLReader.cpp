@@ -35,6 +35,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
                             SimParams &simParameters) {
   Logger &logger = Logger::getInstance(simParameters.log_level);
   std::string filename = simParameters.input_path;
+  std::initializer_list<double> init_list;
   try {
     std::ifstream inputFile(filename);
     if (!inputFile.is_open()) {
@@ -78,17 +79,6 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
                 std::to_string(simParameters.write_frequency));
     logger.info("Cutoff Radius: " +
                 std::to_string(simParameters.r_cutoff_radius));
-
-    // Extract domain size, if no domain is passed, then we use original
-    // particle container.
-    if (xmlParams.domain_size().present()) {
-      simParameters.linked_cells = true;
-      simParameters.domain_size = {xmlParams.domain_size().get().x(),
-                                   xmlParams.domain_size().get().y(),
-                                   xmlParams.domain_size().get().z()};
-      logger.info("Domain Size: " +
-                  containerToStrings(simParameters.domain_size));
-    }
 
     if (xmlParams.gravity().present()) {
       simParameters.gravity = xmlParams.gravity().get();
@@ -139,20 +129,31 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
       logger.info("Boundary conditions loaded successfully");
     }
 
-    std::initializer_list<double> init_list;
+    // Extract domain size, if no domain is passed, then we use original
+    // particle container.
+    if (xmlParams.domain_size().present()) {
+      simParameters.linked_cells = true;
+      simParameters.domain_size = {xmlParams.domain_size().get().x(),
+                                   xmlParams.domain_size().get().y(),
+                                   xmlParams.domain_size().get().z()};
+      logger.info("Domain Size: " +
+                  containerToStrings(simParameters.domain_size));
 
-    if (simParameters.domain_size[2] == 0) {
-      init_list = {simParameters.domain_size[0], simParameters.domain_size[1]};
-      simParameters.dimensions = 2;
-    } else {
-      init_list = {simParameters.domain_size[0], simParameters.domain_size[1],
-                   simParameters.domain_size[2]};
-      simParameters.dimensions = 3;
+      if (simParameters.domain_size[2] == 0) {
+        init_list = {simParameters.domain_size[0],
+                     simParameters.domain_size[1]};
+        simParameters.dimensions = 2;
+      } else {
+        init_list = {simParameters.domain_size[0], simParameters.domain_size[1],
+                     simParameters.domain_size[2]};
+        simParameters.dimensions = 3;
+      }
+
+      // Initialize the linkedcellcontainer with received parameters from
+      // XMLinput
+      particles.initialize(init_list, simParameters.r_cutoff_radius,
+                           simParameters.boundaryConditions);
     }
-
-    // Initialize the linkedcellcontainer with received parameters from XMLinput
-    particles.initialize(init_list, simParameters.r_cutoff_radius,
-                         simParameters.boundaryConditions);
 
     // Extract cuboid specification
     if (doc->cuboids().present()) {
@@ -192,9 +193,16 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
                     containerToStrings(initial_velocity));
         logger.info("Average Velocity: " + std::to_string(avg_velocity));
 
-        ParticleGenerator::insertCuboid(position, dimensions, mesh_width, mass,
-                                        initial_velocity, avg_velocity,
-                                        particles);
+        if (simParameters.linked_cells) {
+          ParticleGenerator::insertCuboid(position, dimensions, mesh_width,
+                                          mass, initial_velocity, avg_velocity,
+                                          particles);
+        } else {
+          ParticleGenerator::insertCuboid(position, dimensions, mesh_width,
+                                          mass, initial_velocity, avg_velocity,
+                                          particles);
+        }
+
         logger.info("Particles check: " + std::to_string(particles.size()));
         logger.info("Particles' cell check: " +
                     std::to_string(particles.cells.size()));
@@ -229,8 +237,13 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
                     containerToStrings(initial_velocity));
         logger.info("Average Velocity: " + std::to_string(avg_velocity));
 
-        ParticleGenerator::insertDisc(center, initial_velocity, radius,
-                                      mesh_width, mass, particles);
+        if (simParameters.linked_cells) {
+          ParticleGenerator::insertDisc(center, initial_velocity, radius,
+                                        mesh_width, mass, particles);
+        } else {
+          ParticleGenerator::insertDisc(center, initial_velocity, radius,
+                                        mesh_width, mass, particles);
+        }
       }
     }
 
@@ -246,10 +259,17 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         double mass = p.mass();
         logger.info("\n Creating single particle: ");
         logger.info("Position: " + containerToStrings(position));
-        logger.info("Initial Velocity: " + containerToStrings(initial_velocity));
+        logger.info("Initial Velocity: " +
+                    containerToStrings(initial_velocity));
         logger.info("Mass: " + std::to_string(mass));
 
-        ParticleGenerator::insertSingleMolecule(position, initial_velocity, mass, particles);
+        if (simParameters.linked_cells) {
+          ParticleGenerator::insertSingleMolecule(position, initial_velocity,
+                                                  mass, particles);
+        } else {
+          ParticleGenerator::insertSingleMolecule(position, initial_velocity,
+                                                  mass, particles);
+        }
       }
     }
 
