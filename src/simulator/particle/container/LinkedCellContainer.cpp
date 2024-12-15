@@ -403,6 +403,11 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
     return;
   }
 
+  if(cells_map[particle_id]->is_periodic_copy && cells[cell_index].is_halo){
+    cells_map[particle_id]->is_periodic_copy = false;
+    return;
+  }
+
   logger.info("Handling periodic boundary conditions");
 
   //this is way too long and needs to be refactored
@@ -566,7 +571,7 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
           cells_map[particle_id]->getX()[0],
           cells_map[particle_id]->getX()[1] + domain_size_[1],
           cells_map[particle_id]->getX()[2]);
-      cells_map[particle_id]->left_domain = true;
+      cells_map[particle_id]->is_periodic_copy = true;
       particles_left_domain++;
     } else if( cell_index >= x * (y - 1)){
       logger.info("Top boundary");
