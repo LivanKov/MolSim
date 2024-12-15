@@ -229,13 +229,17 @@ class thermostats;
 class boundary_conditions;
 class discs;
 class cuboids;
+class particles;
 class domain_size;
 class disc;
 class cuboid;
+class particle;
 class center;
 class initial_velocity;
 class coordinate;
 class dimensions;
+class position;
+class velocity;
 
 #include <memory>    // ::std::auto_ptr
 #include <limits>    // std::numeric_limits
@@ -410,6 +414,27 @@ class MolSim: public ::xml_schema::type
   void
   cuboids (::std::auto_ptr< cuboids_type > p);
 
+  // particles
+  //
+  typedef ::particles particles_type;
+  typedef ::xsd::cxx::tree::optional< particles_type > particles_optional;
+  typedef ::xsd::cxx::tree::traits< particles_type, char > particles_traits;
+
+  const particles_optional&
+  particles () const;
+
+  particles_optional&
+  particles ();
+
+  void
+  particles (const particles_type& x);
+
+  void
+  particles (const particles_optional& x);
+
+  void
+  particles (::std::auto_ptr< particles_type > p);
+
   // Constructors.
   //
   MolSim (const simulation_parameters_type&);
@@ -447,6 +472,7 @@ class MolSim: public ::xml_schema::type
   boundary_conditions_optional boundary_conditions_;
   discs_optional discs_;
   cuboids_optional cuboids_;
+  particles_optional particles_;
 };
 
 class simulation_parameters: public ::xml_schema::type
@@ -997,6 +1023,59 @@ class cuboids: public ::xml_schema::type
   cuboid_sequence cuboid_;
 };
 
+class particles: public ::xml_schema::type
+{
+  public:
+  // particle
+  //
+  typedef ::particle particle_type;
+  typedef ::xsd::cxx::tree::sequence< particle_type > particle_sequence;
+  typedef particle_sequence::iterator particle_iterator;
+  typedef particle_sequence::const_iterator particle_const_iterator;
+  typedef ::xsd::cxx::tree::traits< particle_type, char > particle_traits;
+
+  const particle_sequence&
+  particle () const;
+
+  particle_sequence&
+  particle ();
+
+  void
+  particle (const particle_sequence& s);
+
+  // Constructors.
+  //
+  particles ();
+
+  particles (const ::xercesc::DOMElement& e,
+             ::xml_schema::flags f = 0,
+             ::xml_schema::container* c = 0);
+
+  particles (const particles& x,
+             ::xml_schema::flags f = 0,
+             ::xml_schema::container* c = 0);
+
+  virtual particles*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  particles&
+  operator= (const particles& x);
+
+  virtual 
+  ~particles ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  particle_sequence particle_;
+};
+
 class domain_size: public ::xml_schema::type
 {
   public:
@@ -1436,6 +1515,98 @@ class cuboid: public ::xml_schema::type
   ::xsd::cxx::tree::one< average_velocity_type > average_velocity_;
 };
 
+class particle: public ::xml_schema::type
+{
+  public:
+  // position
+  //
+  typedef ::position position_type;
+  typedef ::xsd::cxx::tree::traits< position_type, char > position_traits;
+
+  const position_type&
+  position () const;
+
+  position_type&
+  position ();
+
+  void
+  position (const position_type& x);
+
+  void
+  position (::std::auto_ptr< position_type > p);
+
+  // velocity
+  //
+  typedef ::velocity velocity_type;
+  typedef ::xsd::cxx::tree::traits< velocity_type, char > velocity_traits;
+
+  const velocity_type&
+  velocity () const;
+
+  velocity_type&
+  velocity ();
+
+  void
+  velocity (const velocity_type& x);
+
+  void
+  velocity (::std::auto_ptr< velocity_type > p);
+
+  // mass
+  //
+  typedef ::xml_schema::double_ mass_type;
+  typedef ::xsd::cxx::tree::traits< mass_type, char, ::xsd::cxx::tree::schema_type::double_ > mass_traits;
+
+  const mass_type&
+  mass () const;
+
+  mass_type&
+  mass ();
+
+  void
+  mass (const mass_type& x);
+
+  // Constructors.
+  //
+  particle (const position_type&,
+            const velocity_type&,
+            const mass_type&);
+
+  particle (::std::auto_ptr< position_type >,
+            ::std::auto_ptr< velocity_type >,
+            const mass_type&);
+
+  particle (const ::xercesc::DOMElement& e,
+            ::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0);
+
+  particle (const particle& x,
+            ::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0);
+
+  virtual particle*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  particle&
+  operator= (const particle& x);
+
+  virtual 
+  ~particle ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< position_type > position_;
+  ::xsd::cxx::tree::one< velocity_type > velocity_;
+  ::xsd::cxx::tree::one< mass_type > mass_;
+};
+
 class center: public ::xml_schema::type
 {
   public:
@@ -1750,6 +1921,170 @@ class dimensions: public ::xml_schema::type
 
   virtual 
   ~dimensions ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< x_type > x_;
+  ::xsd::cxx::tree::one< y_type > y_;
+  ::xsd::cxx::tree::one< z_type > z_;
+};
+
+class position: public ::xml_schema::type
+{
+  public:
+  // x
+  //
+  typedef ::xml_schema::double_ x_type;
+  typedef ::xsd::cxx::tree::traits< x_type, char, ::xsd::cxx::tree::schema_type::double_ > x_traits;
+
+  const x_type&
+  x () const;
+
+  x_type&
+  x ();
+
+  void
+  x (const x_type& x);
+
+  // y
+  //
+  typedef ::xml_schema::double_ y_type;
+  typedef ::xsd::cxx::tree::traits< y_type, char, ::xsd::cxx::tree::schema_type::double_ > y_traits;
+
+  const y_type&
+  y () const;
+
+  y_type&
+  y ();
+
+  void
+  y (const y_type& x);
+
+  // z
+  //
+  typedef ::xml_schema::double_ z_type;
+  typedef ::xsd::cxx::tree::traits< z_type, char, ::xsd::cxx::tree::schema_type::double_ > z_traits;
+
+  const z_type&
+  z () const;
+
+  z_type&
+  z ();
+
+  void
+  z (const z_type& x);
+
+  // Constructors.
+  //
+  position (const x_type&,
+            const y_type&,
+            const z_type&);
+
+  position (const ::xercesc::DOMElement& e,
+            ::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0);
+
+  position (const position& x,
+            ::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0);
+
+  virtual position*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  position&
+  operator= (const position& x);
+
+  virtual 
+  ~position ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< x_type > x_;
+  ::xsd::cxx::tree::one< y_type > y_;
+  ::xsd::cxx::tree::one< z_type > z_;
+};
+
+class velocity: public ::xml_schema::type
+{
+  public:
+  // x
+  //
+  typedef ::xml_schema::double_ x_type;
+  typedef ::xsd::cxx::tree::traits< x_type, char, ::xsd::cxx::tree::schema_type::double_ > x_traits;
+
+  const x_type&
+  x () const;
+
+  x_type&
+  x ();
+
+  void
+  x (const x_type& x);
+
+  // y
+  //
+  typedef ::xml_schema::double_ y_type;
+  typedef ::xsd::cxx::tree::traits< y_type, char, ::xsd::cxx::tree::schema_type::double_ > y_traits;
+
+  const y_type&
+  y () const;
+
+  y_type&
+  y ();
+
+  void
+  y (const y_type& x);
+
+  // z
+  //
+  typedef ::xml_schema::double_ z_type;
+  typedef ::xsd::cxx::tree::traits< z_type, char, ::xsd::cxx::tree::schema_type::double_ > z_traits;
+
+  const z_type&
+  z () const;
+
+  z_type&
+  z ();
+
+  void
+  z (const z_type& x);
+
+  // Constructors.
+  //
+  velocity (const x_type&,
+            const y_type&,
+            const z_type&);
+
+  velocity (const ::xercesc::DOMElement& e,
+            ::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0);
+
+  velocity (const velocity& x,
+            ::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0);
+
+  virtual velocity*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  velocity&
+  operator= (const velocity& x);
+
+  virtual 
+  ~velocity ();
 
   // Implementation.
   //

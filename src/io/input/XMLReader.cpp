@@ -104,10 +104,14 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
       simParameters.is_gradual = xmlThermostats.is_gradual();
       simParameters.n_thermostats = xmlThermostats.n_thermostats();
       logger.info("\n Thermostats loaded:");
-      logger.info("Initial temperature: " + std::to_string(simParameters.initial_temp));
-      logger.info("target temperature: " + std::to_string(simParameters.target_temp));
-      logger.info("Temperature difference: " + std::to_string(simParameters.delta_temp));
-      logger.info("The number of time steps: " + std::to_string(simParameters.n_thermostats));
+      logger.info("Initial temperature: " +
+                  std::to_string(simParameters.initial_temp));
+      logger.info("target temperature: " +
+                  std::to_string(simParameters.target_temp));
+      logger.info("Temperature difference: " +
+                  std::to_string(simParameters.delta_temp));
+      logger.info("The number of time steps: " +
+                  std::to_string(simParameters.n_thermostats));
     }
 
     // Read boundary conditions
@@ -227,6 +231,25 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
 
         ParticleGenerator::insertDisc(center, initial_velocity, radius,
                                       mesh_width, mass, particles);
+      }
+    }
+
+    // Extract single particle
+    if (doc->particles().present()) {
+      for (const auto &p : doc->particles().get().particle()) {
+        std::array<double, 3> position = {p.position().x(), p.position().y(),
+                                          p.position().z()};
+
+        std::array<double, 3> initial_velocity = {
+            p.velocity().x(), p.velocity().y(), p.velocity().z()};
+
+        double mass = p.mass();
+        logger.info("\n Creating single particle: ");
+        logger.info("Position: " + containerToStrings(position));
+        logger.info("Initial Velocity: " + containerToStrings(initial_velocity));
+        logger.info("Mass: " + std::to_string(mass));
+
+        ParticleGenerator::insertSingleMolecule(position, initial_velocity, mass, particles);
       }
     }
 

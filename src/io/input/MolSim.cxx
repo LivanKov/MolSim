@@ -232,6 +232,36 @@ cuboids (::std::auto_ptr< cuboids_type > x)
   this->cuboids_.set (x);
 }
 
+const MolSim::particles_optional& MolSim::
+particles () const
+{
+  return this->particles_;
+}
+
+MolSim::particles_optional& MolSim::
+particles ()
+{
+  return this->particles_;
+}
+
+void MolSim::
+particles (const particles_type& x)
+{
+  this->particles_.set (x);
+}
+
+void MolSim::
+particles (const particles_optional& x)
+{
+  this->particles_ = x;
+}
+
+void MolSim::
+particles (::std::auto_ptr< particles_type > x)
+{
+  this->particles_.set (x);
+}
+
 
 // simulation_parameters
 // 
@@ -703,6 +733,28 @@ cuboid (const cuboid_sequence& s)
 }
 
 
+// particles
+// 
+
+const particles::particle_sequence& particles::
+particle () const
+{
+  return this->particle_;
+}
+
+particles::particle_sequence& particles::
+particle ()
+{
+  return this->particle_;
+}
+
+void particles::
+particle (const particle_sequence& s)
+{
+  this->particle_ = s;
+}
+
+
 // domain_size
 // 
 
@@ -1087,6 +1139,76 @@ average_velocity (const average_velocity_type& x)
 }
 
 
+// particle
+// 
+
+const particle::position_type& particle::
+position () const
+{
+  return this->position_.get ();
+}
+
+particle::position_type& particle::
+position ()
+{
+  return this->position_.get ();
+}
+
+void particle::
+position (const position_type& x)
+{
+  this->position_.set (x);
+}
+
+void particle::
+position (::std::auto_ptr< position_type > x)
+{
+  this->position_.set (x);
+}
+
+const particle::velocity_type& particle::
+velocity () const
+{
+  return this->velocity_.get ();
+}
+
+particle::velocity_type& particle::
+velocity ()
+{
+  return this->velocity_.get ();
+}
+
+void particle::
+velocity (const velocity_type& x)
+{
+  this->velocity_.set (x);
+}
+
+void particle::
+velocity (::std::auto_ptr< velocity_type > x)
+{
+  this->velocity_.set (x);
+}
+
+const particle::mass_type& particle::
+mass () const
+{
+  return this->mass_.get ();
+}
+
+particle::mass_type& particle::
+mass ()
+{
+  return this->mass_.get ();
+}
+
+void particle::
+mass (const mass_type& x)
+{
+  this->mass_.set (x);
+}
+
+
 // center
 // 
 
@@ -1319,6 +1441,122 @@ z (const z_type& x)
 }
 
 
+// position
+// 
+
+const position::x_type& position::
+x () const
+{
+  return this->x_.get ();
+}
+
+position::x_type& position::
+x ()
+{
+  return this->x_.get ();
+}
+
+void position::
+x (const x_type& x)
+{
+  this->x_.set (x);
+}
+
+const position::y_type& position::
+y () const
+{
+  return this->y_.get ();
+}
+
+position::y_type& position::
+y ()
+{
+  return this->y_.get ();
+}
+
+void position::
+y (const y_type& x)
+{
+  this->y_.set (x);
+}
+
+const position::z_type& position::
+z () const
+{
+  return this->z_.get ();
+}
+
+position::z_type& position::
+z ()
+{
+  return this->z_.get ();
+}
+
+void position::
+z (const z_type& x)
+{
+  this->z_.set (x);
+}
+
+
+// velocity
+// 
+
+const velocity::x_type& velocity::
+x () const
+{
+  return this->x_.get ();
+}
+
+velocity::x_type& velocity::
+x ()
+{
+  return this->x_.get ();
+}
+
+void velocity::
+x (const x_type& x)
+{
+  this->x_.set (x);
+}
+
+const velocity::y_type& velocity::
+y () const
+{
+  return this->y_.get ();
+}
+
+velocity::y_type& velocity::
+y ()
+{
+  return this->y_.get ();
+}
+
+void velocity::
+y (const y_type& x)
+{
+  this->y_.set (x);
+}
+
+const velocity::z_type& velocity::
+z () const
+{
+  return this->z_.get ();
+}
+
+velocity::z_type& velocity::
+z ()
+{
+  return this->z_.get ();
+}
+
+void velocity::
+z (const z_type& x)
+{
+  this->z_.set (x);
+}
+
+
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 
 // boundary_condition_type
@@ -1401,7 +1639,8 @@ MolSim (const simulation_parameters_type& simulation_parameters)
   thermostats_ (this),
   boundary_conditions_ (this),
   discs_ (this),
-  cuboids_ (this)
+  cuboids_ (this),
+  particles_ (this)
 {
 }
 
@@ -1412,7 +1651,8 @@ MolSim (::std::auto_ptr< simulation_parameters_type > simulation_parameters)
   thermostats_ (this),
   boundary_conditions_ (this),
   discs_ (this),
-  cuboids_ (this)
+  cuboids_ (this),
+  particles_ (this)
 {
 }
 
@@ -1425,7 +1665,8 @@ MolSim (const MolSim& x,
   thermostats_ (x.thermostats_, f, this),
   boundary_conditions_ (x.boundary_conditions_, f, this),
   discs_ (x.discs_, f, this),
-  cuboids_ (x.cuboids_, f, this)
+  cuboids_ (x.cuboids_, f, this),
+  particles_ (x.particles_, f, this)
 {
 }
 
@@ -1438,7 +1679,8 @@ MolSim (const ::xercesc::DOMElement& e,
   thermostats_ (this),
   boundary_conditions_ (this),
   discs_ (this),
-  cuboids_ (this)
+  cuboids_ (this),
+  particles_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -1527,6 +1769,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // particles
+    //
+    if (n.name () == "particles" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< particles_type > r (
+        particles_traits::create (i, f, this));
+
+      if (!this->particles_)
+      {
+        this->particles_.set (r);
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -1556,6 +1812,7 @@ operator= (const MolSim& x)
     this->boundary_conditions_ = x.boundary_conditions_;
     this->discs_ = x.discs_;
     this->cuboids_ = x.cuboids_;
+    this->particles_ = x.particles_;
   }
 
   return *this;
@@ -2357,6 +2614,88 @@ cuboids::
 {
 }
 
+// particles
+//
+
+particles::
+particles ()
+: ::xml_schema::type (),
+  particle_ (this)
+{
+}
+
+particles::
+particles (const particles& x,
+           ::xml_schema::flags f,
+           ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  particle_ (x.particle_, f, this)
+{
+}
+
+particles::
+particles (const ::xercesc::DOMElement& e,
+           ::xml_schema::flags f,
+           ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  particle_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void particles::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // particle
+    //
+    if (n.name () == "particle" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< particle_type > r (
+        particle_traits::create (i, f, this));
+
+      this->particle_.push_back (r);
+      continue;
+    }
+
+    break;
+  }
+}
+
+particles* particles::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class particles (*this, f, c);
+}
+
+particles& particles::
+operator= (const particles& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->particle_ = x.particle_;
+  }
+
+  return *this;
+}
+
+particles::
+~particles ()
+{
+}
+
 // domain_size
 //
 
@@ -3049,6 +3388,158 @@ cuboid::
 {
 }
 
+// particle
+//
+
+particle::
+particle (const position_type& position,
+          const velocity_type& velocity,
+          const mass_type& mass)
+: ::xml_schema::type (),
+  position_ (position, this),
+  velocity_ (velocity, this),
+  mass_ (mass, this)
+{
+}
+
+particle::
+particle (::std::auto_ptr< position_type > position,
+          ::std::auto_ptr< velocity_type > velocity,
+          const mass_type& mass)
+: ::xml_schema::type (),
+  position_ (position, this),
+  velocity_ (velocity, this),
+  mass_ (mass, this)
+{
+}
+
+particle::
+particle (const particle& x,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  position_ (x.position_, f, this),
+  velocity_ (x.velocity_, f, this),
+  mass_ (x.mass_, f, this)
+{
+}
+
+particle::
+particle (const ::xercesc::DOMElement& e,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  position_ (this),
+  velocity_ (this),
+  mass_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void particle::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // position
+    //
+    if (n.name () == "position" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< position_type > r (
+        position_traits::create (i, f, this));
+
+      if (!position_.present ())
+      {
+        this->position_.set (r);
+        continue;
+      }
+    }
+
+    // velocity
+    //
+    if (n.name () == "velocity" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< velocity_type > r (
+        velocity_traits::create (i, f, this));
+
+      if (!velocity_.present ())
+      {
+        this->velocity_.set (r);
+        continue;
+      }
+    }
+
+    // mass
+    //
+    if (n.name () == "mass" && n.namespace_ ().empty ())
+    {
+      if (!mass_.present ())
+      {
+        this->mass_.set (mass_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!position_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "position",
+      "");
+  }
+
+  if (!velocity_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "velocity",
+      "");
+  }
+
+  if (!mass_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "mass",
+      "");
+  }
+}
+
+particle* particle::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class particle (*this, f, c);
+}
+
+particle& particle::
+operator= (const particle& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->position_ = x.position_;
+    this->velocity_ = x.velocity_;
+    this->mass_ = x.mass_;
+  }
+
+  return *this;
+}
+
+particle::
+~particle ()
+{
+}
+
 // center
 //
 
@@ -3586,6 +4077,276 @@ operator= (const dimensions& x)
 
 dimensions::
 ~dimensions ()
+{
+}
+
+// position
+//
+
+position::
+position (const x_type& x,
+          const y_type& y,
+          const z_type& z)
+: ::xml_schema::type (),
+  x_ (x, this),
+  y_ (y, this),
+  z_ (z, this)
+{
+}
+
+position::
+position (const position& x,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  x_ (x.x_, f, this),
+  y_ (x.y_, f, this),
+  z_ (x.z_, f, this)
+{
+}
+
+position::
+position (const ::xercesc::DOMElement& e,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  x_ (this),
+  y_ (this),
+  z_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void position::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // x
+    //
+    if (n.name () == "x" && n.namespace_ ().empty ())
+    {
+      if (!x_.present ())
+      {
+        this->x_.set (x_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // y
+    //
+    if (n.name () == "y" && n.namespace_ ().empty ())
+    {
+      if (!y_.present ())
+      {
+        this->y_.set (y_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // z
+    //
+    if (n.name () == "z" && n.namespace_ ().empty ())
+    {
+      if (!z_.present ())
+      {
+        this->z_.set (z_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!x_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "x",
+      "");
+  }
+
+  if (!y_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "y",
+      "");
+  }
+
+  if (!z_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "z",
+      "");
+  }
+}
+
+position* position::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class position (*this, f, c);
+}
+
+position& position::
+operator= (const position& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->x_ = x.x_;
+    this->y_ = x.y_;
+    this->z_ = x.z_;
+  }
+
+  return *this;
+}
+
+position::
+~position ()
+{
+}
+
+// velocity
+//
+
+velocity::
+velocity (const x_type& x,
+          const y_type& y,
+          const z_type& z)
+: ::xml_schema::type (),
+  x_ (x, this),
+  y_ (y, this),
+  z_ (z, this)
+{
+}
+
+velocity::
+velocity (const velocity& x,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  x_ (x.x_, f, this),
+  y_ (x.y_, f, this),
+  z_ (x.z_, f, this)
+{
+}
+
+velocity::
+velocity (const ::xercesc::DOMElement& e,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  x_ (this),
+  y_ (this),
+  z_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void velocity::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // x
+    //
+    if (n.name () == "x" && n.namespace_ ().empty ())
+    {
+      if (!x_.present ())
+      {
+        this->x_.set (x_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // y
+    //
+    if (n.name () == "y" && n.namespace_ ().empty ())
+    {
+      if (!y_.present ())
+      {
+        this->y_.set (y_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // z
+    //
+    if (n.name () == "z" && n.namespace_ ().empty ())
+    {
+      if (!z_.present ())
+      {
+        this->z_.set (z_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!x_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "x",
+      "");
+  }
+
+  if (!y_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "y",
+      "");
+  }
+
+  if (!z_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "z",
+      "");
+  }
+}
+
+velocity* velocity::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class velocity (*this, f, c);
+}
+
+velocity& velocity::
+operator= (const velocity& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->x_ = x.x_;
+    this->y_ = x.y_;
+    this->z_ = x.z_;
+  }
+
+  return *this;
+}
+
+velocity::
+~velocity ()
 {
 }
 

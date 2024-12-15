@@ -137,6 +137,37 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
+                <xs:element name="particles" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="particle" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="position">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="x" type="xs:double"/>
+                                                    <xs:element name="y" type="xs:double"/>
+                                                    <xs:element name="z" type="xs:double"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="velocity">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="x" type="xs:double"/>
+                                                    <xs:element name="y" type="xs:double"/>
+                                                    <xs:element name="z" type="xs:double"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="mass" type="xs:double"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
