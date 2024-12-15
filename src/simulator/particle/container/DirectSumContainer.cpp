@@ -34,12 +34,13 @@ void DirectSumContainer::insert(Particle &p) {
   create_pairs(p_ptr);
 }
 
+
 void DirectSumContainer::insert(ParticlePointer &p) {
   _particle_container.push_back(p);
   create_pairs(p);
 }
 
-size_t DirectSumContainer::size() { return _particle_container.size(); }
+size_t DirectSumContainer::size() const { return _particle_container.size(); }
 
 Particle &DirectSumContainer::operator[](size_t index) {
   return *(_particle_container[index]);
