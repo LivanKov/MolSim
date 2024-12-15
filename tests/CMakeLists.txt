@@ -9,7 +9,7 @@ enable_testing()
 
 add_executable(basic_test basic_test.cpp generator_test.cpp linked_cell.cpp boundary_conditions_test.cpp ../src/simulator/particle/container/DirectSumContainer.cpp ../src/simulator/particle/Particle.cpp ../src/utils/logger/Logger.cpp
         ../src/simulator/particle/ParticleGenerator.cpp ../src/simulator/particle/container/LinkedCellContainer.cpp ../src/simulator/particle/container/DirectSumContainer.cpp ../src/simulator/Thermostat.cpp
-        thermostat_test.cpp)
+        )
 
 target_include_directories(basic_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 

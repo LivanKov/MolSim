@@ -332,19 +332,21 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
     return;
   }
 
-  auto& position = cells_map[particle_id]->getX();
   auto& velocity = cells_map[particle_id]->getV();
 
   // Left boundary
   if (cell_id % x == 0) {
     if (boundary_conditions_.left == BoundaryCondition::Reflecting) {
+      logger.debug("Reflecting left boundary");
       cells_map[particle_id]->updateV(-velocity[0], velocity[1], velocity[2]);
+      //logger.debug("Velocity: " + std::to_string(cells_map[particle_id]->getV()[0]) + " " + std::to_string(cells_map[particle_id]->getV()[1]) + " " + std::to_string(cells_map[particle_id]->getV()[2]));
     }
   }
 
   // Right boundary
   if ((cell_id + 1) % x == 0) { 
     if (boundary_conditions_.right == BoundaryCondition::Reflecting) {
+      logger.debug("Reflecting right boundary");
       cells_map[particle_id]->updateV(-velocity[0], velocity[1], velocity[2]);
     }
   }
@@ -353,6 +355,7 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
   for(size_t i = 0; i < z; i++){
     if (x * y * i <= cell_id && cell_id < x * y * i + x) {
       if (boundary_conditions_.bottom == BoundaryCondition::Reflecting) {
+        logger.debug("Reflecting bottom boundary");
         cells_map[particle_id]->updateV(velocity[0], -velocity[1], velocity[2]);
       }
     }
@@ -362,6 +365,7 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
   for(size_t i = 1; i <= z; i++){
     if (x * y * i - x <= cell_id && cell_id < x * y * i) {
       if (boundary_conditions_.top == BoundaryCondition::Reflecting) {
+        logger.debug("Reflecting top boundary");
         cells_map[particle_id]->updateV(velocity[0], -velocity[1], velocity[2]);
       }
     }
@@ -371,12 +375,14 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
     // Front boundary
     if (cell_id < x * y) {
       if (boundary_conditions_.front == BoundaryCondition::Reflecting) {
+        logger.debug("Reflecting front boundary");
         cells_map[particle_id]->updateV(velocity[0], velocity[1], -velocity[2]);
       }
     }
     // Back boundary
     if (cell_id >= x * y * (z - 1)) {
       if (boundary_conditions_.back == BoundaryCondition::Reflecting) {
+        logger.debug("Reflecting back boundary");
         cells_map[particle_id]->updateV(velocity[0], velocity[1], -velocity[2]);
       }
     }

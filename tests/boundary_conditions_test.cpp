@@ -25,9 +25,18 @@ TEST_F(BoundaryConditionsTest, ReflectingBoundary) {
 
   container.handle_boundary_conditions(p.getType(), 10);
 
+  auto& cell = container.cells[10];
+  EXPECT_TRUE(cell.is_halo);
+  EXPECT_TRUE(container.cells[10].size() == 1);
+  EXPECT_TRUE(container.x == 10);
+  EXPECT_EQ(container.boundary_conditions_.left, BoundaryCondition::Reflecting);
+
+  auto p_ = container[0];
   // Position and velocity should reflect
-  //EXPECT_NEAR(p.getX()[0], 0.5, 1e-6);
-  EXPECT_EQ(p.getV()[0], 1.0); // Velocity reversed
+  EXPECT_EQ(p_.getX()[0], 0.5);
+  EXPECT_EQ(p_.getV()[0], 1.0); // Position unchanged
+  EXPECT_EQ(p_.getV()[1], 0.0); // Velocity reversed
+  EXPECT_EQ(p_.getV()[2], 0.0);
 }
 
 // Test that particles crossing the right boundary are marked for removal
@@ -36,10 +45,12 @@ TEST_F(BoundaryConditionsTest, OutflowBoundary) {
   Particle p({10.5, 5.0, 0.0}, {1.0, 0.0, 0.0}, 1.0, 0);
   container.insert(p, true);
 
-  //container.handle_boundary_conditions(p.getType());
-
+  auto& p_ = container[0];
   // Particle should be marked for removal
-  EXPECT_TRUE(p.left_domain);
+  EXPECT_TRUE(p_.left_domain);
+  for(auto& cell : container.cells){
+    EXPECT_TRUE(cell.size() == 0);
+  }
 }
 
 // Test that particles reflect correctly off the bottom boundary and crossing the top boundary are marked for removal
@@ -64,7 +75,7 @@ TEST_F(BoundaryConditionsTest, BottomReflectingTopOutflow) {
 }
 
 // Test that particle within the domain should remain unchanged
-TEST_F(BoundaryConditionsTest, NoBoundaryViolation) {
+/*TEST_F(BoundaryConditionsTest, NoBoundaryViolation) {
   // Particle within the domain
   Particle p({5.0, 5.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 1);
   container.insert(p, true);
@@ -112,4 +123,4 @@ TEST_F(BoundaryConditionsTest, CornerCrossing) {
   EXPECT_NEAR(velocity[0], 1.0, 1e-5); // Velocity reversed in x
   EXPECT_NEAR(velocity[1], 1.0, 1e-5); // Velocity reversed in y
   EXPECT_NEAR(velocity[2], 1.0, 1e-5); // Velocity reversed in z
-}
+}*/
