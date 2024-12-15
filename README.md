@@ -92,6 +92,7 @@ Here is an example of an XML input file:
         <output_basename>../output/MD_vtk</output_basename>
         <write_frequency>10</write_frequency>
         <r_cutoff_radius>3.0</r_cutoff_radius>
+        <enable_brownian>true</enable_brownian>
         <domain_size>
             <x>180.0</x>
             <y>90.0</y>
@@ -121,6 +122,9 @@ Here is an example of an XML input file:
             <radius>15</radius>
             <mesh_width>1.1225</mesh_width>
             <mass>1.0</mass>
+            <epsilon>5.0</epsilon>
+            <sigma>1.0</sigma>
+            <average_velocity>0.1</average_velocity>
         </disc>
     </discs>
     <cuboids>
@@ -137,6 +141,8 @@ Here is an example of an XML input file:
             </dimensions>
             <mesh_width>1.0</mesh_width>
             <mass>1.0</mass>
+            <epsilon>5.0</epsilon>
+            <sigma>1.0</sigma>
             <initial_velocity>
                 <x>0.0</x>
                 <y>0.0</y>
@@ -145,6 +151,21 @@ Here is an example of an XML input file:
             <average_velocity>0.1</average_velocity>
         </cuboid>
     </cuboids>
+    <particles>
+        <particle>
+            <position>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </position>
+            <velocity>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </velocity>
+            <mass>1.0</mass>
+        </particle>
+    </particles>
 </MolSim>
 ```
 ### Notes
