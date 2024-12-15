@@ -21,8 +21,8 @@ public:
 
   /**
    * @brief Generate a cuboid consisting of particles, based on arguments.
-   * @param lowerLeftFrontCorner Coordinates of the lower left point of the cuboid
-   * in 3d space.
+   * @param lowerLeftFrontCorner Coordinates of the lower left point of the
+   * cuboid in 3d space.
    * @param dimensions Amount of particles in height, width and depth of the
    * cuboid.
    * @param h Distance between particles.

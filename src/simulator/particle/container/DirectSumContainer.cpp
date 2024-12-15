@@ -34,7 +34,6 @@ void DirectSumContainer::insert(Particle &p) {
   create_pairs(p_ptr);
 }
 
-
 void DirectSumContainer::insert(ParticlePointer &p) {
   _particle_container.push_back(p);
   create_pairs(p);

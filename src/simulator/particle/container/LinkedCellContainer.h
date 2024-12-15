@@ -153,7 +153,6 @@ public:
    */
   DomainBoundaryConditions boundary_conditions_;
 
-
   bool reflective_flag;
 
 private:

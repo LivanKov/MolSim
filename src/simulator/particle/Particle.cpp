@@ -33,7 +33,8 @@ Particle::Particle(const Particle &other) {
 
 // Todo: maybe use initializater list instead of copy?
 Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
-                   double m_arg, int type_arg, double epsilon_arg, double sigma_arg) {
+                   double m_arg, int type_arg, double epsilon_arg,
+                   double sigma_arg) {
   x = x_arg;
   v = v_arg;
   m = m_arg;
