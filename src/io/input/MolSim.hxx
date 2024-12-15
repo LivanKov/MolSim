@@ -225,6 +225,7 @@ namespace xml_schema
 class boundary_condition_type;
 class MolSim;
 class simulation_parameters;
+class thermostats;
 class boundary_conditions;
 class discs;
 class cuboids;
@@ -325,6 +326,27 @@ class MolSim: public ::xml_schema::type
   void
   simulation_parameters (::std::auto_ptr< simulation_parameters_type > p);
 
+  // thermostats
+  //
+  typedef ::thermostats thermostats_type;
+  typedef ::xsd::cxx::tree::optional< thermostats_type > thermostats_optional;
+  typedef ::xsd::cxx::tree::traits< thermostats_type, char > thermostats_traits;
+
+  const thermostats_optional&
+  thermostats () const;
+
+  thermostats_optional&
+  thermostats ();
+
+  void
+  thermostats (const thermostats_type& x);
+
+  void
+  thermostats (const thermostats_optional& x);
+
+  void
+  thermostats (::std::auto_ptr< thermostats_type > p);
+
   // boundary_conditions
   //
   typedef ::boundary_conditions boundary_conditions_type;
@@ -421,6 +443,7 @@ class MolSim: public ::xml_schema::type
 
   protected:
   ::xsd::cxx::tree::one< simulation_parameters_type > simulation_parameters_;
+  thermostats_optional thermostats_;
   boundary_conditions_optional boundary_conditions_;
   discs_optional discs_;
   cuboids_optional cuboids_;
@@ -502,19 +525,55 @@ class simulation_parameters: public ::xml_schema::type
   void
   r_cutoff_radius (const r_cutoff_radius_type& x);
 
+  // gravity
+  //
+  typedef ::xml_schema::double_ gravity_type;
+  typedef ::xsd::cxx::tree::optional< gravity_type > gravity_optional;
+  typedef ::xsd::cxx::tree::traits< gravity_type, char, ::xsd::cxx::tree::schema_type::double_ > gravity_traits;
+
+  const gravity_optional&
+  gravity () const;
+
+  gravity_optional&
+  gravity ();
+
+  void
+  gravity (const gravity_type& x);
+
+  void
+  gravity (const gravity_optional& x);
+
+  // enable_brownian
+  //
+  typedef ::xml_schema::boolean enable_brownian_type;
+  typedef ::xsd::cxx::tree::traits< enable_brownian_type, char > enable_brownian_traits;
+
+  const enable_brownian_type&
+  enable_brownian () const;
+
+  enable_brownian_type&
+  enable_brownian ();
+
+  void
+  enable_brownian (const enable_brownian_type& x);
+
   // domain_size
   //
   typedef ::domain_size domain_size_type;
+  typedef ::xsd::cxx::tree::optional< domain_size_type > domain_size_optional;
   typedef ::xsd::cxx::tree::traits< domain_size_type, char > domain_size_traits;
 
-  const domain_size_type&
+  const domain_size_optional&
   domain_size () const;
 
-  domain_size_type&
+  domain_size_optional&
   domain_size ();
 
   void
   domain_size (const domain_size_type& x);
+
+  void
+  domain_size (const domain_size_optional& x);
 
   void
   domain_size (::std::auto_ptr< domain_size_type > p);
@@ -526,14 +585,7 @@ class simulation_parameters: public ::xml_schema::type
                          const output_basename_type&,
                          const write_frequency_type&,
                          const r_cutoff_radius_type&,
-                         const domain_size_type&);
-
-  simulation_parameters (const end_time_type&,
-                         const delta_time_type&,
-                         const output_basename_type&,
-                         const write_frequency_type&,
-                         const r_cutoff_radius_type&,
-                         ::std::auto_ptr< domain_size_type >);
+                         const enable_brownian_type&);
 
   simulation_parameters (const ::xercesc::DOMElement& e,
                          ::xml_schema::flags f = 0,
@@ -566,9 +618,124 @@ class simulation_parameters: public ::xml_schema::type
   ::xsd::cxx::tree::one< output_basename_type > output_basename_;
   ::xsd::cxx::tree::one< write_frequency_type > write_frequency_;
   ::xsd::cxx::tree::one< r_cutoff_radius_type > r_cutoff_radius_;
-  ::xsd::cxx::tree::one< domain_size_type > domain_size_;
+  gravity_optional gravity_;
+  ::xsd::cxx::tree::one< enable_brownian_type > enable_brownian_;
+  domain_size_optional domain_size_;
 };
 
+class thermostats: public ::xml_schema::type
+{
+  public:
+  // initial_temp
+  //
+  typedef ::xml_schema::double_ initial_temp_type;
+  typedef ::xsd::cxx::tree::traits< initial_temp_type, char, ::xsd::cxx::tree::schema_type::double_ > initial_temp_traits;
+
+  const initial_temp_type&
+  initial_temp () const;
+
+  initial_temp_type&
+  initial_temp ();
+
+  void
+  initial_temp (const initial_temp_type& x);
+
+  // target_temp
+  //
+  typedef ::xml_schema::double_ target_temp_type;
+  typedef ::xsd::cxx::tree::traits< target_temp_type, char, ::xsd::cxx::tree::schema_type::double_ > target_temp_traits;
+
+  const target_temp_type&
+  target_temp () const;
+
+  target_temp_type&
+  target_temp ();
+
+  void
+  target_temp (const target_temp_type& x);
+
+  // delta_temp
+  //
+  typedef ::xml_schema::double_ delta_temp_type;
+  typedef ::xsd::cxx::tree::traits< delta_temp_type, char, ::xsd::cxx::tree::schema_type::double_ > delta_temp_traits;
+
+  const delta_temp_type&
+  delta_temp () const;
+
+  delta_temp_type&
+  delta_temp ();
+
+  void
+  delta_temp (const delta_temp_type& x);
+
+  // is_gradual
+  //
+  typedef ::xml_schema::boolean is_gradual_type;
+  typedef ::xsd::cxx::tree::traits< is_gradual_type, char > is_gradual_traits;
+
+  const is_gradual_type&
+  is_gradual () const;
+
+  is_gradual_type&
+  is_gradual ();
+
+  void
+  is_gradual (const is_gradual_type& x);
+
+  // n_thermostats
+  //
+  typedef ::xml_schema::double_ n_thermostats_type;
+  typedef ::xsd::cxx::tree::traits< n_thermostats_type, char, ::xsd::cxx::tree::schema_type::double_ > n_thermostats_traits;
+
+  const n_thermostats_type&
+  n_thermostats () const;
+
+  n_thermostats_type&
+  n_thermostats ();
+
+  void
+  n_thermostats (const n_thermostats_type& x);
+
+  // Constructors.
+  //
+  thermostats (const initial_temp_type&,
+               const target_temp_type&,
+               const delta_temp_type&,
+               const is_gradual_type&,
+               const n_thermostats_type&);
+
+  thermostats (const ::xercesc::DOMElement& e,
+               ::xml_schema::flags f = 0,
+               ::xml_schema::container* c = 0);
+
+  thermostats (const thermostats& x,
+               ::xml_schema::flags f = 0,
+               ::xml_schema::container* c = 0);
+
+  virtual thermostats*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  thermostats&
+  operator= (const thermostats& x);
+
+  virtual 
+  ~thermostats ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< initial_temp_type > initial_temp_;
+  ::xsd::cxx::tree::one< target_temp_type > target_temp_;
+  ::xsd::cxx::tree::one< delta_temp_type > delta_temp_;
+  ::xsd::cxx::tree::one< is_gradual_type > is_gradual_;
+  ::xsd::cxx::tree::one< n_thermostats_type > n_thermostats_;
+};
 
 class boundary_conditions: public ::xml_schema::type
 {
@@ -991,19 +1158,67 @@ class disc: public ::xml_schema::type
   void
   mass (const mass_type& x);
 
+  // epsilon
+  //
+  typedef ::xml_schema::double_ epsilon_type;
+  typedef ::xsd::cxx::tree::traits< epsilon_type, char, ::xsd::cxx::tree::schema_type::double_ > epsilon_traits;
+
+  const epsilon_type&
+  epsilon () const;
+
+  epsilon_type&
+  epsilon ();
+
+  void
+  epsilon (const epsilon_type& x);
+
+  // sigma
+  //
+  typedef ::xml_schema::double_ sigma_type;
+  typedef ::xsd::cxx::tree::traits< sigma_type, char, ::xsd::cxx::tree::schema_type::double_ > sigma_traits;
+
+  const sigma_type&
+  sigma () const;
+
+  sigma_type&
+  sigma ();
+
+  void
+  sigma (const sigma_type& x);
+
+  // average_velocity
+  //
+  typedef ::xml_schema::double_ average_velocity_type;
+  typedef ::xsd::cxx::tree::traits< average_velocity_type, char, ::xsd::cxx::tree::schema_type::double_ > average_velocity_traits;
+
+  const average_velocity_type&
+  average_velocity () const;
+
+  average_velocity_type&
+  average_velocity ();
+
+  void
+  average_velocity (const average_velocity_type& x);
+
   // Constructors.
   //
   disc (const center_type&,
         const initial_velocity_type&,
         const radius_type&,
         const mesh_width_type&,
-        const mass_type&);
+        const mass_type&,
+        const epsilon_type&,
+        const sigma_type&,
+        const average_velocity_type&);
 
   disc (::std::auto_ptr< center_type >,
         ::std::auto_ptr< initial_velocity_type >,
         const radius_type&,
         const mesh_width_type&,
-        const mass_type&);
+        const mass_type&,
+        const epsilon_type&,
+        const sigma_type&,
+        const average_velocity_type&);
 
   disc (const ::xercesc::DOMElement& e,
         ::xml_schema::flags f = 0,
@@ -1036,6 +1251,9 @@ class disc: public ::xml_schema::type
   ::xsd::cxx::tree::one< radius_type > radius_;
   ::xsd::cxx::tree::one< mesh_width_type > mesh_width_;
   ::xsd::cxx::tree::one< mass_type > mass_;
+  ::xsd::cxx::tree::one< epsilon_type > epsilon_;
+  ::xsd::cxx::tree::one< sigma_type > sigma_;
+  ::xsd::cxx::tree::one< average_velocity_type > average_velocity_;
 };
 
 class cuboid: public ::xml_schema::type
@@ -1103,6 +1321,34 @@ class cuboid: public ::xml_schema::type
   void
   mass (const mass_type& x);
 
+  // epsilon
+  //
+  typedef ::xml_schema::double_ epsilon_type;
+  typedef ::xsd::cxx::tree::traits< epsilon_type, char, ::xsd::cxx::tree::schema_type::double_ > epsilon_traits;
+
+  const epsilon_type&
+  epsilon () const;
+
+  epsilon_type&
+  epsilon ();
+
+  void
+  epsilon (const epsilon_type& x);
+
+  // sigma
+  //
+  typedef ::xml_schema::double_ sigma_type;
+  typedef ::xsd::cxx::tree::traits< sigma_type, char, ::xsd::cxx::tree::schema_type::double_ > sigma_traits;
+
+  const sigma_type&
+  sigma () const;
+
+  sigma_type&
+  sigma ();
+
+  void
+  sigma (const sigma_type& x);
+
   // initial_velocity
   //
   typedef ::initial_velocity initial_velocity_type;
@@ -1140,6 +1386,8 @@ class cuboid: public ::xml_schema::type
           const dimensions_type&,
           const mesh_width_type&,
           const mass_type&,
+          const epsilon_type&,
+          const sigma_type&,
           const initial_velocity_type&,
           const average_velocity_type&);
 
@@ -1147,6 +1395,8 @@ class cuboid: public ::xml_schema::type
           ::std::auto_ptr< dimensions_type >,
           const mesh_width_type&,
           const mass_type&,
+          const epsilon_type&,
+          const sigma_type&,
           ::std::auto_ptr< initial_velocity_type >,
           const average_velocity_type&);
 
@@ -1180,6 +1430,8 @@ class cuboid: public ::xml_schema::type
   ::xsd::cxx::tree::one< dimensions_type > dimensions_;
   ::xsd::cxx::tree::one< mesh_width_type > mesh_width_;
   ::xsd::cxx::tree::one< mass_type > mass_;
+  ::xsd::cxx::tree::one< epsilon_type > epsilon_;
+  ::xsd::cxx::tree::one< sigma_type > sigma_;
   ::xsd::cxx::tree::one< initial_velocity_type > initial_velocity_;
   ::xsd::cxx::tree::one< average_velocity_type > average_velocity_;
 };

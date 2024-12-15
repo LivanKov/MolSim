@@ -19,4 +19,14 @@ struct SimParams {
   DomainBoundaryConditions boundaryConditions;
   bool reflective;
   bool periodic;
+  double gravity;
+
+  // Thermostats
+  double initial_temp;
+  double target_temp;
+  double delta_temp;
+  bool is_gradual;
+  double n_thermostats;
+  size_t dimensions;
+  bool enable_brownian;
 };
