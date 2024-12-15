@@ -332,22 +332,20 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
     return;
   }
 
-  auto position = cells_map[particle_id]->getX();
-  auto velocity = cells_map[particle_id]->getV();
-
-
+  auto& position = cells_map[particle_id]->getX();
+  auto& velocity = cells_map[particle_id]->getV();
 
   // Left boundary
   if (cell_id % x == 0) {
     if (boundary_conditions_.left == BoundaryCondition::Reflecting) {
-      velocity[0] = -velocity[0];
+      cells_map[particle_id]->updateV(-velocity[0], velocity[1], velocity[2]);
     }
   }
 
   // Right boundary
   if ((cell_id + 1) % x == 0) { 
     if (boundary_conditions_.right == BoundaryCondition::Reflecting) {
-      velocity[0] = -velocity[0];
+      cells_map[particle_id]->updateV(-velocity[0], velocity[1], velocity[2]);
     }
   }
 
@@ -355,7 +353,7 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
   for(size_t i = 0; i < z; i++){
     if (x * y * i <= cell_id && cell_id < x * y * i + x) {
       if (boundary_conditions_.bottom == BoundaryCondition::Reflecting) {
-        velocity[1] = -velocity[1];
+        cells_map[particle_id]->updateV(velocity[0], -velocity[1], velocity[2]);
       }
     }
   }
@@ -364,7 +362,7 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
   for(size_t i = 1; i <= z; i++){
     if (x * y * i - x <= cell_id && cell_id < x * y * i) {
       if (boundary_conditions_.top == BoundaryCondition::Reflecting) {
-        velocity[1] = -velocity[1];
+        cells_map[particle_id]->updateV(velocity[0], -velocity[1], velocity[2]);
       }
     }
   }
@@ -373,18 +371,16 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
     // Front boundary
     if (cell_id < x * y) {
       if (boundary_conditions_.front == BoundaryCondition::Reflecting) {
-        velocity[2] = -velocity[2];
+        cells_map[particle_id]->updateV(velocity[0], velocity[1], -velocity[2]);
       }
     }
     // Back boundary
     if (cell_id >= x * y * (z - 1)) {
       if (boundary_conditions_.back == BoundaryCondition::Reflecting) {
-        velocity[2] = -velocity[2];
+        cells_map[particle_id]->updateV(velocity[0], velocity[1], -velocity[2]);
       }
     }
   }
-  cells_map[particle_id]->updateX(position[0], position[1], position[2]);
-  cells_map[particle_id]->updateV(velocity[0], velocity[1], velocity[2]);
 }
 
 size_t LinkedCellContainer::size() { return particles.size(); }

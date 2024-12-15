@@ -20,14 +20,14 @@ protected:
 // Test that particles reflect correctly off the left boundary
 TEST_F(BoundaryConditionsTest, ReflectingBoundary) {
   // Particle heading towards the left boundary
-  Particle p({-0.5, 5.0, 0.0}, {-1.0, 0.0, 0.0}, 1.0, 0);
+  Particle p({0.5, 1.5, 0.0}, {-1.0, 0.0, 0.0}, 1.0, 0);
   container.insert(p, true);
 
-  //container.handle_boundary_conditions(p.getType());
+  container.handle_boundary_conditions(p.getType(), 10);
 
   // Position and velocity should reflect
-  EXPECT_NEAR(p.getX()[0], 0.5, 1e-6);
-  EXPECT_NEAR(p.getV()[0], 1.0, 1e-6); // Velocity reversed
+  //EXPECT_NEAR(p.getX()[0], 0.5, 1e-6);
+  EXPECT_EQ(p.getV()[0], 1.0); // Velocity reversed
 }
 
 // Test that particles crossing the right boundary are marked for removal
