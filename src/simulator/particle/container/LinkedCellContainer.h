@@ -90,7 +90,7 @@ public:
    * @brief Applies the specified boundary conditions to a particle.
    * @param p The particle to which boundary conditions are applied.
    */
-  void handle_boundary_conditions(int particle_id);
+  void handle_boundary_conditions(int particle_id, int cell_index);
 
   /**
    * @brief Applies periodic boundary conditions to a particle.
