@@ -3,7 +3,7 @@ name: MolSim CI Build
 on:
   push:
     branches:
-      - dev-sheet_4
+      - dev-worksheet_4
   pull_request:
     branches:
       - master
