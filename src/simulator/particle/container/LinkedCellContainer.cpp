@@ -399,12 +399,14 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
 
 void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
                                                               int cell_index) {
-  if(!cells[cell_index].is_halo){
+
+  if(cells_map[particle_id]->is_periodic_copy && !cells[cell_index].is_halo){
+    cells_map[particle_id]->is_periodic_copy = false;
+    particles_left_domain--;
     return;
   }
 
-  if(cells_map[particle_id]->is_periodic_copy && cells[cell_index].is_halo){
-    cells_map[particle_id]->is_periodic_copy = false;
+  if(!cells[cell_index].is_halo || cells_map[particle_id]->is_periodic_copy && cells[cell_index].is_halo){ 
     return;
   }
 
@@ -579,7 +581,8 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
           cells_map[particle_id]->getX()[0],
           cells_map[particle_id]->getX()[1] - domain_size_[1],
           cells_map[particle_id]->getX()[2]);
-      cells_map[particle_id]->left_domain = true;
+      cells_map[particle_id]->is_periodic_copy = true;
+      particles_left_domain++;
     }
   }
   // determine if corner cel
