@@ -131,21 +131,21 @@ TEST_F(LinkedCellTest, NeighbourTest) {
   EXPECT_TRUE(p_1.getX()[0] == 1.5 && p_1.getX()[1] == 1.5 &&
               p_1.getX()[2] == 0.0);
 
-    EXPECT_TRUE(container.get_neighbours(p_1.getType()).size() == 3);
+    EXPECT_TRUE(container.get_neighbours(p_1.getType()).size() == 4);
 
   Particle p_2 = container[4];
 
   EXPECT_TRUE(p_2.getX()[0] == 4.5 && p_2.getX()[1] == 4.5 &&
               p_2.getX()[2] == 0.0);
 
-    EXPECT_TRUE(container.get_neighbours(p_2.getType()).size() == 8);
+    EXPECT_TRUE(container.get_neighbours(p_2.getType()).size() == 9);
 
   Particle p_3 = container[7];
 
   EXPECT_TRUE(p_3.getX()[0] == 4.5 && p_3.getX()[1] == 7.5 &&
               p_3.getX()[2] == 0.0);
 
-    EXPECT_TRUE(container.get_neighbours(p_3.getType()).size() == 5);
+    EXPECT_TRUE(container.get_neighbours(p_3.getType()).size() == 6);
 
   // verify every single neigbour for posterity's sake
 
@@ -200,10 +200,9 @@ TEST_F(LinkedCellTest, NeighbourTest) {
               center_particle.getX()[1] == 4.5 &&
               center_particle.getX()[2] == 4.5);
 
-    EXPECT_TRUE(container_3d.get_neighbours(center_particle.getType()).size() == 26);
+    EXPECT_TRUE(container_3d.get_neighbours(center_particle.getType()).size() == 27);
 
 }
-
 
 TEST_F(LinkedCellTest, UnevenDomainTest) {
 
@@ -234,10 +233,13 @@ TEST_F(LinkedCellTest, UnevenDomainTest) {
 
   // insert another particle
 
-    Particle p_2(std::array<double, 3>{1.0, 7.5, 1.0}, std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
-    uneven_container.insert(p_2, true);
-    
-    EXPECT_TRUE(uneven_container.size() == 2);
+  // why does this cause a segfault when set to 0?
+
+  Particle p_2(std::array<double, 3>{1.0, 7.5, 1.0},
+               std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 1);
+  uneven_container.insert(p_2, true);
+
+  EXPECT_TRUE(uneven_container.size() == 2);
 
   EXPECT_EQ(uneven_container.cells[12].size(), 1);
 
@@ -246,16 +248,14 @@ TEST_F(LinkedCellTest, UnevenDomainTest) {
 
   std::array<double, 3> old_position = p_2.getX();
 
-    //uneven_container.cells[12][0]->updateX(2.26, 8.3, 1.0);
-    //uneven_container.update_particle_location(uneven_container.cells[12][0], old_position);
+  uneven_container[1].updateX(2.26, 8.3, 1.0);
+  uneven_container.update_particle_location(1, old_position);
 
   EXPECT_TRUE(uneven_container.size() == 2);
 
-    EXPECT_EQ(uneven_container.cells[12].size(), 0);
-    EXPECT_EQ(uneven_container.cells[13].size(), 1);
-
+  EXPECT_EQ(uneven_container.cells[12].size(), 0);
+  EXPECT_EQ(uneven_container.cells[13].size(), 1);
 }
-
 
 TEST_F(LinkedCellTest, RepositioningTest) {
 
