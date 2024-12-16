@@ -134,20 +134,22 @@ void LinkedCellContainer::update_particle_location(
         cells_map[particle_id]->left_domain = false;
         particles_left_domain--;
       }
-      if(cells_map[particle_id]->is_periodic_copy && cells_map[particle_id]->secondary_copy_flag){
+      /*if(cells_map[particle_id]->is_periodic_copy && cells_map[particle_id]->secondary_copy_flag){
         cells_map[particle_id]->is_periodic_copy = false;
         particles_left_domain--;
-      }
-
+      }*/
+      
       if (reflective_flag) {
         handle_boundary_conditions(particle_id, current_index);
       } else if(periodic_flag){
         handle_periodic_boundary_conditions(particle_id, current_index);
       }
     } else {
-      if(cells_map[particle_id]->left_domain == false){
+      if(!cells_map[particle_id]->left_domain && !cells_map[particle_id]->is_periodic_copy){
         cells_map[particle_id]->left_domain = true;
+        logger.info("Particle left domain: " + std::to_string(particles_left_domain));
         particles_left_domain++;
+        logger.info("Particle left domain: " + std::to_string(particles_left_domain));
       }
     }
   }
@@ -160,7 +162,7 @@ LinkedCellContainer::Cell &LinkedCellContainer::get_cell(size_t index) {
 std::vector<ParticlePointer>
 LinkedCellContainer::get_neighbours(int particle_id) {
   std::vector<ParticlePointer> neighbours{};
-  if (cells_map[particle_id]->left_domain) {
+  if (cells_map[particle_id]->left_domain || cells_map[particle_id]->is_periodic_copy) {
     return neighbours;
   }
   std::array<double, 3> position = cells_map[particle_id]->getX();
@@ -405,12 +407,13 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
 void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
                                                               int cell_index) {
 
-  if(cells_map[particle_id]->secondary_copy_flag && !cells[cell_index].is_halo){
-    cells_map[particle_id]->secondary_copy_flag = false;
+  if(cells_map[particle_id]->is_periodic_copy && !cells[cell_index].is_halo){
+    cells_map[particle_id]->is_periodic_copy = false;
+    particles_left_domain--;
     return;
   }
 
-  if(!cells[cell_index].is_halo || cells_map[particle_id]->secondary_copy_flag && cells[cell_index].is_halo){ 
+  if(!cells[cell_index].is_halo || cells_map[particle_id]->is_periodic_copy && cells[cell_index].is_halo){ 
     return;
   }
 
@@ -420,7 +423,7 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
   if (z == 1) {
     logger.info("2D periodic boundary conditions");
     // handle corner case
-    if (cell_index == 0) {
+    /*if (cell_index == 0) {
       logger.info("Bottom left corner");
       cells_map[particle_id]->updateX(
           cells_map[particle_id]->getX()[0] + domain_size_[0],
@@ -557,20 +560,22 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
                    cells_map[particle_id]->getSigma()};
       insert(p_1, false);
       insert(p_2, false);
-    } else if( cell_index % x == 0){
+    } else */if( cell_index % x == 0){
       logger.info("Left boundary");
       cells_map[particle_id]->updateX(
           cells_map[particle_id]->getX()[0] + domain_size_[0],
           cells_map[particle_id]->getX()[1],
           cells_map[particle_id]->getX()[2]);
-      cells_map[particle_id]->left_domain = true;
+      cells_map[particle_id]->is_periodic_copy = true;
+      particles_left_domain++;
     } else if( (cell_index + 1) % x == 0){
       logger.info("Right boundary");
       cells_map[particle_id]->updateX(
           cells_map[particle_id]->getX()[0] - domain_size_[0],
           cells_map[particle_id]->getX()[1],
           cells_map[particle_id]->getX()[2]);
-      cells_map[particle_id]->left_domain = true;
+      cells_map[particle_id]->is_periodic_copy = true;
+      particles_left_domain++;
     } else if( cell_index < x){
       logger.info("Bottom boundary");
       cells_map[particle_id]->updateX(
@@ -578,7 +583,6 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
           cells_map[particle_id]->getX()[1] + domain_size_[1],
           cells_map[particle_id]->getX()[2]);
       cells_map[particle_id]->is_periodic_copy = true;
-      cells_map[particle_id]->secondary_copy_flag = true;
       particles_left_domain++;
     } else if( cell_index >= x * (y - 1)){
       logger.info("Top boundary");
@@ -587,7 +591,6 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
           cells_map[particle_id]->getX()[1] - domain_size_[1],
           cells_map[particle_id]->getX()[2]);
       cells_map[particle_id]->is_periodic_copy = true;
-      cells_map[particle_id]->secondary_copy_flag = true;
       particles_left_domain++;
     }
   }

@@ -21,15 +21,15 @@
                 <z>0.0</z>
             </coordinate>
             <dimensions>
-                <x>1</x>
-                <y>1</y>
+                <x>3</x>
+                <y>3</y>
                 <z>1</z>
             </dimensions>
             <mesh_width>1</mesh_width>
             <mass>1.0</mass>
             <initial_velocity>
                 <x>0.0</x>
-                <y>-4.0</y>
+                <y>-6.0</y>
                 <z>0.0</z>
             </initial_velocity>
             <average_velocity>0.0</average_velocity>
