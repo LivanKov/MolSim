@@ -260,7 +260,8 @@ class boundary_condition_type: public ::xml_schema::string
   enum value
   {
     Outflow,
-    Reflecting
+    Reflecting,
+    Periodic
   };
 
   boundary_condition_type (value v);
@@ -306,8 +307,8 @@ class boundary_condition_type: public ::xml_schema::string
   _xsd_boundary_condition_type_convert () const;
 
   public:
-  static const char* const _xsd_boundary_condition_type_literals_[2];
-  static const value _xsd_boundary_condition_type_indexes_[2];
+  static const char* const _xsd_boundary_condition_type_literals_[3];
+  static const value _xsd_boundary_condition_type_indexes_[3];
 };
 
 class MolSim: public ::xml_schema::type

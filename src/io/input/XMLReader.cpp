@@ -285,6 +285,8 @@ BoundaryCondition XMLReader::parseBoundaryCondition(const std::string &value) {
     return BoundaryCondition::Outflow;
   } else if (value == "Reflecting") {
     return BoundaryCondition::Reflecting;
+  } else if (value == "Periodic") {
+    return BoundaryCondition::Periodic;
   } else {
     throw std::runtime_error("Invalid boundary condition: " + value);
   }

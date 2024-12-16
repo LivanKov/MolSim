@@ -5,6 +5,7 @@
                     <xs:restriction base="xs:string">
                         <xs:enumeration value="Outflow"/>
                         <xs:enumeration value="Reflecting"/>
+                        <xs:enumeration value="Periodic"/>
                     </xs:restriction>
                 </xs:simpleType>
 
