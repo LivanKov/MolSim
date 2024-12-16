@@ -94,7 +94,7 @@ TEST_F(LinkedCellTest, CuboidTest) {
   // of 1.0
   ParticleGenerator::insertCuboid(
       std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3, 1}, 3.0,
-      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, 0.0, container);
+      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
 
   EXPECT_TRUE(container.size() == 9);
 
@@ -109,7 +109,7 @@ TEST_F(LinkedCellTest, CuboidTest) {
 
   ParticleGenerator::insertCuboid(
       std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3, 3}, 3.0,
-      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, 0.0, container);
+      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
 
   EXPECT_TRUE(container.size() == 27);
 
@@ -122,7 +122,7 @@ TEST_F(LinkedCellTest, NeighbourTest) {
 
   ParticleGenerator::insertCuboid(
       std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3, 1}, 3.0,
-      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, 0.0, container);
+      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
 
   EXPECT_TRUE(container.size() == 9);
 
@@ -189,7 +189,7 @@ TEST_F(LinkedCellTest, NeighbourTest) {
 
   ParticleGenerator::insertCuboid(
       std::array<double, 3>{1.5, 1.5, 1.5}, std::array<size_t, 3>{3, 3, 3}, 3.0,
-      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, 0.0, container_3d);
+      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container_3d);
 
   EXPECT_TRUE(container_3d.size() == 27);
 
@@ -261,7 +261,7 @@ TEST_F(LinkedCellTest, RepositioningTest) {
 
   ParticleGenerator::insertCuboid(
       std::array<double, 3>{5.0, 5.0, 0.0}, std::array<size_t, 3>{2, 2, 1}, 2.0,
-      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, 0.0, container);
+      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
 
   EXPECT_TRUE(container.size() == 4);
 

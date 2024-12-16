@@ -16,7 +16,7 @@ protected:
 TEST_F(CuboidTest, SimpleTest) {
   ParticleGenerator::insertCuboid(
       std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{3, 3, 3}, 1.0, 1.0,
-      std::array<double, 3>{1.0, 1.0, 1.0}, 0, container);
+      std::array<double, 3>{1.0, 1.0, 1.0}, container);
 
   size_t index = 0;
   int id = 0;
@@ -39,10 +39,10 @@ TEST_F(CuboidTest, SimpleTest) {
 TEST_F(CuboidTest, MultipleCuboidsTest) {
   ParticleGenerator::insertCuboid(
       std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{3, 3, 3}, 1.0, 1.0,
-      std::array<double, 3>{1.0, 1.0, 1.0}, 0, container);
+      std::array<double, 3>{1.0, 1.0, 1.0}, container);
   ParticleGenerator::insertCuboid(
       std::array<double, 3>{10, 10, 0}, std::array<size_t, 3>{3, 5, 4}, 1.0,
-      1.0, std::array<double, 3>{1.0, 1.0, 1.0}, 0, container);
+      1.0, std::array<double, 3>{1.0, 1.0, 1.0}, container);
 
   size_t index = 0;
   int id = 0;

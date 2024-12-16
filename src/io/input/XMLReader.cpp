@@ -93,7 +93,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
       simParameters.delta_temp = xmlThermostats.delta_temp();
       simParameters.is_gradual = xmlThermostats.is_gradual();
       simParameters.n_thermostats = xmlThermostats.n_thermostats();
-      logger.info("\n Thermostats loaded:");
+      logger.info(" Thermostats loaded:\n");
       logger.info("Initial temperature: " +
                   std::to_string(simParameters.initial_temp));
       logger.info("target temperature: " +
@@ -178,9 +178,8 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         std::array<double, 3> initial_velocity = {
             cuboid.initial_velocity().x(), cuboid.initial_velocity().y(),
             cuboid.initial_velocity().z()};
-        double avg_velocity = cuboid.average_velocity();
 
-        logger.info("\n Creating cuboid: ");
+        logger.info("Creating cuboid: \n");
         logger.info(
             "Amount of particles: " +
             std::to_string(std::accumulate(dimensions.begin(), dimensions.end(),
@@ -191,15 +190,14 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         logger.info("Mass: " + std::to_string(mass));
         logger.info("Initial Velocity: " +
                     containerToStrings(initial_velocity));
-        logger.info("Average Velocity: " + std::to_string(avg_velocity));
 
         if (simParameters.linked_cells) {
           ParticleGenerator::insertCuboid(position, dimensions, mesh_width,
-                                          mass, initial_velocity, avg_velocity,
+                                          mass, initial_velocity,
                                           particles);
         } else {
           ParticleGenerator::insertCuboid(position, dimensions, mesh_width,
-                                          mass, initial_velocity, avg_velocity,
+                                          mass, initial_velocity,
                                           particles);
         }
 
@@ -226,16 +224,14 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         // Specify epsilon and sigma of the disc
         double epsilon = disc.epsilon();
         double sigma = disc.sigma();
-        double avg_velocity = disc.average_velocity();
 
-        logger.info("\n Creating disc: ");
+        logger.info("Creating disc: \n ");
         logger.info("Center: " + containerToStrings(center));
         logger.info("Radius: " + std::to_string(radius));
         logger.info("Mesh Width: " + std::to_string(mesh_width));
         logger.info("Mass: " + std::to_string(mass));
         logger.info("Initial Velocity: " +
                     containerToStrings(initial_velocity));
-        logger.info("Average Velocity: " + std::to_string(avg_velocity));
 
         if (simParameters.linked_cells) {
           ParticleGenerator::insertDisc(center, initial_velocity, radius,
@@ -257,7 +253,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
             p.velocity().x(), p.velocity().y(), p.velocity().z()};
 
         double mass = p.mass();
-        logger.info("\n Creating single particle: ");
+        logger.info("Creating single particle: \n");
         logger.info("Position: " + containerToStrings(position));
         logger.info("Initial Velocity: " +
                     containerToStrings(initial_velocity));

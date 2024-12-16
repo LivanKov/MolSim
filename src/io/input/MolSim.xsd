@@ -86,7 +86,6 @@
                                         <xs:element name="mass" type="xs:double"/>
                                         <xs:element name="epsilon" type="xs:double"/>
                                         <xs:element name="sigma" type="xs:double"/>
-                                        <xs:element name="average_velocity" type="xs:double"/>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
@@ -130,7 +129,6 @@
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
-                                        <xs:element name="average_velocity" type="xs:double"/>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>

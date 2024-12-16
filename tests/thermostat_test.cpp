@@ -59,7 +59,7 @@ TEST_F(ThermostatTest, InvalidDimensionZeroThrowsExceptionTest) {
 TEST_F(ThermostatTest, BoltzmannFirstTest) {
     ParticleGenerator::insertCuboid(
    std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{9, 13, 9}, 1.0, 10.0,
-   std::array<double, 3>{0, 0, 0}, 0, particles);
+   std::array<double, 3>{0, 0, 0}, particles);
 
     Thermostat unit_thermostat(particles, 100, 110, 3, 0.5, true, true);
 
@@ -69,7 +69,7 @@ TEST_F(ThermostatTest, BoltzmannFirstTest) {
 TEST_F(ThermostatTest, BoltzmannSecondTest) {
     ParticleGenerator::insertCuboid(
    std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{9, 13, 9}, 1.0, 10.0,
-   std::array<double, 3>{0, 0, 0}, 0, particles);
+   std::array<double, 3>{0, 0, 0}, particles);
 
     Thermostat unit_thermostat(particles, 500, 600, 3, 0.5, true, true);
 
@@ -98,7 +98,7 @@ TEST_F(ThermostatTest, BoltzmannSecondTest) {
 TEST_F(ThermostatTest, KineticEnergySimpleTest) {
     ParticleGenerator::insertCuboid(
     std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{3, 3, 3}, 1.0, 1.0,
-    std::array<double, 3>{1.0, 1.0, 1.0}, 0, particles);
+    std::array<double, 3>{1.0, 1.0, 1.0}, particles);
     // since we have 3x3x3 = 27 particles the kinetic energy must be according to the formula 27 * ((1*3)/2) = 40.5
     ASSERT_EQ(thermostat->calculate_kinetic_energy(), 40.5);
 }
@@ -164,7 +164,7 @@ TEST_F(ThermostatTest, KineticEnergyMixedParticlesTest) {
 TEST_F(ThermostatTest, KineticEnergyLargeNumberOfParticlesTest) {
     ParticleGenerator::insertCuboid(
     std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 10}, 1.0, 1.0,
-    std::array<double, 3>{1.0, 1.0, 1.0}, 0, particles);
+    std::array<double, 3>{1.0, 1.0, 1.0}, particles);
     // E_kin must be 1_000 * 3 / 2
     ASSERT_EQ(thermostat->calculate_kinetic_energy(), 1000 * 3 / 2);
 }
@@ -173,7 +173,7 @@ TEST_F(ThermostatTest, KineticEnergyLargeNumberOfParticlesTest) {
 TEST_F(ThermostatTest, KineticEnergyMoreComplexParticleTest) {
     ParticleGenerator::insertCuboid(
     std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{12, 5, 7}, 1.0, 3.7,
-    std::array<double, 3>{-4.9, 9.8, 0.2}, 0, particles);
+    std::array<double, 3>{-4.9, 9.8, 0.2}, particles);
     //                                       our "sum"   mass     dot product of velocity vector
     constexpr auto expected_result = (12 * 5 * 7) * 3.7 * (4.9 * 4.9 + 9.8 * 9.8 + 0.2 * 0.2) / 2;
     ASSERT_NEAR(thermostat->calculate_kinetic_energy(), expected_result, 1e-6);
@@ -226,7 +226,7 @@ TEST_F(ThermostatTest, CurrentTemperatureNoParticlesTest) {
 TEST_F(ThermostatTest, CurrentTemperatureOneParticleTest) {
     ParticleGenerator::insertCuboid(
         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{1, 1, 1}, 1.0, 1.0,
-        std::array<double, 3>{1, 1, 1}, 0, particles);
+        std::array<double, 3>{1, 1, 1}, particles);
 
     double e_kin = thermostat->calculate_kinetic_energy();
 
@@ -241,7 +241,7 @@ TEST_F(ThermostatTest, CurrentTemperatureOneParticleTest) {
 TEST_F(ThermostatTest, CurrentTemperatureSimpleTest) {
     ParticleGenerator::insertCuboid(
     std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{3, 3, 3}, 1.0, 1.0,
-    std::array<double, 3>{1.0, 1.0, 1.0}, 0, particles);
+    std::array<double, 3>{1.0, 1.0, 1.0}, particles);
 
     // we know from SimpleKineticEnergyTestCase that E_kin = 40.5
     // we can now apply our formula T = (E_kin * 2) / (dimensions * number of particles)
@@ -255,7 +255,7 @@ TEST_F(ThermostatTest, CurrentTemperatureSimpleTest) {
  TEST_F(ThermostatTest, CurrentTemperatureMediumTest) {
     ParticleGenerator::insertCuboid(
     std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{12, 5, 7}, 1.0, 3.7,
-    std::array<double, 3>{-4.9, 9.8, 0.2}, 0, particles);
+    std::array<double, 3>{-4.9, 9.8, 0.2}, particles);
 
     auto expected_result_e_kin = thermostat->calculate_kinetic_energy();
 
@@ -270,7 +270,7 @@ TEST_F(ThermostatTest, CurrentTemperatureSimpleTest) {
 TEST_F(ThermostatTest, CurrentTemperatureHighVelocityTest) {
     ParticleGenerator::insertCuboid(
         std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{5, 5, 5}, 1.0, 1.0,
-        std::array<double, 3>{100, 100, 100}, 0, particles);
+        std::array<double, 3>{100, 100, 100}, particles);
 
     // Calculate expected kinetic energy with high velocities
     double expected_kinetic_energy = thermostat->calculate_kinetic_energy();
@@ -285,7 +285,7 @@ TEST_F(ThermostatTest, CurrentTemperatureHighVelocityTest) {
 TEST_F(ThermostatTest, TwoDimensionalCurrentTemperatureTest) {
     ParticleGenerator::insertCuboid(
         std::array<double, 3>{0, 0}, std::array<size_t, 3>{3, 3, 3}, 1.0, 1.0,
-        std::array<double, 3>{1.0, 1.0}, 0, particles);
+        std::array<double, 3>{1.0, 1.0}, particles);
 
     Thermostat unit_thermostat(particles, 100, 150, 2, 0.5,true,false);
 
@@ -350,7 +350,7 @@ TEST_F(ThermostatTest, InitializeDifferentVelocitiesTest) {
 TEST_F(ThermostatTest, InitializeManyParticlesTest) {
     ParticleGenerator::insertCuboid(
          std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 7, 13}, 1.0, 53.9,
-         std::array<double, 3>{13.3, 412.41, -4123.2}, 0, particles);
+         std::array<double, 3>{13.3, 412.41, -4123.2}, particles);
 
     Thermostat unit_thermostat(particles, 1231, 10000, 3, 0.000002, true, false);
 
@@ -488,7 +488,7 @@ TEST_F(ThermostatTest, ApplyDirectlyManyParticlesTest) {
 
     ParticleGenerator::insertCuboid(
          std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 7, 13}, 1.0, 53.9,
-         std::array<double, 3>{13.3, 412.41, -4123.2}, 0, particles);
+         std::array<double, 3>{13.3, 412.41, -4123.2}, particles);
 
     Thermostat unit_thermostat(particles, 100, 150, 3, 0.5, false, false);
 
@@ -504,7 +504,7 @@ TEST_F(ThermostatTest, ApplySmallerGradualTest) {
 
     ParticleGenerator::insertCuboid(
          std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 7, 13}, 1.0, 53.9,
-         std::array<double, 3>{13.3, 412.41, -4123.2}, 0, particles);
+         std::array<double, 3>{13.3, 412.41, -4123.2}, particles);
 
     Thermostat unit_thermostat(particles, 100, 150, 3, 0.0005, true, false);
 
@@ -521,7 +521,7 @@ TEST_F(ThermostatTest, ApplyDeltaTInfTest) {
 
     ParticleGenerator::insertCuboid(
          std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 7, 13}, 1.0, 53.9,
-         std::array<double, 3>{13.3, 412.41, -4123.2}, 0, particles);
+         std::array<double, 3>{13.3, 412.41, -4123.2}, particles);
 
     // here gradual is set to true
     Thermostat unit_thermostat(particles, 100, 150, 3);
@@ -543,7 +543,7 @@ TEST_F(ThermostatTest, HeatingDirectlyTest) {
 
     ParticleGenerator::insertCuboid(
          std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
-         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+         std::array<double, 3>{10.0, -5.5, 3.3}, particles);
 
     Thermostat unit_thermostat(particles, 100, 150, 3, 0.0001, false, true);
 
@@ -557,7 +557,7 @@ TEST_F(ThermostatTest, CoolingDirectlyTest) {
 
     ParticleGenerator::insertCuboid(
          std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
-         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+         std::array<double, 3>{10.0, -5.5, 3.3}, particles);
 
     Thermostat unit_thermostat(particles, 100, 50, 3, 0.0001, false, true);
 
@@ -571,7 +571,7 @@ TEST_F(ThermostatTest, HoldingDirectlyTest) {
 
     ParticleGenerator::insertCuboid(
          std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
-         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+         std::array<double, 3>{10.0, -5.5, 3.3}, particles);
 
     Thermostat unit_thermostat(particles, 100, 100, 3, 0.0001, false, true);
 
@@ -585,7 +585,7 @@ TEST_F(ThermostatTest, HeatingGraduallyTest) {
 
     ParticleGenerator::insertCuboid(
          std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
-         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+         std::array<double, 3>{10.0, -5.5, 3.3}, particles);
 
     Thermostat unit_thermostat(particles, 100, 110, 3, 0.0001, true, true);
 
@@ -606,7 +606,7 @@ TEST_F(ThermostatTest, CoolingGraduallyTest) {
 
     ParticleGenerator::insertCuboid(
          std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
-         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+         std::array<double, 3>{10.0, -5.5, 3.3}, particles);
 
     Thermostat unit_thermostat(particles, 100, 90, 3, 0.0001, true, true);
 
@@ -627,7 +627,7 @@ TEST_F(ThermostatTest, HoldingGraduallyTest) {
 
     ParticleGenerator::insertCuboid(
          std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
-         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+         std::array<double, 3>{10.0, -5.5, 3.3}, particles);
 
     Thermostat unit_thermostat(particles, 100, 100, 3, 0.0001, true, true);
 
@@ -649,7 +649,7 @@ TEST_F(ThermostatTest, HeatingAndHoldingGraduallyTest) {
 
     ParticleGenerator::insertCuboid(
          std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
-         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+         std::array<double, 3>{10.0, -5.5, 3.3}, particles);
 
     Thermostat unit_thermostat(particles, 100, 105, 3, 0.0001, true, true);
 
@@ -670,7 +670,7 @@ TEST_F(ThermostatTest, CoolingAndHoldingGraduallyTest) {
 
     ParticleGenerator::insertCuboid(
          std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{10, 10, 5}, 1.0, 5.0,
-         std::array<double, 3>{10.0, -5.5, 3.3}, 0, particles);
+         std::array<double, 3>{10.0, -5.5, 3.3}, particles);
 
     Thermostat unit_thermostat(particles, 100, 95, 3, 0.0001, true, true);
 

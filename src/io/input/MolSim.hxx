@@ -1265,20 +1265,6 @@ class disc: public ::xml_schema::type
   void
   sigma (const sigma_type& x);
 
-  // average_velocity
-  //
-  typedef ::xml_schema::double_ average_velocity_type;
-  typedef ::xsd::cxx::tree::traits< average_velocity_type, char, ::xsd::cxx::tree::schema_type::double_ > average_velocity_traits;
-
-  const average_velocity_type&
-  average_velocity () const;
-
-  average_velocity_type&
-  average_velocity ();
-
-  void
-  average_velocity (const average_velocity_type& x);
-
   // Constructors.
   //
   disc (const center_type&,
@@ -1287,8 +1273,7 @@ class disc: public ::xml_schema::type
         const mesh_width_type&,
         const mass_type&,
         const epsilon_type&,
-        const sigma_type&,
-        const average_velocity_type&);
+        const sigma_type&);
 
   disc (::std::auto_ptr< center_type >,
         ::std::auto_ptr< initial_velocity_type >,
@@ -1296,8 +1281,7 @@ class disc: public ::xml_schema::type
         const mesh_width_type&,
         const mass_type&,
         const epsilon_type&,
-        const sigma_type&,
-        const average_velocity_type&);
+        const sigma_type&);
 
   disc (const ::xercesc::DOMElement& e,
         ::xml_schema::flags f = 0,
@@ -1332,7 +1316,6 @@ class disc: public ::xml_schema::type
   ::xsd::cxx::tree::one< mass_type > mass_;
   ::xsd::cxx::tree::one< epsilon_type > epsilon_;
   ::xsd::cxx::tree::one< sigma_type > sigma_;
-  ::xsd::cxx::tree::one< average_velocity_type > average_velocity_;
 };
 
 class cuboid: public ::xml_schema::type
@@ -1445,20 +1428,6 @@ class cuboid: public ::xml_schema::type
   void
   initial_velocity (::std::auto_ptr< initial_velocity_type > p);
 
-  // average_velocity
-  //
-  typedef ::xml_schema::double_ average_velocity_type;
-  typedef ::xsd::cxx::tree::traits< average_velocity_type, char, ::xsd::cxx::tree::schema_type::double_ > average_velocity_traits;
-
-  const average_velocity_type&
-  average_velocity () const;
-
-  average_velocity_type&
-  average_velocity ();
-
-  void
-  average_velocity (const average_velocity_type& x);
-
   // Constructors.
   //
   cuboid (const coordinate_type&,
@@ -1467,8 +1436,7 @@ class cuboid: public ::xml_schema::type
           const mass_type&,
           const epsilon_type&,
           const sigma_type&,
-          const initial_velocity_type&,
-          const average_velocity_type&);
+          const initial_velocity_type&);
 
   cuboid (::std::auto_ptr< coordinate_type >,
           ::std::auto_ptr< dimensions_type >,
@@ -1476,8 +1444,7 @@ class cuboid: public ::xml_schema::type
           const mass_type&,
           const epsilon_type&,
           const sigma_type&,
-          ::std::auto_ptr< initial_velocity_type >,
-          const average_velocity_type&);
+          ::std::auto_ptr< initial_velocity_type >);
 
   cuboid (const ::xercesc::DOMElement& e,
           ::xml_schema::flags f = 0,
@@ -1512,7 +1479,6 @@ class cuboid: public ::xml_schema::type
   ::xsd::cxx::tree::one< epsilon_type > epsilon_;
   ::xsd::cxx::tree::one< sigma_type > sigma_;
   ::xsd::cxx::tree::one< initial_velocity_type > initial_velocity_;
-  ::xsd::cxx::tree::one< average_velocity_type > average_velocity_;
 };
 
 class particle: public ::xml_schema::type

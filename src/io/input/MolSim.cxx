@@ -954,24 +954,6 @@ sigma (const sigma_type& x)
   this->sigma_.set (x);
 }
 
-const disc::average_velocity_type& disc::
-average_velocity () const
-{
-  return this->average_velocity_.get ();
-}
-
-disc::average_velocity_type& disc::
-average_velocity ()
-{
-  return this->average_velocity_.get ();
-}
-
-void disc::
-average_velocity (const average_velocity_type& x)
-{
-  this->average_velocity_.set (x);
-}
-
 
 // cuboid
 // 
@@ -1118,24 +1100,6 @@ void cuboid::
 initial_velocity (::std::auto_ptr< initial_velocity_type > x)
 {
   this->initial_velocity_.set (x);
-}
-
-const cuboid::average_velocity_type& cuboid::
-average_velocity () const
-{
-  return this->average_velocity_.get ();
-}
-
-cuboid::average_velocity_type& cuboid::
-average_velocity ()
-{
-  return this->average_velocity_.get ();
-}
-
-void cuboid::
-average_velocity (const average_velocity_type& x)
-{
-  this->average_velocity_.set (x);
 }
 
 
@@ -2841,8 +2805,7 @@ disc (const center_type& center,
       const mesh_width_type& mesh_width,
       const mass_type& mass,
       const epsilon_type& epsilon,
-      const sigma_type& sigma,
-      const average_velocity_type& average_velocity)
+      const sigma_type& sigma)
 : ::xml_schema::type (),
   center_ (center, this),
   initial_velocity_ (initial_velocity, this),
@@ -2850,8 +2813,7 @@ disc (const center_type& center,
   mesh_width_ (mesh_width, this),
   mass_ (mass, this),
   epsilon_ (epsilon, this),
-  sigma_ (sigma, this),
-  average_velocity_ (average_velocity, this)
+  sigma_ (sigma, this)
 {
 }
 
@@ -2862,8 +2824,7 @@ disc (::std::auto_ptr< center_type > center,
       const mesh_width_type& mesh_width,
       const mass_type& mass,
       const epsilon_type& epsilon,
-      const sigma_type& sigma,
-      const average_velocity_type& average_velocity)
+      const sigma_type& sigma)
 : ::xml_schema::type (),
   center_ (center, this),
   initial_velocity_ (initial_velocity, this),
@@ -2871,8 +2832,7 @@ disc (::std::auto_ptr< center_type > center,
   mesh_width_ (mesh_width, this),
   mass_ (mass, this),
   epsilon_ (epsilon, this),
-  sigma_ (sigma, this),
-  average_velocity_ (average_velocity, this)
+  sigma_ (sigma, this)
 {
 }
 
@@ -2887,8 +2847,7 @@ disc (const disc& x,
   mesh_width_ (x.mesh_width_, f, this),
   mass_ (x.mass_, f, this),
   epsilon_ (x.epsilon_, f, this),
-  sigma_ (x.sigma_, f, this),
-  average_velocity_ (x.average_velocity_, f, this)
+  sigma_ (x.sigma_, f, this)
 {
 }
 
@@ -2903,8 +2862,7 @@ disc (const ::xercesc::DOMElement& e,
   mesh_width_ (this),
   mass_ (this),
   epsilon_ (this),
-  sigma_ (this),
-  average_velocity_ (this)
+  sigma_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -3006,17 +2964,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // average_velocity
-    //
-    if (n.name () == "average_velocity" && n.namespace_ ().empty ())
-    {
-      if (!average_velocity_.present ())
-      {
-        this->average_velocity_.set (average_velocity_traits::create (i, f, this));
-        continue;
-      }
-    }
-
     break;
   }
 
@@ -3068,13 +3015,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       "sigma",
       "");
   }
-
-  if (!average_velocity_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "average_velocity",
-      "");
-  }
 }
 
 disc* disc::
@@ -3097,7 +3037,6 @@ operator= (const disc& x)
     this->mass_ = x.mass_;
     this->epsilon_ = x.epsilon_;
     this->sigma_ = x.sigma_;
-    this->average_velocity_ = x.average_velocity_;
   }
 
   return *this;
@@ -3118,8 +3057,7 @@ cuboid (const coordinate_type& coordinate,
         const mass_type& mass,
         const epsilon_type& epsilon,
         const sigma_type& sigma,
-        const initial_velocity_type& initial_velocity,
-        const average_velocity_type& average_velocity)
+        const initial_velocity_type& initial_velocity)
 : ::xml_schema::type (),
   coordinate_ (coordinate, this),
   dimensions_ (dimensions, this),
@@ -3127,8 +3065,7 @@ cuboid (const coordinate_type& coordinate,
   mass_ (mass, this),
   epsilon_ (epsilon, this),
   sigma_ (sigma, this),
-  initial_velocity_ (initial_velocity, this),
-  average_velocity_ (average_velocity, this)
+  initial_velocity_ (initial_velocity, this)
 {
 }
 
@@ -3139,8 +3076,7 @@ cuboid (::std::auto_ptr< coordinate_type > coordinate,
         const mass_type& mass,
         const epsilon_type& epsilon,
         const sigma_type& sigma,
-        ::std::auto_ptr< initial_velocity_type > initial_velocity,
-        const average_velocity_type& average_velocity)
+        ::std::auto_ptr< initial_velocity_type > initial_velocity)
 : ::xml_schema::type (),
   coordinate_ (coordinate, this),
   dimensions_ (dimensions, this),
@@ -3148,8 +3084,7 @@ cuboid (::std::auto_ptr< coordinate_type > coordinate,
   mass_ (mass, this),
   epsilon_ (epsilon, this),
   sigma_ (sigma, this),
-  initial_velocity_ (initial_velocity, this),
-  average_velocity_ (average_velocity, this)
+  initial_velocity_ (initial_velocity, this)
 {
 }
 
@@ -3164,8 +3099,7 @@ cuboid (const cuboid& x,
   mass_ (x.mass_, f, this),
   epsilon_ (x.epsilon_, f, this),
   sigma_ (x.sigma_, f, this),
-  initial_velocity_ (x.initial_velocity_, f, this),
-  average_velocity_ (x.average_velocity_, f, this)
+  initial_velocity_ (x.initial_velocity_, f, this)
 {
 }
 
@@ -3180,8 +3114,7 @@ cuboid (const ::xercesc::DOMElement& e,
   mass_ (this),
   epsilon_ (this),
   sigma_ (this),
-  initial_velocity_ (this),
-  average_velocity_ (this)
+  initial_velocity_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -3286,17 +3219,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // average_velocity
-    //
-    if (n.name () == "average_velocity" && n.namespace_ ().empty ())
-    {
-      if (!average_velocity_.present ())
-      {
-        this->average_velocity_.set (average_velocity_traits::create (i, f, this));
-        continue;
-      }
-    }
-
     break;
   }
 
@@ -3348,13 +3270,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       "initial_velocity",
       "");
   }
-
-  if (!average_velocity_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "average_velocity",
-      "");
-  }
 }
 
 cuboid* cuboid::
@@ -3377,7 +3292,6 @@ operator= (const cuboid& x)
     this->epsilon_ = x.epsilon_;
     this->sigma_ = x.sigma_;
     this->initial_velocity_ = x.initial_velocity_;
-    this->average_velocity_ = x.average_velocity_;
   }
 
   return *this;
