@@ -36,7 +36,6 @@
                 <y>0.0</y>
                 <z>0.0</z>
             </initial_velocity>
-            <average_velocity>0.0</average_velocity>
         </cuboid>
 
         <cuboid>
@@ -59,7 +58,6 @@
                 <y>-10.0</y>
                 <z>0.0</z>
             </initial_velocity>
-            <average_velocity>0.0</average_velocity>
         </cuboid>
     </cuboids>
 </MolSim>

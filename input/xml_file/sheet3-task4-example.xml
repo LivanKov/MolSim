@@ -38,7 +38,6 @@
             <mass>1.0</mass>
             <epsilon>5.0</epsilon>
             <sigma>1.0</sigma>
-            <average_velocity>0.0</average_velocity>
         </disc>
     </discs>
 </MolSim>
