@@ -574,6 +574,7 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
           cells_map[particle_id]->getX()[1] + domain_size_[1],
           cells_map[particle_id]->getX()[2]);
       cells_map[particle_id]->is_periodic_copy = true;
+      cells_map[particle_id]->secondary_copy_flag = true;
       particles_left_domain++;
     } else if( cell_index >= x * (y - 1)){
       logger.info("Top boundary");
@@ -582,6 +583,7 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
           cells_map[particle_id]->getX()[1] - domain_size_[1],
           cells_map[particle_id]->getX()[2]);
       cells_map[particle_id]->is_periodic_copy = true;
+      cells_map[particle_id]->secondary_copy_flag = true;
       particles_left_domain++;
     }
   }

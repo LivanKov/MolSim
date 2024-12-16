@@ -154,6 +154,9 @@ public:
    */
   bool is_periodic_copy;
 
+
+  bool secondary_copy_flag;
+
   /**
    * @brief overload the equality (==) operator to compare particles.
    * @param other: lvalue reference to another Particle object.
