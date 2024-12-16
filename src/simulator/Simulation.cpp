@@ -80,7 +80,6 @@ void Simulation::run(LinkedCellContainer &particles) {
     }
 
     logger.info("Iteration " + std::to_string(iteration) + " finished.");
-    logger.info("Particles left: " + std::to_string(particles.particles_left_domain));
     current_time += params_.time_delta;
   }
   logger.info("output written. Terminating...");

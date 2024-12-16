@@ -147,9 +147,7 @@ void LinkedCellContainer::update_particle_location(
     } else {
       if(!cells_map[particle_id]->left_domain && !cells_map[particle_id]->is_periodic_copy){
         cells_map[particle_id]->left_domain = true;
-        logger.info("Particle left domain: " + std::to_string(particles_left_domain));
         particles_left_domain++;
-        logger.info("Particle left domain: " + std::to_string(particles_left_domain));
       }
     }
   }
