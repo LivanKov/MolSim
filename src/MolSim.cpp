@@ -9,7 +9,7 @@ int main(int argc, char *argsv[]) {
   SimParams parameters{};
   CommandParser::parse(argc, argsv, parameters);
   Logger &logger = Logger::getInstance(parameters.log_level);
-  logger.info("Log level is set" + parameters.log_level);
+  logger.info("Log level is set." + parameters.log_level);
   LinkedCellContainer particles = Simulation::readFile(parameters);
   auto simulation = Simulation::generate_simulation(parameters);
   simulation->run(particles);

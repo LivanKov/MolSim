@@ -68,7 +68,6 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
          simParameters.write_frequency == 0)
             ? xmlParams.write_frequency()
             : simParameters.write_frequency;
-    simParameters.r_cutoff_radius = xmlParams.r_cutoff_radius();
     simParameters.enable_brownian = xmlParams.enable_brownian();
 
     logger.info("Simulation parameters loaded:");
@@ -77,8 +76,6 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
     logger.info("Output Base Name: " + simParameters.output_path);
     logger.info("Write Frequency: " +
                 std::to_string(simParameters.write_frequency));
-    logger.info("Cutoff Radius: " +
-                std::to_string(simParameters.r_cutoff_radius));
 
     if (xmlParams.gravity().present()) {
       simParameters.gravity = xmlParams.gravity().get();
@@ -138,6 +135,9 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
                                    xmlParams.domain_size().get().z()};
       logger.info("Domain Size: " +
                   containerToStrings(simParameters.domain_size));
+      simParameters.r_cutoff_radius = xmlParams.r_cutoff_radius();
+      logger.info("Cutoff Radius: " +
+                  std::to_string(simParameters.r_cutoff_radius));
 
       if (simParameters.domain_size[2] == 0) {
         init_list = {simParameters.domain_size[0],
@@ -192,6 +192,8 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
                     containerToStrings(initial_velocity));
 
         if (simParameters.linked_cells) {
+          // TODO: add epsilon and sigma, and set the linked_cell flag to false
+          // inside generator
           ParticleGenerator::insertCuboid(position, dimensions, mesh_width,
                                           mass, initial_velocity,
                                           particles);
@@ -234,6 +236,8 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
                     containerToStrings(initial_velocity));
 
         if (simParameters.linked_cells) {
+          // TODO: add epsilon and sigma, and set the linked_cell flag to false
+          // inside generator
           ParticleGenerator::insertDisc(center, initial_velocity, radius,
                                         mesh_width, mass, particles);
         } else {
@@ -260,6 +264,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         logger.info("Mass: " + std::to_string(mass));
 
         if (simParameters.linked_cells) {
+          // TODO: set the linked_cell flag to false inside generator
           ParticleGenerator::insertSingleMolecule(position, initial_velocity,
                                                   mass, particles);
         } else {

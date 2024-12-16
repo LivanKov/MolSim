@@ -92,6 +92,7 @@ Here is an example of an XML input file:
         <output_basename>../output/MD_vtk</output_basename>
         <write_frequency>10</write_frequency>
         <r_cutoff_radius>3.0</r_cutoff_radius>
+        <gravity>-12.44</gravity>
         <enable_brownian>true</enable_brownian>
         <domain_size>
             <x>180.0</x>
@@ -99,6 +100,13 @@ Here is an example of an XML input file:
             <z>0.0</z>
         </domain_size>
     </simulation_parameters>
+    <thermostats>
+        <initial_temp>40</initial_temp>
+        <target_temp>40</target_temp>
+        <delta_temp>0.0005</delta_temp>
+        <is_gradual>true</is_gradual>
+        <n_thermostats>1000</n_thermostats>
+    <thermostats>
     <boundary_conditions>
         <left>Outflow</left>
         <right>Outflow</right>
@@ -124,7 +132,6 @@ Here is an example of an XML input file:
             <mass>1.0</mass>
             <epsilon>5.0</epsilon>
             <sigma>1.0</sigma>
-            <average_velocity>0.1</average_velocity>
         </disc>
     </discs>
     <cuboids>
@@ -148,7 +155,6 @@ Here is an example of an XML input file:
                 <y>0.0</y>
                 <z>0.0</z>
             </initial_velocity>
-            <average_velocity>0.1</average_velocity>
         </cuboid>
     </cuboids>
     <particles>
