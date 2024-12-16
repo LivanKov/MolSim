@@ -134,6 +134,11 @@ void LinkedCellContainer::update_particle_location(
         cells_map[particle_id]->left_domain = false;
         particles_left_domain--;
       }
+      if(cells_map[particle_id]->is_periodic_copy && cells_map[particle_id]->secondary_copy_flag){
+        cells_map[particle_id]->is_periodic_copy = false;
+        particles_left_domain--;
+      }
+
       if (reflective_flag) {
         handle_boundary_conditions(particle_id, current_index);
       } else if(periodic_flag){
@@ -400,13 +405,12 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
 void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
                                                               int cell_index) {
 
-  if(cells_map[particle_id]->is_periodic_copy && !cells[cell_index].is_halo){
-    cells_map[particle_id]->is_periodic_copy = false;
-    particles_left_domain--;
+  if(cells_map[particle_id]->secondary_copy_flag && !cells[cell_index].is_halo){
+    cells_map[particle_id]->secondary_copy_flag = false;
     return;
   }
 
-  if(!cells[cell_index].is_halo || cells_map[particle_id]->is_periodic_copy && cells[cell_index].is_halo){ 
+  if(!cells[cell_index].is_halo || cells_map[particle_id]->secondary_copy_flag && cells[cell_index].is_halo){ 
     return;
   }
 
