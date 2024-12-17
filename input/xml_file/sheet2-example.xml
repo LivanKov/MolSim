@@ -8,8 +8,8 @@
         <r_cutoff_radius>3.0</r_cutoff_radius>
         <enable_brownian>false</enable_brownian>
         <domain_size>
-            <x>180.0</x>
-            <y>90.0</y>
+            <x>48.0</x>
+            <y>21.0</y>
             <z>0.0</z>
         </domain_size>
     </simulation_parameters>
@@ -33,28 +33,6 @@
             <initial_velocity>
                 <x>0.0</x>
                 <y>0.0</y>
-                <z>0.0</z>
-            </initial_velocity>
-        </cuboid>
-
-        <cuboid>
-            <coordinate>
-                <x>15.0</x>
-                <y>15.0</y>
-                <z>0.0</z>
-            </coordinate>
-            <dimensions>
-                <x>8</x>
-                <y>8</y>
-                <z>1</z>
-            </dimensions>
-            <mesh_width>1.1225</mesh_width>
-            <mass>1.0</mass>
-            <epsilon>5.0</epsilon>
-            <sigma>1.0</sigma>
-            <initial_velocity>
-                <x>0.0</x>
-                <y>-10.0</y>
                 <z>0.0</z>
             </initial_velocity>
         </cuboid>

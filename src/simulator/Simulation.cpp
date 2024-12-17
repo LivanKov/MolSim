@@ -70,8 +70,7 @@ void Simulation::run(LinkedCellContainer &particles) {
   }
 
   if (params_.resume_from_checkpoint) {
-    CheckpointReader CheckpointReader;
-    CheckpointReader.readCheckpoint(particles, params_.time_delta,
+      CheckpointReader::readCheckpoint(particles, params_.time_delta,
                                     params_.resume_start_time);
     logger.info("Resumed from checkpoint. Adding additional input...");
     current_time = params_.resume_start_time;

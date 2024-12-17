@@ -42,11 +42,10 @@ void CheckpointReader::readCheckpoint(LinkedCellContainer &particles,
 
   // Read particle data
   for (size_t i = 0; i < particle_count; ++i) {
-    double x, y, z, vx, vy, vz, mass, oldFx, oldFy, oldFz;
+    double x, y, z, vx, vy, vz, mass;
     int type;
 
-    file >> x >> y >> z >> vx >> vy >> vz >> mass >> oldFx >> oldFy >> oldFz >>
-        type;
+    file >> x >> y >> z >> vx >> vy >> vz >> mass >> type;
 
     if (file.fail()) {
       Logger::getInstance().error("Error reading particle data at line " +
