@@ -122,7 +122,6 @@ void Particle::updateOldF(double x_arg, double y_arg, double z_arg) {
 
 void Particle::updateOldF(const std::array<double, 3> &force) { old_f = force; }
 
-
 void Particle::updateOldX(double x_arg, double y_arg, double z_arg) {
   old_x = {x_arg, y_arg, z_arg};
 }

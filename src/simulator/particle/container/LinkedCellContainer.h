@@ -9,7 +9,6 @@
 
 #define DIVISION_TOLERANCE 1e-6
 
-
 /**
  *@brief Enum class for boundary conditions
  */
@@ -26,7 +25,6 @@ struct DomainBoundaryConditions {
   BoundaryCondition front, back;
 };
 
-
 enum Placement {
   TOP,
   BOTTOM,
@@ -39,7 +37,6 @@ enum Placement {
   BOTTOM_RIGHT_CORNER,
   BOTTOM_LEFT_CORNER
 };
-
 
 /**
  * @class LinkedCellContainer
@@ -82,7 +79,7 @@ public:
    * @param p The particle to be inserted.
    */
   void insert(Particle &p, bool placement = false);
-  
+
   bool is_within_domain(const std::array<double, 3> &position);
 
   void clear();
@@ -112,7 +109,6 @@ public:
    * @return The index of the cell in the unwrapped cell array.
    */
   size_t get_cell_index(const std::array<double, 3> &position) const;
-
 
   void set_boundary_conditions(DomainBoundaryConditions conditions);
 
@@ -174,7 +170,6 @@ public:
   size_t particles_left_domain;
   size_t particle_id;
 
-
   bool is_wrapper;
 
   size_t halo_count;
@@ -191,7 +186,6 @@ public:
   std::vector<size_t> halo_cell_indices;
 
   std::vector<int> particles_outbound;
-    
 
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,

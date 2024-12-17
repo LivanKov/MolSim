@@ -15,7 +15,6 @@ struct AbstractPolicy {
   virtual ~AbstractPolicy() = 0;
 };
 
-
 /**
  * @struct Calculation
  * @brief Dummy struct that enforces the policy pattern for various calculation

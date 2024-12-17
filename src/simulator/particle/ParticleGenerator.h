@@ -36,7 +36,7 @@ public:
                            const std::array<size_t, 3> &dimensions, double h,
                            double mass,
                            const std::array<double, 3> &initialVelocity,
-                           
+
                            LinkedCellContainer &particles);
 
   /**

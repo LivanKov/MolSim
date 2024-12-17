@@ -67,7 +67,8 @@ LinkedCellContainer::LinkedCellContainer()
                                                                    0.0},
       x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{}, particle_id{0},
       particles_left_domain{0}, is_wrapper{false}, halo_count{0},
-      reflective_flag{false}, periodic_flag{false}, halo_cell_indices{}, particles_outbound{}, placement_map{} {}
+      reflective_flag{false}, periodic_flag{false}, halo_cell_indices{},
+      particles_outbound{}, placement_map{} {}
 
 void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
@@ -95,7 +96,7 @@ bool LinkedCellContainer::is_within_domain(
 }
 
 void LinkedCellContainer::update_particle_location(
-    int particle_id, const std::array<double, 3> &old_position) { 
+    int particle_id, const std::array<double, 3> &old_position) {
 
   size_t old_index = get_cell_index(old_position);
   size_t current_index = get_cell_index(cells_map[particle_id]->getX());
@@ -164,19 +165,18 @@ void LinkedCellContainer::clear() {
   particles.clear();
 }
 
-
-size_t LinkedCellContainer::get_cell_index(const std::array<double, 3> &position) const {
+size_t LinkedCellContainer::get_cell_index(
+    const std::array<double, 3> &position) const {
   size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) /
                                  r_cutoff_x);
   size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) /
                                  r_cutoff_y);
   size_t k = domain_size_.size() == 3
-                 ? static_cast<size_t>((position[2] - left_corner_coordinates[2]) /
-                                       r_cutoff_z)
+                 ? static_cast<size_t>(
+                       (position[2] - left_corner_coordinates[2]) / r_cutoff_z)
                  : 0;
   return i + j * x + k * x * y;
 }
-
 
 size_t LinkedCellContainer::size() { return particles.size(); }
 
@@ -190,27 +190,27 @@ void LinkedCellContainer::mark_halo_cells() {
       for (size_t k = 0; k < z; k++) {
         if (i == 0 || i == x - 1 || j == 0 || j == y - 1 ||
             (z > 1 && (k == 0 || k == z - 1))) {
-          
+
           size_t index = i + j * x + k * x * y;
           cells[index].is_halo = true;
           halo_cell_indices.push_back(index);
           halo_count++;
 
-          if(index == 0){
+          if (index == 0) {
             cells[index].placement = Placement::BOTTOM_LEFT_CORNER;
-          }else if(index == x - 1){
+          } else if (index == x - 1) {
             cells[index].placement = Placement::BOTTOM_RIGHT_CORNER;
-          }else if(index == x * y - x){
+          } else if (index == x * y - x) {
             cells[index].placement = Placement::TOP_LEFT_CORNER;
-          }else if(index == x * y - 1){
+          } else if (index == x * y - 1) {
             cells[index].placement = Placement::TOP_RIGHT_CORNER;
-          }else if(index < x){
+          } else if (index < x) {
             cells[index].placement = Placement::BOTTOM;
-          }else if(index >= x * (y - 1)){
+          } else if (index >= x * (y - 1)) {
             cells[index].placement = Placement::TOP;
-          } else if(index % x == 0){
+          } else if (index % x == 0) {
             cells[index].placement = Placement::LEFT;
-          } else if((index + 1) % x == 0){
+          } else if ((index + 1) % x == 0) {
             cells[index].placement = Placement::RIGHT;
           }
         }
@@ -254,8 +254,8 @@ void LinkedCellContainer::readjust() {
   }
 }
 
-
-void LinkedCellContainer::set_boundary_conditions(DomainBoundaryConditions conditions) {
+void LinkedCellContainer::set_boundary_conditions(
+    DomainBoundaryConditions conditions) {
   this->boundary_conditions_ = conditions;
   placement_map[Placement::TOP] = conditions.top;
   placement_map[Placement::BOTTOM] = conditions.bottom;

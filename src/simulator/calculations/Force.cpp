@@ -31,19 +31,18 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       auto r12 = it->second->getX() - it->first->getX();
       double distance = ArrayUtils::L2Norm(r12);
 
-      if(distance > 1e-5) {
+      if (distance > 1e-5) {
 
+        double totalForce;
+        double term = SIGMA / distance;
+        double term6 = pow(term, 6);
+        double term12 = pow(term, 12);
+        totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
 
-      double totalForce;
-      double term = SIGMA / distance;
-      double term6 = pow(term, 6);
-      double term12 = pow(term, 12);
-      totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
+        auto force = (totalForce / distance) * r12;
 
-      auto force = (totalForce / distance) * r12;
-
-      it->first->updateF(it->first->getF() + force);
-      it->second->updateF(it->second->getF() - force);
+        it->first->updateF(it->first->getF() + force);
+        it->second->updateF(it->second->getF() - force);
       }
     }
   } else {
@@ -60,18 +59,18 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
           auto r12 = neighbour->getX() - particle.getX();
           double distance = ArrayUtils::L2Norm(r12);
 
-          if(distance > 1e-5){
+          if (distance > 1e-5) {
 
-          double totalForce;
-          double term = SIGMA / distance;
-          double term6 = pow(term, 6);
-          double term12 = pow(term, 12);
-          totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
+            double totalForce;
+            double term = SIGMA / distance;
+            double term6 = pow(term, 6);
+            double term12 = pow(term, 12);
+            totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
 
-          auto force = (totalForce / distance) * r12;
+            auto force = (totalForce / distance) * r12;
 
-          particle.updateF(particle.getF() + force);
-          neighbour->updateF(neighbour->getF() - force);
+            particle.updateF(particle.getF() + force);
+            neighbour->updateF(neighbour->getF() - force);
           }
         }
       }
@@ -98,13 +97,13 @@ void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
       // distance ||x_i - x_j ||
       double distance = ArrayUtils::L2Norm(r12);
 
-      if(distance > 1e-5) {
-      double totalForce;
-      totalForce = p1.getM() * p2.getM() / pow(distance, 2);
-      auto force = (totalForce / distance) * r12;
-      p1.updateF(p1.getF() + force);
-      // Newton's third law
-      p2.updateF(p2.getF() - force);
+      if (distance > 1e-5) {
+        double totalForce;
+        totalForce = p1.getM() * p2.getM() / pow(distance, 2);
+        auto force = (totalForce / distance) * r12;
+        p1.updateF(p1.getF() + force);
+        // Newton's third law
+        p2.updateF(p2.getF() - force);
       }
     }
   } else {
@@ -116,12 +115,12 @@ void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
       for (auto neighbour : particles.get_neighbours(particle.getType())) {
         auto r12 = neighbour->getX() - particle.getX();
         double distance = ArrayUtils::L2Norm(r12);
-        if(distance > 1e-5) {
-        double totalForce;
-        totalForce = particle.getM() * neighbour->getM() / pow(distance, 2);
-        auto force = (totalForce / distance) * r12;
-        particle.updateF(particle.getF() + force);
-        neighbour->updateF(neighbour->getF() - force);
+        if (distance > 1e-5) {
+          double totalForce;
+          totalForce = particle.getM() * neighbour->getM() / pow(distance, 2);
+          auto force = (totalForce / distance) * r12;
+          particle.updateF(particle.getF() + force);
+          neighbour->updateF(neighbour->getF() - force);
         }
       }
     }

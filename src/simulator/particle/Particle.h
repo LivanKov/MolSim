@@ -28,7 +28,7 @@ private:
 
   /*
    * Old position of the particle
-  */
+   */
   std::array<double, 3> old_x;
 
   /**
@@ -163,13 +163,12 @@ public:
   double getSigma() const;
 
   /**
-   * @brief Flag to indicate if the particle is a copy handled during the periodic boundary conditions
+   * @brief Flag to indicate if the particle is a copy handled during the
+   * periodic boundary conditions
    */
   bool is_periodic_copy;
 
-
   bool outbound;
-
 
   /**
    * @brief overload the equality (==) operator to compare particles.
@@ -251,7 +250,6 @@ public:
    * @brief updates the old position of the particle.
    * @param x_arg, y_arg, z_arg: new old position of the particle.
    */
-
 
   void updateOldX(const std::array<double, 3> &position);
 

@@ -6,11 +6,11 @@
 #include "io/output/XYZWriter.h"
 #include "particle/ParticleGenerator.h"
 #include "particle/container/DirectSumContainer.h"
+#include "simulator/calculations/BoundaryConditions.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"
 #include "simulator/calculations/Position.h"
 #include "simulator/calculations/Velocity.h"
-#include "simulator/calculations/BoundaryConditions.h"
 #include "utils/logger/Logger.h"
 #include <iostream>
 #include <memory>
@@ -53,8 +53,8 @@ void Simulation::run(LinkedCellContainer &particles) {
 
   OPTIONS option =
       params_.linked_cells ? OPTIONS::LINKED_CELLS : OPTIONS::DIRECT_SUM;
-    
-  if(particles.reflective_flag){
+
+  if (particles.reflective_flag) {
     logger.info("Reflective boundary conditions enabled");
   }
 
