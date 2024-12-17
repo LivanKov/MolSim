@@ -89,7 +89,6 @@ void LinkedCellContainer::update_particle_location(
     int particle_id, const std::array<double, 3> &old_position) { 
 
   size_t old_index = get_cell_index(old_position);
-
   size_t current_index = get_cell_index(cells_map[particle_id]->getX());
 
   if (current_index != old_index) {
@@ -98,21 +97,8 @@ void LinkedCellContainer::update_particle_location(
     }
     if (is_within_domain(cells_map[particle_id]->getX())) {
       cells[current_index].insert(cells_map[particle_id]->getType());
-      if(cells_map[particle_id]->left_domain){
-        cells_map[particle_id]->left_domain = false;
-        particles_left_domain--;
-      }
-      if (reflective_flag) {
-        handle_boundary_conditions(particle_id, current_index);
-      }
     } else {
-      if(!cells_map[particle_id]->left_domain && !cells_map[particle_id]->is_periodic_copy){
-        cells_map[particle_id]->left_domain = true;
-        particles_left_domain++;
-        if(periodic_flag){
-          handle_periodic_boundary_conditions(particle_id, current_index);
-        }
-      }
+      particles_outbound.insert(cells_map[particle_id]->getType());
     }
   }
 }

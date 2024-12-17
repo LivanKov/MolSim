@@ -3,5 +3,5 @@
 
 
 void BoundaryConditions::run(LinkedCellContainer &particles) {
-
+    
 }
