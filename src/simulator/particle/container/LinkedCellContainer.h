@@ -176,6 +176,13 @@ private:
    */
   void mark_halo_cells();
 
+
+  /**
+   * @brief Retrieves the index of a cell based on its coordinates.
+   * @param position The coordinates of the cell.
+   * @return The index of the cell in the unwrapped cell array.
+   */
+  size_t get_cell_index(const std::array<double, 3> &position);
   /**
    * @brief Creates a periodic copy of a particle with specified position offset and velocity modifications
    * @param particle_id Reference to the particle ID (will be incremented)

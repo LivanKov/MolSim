@@ -15,3 +15,13 @@ struct DomainBoundaryConditions {
   BoundaryCondition top, bottom;
   BoundaryCondition front, back;
 };
+
+
+enum Placement {
+  TOP,
+  BOTTOM,
+  LEFT,
+  RIGHT,
+  FRONT,
+  BACK
+};
