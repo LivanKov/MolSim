@@ -20,6 +20,7 @@ struct SimParams {
   bool reflective;
   bool periodic;
   double gravity;
+  static bool gravity_applied;
   static std::array<double, 3> lower_left_corner;
   static bool fixed_Domain;
 
