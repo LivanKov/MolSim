@@ -29,7 +29,7 @@ struct SimParams {
   double target_temp;
   double delta_temp;
   bool is_gradual;
-  double n_thermostats;
+  unsigned int n_thermostats;
   size_t dimensions;
   bool enable_brownian;
 

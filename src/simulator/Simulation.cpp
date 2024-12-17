@@ -18,6 +18,7 @@
 #include <spdlog/spdlog.h>
 #include <utility>
 #include <chrono>
+#include "Thermostat.h"
 
 std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
   std::unique_ptr<Simulation> ptr = std::make_unique<Simulation>(params);
@@ -56,6 +57,11 @@ void Simulation::run(LinkedCellContainer &particles) {
   OPTIONS option =
       params_.linked_cells ? OPTIONS::LINKED_CELLS : OPTIONS::DIRECT_SUM;
 
+  // Initialize Thermostat
+  Thermostat thermostat(particles, params_.initial_temp, params_.target_temp,
+                        params_.dimensions, params_.delta_temp,
+                        params_.is_gradual, params_.enable_brownian);
+
   if (params_.checkpoint_only) {
     while (current_time < params_.end_time) {
       Calculation<Position>::run(particles, params_.time_delta, option);
@@ -85,6 +91,13 @@ void Simulation::run(LinkedCellContainer &particles) {
     Calculation<Position>::run(particles, params_.time_delta, option);
     Calculation<Force>::run(particles, FORCE_TYPE, option);
     Calculation<Velocity>::run(particles, params_.time_delta);
+
+    // Apply the thermostat periodically
+    if (iteration % params_.n_thermostats == 0) {
+      thermostat.apply();
+      logger.info("Thermostat applied at iteration: " +
+                  std::to_string(iteration));
+    }
 
     iteration++;
     if (iteration % params_.write_frequency == 0 && !params_.disable_output) {
