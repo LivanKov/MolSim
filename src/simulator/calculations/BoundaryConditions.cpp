@@ -13,11 +13,12 @@ void BoundaryConditions::run(LinkedCellContainer &particles) {
         }
     }
 
-
     for(auto& particle_id : particles.particles_outbound){
         auto& particle = particles.cells_map[particle_id];
-        auto cell_index = particles.get_cell_index(particle->getOldX());
-        handle_outflow_conditions(particle_id, cell_index, particles);
+        if(!particle->left_domain){
+            auto cell_index = particles.get_cell_index(particle->getOldX());
+            handle_outflow_conditions(particle_id, cell_index, particles);
+        }
     }
     
 }
