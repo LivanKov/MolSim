@@ -317,10 +317,29 @@ void LinkedCellContainer::mark_halo_cells() {
       for (size_t k = 0; k < z; k++) {
         if (i == 0 || i == x - 1 || j == 0 || j == y - 1 ||
             (z > 1 && (k == 0 || k == z - 1))) {
+          
           size_t index = i + j * x + k * x * y;
           cells[index].is_halo = true;
           halo_cell_indices.push_back(index);
           halo_count++;
+
+          if(index == 0){
+            cells[index].placement = Placement::BOTTOM_LEFT_CORNER;
+          }else if(index == x - 1){
+            cells[index].placement = Placement::BOTTOM_RIGHT_CORNER;
+          }else if(index == x * y - x){
+            cells[index].placement = Placement::TOP_LEFT_CORNER;
+          }else if(index == x * y - 1){
+            cells[index].placement = Placement::TOP_RIGHT_CORNER;
+          }else if(index < x){
+            cells[index].placement = Placement::BOTTOM;
+          }else if(index >= x * (y - 1)){
+            cells[index].placement = Placement::TOP;
+          } else if(index % x == 0){
+            cells[index].placement = Placement::LEFT;
+          } else if((index + 1) % x == 0){
+            cells[index].placement = Placement::RIGHT;
+          }
         }
       }
     }

@@ -33,7 +33,11 @@ enum Placement {
   LEFT,
   RIGHT,
   FRONT,
-  BACK
+  BACK,
+  TOP_RIGHT_CORNER,
+  TOP_LEFT_CORNER,
+  BOTTOM_RIGHT_CORNER,
+  BOTTOM_LEFT_CORNER
 };
 
 
@@ -53,6 +57,7 @@ class LinkedCellContainer {
     void insert(int id);
     void remove(int id);
     bool is_halo = false;
+    Placement placement;
   };
 
   /**
