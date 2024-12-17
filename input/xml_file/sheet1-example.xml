@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MolSim>
+    <simulation_parameters>
+        <end_time>1000</end_time>
+        <delta_time>0.014</delta_time>
+        <output_basename>../output</output_basename>
+        <write_frequency>10</write_frequency>
+        <r_cutoff_radius>0.0</r_cutoff_radius>
+        <enable_brownian>false</enable_brownian>
+    </simulation_parameters>
+
+    <particles>
+        <particle>
+            <position>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </position>
+            <velocity>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </velocity>
+            <mass>1.0</mass>
+        </particle>
+
+        <particle>
+            <position>
+                <x>0.0</x>
+                <y>1.0</y>
+                <z>0.0</z>
+            </position>
+            <velocity>
+                <x>0.0</x>
+                <y>-10.0</y>
+                <z>0.0</z>
+            </velocity>
+            <mass>3.0e-6</mass>
+        </particle>
+
+        <particle>
+            <position>
+                <x>0.0</x>
+                <y>5.36</y>
+                <z>0.0</z>
+            </position>
+            <velocity>
+                <x>-0.425.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </velocity>
+            <mass>9.55e-4</mass>
+        </particle>
+
+          <particle>
+            <position>
+                <x>34.75</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </position>
+            <velocity>
+                <x>0.0</x>
+                <y>0.0296</y>
+                <z>0.0</z>
+            </velocity>
+            <mass>1.1225</mass>
+        </particle>
+    </particles>
+</MolSim>

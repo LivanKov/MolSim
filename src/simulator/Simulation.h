@@ -47,6 +47,4 @@ public:
    * @return DirectSumContainer initialized particle container.
    */
   static LinkedCellContainer readFile(SimParams &simParams);
-
-  // void runDisc();
 };

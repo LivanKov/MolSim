@@ -25,23 +25,8 @@ std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
 Simulation::Simulation(SimParams &params) : params_(params) {}
 
 LinkedCellContainer Simulation::readFile(SimParams &params) {
-  LinkedCellContainer particles{{243.0, 180.0}, 3.0};
+  LinkedCellContainer particles{};
   XMLReader::readXMLFile(particles, params);
-  if (params.reflective) {
-    particles.reflective_flag = true;
-    particles.set_boundary_conditions(DomainBoundaryConditions{
-        BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
-        BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
-        BoundaryCondition::Reflecting, BoundaryCondition::Reflecting});
-  }
-  if (params.periodic) {
-    particles.reflective_flag = false;
-    particles.periodic_flag = true;
-    particles.set_boundary_conditions(DomainBoundaryConditions{
-        BoundaryCondition::Periodic, BoundaryCondition::Periodic,
-        BoundaryCondition::Periodic, BoundaryCondition::Periodic,
-        BoundaryCondition::Periodic, BoundaryCondition::Periodic});
-  }
   return particles;
 }
 

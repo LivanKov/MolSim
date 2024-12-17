@@ -16,7 +16,7 @@ ParticleGenerator::ParticleGenerator() = default;
 void ParticleGenerator::insertCuboid(
     const std::array<double, 3> &lowerLeftFrontCorner,
     const std::array<size_t, 3> &dimensions, double h, double m,
-    const std::array<double, 3> &initialVelocity, double averageVelocity,
+    const std::array<double, 3> &initialVelocity,
     LinkedCellContainer &particles) {
   for (size_t i = 0; i < dimensions[2]; ++i) {
     for (size_t j = 0; j < dimensions[1]; ++j) {
@@ -26,11 +26,6 @@ void ParticleGenerator::insertCuboid(
                                lowerLeftFrontCorner[2] + i * h};
 
         std::array<double, 3> velocity = initialVelocity;
-        std::array<double, 3> randomVelocity =
-            maxwellBoltzmannDistributedVelocity(averageVelocity, 2);
-        for (size_t dim = 0; dim < 3; ++dim) {
-          velocity[dim] += randomVelocity[dim];
-        }
 
         Particle particle(position, velocity, m, particles.particle_id);
         particles.particle_id++;
