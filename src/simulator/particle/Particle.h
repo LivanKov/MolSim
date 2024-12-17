@@ -239,6 +239,21 @@ public:
   void updateOldF(const std::array<double, 3> &force);
 
   /**
+   * @brief updates the old position of the particle.
+   * @param x_arg, y_arg, z_arg: new old position of the particle.
+   */
+
+
+  void updateOldX(const std::array<double, 3> &position);
+
+  /**
+   * @brief updates the old position of the particle.
+   * @param x_arg, y_arg, z_arg: new old position of the particle.
+   */
+
+  void updateOldX(double x_arg, double y_arg, double z_arg);
+
+  /**
    * @brief check if particle is outside the domain.
    */
 
