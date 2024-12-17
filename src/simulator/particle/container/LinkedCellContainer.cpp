@@ -50,6 +50,13 @@ LinkedCellContainer::LinkedCellContainer(
     cells_map[p->getType()] = p;
   }
 
+  placement_map[Placement::TOP] = boundary_conditions.top;
+  placement_map[Placement::BOTTOM] = boundary_conditions.bottom;
+  placement_map[Placement::LEFT] = boundary_conditions.left;
+  placement_map[Placement::RIGHT] = boundary_conditions.right;
+  placement_map[Placement::FRONT] = boundary_conditions.front;
+  placement_map[Placement::BACK] = boundary_conditions.back;
+
   mark_halo_cells();
 }
 
@@ -58,7 +65,7 @@ LinkedCellContainer::LinkedCellContainer()
                                                                    0.0},
       x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{}, particle_id{0},
       particles_left_domain{0}, is_wrapper{false}, halo_count{0},
-      reflective_flag{false}, periodic_flag{false}, halo_cell_indices{}, particles_outbound{} {}
+      reflective_flag{false}, periodic_flag{false}, halo_cell_indices{}, particles_outbound{}, placement_map{} {}
 
 void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);

@@ -4,10 +4,10 @@
 
 void BoundaryConditions::run(LinkedCellContainer &particles) {
 
-    for(auto& indices : particles.particles_outbound){
-
-        
-
+    for(auto& index : particles.halo_cell_indices){
+        for(auto& id : particles.cells[index].particle_ids){
+               
+        }
     }
     
 }

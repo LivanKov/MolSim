@@ -129,6 +129,14 @@ public:
   const std::array<double, 3> &getOldF() const;
 
   /**
+   * @brief access the array containing the old position of the particle.
+   * @return a reference to the array containing the old position of the
+   * particle.
+   */
+
+  const std::array<double, 3> &getOldX() const;
+
+  /**
    * @brief returns the value, that correponds to particle mmass.
    * @return double variable containing the mass of the particle.
    */

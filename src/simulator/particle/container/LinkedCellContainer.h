@@ -136,6 +136,12 @@ public:
   std::vector<double> left_corner_coordinates;
 
   /**
+   * @brief The boundary conditions for the simulation domain.
+   */
+
+  std::unordered_map<Placement, BoundaryCondition> placement_map;
+
+  /**
    * @brief The cutoff radius for particle interactions.
    */
 
