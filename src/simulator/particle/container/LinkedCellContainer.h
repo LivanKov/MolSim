@@ -1,4 +1,3 @@
-#include "../BoundaryCondition.h"
 #include "DirectSumContainer.h"
 #include "utils/logger/Logger.h"
 #include <array>
@@ -9,6 +8,38 @@
 #pragma once
 
 #define DIVISION_TOLERANCE 1e-6
+
+
+/**
+ *@brief Enum class for boundary conditions
+ */
+
+enum BoundaryCondition { Outflow, Reflecting, Periodic };
+
+/**
+ *@brief Struct for domain boundary conditions
+ */
+
+struct DomainBoundaryConditions {
+  BoundaryCondition left, right;
+  BoundaryCondition top, bottom;
+  BoundaryCondition front, back;
+};
+
+
+enum Placement {
+  TOP,
+  BOTTOM,
+  LEFT,
+  RIGHT,
+  FRONT,
+  BACK,
+  TOP_RIGHT_CORNER,
+  TOP_LEFT_CORNER,
+  BOTTOM_RIGHT_CORNER,
+  BOTTOM_LEFT_CORNER
+};
+
 
 /**
  * @class LinkedCellContainer
@@ -26,6 +57,7 @@ class LinkedCellContainer {
     void insert(int id);
     void remove(int id);
     bool is_halo = false;
+    Placement placement;
   };
 
 public:
@@ -57,12 +89,6 @@ public:
 
   void readjust();
 
-  void reinitialize(DirectSumContainer &container);
-
-  void reinitialize(std::vector<Particle> &particles);
-
-  void reinitialize(std::vector<ParticlePointer> &particles);
-
   /**
    * @brief Updates the location of a particle within the container based on its
    * old position.
@@ -81,10 +107,14 @@ public:
   std::vector<ParticlePointer> get_neighbours(int particle_id);
 
   /**
-   * @brief Applies the specified boundary conditions to a particle.
-   * @param p The particle to which boundary conditions are applied.
+   * @brief Retrieves the index of a cell based on its coordinates.
+   * @param position The coordinates of the cell.
+   * @return The index of the cell in the unwrapped cell array.
    */
-  void handle_boundary_conditions(int particle_id, int cell_id = -1);
+  size_t get_cell_index(const std::array<double, 3> &position) const;
+
+
+  void set_boundary_conditions(DomainBoundaryConditions conditions);
 
   /**
    * @brief The size of the simulation domain.
@@ -95,6 +125,12 @@ public:
    * @brief The coordinates of the domain's lower left corner.
    */
   std::vector<double> left_corner_coordinates;
+
+  /**
+   * @brief The boundary conditions for the simulation domain.
+   */
+
+  std::unordered_map<Placement, BoundaryCondition> placement_map;
 
   /**
    * @brief The cutoff radius for particle interactions.
@@ -138,6 +174,7 @@ public:
   size_t particles_left_domain;
   size_t particle_id;
 
+
   bool is_wrapper;
 
   size_t halo_count;
@@ -147,16 +184,18 @@ public:
    */
   DomainBoundaryConditions boundary_conditions_;
 
+  bool reflective_flag;
+
+  bool periodic_flag;
+
+  std::vector<size_t> halo_cell_indices;
+
+  std::vector<int> particles_outbound;
+    
+
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,
                             std::array<double, 3> current_up_right);
-
-  /**
-   * @brief Retrieves a cell by its index in the unwrapped cell array.
-   * @param index The index of the cell.
-   * @return A reference to the cell at the specified index.
-   */
-  Cell &get_cell(size_t index);
 
   /**
    * @brief Assigns halo status to cells at the border of the array
