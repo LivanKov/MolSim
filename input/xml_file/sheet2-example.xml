@@ -9,8 +9,13 @@
         <enable_brownian>false</enable_brownian>
         <domain_size>
             <x>48.0</x>
-            <y>21.0</y>
+            <y>48.0</y>
             <z>0.0</z>
+            <lower-left-corner>
+                <x>-2.0</x>
+                <y>-2.0</y>
+                <z>0.0</z>
+            </lower-left-corner>
         </domain_size>
     </simulation_parameters>
     
@@ -33,6 +38,27 @@
             <initial_velocity>
                 <x>0.0</x>
                 <y>0.0</y>
+                <z>0.0</z>
+            </initial_velocity>
+        </cuboid>
+        <cuboid>
+            <coordinate>
+                <x>15.0</x>
+                <y>15.0</y>
+                <z>0.0</z>
+            </coordinate>
+            <dimensions>
+                <x>8</x>
+                <y>8</y>
+                <z>1</z>
+            </dimensions>
+            <mesh_width>1.1225</mesh_width>
+            <mass>1.0</mass>
+            <epsilon>5.0</epsilon>
+            <sigma>1.0</sigma>
+            <initial_velocity>
+                <x>0.0</x>
+                <y>-10.0</y>
                 <z>0.0</z>
             </initial_velocity>
         </cuboid>

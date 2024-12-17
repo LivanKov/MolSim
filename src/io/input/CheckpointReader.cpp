@@ -1,4 +1,5 @@
 #include "CheckpointReader.h"
+#include "io/input/cli/SimParams.h"
 #include "utils/logger/Logger.h"
 #include <fstream>
 #include <iomanip>
@@ -57,7 +58,9 @@ void CheckpointReader::readCheckpoint(LinkedCellContainer &particles,
     Particle particle({x, y, z}, {vx, vy, vz}, mass, particles.particle_id);
     particles.particle_id++;
     particles.insert(particle, true);
-    particles.readjust();
+    if (!SimParams::fixed_Domain) {
+      particles.readjust();
+    }
   }
 
   file.close();

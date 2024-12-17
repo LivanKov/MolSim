@@ -5,6 +5,7 @@
 #include "ParticleGenerator.h"
 #include "../Simulation.h"
 #include "container/LinkedCellContainer.h"
+#include "io/input/cli/SimParams.h"
 #include "utils/MaxwellBoltzmannDistribution.h"
 
 #include <random>
@@ -35,7 +36,9 @@ void ParticleGenerator::insertCuboid(
       }
     }
   }
-  particles.readjust();
+  if (!SimParams::fixed_Domain) {
+    particles.readjust();
+  }
   Logger::getInstance().info("New cuboid generated");
 }
 
@@ -70,7 +73,9 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
       }
     }
   }
-  particles.readjust();
+  if (!SimParams::fixed_Domain) {
+    particles.readjust();
+  }
   Logger::getInstance().info("New disk generated");
 }
 
@@ -83,6 +88,8 @@ void ParticleGenerator::insertSingleMolecule(
   Logger::getInstance().trace("New Particle generated");
   particles.insert(particle, true);
   Logger::getInstance().trace("New Particle inserted into container");
-  particles.readjust();
+  if (!SimParams::fixed_Domain) {
+    particles.readjust();
+  }
   Logger::getInstance().info("New single molecule generated");
 }

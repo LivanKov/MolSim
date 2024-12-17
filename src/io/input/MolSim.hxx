@@ -234,6 +234,7 @@ class domain_size;
 class disc;
 class cuboid;
 class particle;
+class lower_left_corner;
 class center;
 class initial_velocity;
 class coordinate;
@@ -1122,6 +1123,27 @@ class domain_size: public ::xml_schema::type
   void
   z (const z_type& x);
 
+  // lower-left-corner
+  //
+  typedef ::lower_left_corner lower_left_corner_type;
+  typedef ::xsd::cxx::tree::optional< lower_left_corner_type > lower_left_corner_optional;
+  typedef ::xsd::cxx::tree::traits< lower_left_corner_type, char > lower_left_corner_traits;
+
+  const lower_left_corner_optional&
+  lower_left_corner () const;
+
+  lower_left_corner_optional&
+  lower_left_corner ();
+
+  void
+  lower_left_corner (const lower_left_corner_type& x);
+
+  void
+  lower_left_corner (const lower_left_corner_optional& x);
+
+  void
+  lower_left_corner (::std::auto_ptr< lower_left_corner_type > p);
+
   // Constructors.
   //
   domain_size (const x_type&,
@@ -1157,6 +1179,7 @@ class domain_size: public ::xml_schema::type
   ::xsd::cxx::tree::one< x_type > x_;
   ::xsd::cxx::tree::one< y_type > y_;
   ::xsd::cxx::tree::one< z_type > z_;
+  lower_left_corner_optional lower_left_corner_;
 };
 
 class disc: public ::xml_schema::type
@@ -1572,6 +1595,88 @@ class particle: public ::xml_schema::type
   ::xsd::cxx::tree::one< position_type > position_;
   ::xsd::cxx::tree::one< velocity_type > velocity_;
   ::xsd::cxx::tree::one< mass_type > mass_;
+};
+
+class lower_left_corner: public ::xml_schema::type
+{
+  public:
+  // x
+  //
+  typedef ::xml_schema::double_ x_type;
+  typedef ::xsd::cxx::tree::traits< x_type, char, ::xsd::cxx::tree::schema_type::double_ > x_traits;
+
+  const x_type&
+  x () const;
+
+  x_type&
+  x ();
+
+  void
+  x (const x_type& x);
+
+  // y
+  //
+  typedef ::xml_schema::double_ y_type;
+  typedef ::xsd::cxx::tree::traits< y_type, char, ::xsd::cxx::tree::schema_type::double_ > y_traits;
+
+  const y_type&
+  y () const;
+
+  y_type&
+  y ();
+
+  void
+  y (const y_type& x);
+
+  // z
+  //
+  typedef ::xml_schema::double_ z_type;
+  typedef ::xsd::cxx::tree::traits< z_type, char, ::xsd::cxx::tree::schema_type::double_ > z_traits;
+
+  const z_type&
+  z () const;
+
+  z_type&
+  z ();
+
+  void
+  z (const z_type& x);
+
+  // Constructors.
+  //
+  lower_left_corner (const x_type&,
+                     const y_type&,
+                     const z_type&);
+
+  lower_left_corner (const ::xercesc::DOMElement& e,
+                     ::xml_schema::flags f = 0,
+                     ::xml_schema::container* c = 0);
+
+  lower_left_corner (const lower_left_corner& x,
+                     ::xml_schema::flags f = 0,
+                     ::xml_schema::container* c = 0);
+
+  virtual lower_left_corner*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  lower_left_corner&
+  operator= (const lower_left_corner& x);
+
+  virtual 
+  ~lower_left_corner ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< x_type > x_;
+  ::xsd::cxx::tree::one< y_type > y_;
+  ::xsd::cxx::tree::one< z_type > z_;
 };
 
 class center: public ::xml_schema::type

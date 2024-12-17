@@ -1,5 +1,6 @@
 #include "LinkedCellContainer.h"
 #include "../../Simulation.h"
+#include "io/input/cli/SimParams.h"
 #include <cmath>
 
 size_t LinkedCellContainer::Cell::size() const { return particle_ids.size(); }
@@ -17,6 +18,12 @@ LinkedCellContainer::LinkedCellContainer()
 void LinkedCellContainer::initialize(
     const std::initializer_list<double> &domain_size, double r_cutoff,
     const DomainBoundaryConditions &boundary_conditions) {
+  if (SimParams::fixed_Domain) {
+    left_corner_coordinates = {SimParams::lower_left_corner[0],
+                               SimParams::lower_left_corner[1],
+                               SimParams::lower_left_corner[2]};
+  }
+
   domain_size_ = std::vector<double>(domain_size);
   r_cutoff_ = r_cutoff;
   boundary_conditions_ = boundary_conditions;

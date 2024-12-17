@@ -135,7 +135,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
             BoundaryCondition::Outflow, BoundaryCondition::Outflow};
         simParameters.boundaryConditions = boundary_conditions;
       }
-      
+
       simParameters.linked_cells = true;
       simParameters.domain_size = {xmlParams.domain_size().get().x(),
                                    xmlParams.domain_size().get().y(),
@@ -145,6 +145,17 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
       simParameters.r_cutoff_radius = xmlParams.r_cutoff_radius();
       logger.info("Cutoff Radius: " +
                   std::to_string(simParameters.r_cutoff_radius));
+
+      if (xmlParams.domain_size().get().lower_left_corner().present()) {
+        SimParams::fixed_Domain = true;
+        auto lowerLeftCorner =
+            xmlParams.domain_size().get().lower_left_corner().get();
+        SimParams::lower_left_corner = {lowerLeftCorner.x(),
+                                           lowerLeftCorner.y(),
+                                           lowerLeftCorner.z()};
+        logger.info("Domain is fixed to: " +
+                    containerToStrings(simParameters.lower_left_corner));
+      }
 
       if (simParameters.domain_size[2] == 0) {
         particles.initialize(
