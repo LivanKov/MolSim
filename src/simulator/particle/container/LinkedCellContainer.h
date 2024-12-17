@@ -113,11 +113,11 @@ public:
   std::vector<ParticlePointer> get_neighbours(int particle_id);
 
   /**
-   * @brief Applies periodic boundary conditions to a particle.
-   * @param particle_id The ID of the particle to which periodic boundary
-   * @param cell_index The index of the cell in which the particle is located.
+   * @brief Retrieves the index of a cell based on its coordinates.
+   * @param position The coordinates of the cell.
+   * @return The index of the cell in the unwrapped cell array.
    */
-  void handle_periodic_boundary_conditions(int particle_id, int cell_index);
+  size_t get_cell_index(const std::array<double, 3> &position) const;
 
   /**
    * @brief The size of the simulation domain.
@@ -211,22 +211,4 @@ private:
    * @brief Assigns halo status to cells at the border of the array
    */
   void mark_halo_cells();
-
-
-  /**
-   * @brief Retrieves the index of a cell based on its coordinates.
-   * @param position The coordinates of the cell.
-   * @return The index of the cell in the unwrapped cell array.
-   */
-  size_t get_cell_index(const std::array<double, 3> &position);
-
-  /**
-   * @brief Updates a particle's position and sets appropriate flags for periodic boundaries
-   * @param particle_id The ID of the particle to update
-   * @param position_offset The offset to apply to the particle's position {dx, dy, dz}
-   * @param is_corner Whether this particle is at a corner (affects flag setting)
-   */
-  void update_particle_position(int particle_id,
-                              const std::array<double, 3>& position_offset,
-                              bool is_corner = false);
 };

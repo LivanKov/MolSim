@@ -14,8 +14,10 @@ void BoundaryConditions::run(LinkedCellContainer &particles) {
     }
 
 
-    for(auto index : particles.particles_outbound){
-
+    for(auto& particle_id : particles.particles_outbound){
+        auto& particle = particles.cells_map[particle_id];
+        auto cell_index = particles.get_cell_index(particle->getOldX());
+        handle_outflow_conditions(particle_id, cell_index, particles);
     }
     
 }
@@ -45,6 +47,11 @@ void BoundaryConditions::handle_periodic_conditions(LinkedCellContainer &particl
   
 }
 
-void BoundaryConditions::handle_outflow_conditions(LinkedCellContainer &particles) {
-
+void BoundaryConditions::handle_outflow_conditions(int particle_id, int cell_index, LinkedCellContainer &particles) {
+    auto& cell = particles.cells[cell_index];
+    if(particles.placement_map[cell.placement] == BoundaryCondition::Outflow){
+        auto& particle = particles.cells_map[particle_id];
+        particle->left_domain = true;
+        particles.particles_left_domain++;
+    }
 }

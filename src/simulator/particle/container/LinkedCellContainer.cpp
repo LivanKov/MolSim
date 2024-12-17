@@ -167,72 +167,7 @@ void LinkedCellContainer::clear() {
 }
 
 
-void LinkedCellContainer::update_particle_position(int p_id,
-                                                 const std::array<double, 3>& position_offset,
-                                                 bool is_corner) {
-    cells_map[p_id]->updateX(
-        cells_map[p_id]->getX()[0] + position_offset[0],
-        cells_map[p_id]->getX()[1] + position_offset[1],
-        cells_map[p_id]->getX()[2] + position_offset[2]);
-    cells_map[p_id]->is_periodic_copy = true;
-    particles_left_domain++;
-}
-
-void LinkedCellContainer::handle_periodic_boundary_conditions(int p_id,
-                                                              int cell_index) {
-    if(cells_map[p_id]->is_periodic_copy && !cells[cell_index].is_halo) {
-        cells_map[p_id]->is_periodic_copy = false;
-        particles_left_domain--;
-        return;
-    }
-
-    if(!cells[cell_index].is_halo || cells_map[p_id]->is_periodic_copy && cells[cell_index].is_halo) {
-        return;
-    }
-
-    logger.info("Handling periodic boundary conditions");
-
-    if (z == 1) {
-        logger.info("2D periodic boundary conditions");
-        
-        // Corner cases
-        if (cell_index == 0) {  // Bottom left corner
-            logger.info("Bottom left corner");
-            update_particle_position(p_id, {domain_size_[0], domain_size_[1], 0}, true);
-
-        } else if (cell_index == x - 1) {  // Bottom right corner
-            logger.info("Bottom right corner");
-            update_particle_position(p_id, {-domain_size_[0], domain_size_[1], 0}, true);
-
-        } else if (cell_index == x * y - 1) {  // Top right corner
-            logger.info("Top right corner");
-            update_particle_position(p_id, {-domain_size_[0], -domain_size_[1], 0}, true);
-
-        } else if (cell_index == x * y - x) {  // Top left corner
-            logger.info("Top left corner");
-            update_particle_position(p_id, {domain_size_[0], -domain_size_[1], 0}, true);
-
-        } else if (cell_index % x == 0) {  // Left boundary
-            logger.info("Left boundary");
-            update_particle_position(p_id, {domain_size_[0], 0, 0});
-
-        } else if ((cell_index + 1) % x == 0) {  // Right boundary
-            logger.info("Right boundary");
-            update_particle_position(p_id, {-domain_size_[0], 0, 0});
-
-        } else if (cell_index < x) {  // Bottom boundary
-            logger.info("Bottom boundary");
-            update_particle_position(p_id, {0, domain_size_[1], 0});
-
-        } else if (cell_index >= x * (y - 1)) {  // Top boundary
-            logger.info("Top boundary");
-            update_particle_position(p_id, {0, -domain_size_[1], 0});
-        }
-    }
-}
-
-
-size_t LinkedCellContainer::get_cell_index(const std::array<double, 3> &position) {
+size_t LinkedCellContainer::get_cell_index(const std::array<double, 3> &position) const {
   size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) /
                                  r_cutoff_x);
   size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) /
