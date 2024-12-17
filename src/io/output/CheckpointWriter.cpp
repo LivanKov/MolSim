@@ -6,7 +6,8 @@
 CheckpointWriter::CheckpointWriter() = default;
 CheckpointWriter::~CheckpointWriter() = default;
 
-void CheckpointWriter::writeCheckpoint(LinkedCellContainer &particles, const std::string &filename,
+void CheckpointWriter::writeCheckpoint(LinkedCellContainer &particles,
+                                       const std::string &filename,
                                        double delta_t, double t_end) {
   std::ofstream file(filename);
   if (!file.is_open()) {
@@ -26,8 +27,7 @@ void CheckpointWriter::writeCheckpoint(LinkedCellContainer &particles, const std
     file << std::fixed << std::setprecision(6) << p.getX()[0] << " "
          << p.getX()[1] << " " << p.getX()[2] << " " << p.getV()[0] << " "
          << p.getV()[1] << " " << p.getV()[2] << " " << p.getM() << " "
-         << p.getOldF()[0] << " " << p.getOldF()[1] << " " << p.getOldF()[2]
-         << " " << p.getType() << "\n";
+         << p.getType() << "\n";
   }
 
   file.close();

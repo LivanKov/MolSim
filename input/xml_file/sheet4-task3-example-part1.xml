@@ -9,7 +9,7 @@
         <gravity>-12.44</gravity>
         <enable_brownian>false</enable_brownian>
         <domain_size>
-            <x>303.0</x>
+            <x>243.0</x>
             <y>180.0</y>
             <z>0.0</z>
         </domain_size>
@@ -37,8 +37,8 @@
                 <z>0.0</z>
             </coordinate>
             <dimensions>
-                <x>250</x>
-                <y>50</y>
+                <x>200</x>
+                <y>20</y>
                 <z>1</z>
             </dimensions>
             <mesh_width>1.2</mesh_width>
