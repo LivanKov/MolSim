@@ -183,15 +183,6 @@ private:
    * @return The index of the cell in the unwrapped cell array.
    */
   size_t get_cell_index(const std::array<double, 3> &position);
-  /**
-   * @brief Creates a periodic copy of a particle with specified position offset and velocity modifications
-   * @param particle_id Reference to the particle ID (will be incremented)
-   * @param position_offset The offset to apply to the particle's position {dx, dy, dz}
-   * @param velocity_flip Factors to multiply velocity components {vx, vy, vz}
-   */
-  void create_periodic_copy(int& particle_id,
-                          const std::array<double, 3>& position_offset,
-                          const std::array<double, 3>& velocity_flip);
 
   /**
    * @brief Updates a particle's position and sets appropriate flags for periodic boundaries

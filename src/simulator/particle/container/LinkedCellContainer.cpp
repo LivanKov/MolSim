@@ -241,29 +241,6 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
   }
 }
 
-void LinkedCellContainer::create_periodic_copy(int& p_id, 
-                                             const std::array<double, 3>& position_offset,
-                                             const std::array<double, 3>& velocity_flip) {
-    logger.info("Particle id: " + std::to_string(particle_id)); 
-    Particle p{std::array<double, 3>{
-        cells_map[p_id]->getX()[0] + position_offset[0],
-        cells_map[p_id]->getX()[1] + position_offset[1],
-        cells_map[p_id]->getX()[2] + position_offset[2]},
-        std::array<double, 3>{
-            cells_map[p_id]->getV()[0] * velocity_flip[0],
-            cells_map[p_id]->getV()[1] * velocity_flip[1],
-            cells_map[p_id]->getV()[2] * velocity_flip[2]},
-        cells_map[p_id]->getM(),
-        particle_id,
-        cells_map[p_id]->getEpsilon(),
-        cells_map[p_id]->getSigma()};
-      
-    logger.info("Periodic copy: " + std::to_string(p.getX()[0]) + " " + std::to_string(p.getX()[1]) + " " + std::to_string(p.getX()[2]));
-    p.is_periodic_copy = true;
-    insert(p, true);
-    particle_id++;
-}
-
 void LinkedCellContainer::update_particle_position(int p_id,
                                                  const std::array<double, 3>& position_offset,
                                                  bool is_corner) {
@@ -296,32 +273,18 @@ void LinkedCellContainer::handle_periodic_boundary_conditions(int p_id,
         if (cell_index == 0) {  // Bottom left corner
             logger.info("Bottom left corner");
             update_particle_position(p_id, {domain_size_[0], domain_size_[1], 0}, true);
-            
-            create_periodic_copy(p_id, {domain_size_[0], 0, 0}, {1, -1, 1});
-            create_periodic_copy(p_id, {0, domain_size_[1], 0}, {-1, 1, 1});
 
         } else if (cell_index == x - 1) {  // Bottom right corner
             logger.info("Bottom right corner");
             update_particle_position(p_id, {-domain_size_[0], domain_size_[1], 0}, true);
-            
-            create_periodic_copy(p_id, {-domain_size_[0], 0, 0}, {1, -1, 1});
-            create_periodic_copy(p_id, {0, domain_size_[1], 0}, {-1, 1, 1});
 
         } else if (cell_index == x * y - 1) {  // Top right corner
             logger.info("Top right corner");
             update_particle_position(p_id, {-domain_size_[0], -domain_size_[1], 0}, true);
-            logger.info("Check yo");
-            create_periodic_copy(p_id, {-domain_size_[0], 0, 0}, {1, -1, 1});
-            logger.info("Check yo");
-            //create_periodic_copy(p_id, {0, -domain_size_[1], 0}, {1, -1, 1});
-            logger.info("Check yo");
 
         } else if (cell_index == x * y - x) {  // Top left corner
             logger.info("Top left corner");
             update_particle_position(p_id, {domain_size_[0], -domain_size_[1], 0}, true);
-            
-            create_periodic_copy(p_id, {domain_size_[0], 0, 0}, {1, -1, 1});
-            create_periodic_copy(p_id, {0, -domain_size_[1], 0}, {-1, 1, 1});
 
         } else if (cell_index % x == 0) {  // Left boundary
             logger.info("Left boundary");
