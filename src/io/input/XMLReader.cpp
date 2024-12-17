@@ -35,7 +35,6 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
                             SimParams &simParameters) {
   Logger &logger = Logger::getInstance(simParameters.log_level);
   std::string filename = simParameters.input_path;
-  std::initializer_list<double> init_list;
   try {
     std::ifstream inputFile(filename);
     if (!inputFile.is_open()) {
@@ -140,19 +139,17 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
                   std::to_string(simParameters.r_cutoff_radius));
 
       if (simParameters.domain_size[2] == 0) {
-        init_list = {simParameters.domain_size[0],
-                     simParameters.domain_size[1]};
+        particles.initialize(
+            {simParameters.domain_size[0], simParameters.domain_size[1]},
+            simParameters.r_cutoff_radius, simParameters.boundaryConditions);
         simParameters.dimensions = 2;
       } else {
-        init_list = {simParameters.domain_size[0], simParameters.domain_size[1],
-                     simParameters.domain_size[2]};
+        particles.initialize(
+            {simParameters.domain_size[0], simParameters.domain_size[1],
+             simParameters.domain_size[2]},
+            simParameters.r_cutoff_radius, simParameters.boundaryConditions);
         simParameters.dimensions = 3;
       }
-
-      // Initialize the linkedcellcontainer with received parameters from
-      // XMLinput
-      particles.initialize(init_list, simParameters.r_cutoff_radius,
-                           simParameters.boundaryConditions);
     }
 
     // Extract cuboid specification
@@ -195,12 +192,10 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
           // TODO: add epsilon and sigma, and set the linked_cell flag to false
           // inside generator
           ParticleGenerator::insertCuboid(position, dimensions, mesh_width,
-                                          mass, initial_velocity,
-                                          particles);
+                                          mass, initial_velocity, particles);
         } else {
           ParticleGenerator::insertCuboid(position, dimensions, mesh_width,
-                                          mass, initial_velocity,
-                                          particles);
+                                          mass, initial_velocity, particles);
         }
 
         logger.info("Particles check: " + std::to_string(particles.size()));
