@@ -119,6 +119,9 @@ public:
    */
   size_t get_cell_index(const std::array<double, 3> &position) const;
 
+
+  void set_boundary_conditions(DomainBoundaryConditions conditions);
+
   /**
    * @brief The size of the simulation domain.
    */

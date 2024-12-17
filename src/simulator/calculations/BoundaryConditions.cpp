@@ -1,5 +1,6 @@
 #include "BoundaryConditions.h"
 #include "../particle/container/LinkedCellContainer.h"
+#include <iostream>
 
 
 void BoundaryConditions::run(LinkedCellContainer &particles) {

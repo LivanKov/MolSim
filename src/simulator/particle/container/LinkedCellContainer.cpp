@@ -255,3 +255,13 @@ void LinkedCellContainer::readjust() {
     insert(p, true);
   }
 }
+
+
+void LinkedCellContainer::set_boundary_conditions(DomainBoundaryConditions conditions) {
+  this->boundary_conditions_ = conditions;
+  placement_map[Placement::TOP] = conditions.top;
+  placement_map[Placement::BOTTOM] = conditions.bottom;
+  placement_map[Placement::LEFT] = conditions.left;
+  placement_map[Placement::RIGHT] = conditions.right;
+  placement_map[Placement::FRONT] = conditions.front;
+}

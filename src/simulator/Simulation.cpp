@@ -29,18 +29,18 @@ LinkedCellContainer Simulation::readFile(SimParams &params) {
   XMLReader::readXMLFile(particles, params);
   if (params.reflective) {
     particles.reflective_flag = true;
-    particles.boundary_conditions_ = DomainBoundaryConditions{
+    particles.set_boundary_conditions(DomainBoundaryConditions{
         BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
         BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
-        BoundaryCondition::Reflecting, BoundaryCondition::Reflecting};
+        BoundaryCondition::Reflecting, BoundaryCondition::Reflecting});
   }
   if (params.periodic) {
     particles.reflective_flag = false;
     particles.periodic_flag = true;
-    particles.boundary_conditions_ = DomainBoundaryConditions{
+    particles.set_boundary_conditions(DomainBoundaryConditions{
         BoundaryCondition::Periodic, BoundaryCondition::Periodic,
         BoundaryCondition::Periodic, BoundaryCondition::Periodic,
-        BoundaryCondition::Periodic, BoundaryCondition::Periodic};
+        BoundaryCondition::Periodic, BoundaryCondition::Periodic});
   }
   return particles;
 }
@@ -68,6 +68,10 @@ void Simulation::run(LinkedCellContainer &particles) {
 
   OPTIONS option =
       params_.linked_cells ? OPTIONS::LINKED_CELLS : OPTIONS::DIRECT_SUM;
+    
+  if(particles.reflective_flag){
+    logger.info("Reflective boundary conditions enabled");
+  }
 
   while (current_time < params_.end_time) {
 
