@@ -26,6 +26,11 @@ private:
    */
   std::array<double, 3> x;
 
+  /*
+   * Old position of the particle
+  */
+  std::array<double, 3> old_x;
+
   /**
    * Velocity of the particle
    */

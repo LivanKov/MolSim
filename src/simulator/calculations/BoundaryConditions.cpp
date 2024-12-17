@@ -3,5 +3,9 @@
 
 
 void BoundaryConditions::run(LinkedCellContainer &particles) {
+
+    for(auto& indices : particles.particles_outbound){
+        
+    }
     
 }
