@@ -16,7 +16,7 @@ LinkedCellContainer::LinkedCellContainer(
       left_corner_coordinates{0.0, 0.0, 0.0}, x{0}, y{0}, z{0},
       boundary_conditions_{boundary_conditions}, particles{}, cells_map{},
       particle_id{0}, particles_left_domain{0}, is_wrapper{false},
-      halo_count{0}, reflective_flag{false}, periodic_flag{false}, particles_added{0} {
+      halo_count{0}, reflective_flag{false}, periodic_flag{false}, halo_cell_indices{}, particles_outbound{} {
   if (domain_size.size() != 3 && domain_size.size() != 2) {
     throw std::invalid_argument("Domain size must have 2 or 3 elements");
   }
@@ -58,7 +58,7 @@ LinkedCellContainer::LinkedCellContainer()
                                                                    0.0},
       x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{}, particle_id{0},
       particles_left_domain{0}, is_wrapper{false}, halo_count{0},
-      reflective_flag{false}, periodic_flag{false}, particles_added{0} {}
+      reflective_flag{false}, periodic_flag{false}, halo_cell_indices{}, particles_outbound{} {}
 
 void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
@@ -333,6 +333,7 @@ void LinkedCellContainer::mark_halo_cells() {
             (z > 1 && (k == 0 || k == z - 1))) {
           size_t index = i + j * x + k * x * y;
           cells[index].is_halo = true;
+          halo_cell_indices.push_back(index);
           halo_count++;
         }
       }

@@ -172,7 +172,6 @@ public:
   size_t particles_left_domain;
   size_t particle_id;
 
-  size_t particles_added;
 
   bool is_wrapper;
 
@@ -186,6 +185,10 @@ public:
   bool reflective_flag;
 
   bool periodic_flag;
+
+  std::vector<size_t> halo_cell_indices;
+
+  std::unordered_set<int> particles_outbound;
     
 
 private:

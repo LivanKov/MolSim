@@ -10,6 +10,7 @@
 #include "simulator/calculations/Force.h"
 #include "simulator/calculations/Position.h"
 #include "simulator/calculations/Velocity.h"
+#include "simulator/calculations/BoundaryConditions.h"
 #include "utils/logger/Logger.h"
 #include <iostream>
 #include <memory>
@@ -71,6 +72,7 @@ void Simulation::run(LinkedCellContainer &particles) {
   while (current_time < params_.end_time) {
 
     Calculation<Position>::run(particles, params_.time_delta, option);
+    Calculation<BoundaryConditions>::run(particles);
     Calculation<Force>::run(particles, FORCE_TYPE, option);
     Calculation<Velocity>::run(particles, params_.time_delta);
 
