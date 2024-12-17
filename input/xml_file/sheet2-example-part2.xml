@@ -17,12 +17,12 @@
     <cuboids>
         <cuboid>
             <coordinate>
-                <x>0.0</x>
-                <y>0.0</y>
+                <x>15.0</x>
+                <y>15.0</y>
                 <z>0.0</z>
             </coordinate>
             <dimensions>
-                <x>40</x>
+                <x>8</x>
                 <y>8</y>
                 <z>1</z>
             </dimensions>
@@ -32,7 +32,7 @@
             <sigma>1.0</sigma>
             <initial_velocity>
                 <x>0.0</x>
-                <y>0.0</y>
+                <y>-10.0</y>
                 <z>0.0</z>
             </initial_velocity>
         </cuboid>

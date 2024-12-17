@@ -88,10 +88,13 @@ public:
       std::array<double, 3> x_arg, std::array<double, 3> v_arg, double m_arg,
       int type, double epsilon_arg = 5.0, double sigma_arg = 1.0);
 
-  /**
-   * @brief Destructor
-   */
-  virtual ~Particle();
+  Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
+           double m_arg, int type, std::array<double, 3> oldf_arg);
+
+      /**
+       * @brief Destructor
+       */
+      virtual ~Particle();
 
   /**
    * @brief access the array containing the position of the particle.

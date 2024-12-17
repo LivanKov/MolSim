@@ -52,24 +52,4 @@
             </initial_velocity>
         </cuboid>
     </cuboids>
-
-     <discs>
-        <disc>
-            <center>
-                <x>150.0</x>
-                <y>150.0</y>
-                <z>0.0</z>
-            </center>
-            <initial_velocity>
-                <x>0.0</x>
-                <y>0.0</y>
-                <z>0.0</z>
-            </initial_velocity>
-            <radius>20</radius>
-            <mesh_width>1.2</mesh_width>
-            <mass>1.0</mass>
-            <epsilon>1.0</epsilon>
-            <sigma>1.2</sigma>
-        </disc>
-    </discs>
 </MolSim>

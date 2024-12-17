@@ -29,4 +29,9 @@ struct SimParams {
   double n_thermostats;
   size_t dimensions;
   bool enable_brownian;
+
+  // Checkpoint
+  bool resume_from_checkpoint;
+  bool checkpoint_only;
+  double resume_start_time;
 };

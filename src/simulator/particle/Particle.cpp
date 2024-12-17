@@ -47,6 +47,18 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   sigma = sigma_arg;
 }
 
+Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
+                   double m_arg, int type, std::array<double, 3> oldf_arg) {
+  x = x_arg;
+  v = v_arg;
+  m = m_arg;
+  type = type;
+  f = {0., 0., 0.};
+  old_f = oldf_arg;
+  Logger::getInstance().trace("Particle generated!");
+  left_domain = false;
+}
+
 Particle::~Particle() { Logger::getInstance().trace("Particle destroyed!"); }
 
 const std::array<double, 3> &Particle::getX() const { return x; }

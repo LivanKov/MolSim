@@ -1,6 +1,8 @@
 #include "Simulation.h"
+#include "io/input/CheckpointReader.h"
 #include "io/input/FileReader.h"
 #include "io/input/XMLReader.h"
+#include "io/output/CheckpointWriter.h"
 #include "io/output/FileWriter.h"
 #include "io/output/VTKWriter.h"
 #include "io/output/XYZWriter.h"
@@ -52,6 +54,28 @@ void Simulation::run(LinkedCellContainer &particles) {
 
   OPTIONS option =
       params_.linked_cells ? OPTIONS::LINKED_CELLS : OPTIONS::DIRECT_SUM;
+
+  if (params_.checkpoint_only) {
+    while (current_time < params_.end_time) {
+      Calculation<Position>::run(particles, params_.time_delta, option);
+      Calculation<Force>::run(particles, FORCE_TYPE, option);
+      Calculation<Velocity>::run(particles, params_.time_delta);
+      current_time += params_.time_delta;
+    }
+
+    CheckpointWriter::writeCheckpoint(particles, "../output/checkpoint.chk",
+                                      params_.time_delta, params_.end_time);
+    logger.info("Equilibration completed.");
+    return;
+  }
+
+  if (params_.resume_from_checkpoint) {
+    CheckpointReader CheckpointReader;
+    CheckpointReader.readCheckpoint(particles, params_.time_delta,
+                                    params_.resume_start_time);
+    logger.info("Resumed from checkpoint. Adding additional input...");
+    current_time = params_.resume_start_time;
+  }
 
   while (current_time < params_.end_time) {
 

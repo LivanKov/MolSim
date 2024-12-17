@@ -134,13 +134,15 @@ void LinkedCellContainer::update_particle_location(
       // if (cells[current_index].is_halo && reflective_flag) {
       if (cells[current_index].is_halo) {
         // handle_boundary_conditions(particle_id);
-        auto vel = cells_map[particle_id]->getV();
-        cells_map[particle_id]->updateV(-vel[0], -vel[1], -vel[2]);
+        // auto vel = cells_map[particle_id]->getV();
+        // cells_map[particle_id]->updateV(-vel[0], -vel[1], -vel[2]);
+        cells_map[particle_id]->left_domain = true;
+        particles_left_domain++;
       }
 
     } else {
-      cells_map[particle_id]->left_domain = true;
-      particles_left_domain++;
+      // cells_map[particle_id]->left_domain = true;
+      // particles_left_domain++;
     }
   }
 }
@@ -327,25 +329,29 @@ void LinkedCellContainer::readjust() {
   }
 }
 
-void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_id) {
-  //ensure that the particle is in halo cell
-  if(!cells[cell_id].is_halo){
+void LinkedCellContainer::handle_boundary_conditions(int particle_id,
+                                                     int cell_id) {
+  // ensure that the particle is in halo cell
+  if (!cells[cell_id].is_halo) {
     return;
   }
 
-  auto& velocity = cells_map[particle_id]->getV();
+  auto &velocity = cells_map[particle_id]->getV();
   logger.debug("Checking");
   // Left boundary
   if (cell_id % x == 0) {
     if (boundary_conditions_.left == BoundaryCondition::Reflecting) {
       logger.debug("Reflecting left boundary");
       cells_map[particle_id]->updateV(-velocity[0], velocity[1], velocity[2]);
-      //logger.debug("Velocity: " + std::to_string(cells_map[particle_id]->getV()[0]) + " " + std::to_string(cells_map[particle_id]->getV()[1]) + " " + std::to_string(cells_map[particle_id]->getV()[2]));
+      // logger.debug("Velocity: " +
+      // std::to_string(cells_map[particle_id]->getV()[0]) + " " +
+      // std::to_string(cells_map[particle_id]->getV()[1]) + " " +
+      // std::to_string(cells_map[particle_id]->getV()[2]));
     }
   }
 
   // Right boundary
-  if ((cell_id + 1) % x == 0) { 
+  if ((cell_id + 1) % x == 0) {
     if (boundary_conditions_.right == BoundaryCondition::Reflecting) {
       logger.debug("Reflecting right boundary");
       cells_map[particle_id]->updateV(-velocity[0], velocity[1], velocity[2]);
@@ -353,21 +359,29 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
   }
 
   // Bottom boundary
-  for(size_t i = 0; i < z; i++){
+  for (size_t i = 0; i < z; i++) {
     if (x * y * i <= cell_id && cell_id < x * y * i + x) {
       if (boundary_conditions_.bottom == BoundaryCondition::Reflecting) {
         logger.debug("Reflecting bottom boundary");
-        logger.debug("Particle location: " + std::to_string(cells_map[particle_id]->getX()[0]) + " " + std::to_string(cells_map[particle_id]->getX()[1]) + " " + std::to_string(cells_map[particle_id]->getX()[2]));  
-        logger.debug("Velocity: " + std::to_string(cells_map[particle_id]->getV()[0]) + " " + std::to_string(cells_map[particle_id]->getV()[1]) + " " + std::to_string(cells_map[particle_id]->getV()[2]));
+        logger.debug("Particle location: " +
+                     std::to_string(cells_map[particle_id]->getX()[0]) + " " +
+                     std::to_string(cells_map[particle_id]->getX()[1]) + " " +
+                     std::to_string(cells_map[particle_id]->getX()[2]));
+        logger.debug(
+            "Velocity: " + std::to_string(cells_map[particle_id]->getV()[0]) +
+            " " + std::to_string(cells_map[particle_id]->getV()[1]) + " " +
+            std::to_string(cells_map[particle_id]->getV()[2]));
         cells_map[particle_id]->updateV(velocity[0], -velocity[1], velocity[2]);
-        logger.debug("Velocity: " + std::to_string(cells_map[particle_id]->getV()[0]) + " " + std::to_string(cells_map[particle_id]->getV()[1]) + " " + std::to_string(cells_map[particle_id]->getV()[2]));
-
+        logger.debug(
+            "Velocity: " + std::to_string(cells_map[particle_id]->getV()[0]) +
+            " " + std::to_string(cells_map[particle_id]->getV()[1]) + " " +
+            std::to_string(cells_map[particle_id]->getV()[2]));
       }
     }
   }
 
   // Top boundary
-  for(size_t i = 1; i <= z; i++){
+  for (size_t i = 1; i <= z; i++) {
     if (x * y * i - x <= cell_id && cell_id < x * y * i) {
       if (boundary_conditions_.top == BoundaryCondition::Reflecting) {
         logger.debug("Reflecting top boundary");

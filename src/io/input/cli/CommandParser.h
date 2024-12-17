@@ -33,7 +33,7 @@ SimParams parse(int argc, char **argv, SimParams &parameters) {
 
   int opt;
 
-  while ((opt = getopt(argc, argv, "e:d:i:t:o:hxl:fnurp")) != -1) {
+  while ((opt = getopt(argc, argv, "e:d:i:t:o:hxl:fnurc")) != -1) {
     switch (opt) {
     case 'e':
       parameters.end_time = atof(optarg);
@@ -69,10 +69,11 @@ SimParams parse(int argc, char **argv, SimParams &parameters) {
       parameters.linked_cells = true;
       break;
     case 'r':
-      parameters.reflective = true;
+      parameters.resume_from_checkpoint = true;
       break;
-    case 'p':
-      parameters.periodic = true;
+    case 'c':
+      parameters.checkpoint_only = true;
+      break;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argv[0]);
     }
