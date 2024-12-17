@@ -11,6 +11,14 @@ void LinkedCellContainer::Cell::remove(int id) { particle_ids.erase(id); }
 void LinkedCellContainer::initialize(
     const std::initializer_list<double> &domain_size, double r_cutoff,
     const DomainBoundaryConditions &boundary_conditions) {
+  logger.info("Initializing LinkedCellContainer");
+  domain_size_ = std::vector<double>(domain_size);
+  r_cutoff_ = r_cutoff;
+  boundary_conditions_ = boundary_conditions;
+  r_cutoff_x = r_cutoff;
+  r_cutoff_y = r_cutoff;
+  r_cutoff_z = r_cutoff;
+
   if (domain_size.size() != 3 && domain_size.size() != 2) {
     throw std::invalid_argument("Domain size must have 2 or 3 elements");
   }
