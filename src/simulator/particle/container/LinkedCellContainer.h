@@ -204,13 +204,6 @@ private:
                             std::array<double, 3> current_up_right);
 
   /**
-   * @brief Retrieves a cell by its index in the unwrapped cell array.
-   * @param index The index of the cell.
-   * @return A reference to the cell at the specified index.
-   */
-  Cell &get_cell(size_t index);
-
-  /**
    * @brief Assigns halo status to cells at the border of the array
    */
   void mark_halo_cells();

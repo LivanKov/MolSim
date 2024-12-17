@@ -110,10 +110,6 @@ void LinkedCellContainer::update_particle_location(
   }
 }
 
-LinkedCellContainer::Cell &LinkedCellContainer::get_cell(size_t index) {
-  return cells[index];
-}
-
 std::vector<ParticlePointer>
 LinkedCellContainer::get_neighbours(int particle_id) {
   std::vector<ParticlePointer> neighbours{};
