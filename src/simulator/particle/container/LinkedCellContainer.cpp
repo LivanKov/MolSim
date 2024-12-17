@@ -8,15 +8,9 @@ void LinkedCellContainer::Cell::insert(int id) { particle_ids.insert(id); }
 
 void LinkedCellContainer::Cell::remove(int id) { particle_ids.erase(id); }
 
-LinkedCellContainer::LinkedCellContainer(
-    std::initializer_list<double> domain_size, double r_cutoff,
-    const DomainBoundaryConditions &boundary_conditions)
-    : domain_size_{domain_size}, r_cutoff_{r_cutoff}, r_cutoff_x{r_cutoff},
-      r_cutoff_y{r_cutoff}, r_cutoff_z{r_cutoff},
-      left_corner_coordinates{0.0, 0.0, 0.0}, x{0}, y{0}, z{0},
-      boundary_conditions_{boundary_conditions}, particles{}, cells_map{},
-      particle_id{0}, particles_left_domain{0}, is_wrapper{false},
-      halo_count{0}, reflective_flag{false}, periodic_flag{false}, halo_cell_indices{}, particles_outbound{} {
+void LinkedCellContainer::initialize(
+    const std::initializer_list<double> &domain_size, double r_cutoff,
+    const DomainBoundaryConditions &boundary_conditions) {
   if (domain_size.size() != 3 && domain_size.size() != 2) {
     throw std::invalid_argument("Domain size must have 2 or 3 elements");
   }
