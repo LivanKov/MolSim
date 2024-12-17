@@ -4,7 +4,6 @@
 
 
 void BoundaryConditions::run(LinkedCellContainer &particles) {
-
     for(auto& cell_index : particles.halo_cell_indices){
         for(auto& particle_id : particles.cells[cell_index].particle_ids){
             auto position = particles.cells[cell_index].placement;
@@ -16,8 +15,9 @@ void BoundaryConditions::run(LinkedCellContainer &particles) {
 
     for(auto& particle_id : particles.particles_outbound){
         auto& particle = particles.cells_map[particle_id];
-        if(!particle->left_domain){
+        if(!particle->left_domain && !particle->outbound){
             auto cell_index = particles.get_cell_index(particle->getOldX());
+            particle->outbound = true;
             handle_outflow_conditions(particle_id, cell_index, particles);
         }
     }

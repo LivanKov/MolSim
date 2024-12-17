@@ -25,7 +25,7 @@ std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
 Simulation::Simulation(SimParams &params) : params_(params) {}
 
 LinkedCellContainer Simulation::readFile(SimParams &params) {
-  LinkedCellContainer particles{{90.0, 45.0}, 3.0};
+  LinkedCellContainer particles{{243.0, 180.0}, 3.0};
   XMLReader::readXMLFile(particles, params);
   if (params.reflective) {
     particles.reflective_flag = true;

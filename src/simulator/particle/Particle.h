@@ -168,7 +168,8 @@ public:
   bool is_periodic_copy;
 
 
-  bool secondary_copy_flag;
+  bool outbound;
+
 
   /**
    * @brief overload the equality (==) operator to compare particles.

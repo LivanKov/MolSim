@@ -19,7 +19,7 @@ Particle::Particle(int type_arg) {
   old_f = {0., 0., 0.};
   left_domain = false;
   is_periodic_copy = false;
-  secondary_copy_flag = false;
+  outbound = false;
 }
 
 Particle::Particle(const Particle &other) {
@@ -35,7 +35,7 @@ Particle::Particle(const Particle &other) {
   epsilon = other.epsilon;
   sigma = other.sigma;
   is_periodic_copy = other.is_periodic_copy;
-  secondary_copy_flag = other.secondary_copy_flag;
+  outbound = other.outbound;
 }
 
 // Todo: maybe use initializater list instead of copy?
@@ -54,7 +54,7 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   epsilon = epsilon_arg;
   sigma = sigma_arg;
   is_periodic_copy = false;
-  secondary_copy_flag = false;
+  outbound = false;
 }
 
 Particle::~Particle() { Logger::getInstance().trace("Particle destroyed!"); }

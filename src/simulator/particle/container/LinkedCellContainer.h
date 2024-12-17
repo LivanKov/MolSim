@@ -196,7 +196,7 @@ public:
 
   std::vector<size_t> halo_cell_indices;
 
-  std::unordered_set<int> particles_outbound;
+  std::vector<int> particles_outbound;
     
 
 private:

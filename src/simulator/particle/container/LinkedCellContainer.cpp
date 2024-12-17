@@ -105,7 +105,7 @@ void LinkedCellContainer::update_particle_location(
     if (is_within_domain(cells_map[particle_id]->getX())) {
       cells[current_index].insert(cells_map[particle_id]->getType());
     } else {
-      particles_outbound.insert(cells_map[particle_id]->getType());
+      particles_outbound.push_back(cells_map[particle_id]->getType());
     }
   }
 }
@@ -117,7 +117,7 @@ LinkedCellContainer::Cell &LinkedCellContainer::get_cell(size_t index) {
 std::vector<ParticlePointer>
 LinkedCellContainer::get_neighbours(int particle_id) {
   std::vector<ParticlePointer> neighbours{};
-  if (cells_map[particle_id]->left_domain) {
+  if (cells_map[particle_id]->left_domain || cells_map[particle_id]->outbound) {
     return neighbours;
   }
   std::array<double, 3> position = cells_map[particle_id]->getX();
