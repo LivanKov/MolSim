@@ -113,12 +113,6 @@ public:
   std::vector<ParticlePointer> get_neighbours(int particle_id);
 
   /**
-   * @brief Applies the specified boundary conditions to a particle.
-   * @param p The particle to which boundary conditions are applied.
-   */
-  void handle_boundary_conditions(int particle_id, int cell_index);
-
-  /**
    * @brief Applies periodic boundary conditions to a particle.
    * @param particle_id The ID of the particle to which periodic boundary
    * @param cell_index The index of the cell in which the particle is located.
