@@ -134,15 +134,15 @@ void LinkedCellContainer::update_particle_location(
       // if (cells[current_index].is_halo && reflective_flag) {
       if (cells[current_index].is_halo) {
         // handle_boundary_conditions(particle_id);
-        // auto vel = cells_map[particle_id]->getV();
-        // cells_map[particle_id]->updateV(-vel[0], -vel[1], -vel[2]);
-        cells_map[particle_id]->left_domain = true;
-        particles_left_domain++;
+        auto vel = cells_map[particle_id]->getV();
+        cells_map[particle_id]->updateV(-vel[0], -vel[1], -vel[2]);
+        // cells_map[particle_id]->left_domain = true;
+        // particles_left_domain++;
       }
 
     } else {
-      // cells_map[particle_id]->left_domain = true;
-      // particles_left_domain++;
+      cells_map[particle_id]->left_domain = true;
+      particles_left_domain++;
     }
   }
 }

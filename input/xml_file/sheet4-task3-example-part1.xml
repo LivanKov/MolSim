@@ -20,8 +20,8 @@
         <target_temp>0.5</target_temp>
         <delta_temp>0.0005</delta_temp>
         <is_gradual>true</is_gradual>
-        <n_thermostats>1000</n_thermostats>
-    <thermostats>
+        <n_thermostats>1000.0</n_thermostats>
+    </thermostats>
     <boundary_conditions>
         <left>Reflecting</left>
         <right>Reflecting</right>

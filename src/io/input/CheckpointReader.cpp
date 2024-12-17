@@ -55,8 +55,7 @@ void CheckpointReader::readCheckpoint(LinkedCellContainer &particles,
     }
 
     // Create particle and insert into the container
-    Particle particle({x, y, z}, {vx, vy, vz}, mass, particles.particle_id,
-                      {oldFx, oldFy, oldFz});
+    Particle particle({x, y, z}, {vx, vy, vz}, mass, particles.particle_id);
     particles.particle_id++;
     particles.insert(particle, true);
     particles.readjust();
