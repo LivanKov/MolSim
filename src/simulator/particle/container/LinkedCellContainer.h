@@ -1,4 +1,3 @@
-#include "../BoundaryCondition.h"
 #include "DirectSumContainer.h"
 #include "utils/logger/Logger.h"
 #include <array>
@@ -9,6 +8,34 @@
 #pragma once
 
 #define DIVISION_TOLERANCE 1e-6
+
+
+/**
+ *@brief Enum class for boundary conditions
+ */
+
+enum BoundaryCondition { Outflow, Reflecting, Periodic };
+
+/**
+ *@brief Struct for domain boundary conditions
+ */
+
+struct DomainBoundaryConditions {
+  BoundaryCondition left, right;
+  BoundaryCondition top, bottom;
+  BoundaryCondition front, back;
+};
+
+
+enum Placement {
+  TOP,
+  BOTTOM,
+  LEFT,
+  RIGHT,
+  FRONT,
+  BACK
+};
+
 
 /**
  * @class LinkedCellContainer
@@ -159,6 +186,7 @@ public:
   bool reflective_flag;
 
   bool periodic_flag;
+    
 
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,
