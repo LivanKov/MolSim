@@ -16,7 +16,7 @@ LinkedCellContainer::LinkedCellContainer(
       left_corner_coordinates{0.0, 0.0, 0.0}, x{0}, y{0}, z{0},
       boundary_conditions_{boundary_conditions}, particles{}, cells_map{},
       particle_id{0}, particles_left_domain{0}, is_wrapper{false},
-      halo_count{0}, reflective_flag{false}, periodic_flag{false} {
+      halo_count{0}, reflective_flag{false}, periodic_flag{false}, particles_added{0} {
   if (domain_size.size() != 3 && domain_size.size() != 2) {
     throw std::invalid_argument("Domain size must have 2 or 3 elements");
   }
@@ -58,7 +58,7 @@ LinkedCellContainer::LinkedCellContainer()
                                                                    0.0},
       x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{}, particle_id{0},
       particles_left_domain{0}, is_wrapper{false}, halo_count{0},
-      reflective_flag{false}, periodic_flag{false} {}
+      reflective_flag{false}, periodic_flag{false}, particles_added{0} {}
 
 void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
@@ -98,6 +98,9 @@ bool LinkedCellContainer::is_within_domain(
 void LinkedCellContainer::update_particle_location(
     int particle_id, const std::array<double, 3> &old_position) {
 
+      logger.info("Particle: " + std::to_string(particle_id) + " " + cells_map[particle_id]->toString()); 
+
+
   // compute previous index
   size_t i = static_cast<size_t>(
       (old_position[0] - left_corner_coordinates[0]) / r_cutoff_x);
@@ -134,10 +137,6 @@ void LinkedCellContainer::update_particle_location(
         cells_map[particle_id]->left_domain = false;
         particles_left_domain--;
       }
-      /*if(cells_map[particle_id]->is_periodic_copy && cells_map[particle_id]->secondary_copy_flag){
-        cells_map[particle_id]->is_periodic_copy = false;
-        particles_left_domain--;
-      }*/
       
       if (reflective_flag) {
         handle_boundary_conditions(particle_id, current_index);
@@ -232,73 +231,6 @@ void LinkedCellContainer::clear() {
   particles.clear();
 }
 
-// needs to find the leftmost and rightmost corner
-void LinkedCellContainer::reinitialize(DirectSumContainer &container) {
-  clear();
-  auto current_low_left = container[0].getX();
-  auto current_up_right = container[0].getX();
-  for (auto &p : container) {
-    if (p.getX()[0] < current_low_left[0] ||
-        p.getX()[1] < current_low_left[1] ||
-        p.getX()[2] < current_low_left[2]) {
-      current_low_left = p.getX();
-    }
-    if (p.getX()[0] > current_up_right[0] ||
-        p.getX()[1] > current_up_right[1] ||
-        p.getX()[2] > current_up_right[2]) {
-      current_up_right = p.getX();
-    }
-  }
-  readjust_coordinates(current_low_left, current_up_right);
-  for (auto &p : container) {
-    insert(p, true);
-  }
-}
-
-void LinkedCellContainer::reinitialize(std::vector<Particle> &particles) {
-  clear();
-  auto current_low_left = particles[0].getX();
-  auto current_up_right = particles[0].getX();
-  for (auto &p : particles) {
-    if (p.getX()[0] < current_low_left[0] ||
-        p.getX()[1] < current_low_left[1] ||
-        p.getX()[2] < current_low_left[2]) {
-      current_low_left = p.getX();
-    }
-    if (p.getX()[0] > current_up_right[0] ||
-        p.getX()[1] > current_up_right[1] ||
-        p.getX()[2] > current_up_right[2]) {
-      current_up_right = p.getX();
-    }
-  }
-  readjust_coordinates(current_low_left, current_up_right);
-  for (auto &p : particles) {
-    insert(p, true);
-  }
-}
-
-void LinkedCellContainer::reinitialize(
-    std::vector<ParticlePointer> &particles) {
-  clear();
-  auto current_low_left = particles[0]->getX();
-  auto current_up_right = particles[0]->getX();
-  for (auto &p : particles) {
-    if (p->getX()[0] < current_low_left[0] ||
-        p->getX()[1] < current_low_left[1] ||
-        p->getX()[2] < current_low_left[2]) {
-      current_low_left = p->getX();
-    }
-    if (p->getX()[0] > current_up_right[0] ||
-        p->getX()[1] > current_up_right[1] ||
-        p->getX()[2] > current_up_right[2]) {
-      current_up_right = p->getX();
-    }
-  }
-  readjust_coordinates(current_low_left, current_up_right);
-  for (auto &p : particles) {
-    insert(*p, true);
-  }
-}
 
 void LinkedCellContainer::readjust_coordinates(
     std::array<double, 3> current_low_left,
@@ -402,197 +334,105 @@ void LinkedCellContainer::handle_boundary_conditions(int particle_id, int cell_i
   }
 }
 
-void LinkedCellContainer::handle_periodic_boundary_conditions(int particle_id,
+void LinkedCellContainer::create_periodic_copy(int& p_id, 
+                                             const std::array<double, 3>& position_offset,
+                                             const std::array<double, 3>& velocity_flip) {
+    logger.info("Particle id: " + std::to_string(particle_id)); 
+    Particle p{std::array<double, 3>{
+        cells_map[p_id]->getX()[0] + position_offset[0],
+        cells_map[p_id]->getX()[1] + position_offset[1],
+        cells_map[p_id]->getX()[2] + position_offset[2]},
+        std::array<double, 3>{
+            cells_map[p_id]->getV()[0] * velocity_flip[0],
+            cells_map[p_id]->getV()[1] * velocity_flip[1],
+            cells_map[p_id]->getV()[2] * velocity_flip[2]},
+        cells_map[p_id]->getM(),
+        particle_id,
+        cells_map[p_id]->getEpsilon(),
+        cells_map[p_id]->getSigma()};
+      
+    logger.info("Periodic copy: " + std::to_string(p.getX()[0]) + " " + std::to_string(p.getX()[1]) + " " + std::to_string(p.getX()[2]));
+    p.is_periodic_copy = true;
+    insert(p, true);
+    particle_id++;
+}
+
+void LinkedCellContainer::update_particle_position(int p_id,
+                                                 const std::array<double, 3>& position_offset,
+                                                 bool is_corner) {
+    cells_map[p_id]->updateX(
+        cells_map[p_id]->getX()[0] + position_offset[0],
+        cells_map[p_id]->getX()[1] + position_offset[1],
+        cells_map[p_id]->getX()[2] + position_offset[2]);
+    cells_map[p_id]->is_periodic_copy = true;
+    particles_left_domain++;
+}
+
+void LinkedCellContainer::handle_periodic_boundary_conditions(int p_id,
                                                               int cell_index) {
-
-  if(cells_map[particle_id]->is_periodic_copy && !cells[cell_index].is_halo){
-    cells_map[particle_id]->is_periodic_copy = false;
-    particles_left_domain--;
-    return;
-  }
-
-  if(!cells[cell_index].is_halo || cells_map[particle_id]->is_periodic_copy && cells[cell_index].is_halo){ 
-    return;
-  }
-
-  logger.info("Handling periodic boundary conditions");
-
-  //this is way too long and needs to be refactored
-  if (z == 1) {
-    logger.info("2D periodic boundary conditions");
-    // handle corner case
-    /*if (cell_index == 0) {
-      logger.info("Bottom left corner");
-      cells_map[particle_id]->updateX(
-          cells_map[particle_id]->getX()[0] + domain_size_[0],
-          cells_map[particle_id]->getX()[1] + domain_size_[1],
-          cells_map[particle_id]->getX()[2]);
-      cells_map[particle_id]->left_domain = true;
-      particle_id++;
-      Particle p_1{std::array<double, 3>{cells_map[particle_id]->getX()[0] +
-                                             domain_size_[0],
-                                         cells_map[particle_id]->getX()[1],
-                                         cells_map[particle_id]->getX()[2]},
-                   std::array<double, 3>{cells_map[particle_id]->getV()[0],
-                                         -cells_map[particle_id]->getV()[1],
-                                         cells_map[particle_id]->getV()[2]},
-                   cells_map[particle_id]->getM(),
-                   particle_id,
-                   cells_map[particle_id]->getEpsilon(),
-                   cells_map[particle_id]->getSigma()};
-      particle_id++;
-      Particle p_2{std::array<double, 3>{cells_map[particle_id]->getX()[0],
-                                         cells_map[particle_id]->getX()[1] +
-                                             domain_size_[1],
-                                         cells_map[particle_id]->getX()[2]},
-                   std::array<double, 3>{-cells_map[particle_id]->getV()[0],
-                                         cells_map[particle_id]->getV()[1],
-                                         cells_map[particle_id]->getV()[2]},
-                   cells_map[particle_id]->getM(),
-                   particle_id,
-                   cells_map[particle_id]->getEpsilon(),
-                   cells_map[particle_id]->getSigma()};
-      insert(p_1, false);
-      insert(p_2, false);
-
-    } else if (cell_index == x - 1) {
-      logger.info("Bottom right corner");
-      cells_map[particle_id]->updateX(
-          cells_map[particle_id]->getX()[0] - domain_size_[0],
-          cells_map[particle_id]->getX()[1] + domain_size_[1],
-          cells_map[particle_id]->getX()[2]);
-      cells_map[particle_id]->left_domain = true;
-      particle_id++;
-      Particle p_1{std::array<double, 3>{cells_map[particle_id]->getX()[0] -
-                                             domain_size_[0],
-                                         cells_map[particle_id]->getX()[1],
-                                         cells_map[particle_id]->getX()[2]},
-                   std::array<double, 3>{cells_map[particle_id]->getV()[0],
-                                         -cells_map[particle_id]->getV()[1],
-                                         cells_map[particle_id]->getV()[2]},
-                   cells_map[particle_id]->getM(),
-                   particle_id,
-                   cells_map[particle_id]->getEpsilon(),
-                   cells_map[particle_id]->getSigma()};
-      particle_id++;
-      Particle p_2{std::array<double, 3>{cells_map[particle_id]->getX()[0],
-                                         cells_map[particle_id]->getX()[1] +
-                                             domain_size_[1],
-                                         cells_map[particle_id]->getX()[2]},
-                   std::array<double, 3>{-cells_map[particle_id]->getV()[0],
-                                         cells_map[particle_id]->getV()[1],
-                                         cells_map[particle_id]->getV()[2]},
-                   cells_map[particle_id]->getM(),
-                   particle_id,
-                   cells_map[particle_id]->getEpsilon(),
-                   cells_map[particle_id]->getSigma()};
-      insert(p_1, false);
-      insert(p_2, false);
-
-    } else if (cell_index == x * y - 1) {
-      logger.info("Top right corner");
-      cells_map[particle_id]->updateX(
-          cells_map[particle_id]->getX()[0] - domain_size_[0],
-          cells_map[particle_id]->getX()[1] - domain_size_[1],
-          cells_map[particle_id]->getX()[2]);
-      cells_map[particle_id]->left_domain = true;
-
-      particle_id++;
-      Particle p_1{std::array<double, 3>{cells_map[particle_id]->getX()[0] -
-                                             domain_size_[0],
-                                         cells_map[particle_id]->getX()[1],
-                                         cells_map[particle_id]->getX()[2]},
-                   std::array<double, 3>{-cells_map[particle_id]->getV()[0],
-                                         cells_map[particle_id]->getV()[1],
-                                         cells_map[particle_id]->getV()[2]},
-                   cells_map[particle_id]->getM(),
-                   particle_id,
-                   cells_map[particle_id]->getEpsilon(),
-                   cells_map[particle_id]->getSigma()};
-      particle_id++;
-      Particle p_2{std::array<double, 3>{cells_map[particle_id]->getX()[0],
-                                         cells_map[particle_id]->getX()[1] -
-                                             domain_size_[1],
-                                         cells_map[particle_id]->getX()[2]},
-                   std::array<double, 3>{cells_map[particle_id]->getV()[0],
-                                         -cells_map[particle_id]->getV()[1],
-                                         cells_map[particle_id]->getV()[2]},
-                   cells_map[particle_id]->getM(),
-                   particle_id,
-                   cells_map[particle_id]->getEpsilon(),
-                   cells_map[particle_id]->getSigma()};
-      insert(p_1, false);
-      insert(p_2, false);
-
-    } else if (cell_index == x * y - x) {
-      logger.info("Top left corner");
-      cells_map[particle_id]->updateX(
-          cells_map[particle_id]->getX()[0] + domain_size_[0],
-          cells_map[particle_id]->getX()[1] - domain_size_[1],
-          cells_map[particle_id]->getX()[2]);
-      cells_map[particle_id]->left_domain = true;
-
-      particle_id++;
-      Particle p_1{std::array<double, 3>{cells_map[particle_id]->getX()[0] +
-                                             domain_size_[0],
-                                         cells_map[particle_id]->getX()[1],
-                                         cells_map[particle_id]->getX()[2]},
-                   std::array<double, 3>{-cells_map[particle_id]->getV()[0],
-                                         cells_map[particle_id]->getV()[1],
-                                         cells_map[particle_id]->getV()[2]},
-                   cells_map[particle_id]->getM(),
-                   particle_id,
-                   cells_map[particle_id]->getEpsilon(),
-                   cells_map[particle_id]->getSigma()};
-      particle_id++;
-      Particle p_2{std::array<double, 3>{cells_map[particle_id]->getX()[0],
-                                         cells_map[particle_id]->getX()[1] -
-                                             domain_size_[1],
-                                         cells_map[particle_id]->getX()[2]},
-                   std::array<double, 3>{cells_map[particle_id]->getV()[0],
-                                         -cells_map[particle_id]->getV()[1],
-                                         cells_map[particle_id]->getV()[2]},
-                   cells_map[particle_id]->getM(),
-                   particle_id,
-                   cells_map[particle_id]->getEpsilon(),
-                   cells_map[particle_id]->getSigma()};
-      insert(p_1, false);
-      insert(p_2, false);
-    } else */if( cell_index % x == 0){
-      logger.info("Left boundary");
-      cells_map[particle_id]->updateX(
-          cells_map[particle_id]->getX()[0] + domain_size_[0],
-          cells_map[particle_id]->getX()[1],
-          cells_map[particle_id]->getX()[2]);
-      cells_map[particle_id]->is_periodic_copy = true;
-      particles_left_domain++;
-    } else if( (cell_index + 1) % x == 0){
-      logger.info("Right boundary");
-      cells_map[particle_id]->updateX(
-          cells_map[particle_id]->getX()[0] - domain_size_[0],
-          cells_map[particle_id]->getX()[1],
-          cells_map[particle_id]->getX()[2]);
-      cells_map[particle_id]->is_periodic_copy = true;
-      particles_left_domain++;
-    } else if( cell_index < x){
-      logger.info("Bottom boundary");
-      cells_map[particle_id]->updateX(
-          cells_map[particle_id]->getX()[0],
-          cells_map[particle_id]->getX()[1] + domain_size_[1],
-          cells_map[particle_id]->getX()[2]);
-      cells_map[particle_id]->is_periodic_copy = true;
-      particles_left_domain++;
-    } else if( cell_index >= x * (y - 1)){
-      logger.info("Top boundary");
-      cells_map[particle_id]->updateX(
-          cells_map[particle_id]->getX()[0],
-          cells_map[particle_id]->getX()[1] - domain_size_[1],
-          cells_map[particle_id]->getX()[2]);
-      cells_map[particle_id]->is_periodic_copy = true;
-      particles_left_domain++;
+    if(cells_map[p_id]->is_periodic_copy && !cells[cell_index].is_halo) {
+        cells_map[p_id]->is_periodic_copy = false;
+        particles_left_domain--;
+        return;
     }
-  }
-  // determine if corner cel
+
+    if(!cells[cell_index].is_halo || cells_map[p_id]->is_periodic_copy && cells[cell_index].is_halo) {
+        return;
+    }
+
+    logger.info("Handling periodic boundary conditions");
+
+    if (z == 1) {
+        logger.info("2D periodic boundary conditions");
+        
+        // Corner cases
+        if (cell_index == 0) {  // Bottom left corner
+            logger.info("Bottom left corner");
+            update_particle_position(p_id, {domain_size_[0], domain_size_[1], 0}, true);
+            
+            create_periodic_copy(p_id, {domain_size_[0], 0, 0}, {1, -1, 1});
+            create_periodic_copy(p_id, {0, domain_size_[1], 0}, {-1, 1, 1});
+
+        } else if (cell_index == x - 1) {  // Bottom right corner
+            logger.info("Bottom right corner");
+            update_particle_position(p_id, {-domain_size_[0], domain_size_[1], 0}, true);
+            
+            create_periodic_copy(p_id, {-domain_size_[0], 0, 0}, {1, -1, 1});
+            create_periodic_copy(p_id, {0, domain_size_[1], 0}, {-1, 1, 1});
+
+        } else if (cell_index == x * y - 1) {  // Top right corner
+            logger.info("Top right corner");
+            update_particle_position(p_id, {-domain_size_[0], -domain_size_[1], 0}, true);
+            logger.info("Check yo");
+            create_periodic_copy(p_id, {-domain_size_[0], 0, 0}, {1, -1, 1});
+            logger.info("Check yo");
+            //create_periodic_copy(p_id, {0, -domain_size_[1], 0}, {1, -1, 1});
+            logger.info("Check yo");
+
+        } else if (cell_index == x * y - x) {  // Top left corner
+            logger.info("Top left corner");
+            update_particle_position(p_id, {domain_size_[0], -domain_size_[1], 0}, true);
+            
+            create_periodic_copy(p_id, {domain_size_[0], 0, 0}, {1, -1, 1});
+            create_periodic_copy(p_id, {0, -domain_size_[1], 0}, {-1, 1, 1});
+
+        } else if (cell_index % x == 0) {  // Left boundary
+            logger.info("Left boundary");
+            update_particle_position(p_id, {domain_size_[0], 0, 0});
+
+        } else if ((cell_index + 1) % x == 0) {  // Right boundary
+            logger.info("Right boundary");
+            update_particle_position(p_id, {-domain_size_[0], 0, 0});
+
+        } else if (cell_index < x) {  // Bottom boundary
+            logger.info("Bottom boundary");
+            update_particle_position(p_id, {0, domain_size_[1], 0});
+
+        } else if (cell_index >= x * (y - 1)) {  // Top boundary
+            logger.info("Top boundary");
+            update_particle_position(p_id, {0, -domain_size_[1], 0});
+        }
+    }
 }
 
 size_t LinkedCellContainer::size() { return particles.size(); }

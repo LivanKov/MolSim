@@ -63,12 +63,6 @@ public:
 
   void readjust();
 
-  void reinitialize(DirectSumContainer &container);
-
-  void reinitialize(std::vector<Particle> &particles);
-
-  void reinitialize(std::vector<ParticlePointer> &particles);
-
   /**
    * @brief Updates the location of a particle within the container based on its
    * old position.
@@ -151,6 +145,8 @@ public:
   size_t particles_left_domain;
   size_t particle_id;
 
+  size_t particles_added;
+
   bool is_wrapper;
 
   size_t halo_count;
@@ -179,4 +175,24 @@ private:
    * @brief Assigns halo status to cells at the border of the array
    */
   void mark_halo_cells();
+
+  /**
+   * @brief Creates a periodic copy of a particle with specified position offset and velocity modifications
+   * @param particle_id Reference to the particle ID (will be incremented)
+   * @param position_offset The offset to apply to the particle's position {dx, dy, dz}
+   * @param velocity_flip Factors to multiply velocity components {vx, vy, vz}
+   */
+  void create_periodic_copy(int& particle_id,
+                          const std::array<double, 3>& position_offset,
+                          const std::array<double, 3>& velocity_flip);
+
+  /**
+   * @brief Updates a particle's position and sets appropriate flags for periodic boundaries
+   * @param particle_id The ID of the particle to update
+   * @param position_offset The offset to apply to the particle's position {dx, dy, dz}
+   * @param is_corner Whether this particle is at a corner (affects flag setting)
+   */
+  void update_particle_position(int particle_id,
+                              const std::array<double, 3>& position_offset,
+                              bool is_corner = false);
 };
