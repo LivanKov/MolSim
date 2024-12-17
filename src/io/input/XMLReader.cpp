@@ -128,6 +128,14 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
     // Extract domain size, if no domain is passed, then we use original
     // particle container.
     if (xmlParams.domain_size().present()) {
+      if (!doc->boundary_conditions().present()) {
+        DomainBoundaryConditions boundary_conditions{
+            BoundaryCondition::Outflow, BoundaryCondition::Outflow,
+            BoundaryCondition::Outflow, BoundaryCondition::Outflow,
+            BoundaryCondition::Outflow, BoundaryCondition::Outflow};
+        simParameters.boundaryConditions = boundary_conditions;
+      }
+      
       simParameters.linked_cells = true;
       simParameters.domain_size = {xmlParams.domain_size().get().x(),
                                    xmlParams.domain_size().get().y(),
