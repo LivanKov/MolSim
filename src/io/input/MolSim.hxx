@@ -712,8 +712,8 @@ class thermostats: public ::xml_schema::type
 
   // n_thermostats
   //
-  typedef ::xml_schema::double_ n_thermostats_type;
-  typedef ::xsd::cxx::tree::traits< n_thermostats_type, char, ::xsd::cxx::tree::schema_type::double_ > n_thermostats_traits;
+  typedef ::xml_schema::unsigned_int n_thermostats_type;
+  typedef ::xsd::cxx::tree::traits< n_thermostats_type, char > n_thermostats_traits;
 
   const n_thermostats_type&
   n_thermostats () const;

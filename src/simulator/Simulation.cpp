@@ -18,6 +18,8 @@
 #include <memory>
 #include <spdlog/spdlog.h>
 #include <utility>
+#include <chrono>
+#include "Thermostat.h"
 
 std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
   std::unique_ptr<Simulation> ptr = std::make_unique<Simulation>(params);
@@ -56,6 +58,11 @@ void Simulation::run(LinkedCellContainer &particles) {
   OPTIONS option =
       params_.linked_cells ? OPTIONS::LINKED_CELLS : OPTIONS::DIRECT_SUM;
 
+  // Initialize Thermostat
+  Thermostat thermostat(particles, params_.initial_temp, params_.target_temp,
+                        params_.dimensions, params_.delta_temp,
+                        params_.is_gradual, params_.enable_brownian);
+
   if (params_.checkpoint_only) {
     while (current_time < params_.end_time) {
       Calculation<Position>::run(particles, params_.time_delta, option);
@@ -77,12 +84,22 @@ void Simulation::run(LinkedCellContainer &particles) {
     current_time = params_.resume_start_time;
   }
 
+  // Start measuring time for the main simulation loop
+  auto start_time = std::chrono::high_resolution_clock::now();
+
   while (current_time < params_.end_time) {
 
     Calculation<Position>::run(particles, params_.time_delta, option);
     Calculation<BoundaryConditions>::run(particles);
     Calculation<Force>::run(particles, FORCE_TYPE, option);
     Calculation<Velocity>::run(particles, params_.time_delta);
+
+    // Apply the thermostat periodically
+    if (iteration % params_.n_thermostats == 0) {
+      thermostat.apply();
+      logger.info("Thermostat applied at iteration: " +
+                  std::to_string(iteration));
+    }
 
     iteration++;
     if (iteration % params_.write_frequency == 0 && !params_.disable_output) {
@@ -92,6 +109,17 @@ void Simulation::run(LinkedCellContainer &particles) {
     logger.info("Iteration " + std::to_string(iteration) + " finished.");
     current_time += params_.time_delta;
   }
+
+  // End measuring time for the main simulation loop
+  auto end_time = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> runtime = end_time - start_time;
+
+  // Calculate updates per second
+  double updates_per_second = iteration / runtime.count();
+
+  logger.warn("Total runtime: " + std::to_string(runtime.count()) + " seconds");
+  logger.warn("Updates per second: " + std::to_string(updates_per_second));
+
   logger.info("output written. Terminating...");
 
   logger.info("Number of particles: " + std::to_string(particles.size()));
