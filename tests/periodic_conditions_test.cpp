@@ -179,7 +179,25 @@ TEST_F(PeriodicBoundaryTest, PeriodicTransitionTest) {
     EXPECT_EQ(container.particles_outbound.size(), 0);
 
     EXPECT_EQ(container.cells[11].size(), 1);
-  
 
+    EXPECT_EQ(container.size(), 1);
+
+    EXPECT_TRUE(container[0].is_periodic_copy);
+
+    EXPECT_TRUE(!container[0].left_domain);
+
+    EXPECT_TRUE(!container[0].outbound);
+
+    Calculation<Position>::run(container, 1, OPTIONS::LINKED_CELLS);
+
+    EXPECT_EQ(container.cells[11].size(), 0);
+
+    EXPECT_EQ(container.cells[10].size(), 1);
+
+    EXPECT_TRUE(!container[0].is_periodic_copy);
+
+    EXPECT_TRUE(!container[0].left_domain);
+
+    EXPECT_TRUE(!container[0].outbound);
     // Check that all cells are empty    
 }
