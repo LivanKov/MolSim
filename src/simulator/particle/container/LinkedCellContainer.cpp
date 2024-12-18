@@ -9,12 +9,6 @@ void LinkedCellContainer::Cell::insert(int id) { particle_ids.insert(id); }
 
 void LinkedCellContainer::Cell::remove(int id) { particle_ids.erase(id); }
 
-LinkedCellContainer::LinkedCellContainer()
-    : domain_size_{0, 0, 0}, r_cutoff_{0}, r_cutoff_x{0}, r_cutoff_y{0},
-      r_cutoff_z{0}, left_corner_coordinates{0.0, 0.0, 0.0}, x{0}, y{0}, z{0},
-      boundary_conditions_{}, particles{}, cells_map{}, particle_id{0},
-      particles_left_domain{0}, is_wrapper{false}, halo_count{0} {}
-
 void LinkedCellContainer::initialize(
     const std::initializer_list<double> &domain_size, double r_cutoff,
     const DomainBoundaryConditions &boundary_conditions) {
@@ -24,6 +18,7 @@ void LinkedCellContainer::initialize(
                                SimParams::lower_left_corner[2]};
   }
 
+  logger.info("Initializing LinkedCellContainer");
   domain_size_ = std::vector<double>(domain_size);
   r_cutoff_ = r_cutoff;
   boundary_conditions_ = boundary_conditions;
@@ -64,23 +59,48 @@ void LinkedCellContainer::initialize(
     cells_map[p->getType()] = p;
   }
 
+  placement_map[Placement::TOP] = boundary_conditions.top;
+  placement_map[Placement::BOTTOM] = boundary_conditions.bottom;
+  placement_map[Placement::LEFT] = boundary_conditions.left;
+  placement_map[Placement::RIGHT] = boundary_conditions.right;
+  placement_map[Placement::FRONT] = boundary_conditions.front;
+  placement_map[Placement::BACK] = boundary_conditions.back;
+  
+  if(placement_map[Placement::TOP] == placement_map[Placement::RIGHT])
+    placement_map[Placement::TOP_RIGHT_CORNER] = placement_map[Placement::RIGHT];
+  else 
+    placement_map[Placement::TOP_RIGHT_CORNER] = placement_map[Placement::TOP];
+
+  if(placement_map[Placement::TOP] == placement_map[Placement::LEFT])
+    placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::LEFT];
+  else 
+    placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::TOP];
+
+  if(placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT])
+    placement_map[Placement::BOTTOM_RIGHT_CORNER] = placement_map[Placement::RIGHT];
+  else 
+    placement_map[Placement::BOTTOM_RIGHT_CORNER] = placement_map[Placement::BOTTOM];
+
+  if(placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT])
+    placement_map[Placement::BOTTOM_LEFT_CORNER] = placement_map[Placement::LEFT];
+  else 
+    placement_map[Placement::BOTTOM_LEFT_CORNER] = placement_map[Placement::BOTTOM];
+  
   mark_halo_cells();
 }
+
+LinkedCellContainer::LinkedCellContainer()
+    : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0.0, 0.0,
+                                                                   0.0},
+      x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{}, particle_id{0},
+      particles_left_domain{0}, is_wrapper{false}, halo_count{0},
+      reflective_flag{false}, periodic_flag{false}, halo_cell_indices{},
+      particles_outbound{}, placement_map{} {}
 
 void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
   if (placement && is_within_domain(p_ptr->getX())) {
-    std::array<double, 3> position = p.getX();
-    size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) /
-                                   r_cutoff_x);
-    size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) /
-                                   r_cutoff_y);
-    size_t k =
-        domain_size_.size() == 3
-            ? static_cast<size_t>((position[2] - left_corner_coordinates[2]) /
-                                  r_cutoff_z)
-            : 0;
-    size_t index = i + j * x + k * x * y;
+    size_t index = get_cell_index(p_ptr->getX());
     cells[index].insert(p_ptr->getType());
   } else if (!is_within_domain(p_ptr->getX())) {
     p_ptr->left_domain = true;
@@ -105,37 +125,15 @@ bool LinkedCellContainer::is_within_domain(
 void LinkedCellContainer::update_particle_location(
     int particle_id, const std::array<double, 3> &old_position) {
 
-  // compute previous index
-  size_t i = static_cast<size_t>(
-      (old_position[0] - left_corner_coordinates[0]) / r_cutoff_x);
-  size_t j = static_cast<size_t>(
-      (old_position[1] - left_corner_coordinates[1]) / r_cutoff_y);
-  size_t k =
-      domain_size_.size() == 3
-          ? static_cast<size_t>((old_position[2] - left_corner_coordinates[2]) /
-                                r_cutoff_z)
-          : 0;
-  size_t old_index = i + j * x + k * x * y;
+  size_t old_index = get_cell_index(old_position);
+  size_t current_index = get_cell_index(cells_map[particle_id]->getX());
 
-  size_t q = static_cast<size_t>(
-      (cells_map[particle_id]->getX()[0] - left_corner_coordinates[0]) /
-      r_cutoff_x);
-  size_t v = static_cast<size_t>(
-      (cells_map[particle_id]->getX()[1] - left_corner_coordinates[1]) /
-      r_cutoff_y);
-  size_t w = domain_size_.size() == 3
-                 ? static_cast<size_t>((cells_map[particle_id]->getX()[2] -
-                                        left_corner_coordinates[2]) /
-                                       r_cutoff_z)
-                 : 0;
-  size_t current_index = q + v * x + w * x * y;
-  // compute current index
   if (current_index != old_index) {
-
     if (is_within_domain(old_position)) {
-      cells[old_index].remove(cells_map[particle_id]->getType());
+      cells[old_index].remove(particle_id);
     }
     if (is_within_domain(cells_map[particle_id]->getX())) {
+      cells[current_index].insert(particle_id);
       cells[current_index].insert(cells_map[particle_id]->getType());
 
       // if (cells[current_index].is_halo && reflective_flag) {
@@ -148,23 +146,25 @@ void LinkedCellContainer::update_particle_location(
       }
 
     } else {
-      cells_map[particle_id]->left_domain = true;
-      particles_left_domain++;
+      particles_outbound.push_back(particle_id);
     }
   }
-}
-
-LinkedCellContainer::Cell &LinkedCellContainer::get_cell(size_t index) {
-  return cells[index];
 }
 
 std::vector<ParticlePointer>
 LinkedCellContainer::get_neighbours(int particle_id) {
   std::vector<ParticlePointer> neighbours{};
-  if (cells_map[particle_id]->left_domain) {
+  if (cells_map[particle_id]->left_domain || cells_map[particle_id]->outbound) {
     return neighbours;
   }
   std::array<double, 3> position = cells_map[particle_id]->getX();
+  int index = get_cell_index(position);
+
+  // logger.info("Current cell index: " + std::to_string(index));
+  for (auto &i : cells[index].particle_ids) {
+    neighbours.push_back(cells_map[i]);
+  }
+
   size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) /
                                  r_cutoff_x);
   size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) /
@@ -173,20 +173,6 @@ LinkedCellContainer::get_neighbours(int particle_id) {
                  ? static_cast<size_t>(
                        (position[2] - left_corner_coordinates[2]) / r_cutoff_z)
                  : 0;
-
-  int index = i + j * x + k * x * y;
-
-  // logger.info("Current cell index: " + std::to_string(index));
-  for (auto &i : cells[index].particle_ids) {
-    neighbours.push_back(cells_map[i]);
-  }
-
-  // logger.info("X: " + std::to_string(x));
-  // logger.info("Y: " + std::to_string(y));
-  // logger.info("Z: " + std::to_string(z));
-
-  // logger.info("Current cell index: " + std::to_string(i) + " " +
-  // std::to_string(j) + " " + std::to_string(k));
 
   for (int di = -1; di <= 1; ++di) {
     for (int dj = -1; dj <= 1; ++dj) {
@@ -200,9 +186,6 @@ LinkedCellContainer::get_neighbours(int particle_id) {
 
         if (ni >= 0 && ni < x && nj >= 0 && nj < y && nk >= 0 && nk < z) {
           int neighborIndex = ni + (nj * x) + nk * x * y;
-
-          // logger.info("Neighbour cell index: " +
-          // std::to_string(neighborIndex));
           for (auto &s : cells[neighborIndex].particle_ids) {
             neighbours.push_back(cells_map[s]);
           }
@@ -210,19 +193,6 @@ LinkedCellContainer::get_neighbours(int particle_id) {
       }
     }
   }
-  // logger.info("Neighbours size: " + std::to_string(neighbours.size()));
-  // logger.info("Cells size" + std::to_string(cells.size()));
-
-  /*for(auto &n : neighbours){
-    if(n -> getType() != particle_id)
-      logger.info("Neighbour: " + n->toString());
-  }
-  for(auto &n : particles.get_all_particles()){
-    if(n->getType() != particle_id)
-      logger.info("Particle: " + n->toString());
-  }*/
-
-  // logger.info("Checkpoint");
   return neighbours;
 }
 
@@ -233,71 +203,57 @@ void LinkedCellContainer::clear() {
   particles.clear();
 }
 
-// needs to find the leftmost and rightmost corner
-void LinkedCellContainer::reinitialize(DirectSumContainer &container) {
-  clear();
-  auto current_low_left = container[0].getX();
-  auto current_up_right = container[0].getX();
-  for (auto &p : container) {
-    if (p.getX()[0] < current_low_left[0] ||
-        p.getX()[1] < current_low_left[1] ||
-        p.getX()[2] < current_low_left[2]) {
-      current_low_left = p.getX();
-    }
-    if (p.getX()[0] > current_up_right[0] ||
-        p.getX()[1] > current_up_right[1] ||
-        p.getX()[2] > current_up_right[2]) {
-      current_up_right = p.getX();
-    }
-  }
-  readjust_coordinates(current_low_left, current_up_right);
-  for (auto &p : container) {
-    insert(p, true);
-  }
+size_t LinkedCellContainer::get_cell_index(
+    const std::array<double, 3> &position) const {
+  size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) /
+                                 r_cutoff_x);
+  size_t j = static_cast<size_t>((position[1] - left_corner_coordinates[1]) /
+                                 r_cutoff_y);
+  size_t k = domain_size_.size() == 3
+                 ? static_cast<size_t>(
+                       (position[2] - left_corner_coordinates[2]) / r_cutoff_z)
+                 : 0;
+  return i + j * x + k * x * y;
 }
 
-void LinkedCellContainer::reinitialize(std::vector<Particle> &particles) {
-  clear();
-  auto current_low_left = particles[0].getX();
-  auto current_up_right = particles[0].getX();
-  for (auto &p : particles) {
-    if (p.getX()[0] < current_low_left[0] ||
-        p.getX()[1] < current_low_left[1] ||
-        p.getX()[2] < current_low_left[2]) {
-      current_low_left = p.getX();
-    }
-    if (p.getX()[0] > current_up_right[0] ||
-        p.getX()[1] > current_up_right[1] ||
-        p.getX()[2] > current_up_right[2]) {
-      current_up_right = p.getX();
-    }
-  }
-  readjust_coordinates(current_low_left, current_up_right);
-  for (auto &p : particles) {
-    insert(p, true);
-  }
+size_t LinkedCellContainer::size() { return particles.size(); }
+
+Particle &LinkedCellContainer::operator[](size_t index) {
+  return particles[index];
 }
 
-void LinkedCellContainer::reinitialize(
-    std::vector<ParticlePointer> &particles) {
-  clear();
-  auto current_low_left = particles[0]->getX();
-  auto current_up_right = particles[0]->getX();
-  for (auto &p : particles) {
-    if (p->getX()[0] < current_low_left[0] ||
-        p->getX()[1] < current_low_left[1] ||
-        p->getX()[2] < current_low_left[2]) {
-      current_low_left = p->getX();
+void LinkedCellContainer::mark_halo_cells() {
+  for (size_t i = 0; i < x; i++) {
+    for (size_t j = 0; j < y; j++) {
+      for (size_t k = 0; k < z; k++) {
+        if (i == 0 || i == x - 1 || j == 0 || j == y - 1 ||
+            (z > 1 && (k == 0 || k == z - 1))) {
+
+          size_t index = i + j * x + k * x * y;
+          cells[index].is_halo = true;
+          halo_cell_indices.push_back(index);
+          halo_count++;
+
+          if (index == 0) {
+            cells[index].placement = Placement::BOTTOM_LEFT_CORNER;
+          } else if (index == x - 1) {
+            cells[index].placement = Placement::BOTTOM_RIGHT_CORNER;
+          } else if (index == x * y - x) {
+            cells[index].placement = Placement::TOP_LEFT_CORNER;
+          } else if (index == x * y - 1) {
+            cells[index].placement = Placement::TOP_RIGHT_CORNER;
+          } else if (index < x) {
+            cells[index].placement = Placement::BOTTOM;
+          } else if (index >= x * (y - 1)) {
+            cells[index].placement = Placement::TOP;
+          } else if (index % x == 0) {
+            cells[index].placement = Placement::LEFT;
+          } else if ((index + 1) % x == 0) {
+            cells[index].placement = Placement::RIGHT;
+          }
+        }
+      }
     }
-    if (p->getX()[0] > current_up_right[0] ||
-        p->getX()[1] > current_up_right[1] ||
-        p->getX()[2] > current_up_right[2]) {
-      current_up_right = p->getX();
-    }
-  }
-  readjust_coordinates(current_low_left, current_up_right);
-  for (auto &p : particles) {
-    insert(*p, true);
   }
 }
 
@@ -434,4 +390,14 @@ void LinkedCellContainer::mark_halo_cells() {
       }
     }
   }
+}
+
+void LinkedCellContainer::set_boundary_conditions(
+    DomainBoundaryConditions conditions) {
+  this->boundary_conditions_ = conditions;
+  placement_map[Placement::TOP] = conditions.top;
+  placement_map[Placement::BOTTOM] = conditions.bottom;
+  placement_map[Placement::LEFT] = conditions.left;
+  placement_map[Placement::RIGHT] = conditions.right;
+  placement_map[Placement::FRONT] = conditions.front;
 }

@@ -26,6 +26,11 @@ private:
    */
   std::array<double, 3> x;
 
+  /*
+   * Old position of the particle
+   */
+  std::array<double, 3> old_x;
+
   /**
    * Velocity of the particle
    */
@@ -124,6 +129,14 @@ public:
   const std::array<double, 3> &getOldF() const;
 
   /**
+   * @brief access the array containing the old position of the particle.
+   * @return a reference to the array containing the old position of the
+   * particle.
+   */
+
+  const std::array<double, 3> &getOldX() const;
+
+  /**
    * @brief returns the value, that correponds to particle mmass.
    * @return double variable containing the mass of the particle.
    */
@@ -148,6 +161,14 @@ public:
    * @return double variable containing the sigma of the particle.
    */
   double getSigma() const;
+
+  /**
+   * @brief Flag to indicate if the particle is a copy handled during the
+   * periodic boundary conditions
+   */
+  bool is_periodic_copy;
+
+  bool outbound;
 
   /**
    * @brief overload the equality (==) operator to compare particles.
@@ -224,6 +245,20 @@ public:
    * @param force: allowed the method to accept a std::array<double, 3>.
    */
   void updateOldF(const std::array<double, 3> &force);
+
+  /**
+   * @brief updates the old position of the particle.
+   * @param x_arg, y_arg, z_arg: new old position of the particle.
+   */
+
+  void updateOldX(const std::array<double, 3> &position);
+
+  /**
+   * @brief updates the old position of the particle.
+   * @param x_arg, y_arg, z_arg: new old position of the particle.
+   */
+
+  void updateOldX(double x_arg, double y_arg, double z_arg);
 
   /**
    * @brief check if particle is outside the domain.

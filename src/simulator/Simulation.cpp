@@ -8,6 +8,7 @@
 #include "io/output/XYZWriter.h"
 #include "particle/ParticleGenerator.h"
 #include "particle/container/DirectSumContainer.h"
+#include "simulator/calculations/BoundaryConditions.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"
 #include "simulator/calculations/Position.h"
@@ -79,6 +80,7 @@ void Simulation::run(LinkedCellContainer &particles) {
   while (current_time < params_.end_time) {
 
     Calculation<Position>::run(particles, params_.time_delta, option);
+    Calculation<BoundaryConditions>::run(particles);
     Calculation<Force>::run(particles, FORCE_TYPE, option);
     Calculation<Velocity>::run(particles, params_.time_delta);
 
