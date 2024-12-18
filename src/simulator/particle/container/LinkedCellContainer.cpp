@@ -128,11 +128,15 @@ void LinkedCellContainer::update_particle_location(
   size_t old_index = get_cell_index(old_position);
   size_t current_index = get_cell_index(cells_map[particle_id]->getX());
 
-  if (current_index != old_index) {
-    if (is_within_domain(old_position)) {
+  bool current_within_domain = is_within_domain(cells_map[particle_id]->getX());
+
+  bool old_within_domain = is_within_domain(old_position);
+
+  if (current_index != old_index || current_within_domain != old_within_domain) {
+    if (old_within_domain) {
       cells[old_index].remove(particle_id);
     }
-    if (is_within_domain(cells_map[particle_id]->getX())) {
+    if (current_within_domain) {
       cells[current_index].insert(particle_id);
 
       if(!cells[current_index].is_halo && cells_map[particle_id]->is_periodic_copy)

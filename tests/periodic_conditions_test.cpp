@@ -6,7 +6,9 @@
 #include <array>
 #include <cmath>
 #include <gtest/gtest.h>
-
+#include <simulator/calculations/Calculation.h>
+#include <simulator/calculations/BoundaryConditions.h>
+#include <simulator/calculations/Position.h>
 
 class PeriodicBoundaryTest : public ::testing::Test {
 protected:
@@ -152,4 +154,32 @@ TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     
     EXPECT_EQ(upper_right_actual_ids, upper_right_expected_ids) << "Upper right neighbor IDs do not match expected values";
 
+}
+
+
+TEST_F(PeriodicBoundaryTest, PeriodicTransitionTest) {
+    // Create a particle at the left edge of the domain
+    Particle left_edge_particle({0.1, 5.0, 0.0}, {-2.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(left_edge_particle,true);
+
+    EXPECT_TRUE(container.size() == 1);
+    EXPECT_EQ(container.cells[8].size(), 1);
+
+    Calculation<Position>::run(container, 1, OPTIONS::LINKED_CELLS);
+
+    // Check that all cells are empty
+    for (const auto& cell : container.cells) {
+        EXPECT_EQ(cell.size(), 0) << "Cell should be empty after particle transition";
+    }
+
+    EXPECT_EQ(container.particles_outbound.size(), 1);
+
+    Calculation<BoundaryConditions>::run(container);
+
+    EXPECT_EQ(container.particles_outbound.size(), 0);
+
+    EXPECT_EQ(container.cells[11].size(), 1);
+  
+
+    // Check that all cells are empty    
 }

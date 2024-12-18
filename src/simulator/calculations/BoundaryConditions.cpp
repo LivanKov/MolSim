@@ -94,10 +94,8 @@ void BoundaryConditions::handle_periodic_conditions(int particle_id, int cell_in
             break;
         default:
             break;
-        particles.update_particle_location(particle_id, location);
     }
-
-
+    particles.update_particle_location(particle_id, location);
 }
 
 void BoundaryConditions::handle_outflow_conditions(
