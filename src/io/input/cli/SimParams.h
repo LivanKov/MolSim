@@ -25,6 +25,7 @@ struct SimParams {
   static bool fixed_Domain;
 
   // Thermostats
+  static bool enable_thermo;
   double initial_temp;
   double target_temp;
   double delta_temp;

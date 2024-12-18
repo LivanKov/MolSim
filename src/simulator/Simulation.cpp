@@ -1,4 +1,5 @@
 #include "Simulation.h"
+#include "Thermostat.h"
 #include "io/input/CheckpointReader.h"
 #include "io/input/FileReader.h"
 #include "io/input/XMLReader.h"
@@ -14,12 +15,11 @@
 #include "simulator/calculations/Position.h"
 #include "simulator/calculations/Velocity.h"
 #include "utils/logger/Logger.h"
+#include <chrono>
 #include <iostream>
 #include <memory>
 #include <spdlog/spdlog.h>
 #include <utility>
-#include <chrono>
-#include "Thermostat.h"
 
 std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
   std::unique_ptr<Simulation> ptr = std::make_unique<Simulation>(params);
@@ -78,8 +78,8 @@ void Simulation::run(LinkedCellContainer &particles) {
   }
 
   if (params_.resume_from_checkpoint) {
-      CheckpointReader::readCheckpoint(particles, params_.time_delta,
-                                    params_.resume_start_time);
+    CheckpointReader::readCheckpoint(particles, params_.time_delta,
+                                     params_.resume_start_time);
     logger.info("Resumed from checkpoint. Adding additional input...");
     current_time = params_.resume_start_time;
   }
@@ -96,7 +96,7 @@ void Simulation::run(LinkedCellContainer &particles) {
 
     /*
     // Apply the thermostat periodically
-    if (iteration % params_.n_thermostats == 0) {
+    if (SimParams::enable_thermo && iteration % params_.n_thermostats == 0 ) {
       thermostat.apply();
       logger.info("Thermostat applied at iteration: " +
                   std::to_string(iteration));

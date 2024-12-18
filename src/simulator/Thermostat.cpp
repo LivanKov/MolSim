@@ -3,6 +3,7 @@
 //
 
 #include "Thermostat.h"
+#include "io/input/cli/SimParams.h"
 #include "particle/container/LinkedCellContainer.h"
 #include "utils/logger/Logger.h"
 #include <cmath>
@@ -16,39 +17,41 @@ Thermostat::Thermostat(LinkedCellContainer &particles,
       delta_temperature_(delta_temperature), gradual_(gradual),
       scaling_factor_(1.0), current_temperature_(0) {
 
-  // checks for correct dimensions param
-  if (dimensions < 1 || dimensions > 3) {
-    Logger::getInstance().error("Invalid parameter for dimensions!");
-    throw std::invalid_argument("Dimensions must be between 1 and 3!");
+  if (SimParams::enable_thermo) {
+    // checks for correct dimensions param
+    if (dimensions < 1 || dimensions > 3) {
+      Logger::getInstance().error("Invalid parameter for dimensions!");
+      throw std::invalid_argument("Dimensions must be between 1 and 3!");
+    }
+
+    // checks for valid initial temperature
+    if (initial_temperature <= 0) {
+      Logger::getInstance().error("Invalid initial temperature!");
+      throw std::invalid_argument("Initial temperature must be positive!");
+    }
+
+    // checks if delta T is valid
+    if (delta_temperature < 0) {
+      Logger::getInstance().error("Invalid delta_temperature!");
+      throw std::invalid_argument("delta_temperature must be non-negative!");
+    }
+
+    // here we initialize the particles with brownian motion if it's enabled
+    if (enable_brownian)
+      initialize_brownian();
+
+    // No target temperature is provided -> T_target = T_init
+    target_temperature_ = (target_temperature == -1.0) ? initial_temperature_
+                                                       : target_temperature;
+
+    Logger::getInstance().info(
+        "Thermostat created with initial temperature: " +
+        std::to_string(initial_temperature_) +
+        ", target temperature: " + std::to_string(target_temperature_) +
+        ", delta temperature: " + std::to_string(delta_temperature_) +
+        ", dimensions: " + std::to_string(dimensions) +
+        ", Brownian motion: " + (enable_brownian ? "enabled" : "disabled"));
   }
-
-  // checks for valid initial temperature
-  if (initial_temperature <= 0) {
-    Logger::getInstance().error("Invalid initial temperature!");
-    throw std::invalid_argument("Initial temperature must be positive!");
-  }
-
-  // checks if delta T is valid
-  if (delta_temperature < 0) {
-    Logger::getInstance().error("Invalid delta_temperature!");
-    throw std::invalid_argument("delta_temperature must be non-negative!");
-  }
-
-  // here we initialize the particles with brownian motion if it's enabled
-  if (enable_brownian)
-    initialize_brownian();
-
-  // No target temperature is provided -> T_target = T_init
-  target_temperature_ =
-      (target_temperature == -1.0) ? initial_temperature_ : target_temperature;
-
-  Logger::getInstance().info(
-      "Thermostat created with initial temperature: " +
-      std::to_string(initial_temperature_) +
-      ", target temperature: " + std::to_string(target_temperature_) +
-      ", delta temperature: " + std::to_string(delta_temperature_) +
-      ", dimensions: " + std::to_string(dimensions) +
-      ", Brownian motion: " + (enable_brownian ? "enabled" : "disabled"));
 }
 
 // application method of thermostat

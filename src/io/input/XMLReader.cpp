@@ -85,6 +85,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
 
     // Read Thermostats
     if (doc->thermostats().present()) {
+      SimParams::enable_thermo = true;
       const auto &xmlThermostats = doc->thermostats().get();
       simParameters.initial_temp = xmlThermostats.initial_temp();
       simParameters.target_temp = xmlThermostats.target_temp();

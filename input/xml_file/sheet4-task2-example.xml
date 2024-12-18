@@ -21,7 +21,7 @@
         <delta_temp>0.0005</delta_temp>
         <is_gradual>true</is_gradual>
         <n_thermostats>1000</n_thermostats>
-    <thermostats>
+    </thermostats>
     <boundary_conditions>
         <left>Reflecting</left>
         <right>Reflecting</right>

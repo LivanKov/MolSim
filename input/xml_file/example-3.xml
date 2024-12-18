@@ -19,7 +19,7 @@
         <target_temp>1.0</target_temp>
         <delta_temp>0.1</delta_temp>
         <is_gradual>false</is_gradual>
-        <n_thermostats>1</n_thermostats>
+        <n_thermostats>1.0</n_thermostats>
     </thermostats>
 
     <cuboids>
@@ -36,12 +36,13 @@
             </dimensions>
             <mesh_width>1.2</mesh_width>
             <mass>1.0</mass>
+            <epsilon>1.0</epsilon>
+            <sigma>1.2</sigma>
             <initial_velocity>
                 <x>0.0</x>
                 <y>0.0</y>
                 <z>0.0</z>
             </initial_velocity>
-            <average_velocity>0.0</average_velocity>
         </cuboid>
     </cuboids>
 </MolSim>
