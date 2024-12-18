@@ -18,6 +18,13 @@
             </lower-left-corner>
         </domain_size>
     </simulation_parameters>
+
+     <boundary_conditions>
+        <left>Reflecting</left>
+        <right>Reflecting</right>
+        <top>Reflecting</top>
+        <bottom>Reflecting</bottom>
+    </boundary_conditions>
     
     <cuboids>
         <cuboid>

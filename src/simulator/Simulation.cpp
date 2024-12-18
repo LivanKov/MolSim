@@ -66,6 +66,7 @@ void Simulation::run(LinkedCellContainer &particles) {
   if (params_.checkpoint_only) {
     while (current_time < params_.end_time) {
       Calculation<Position>::run(particles, params_.time_delta, option);
+      Calculation<BoundaryConditions>::run(particles);
       Calculation<Force>::run(particles, FORCE_TYPE, option);
       Calculation<Velocity>::run(particles, params_.time_delta);
       current_time += params_.time_delta;

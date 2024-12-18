@@ -19,7 +19,7 @@
         </domain_size>
     </simulation_parameters>
 
-     <boundary_conditions>
+    <boundary_conditions>
         <left>Reflecting</left>
         <right>Reflecting</right>
         <top>Reflecting</top>
@@ -45,6 +45,27 @@
             <initial_velocity>
                 <x>0.0</x>
                 <y>0.0</y>
+                <z>0.0</z>
+            </initial_velocity>
+        </cuboid>
+        <cuboid>
+            <coordinate>
+                <x>15.0</x>
+                <y>15.0</y>
+                <z>0.0</z>
+            </coordinate>
+            <dimensions>
+                <x>8</x>
+                <y>8</y>
+                <z>1</z>
+            </dimensions>
+            <mesh_width>1.1225</mesh_width>
+            <mass>1.0</mass>
+            <epsilon>5.0</epsilon>
+            <sigma>1.0</sigma>
+            <initial_velocity>
+                <x>0.0</x>
+                <y>-10.0</y>
                 <z>0.0</z>
             </initial_velocity>
         </cuboid>
