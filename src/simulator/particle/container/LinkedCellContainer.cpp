@@ -141,16 +141,16 @@ void LinkedCellContainer::update_particle_location(
 }
 
 std::vector<ParticlePointer>
-LinkedCellContainer::get_neighbours(int particle_id) {
+LinkedCellContainer::get_neighbours(int particle_id, bool check_periodic_neighbours) {
   std::vector<ParticlePointer> neighbours{};
   if (cells_map[particle_id]->left_domain || cells_map[particle_id]->outbound) {
     return neighbours;
   }
   std::array<double, 3> position = cells_map[particle_id]->getX();
-  int index = get_cell_index(position);
+  int cell_index = get_cell_index(position);
 
   // logger.info("Current cell index: " + std::to_string(index));
-  for (auto &i : cells[index].particle_ids) {
+  for (auto &i : cells[cell_index].particle_ids) {
     neighbours.push_back(cells_map[i]);
   }
 
@@ -182,6 +182,15 @@ LinkedCellContainer::get_neighbours(int particle_id) {
       }
     }
   }
+
+  auto& cell = cells[cell_index];
+
+  // add periodic neighbours
+  if(check_periodic_neighbours && cell.is_halo && placement_map[cell.placement] == BoundaryCondition::Periodic) {
+    
+
+  }
+
   return neighbours;
 }
 

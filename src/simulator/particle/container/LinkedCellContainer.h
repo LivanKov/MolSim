@@ -101,7 +101,7 @@ public:
    * @param p The particle for which neighbors are retrieved.
    * @return A vector of shared pointers to neighboring particles.
    */
-  std::vector<ParticlePointer> get_neighbours(int particle_id);
+  std::vector<ParticlePointer> get_neighbours(int particle_id, bool check_periodic_neighbours = true);
 
   /**
    * @brief Retrieves the index of a cell based on its coordinates.
