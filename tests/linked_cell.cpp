@@ -79,7 +79,9 @@ TEST_F(LinkedCellTest, LocationTest) {
 
   // Ensure that the corresponding flag has been set
 
-  EXPECT_TRUE(container[0].left_domain);
+  EXPECT_TRUE(std::find(container.particles_outbound.begin(),
+                        container.particles_outbound.end(), 0) !=
+              container.particles_outbound.end());
 
   // Ensure that the particle is no longer in the cells
 

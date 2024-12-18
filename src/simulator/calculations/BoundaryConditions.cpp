@@ -52,7 +52,10 @@ void BoundaryConditions::handle_reflect_conditions(
 }
 
 void BoundaryConditions::handle_periodic_conditions(
-    LinkedCellContainer &particles) {}
+    LinkedCellContainer &particles) {
+
+
+    }
 
 void BoundaryConditions::handle_outflow_conditions(
     int particle_id, int cell_index, LinkedCellContainer &particles) {

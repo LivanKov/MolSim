@@ -1,4 +1,6 @@
 #include "../src/simulator/particle/container/LinkedCellContainer.h"
+#include "../src/simulator/calculations/BoundaryConditions.h"
+#include "../src/simulator/calculations/Calculation.h"
 #include "gtest/gtest.h"
 // #include <initializer_list>
 
@@ -26,7 +28,7 @@ TEST_F(BoundaryConditionsTest, ReflectingBoundary) {
   Particle p({0.5, 1.5, 0.0}, {-1.0, 0.0, 0.0}, 1.0, 0);
   container.insert(p, true);
 
-  //container.handle_boundary_conditions(p.getType(), 0);
+  Calculation<BoundaryConditions>::run(container);
 
   auto& cell = container.cells[10];
   EXPECT_TRUE(cell.is_halo);
@@ -48,7 +50,7 @@ TEST_F(BoundaryConditionsTest, OutflowBoundary) {
   Particle p({10.5, 5.0, 0.0}, {1.0, 0.0, 0.0}, 1.0, 0);
   container.insert(p, true);
 
-  //container.handle_boundary_conditions(p.getType(), 0);
+  Calculation<BoundaryConditions>::run(container);
 
   auto& p_ = container[0];
 
@@ -69,8 +71,7 @@ TEST_F(BoundaryConditionsTest, BottomReflectingTopOutflow) {
   Particle p_top({5.0, 10.5, 0.0}, {0.0, 1.0, 0.0}, 1.0, 1);
   container.insert(p_top, true);
 
-  //container.handle_boundary_conditions(p_bottom.getType(), 0);
-  // container.handle_boundary_conditions(p_top);
+  Calculation<BoundaryConditions>::run(container);
 
   auto& p_1 = container[0];
   auto& p_2 = container[1];
@@ -98,7 +99,7 @@ TEST_F(BoundaryConditionsTest, NoBoundaryViolation) {
   Particle p({5.0, 5.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
   container.insert(p, true);
 
-  //container.handle_boundary_conditions(p.getType(), 0);
+  Calculation<BoundaryConditions>::run(container);
 
   for(size_t i = 0; i < container.cells.size(); i++){
     auto& cell = container.cells[i];
@@ -121,7 +122,7 @@ TEST_F(BoundaryConditionsTest, NoBoundaryViolation) {
 
 TEST_F(BoundaryConditionsTest, CornerCrossing) {
   // Define domain size and corner location
-  std::initializer_list<double> domain_size = {10.0, 10.0, 10.0};
+  std::initializer_list<double> domain_size = {10.0, 10.0};
   double cutoff_radius = 1.0;
 
   // Reflecting conditions on all boundaries
@@ -134,12 +135,14 @@ TEST_F(BoundaryConditionsTest, CornerCrossing) {
   container.initialize(domain_size, cutoff_radius,
                                 boundary_conditions);
 
+  EXPECT_EQ(container.cells[99].size(), 0);
+
   // Create a particle near the corner
-  Particle particle({9.9, 9.9, 9.9}, {1.0, 1.0, 1.0}, 1.0, 0);
-  container.insert(particle);
+  Particle particle({9.9, 9.9, 0}, {1.0, 1.0, 0.0}, 1.0, 0);
+  container.insert(particle,true);
 
   // Apply boundary handling
-  //container.handle_boundary_conditions(particle.getType(), 0);
+  Calculation<BoundaryConditions>::run(container);
 
 
   auto& pt = container[0];
@@ -149,11 +152,15 @@ TEST_F(BoundaryConditionsTest, CornerCrossing) {
   auto position = pt.getX();
   auto velocity = pt.getV();
 
+  EXPECT_EQ(container.cells[99].size(), 1);
+  EXPECT_TRUE(container.cells[99].particle_ids.contains(0));
+  EXPECT_TRUE(container.cells[99].placement == Placement::TOP_RIGHT_CORNER);
+
   EXPECT_EQ(position[0], 9.9); // Reflected from the x boundary
   EXPECT_EQ(position[1], 9.9); // Reflected from the y boundary
-  EXPECT_EQ(position[2], 9.9); // Reflected from the z boundary
+  EXPECT_EQ(position[2], 0); // Reflected from the z boundary
   
   EXPECT_EQ(velocity[0], -1.0); // Velocity reversed in x
   EXPECT_EQ(velocity[1], -1.0); // Velocity reversed in y
-  EXPECT_EQ(velocity[2], -1.0); // Velocity reversed in z
+  EXPECT_EQ(velocity[2], 0.0); // Velocity reversed in z
 }

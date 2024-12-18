@@ -58,7 +58,27 @@ void LinkedCellContainer::initialize(
   placement_map[Placement::RIGHT] = boundary_conditions.right;
   placement_map[Placement::FRONT] = boundary_conditions.front;
   placement_map[Placement::BACK] = boundary_conditions.back;
+  
+  if(placement_map[Placement::TOP] == placement_map[Placement::RIGHT])
+    placement_map[Placement::TOP_RIGHT_CORNER] = placement_map[Placement::RIGHT];
+  else 
+    placement_map[Placement::TOP_RIGHT_CORNER] = placement_map[Placement::TOP];
 
+  if(placement_map[Placement::TOP] == placement_map[Placement::LEFT])
+    placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::LEFT];
+  else 
+    placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::TOP];
+
+  if(placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT])
+    placement_map[Placement::BOTTOM_RIGHT_CORNER] = placement_map[Placement::RIGHT];
+  else 
+    placement_map[Placement::BOTTOM_RIGHT_CORNER] = placement_map[Placement::BOTTOM];
+
+  if(placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT])
+    placement_map[Placement::BOTTOM_LEFT_CORNER] = placement_map[Placement::LEFT];
+  else 
+    placement_map[Placement::BOTTOM_LEFT_CORNER] = placement_map[Placement::BOTTOM];
+  
   mark_halo_cells();
 }
 
@@ -103,12 +123,12 @@ void LinkedCellContainer::update_particle_location(
 
   if (current_index != old_index) {
     if (is_within_domain(old_position)) {
-      cells[old_index].remove(cells_map[particle_id]->getType());
+      cells[old_index].remove(particle_id);
     }
     if (is_within_domain(cells_map[particle_id]->getX())) {
-      cells[current_index].insert(cells_map[particle_id]->getType());
+      cells[current_index].insert(particle_id);
     } else {
-      particles_outbound.push_back(cells_map[particle_id]->getType());
+      particles_outbound.push_back(particle_id);
     }
   }
 }

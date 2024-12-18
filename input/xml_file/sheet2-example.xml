@@ -13,6 +13,15 @@
             <z>0.0</z>
         </domain_size>
     </simulation_parameters>
+
+    <boundary_conditions>
+        <left>Outflow</left>
+        <right>Outflow</right>
+        <top>Reflecting</top>
+        <bottom>Reflecting</bottom>
+        <front>Reflecting</front>
+        <back>Reflecting</back>
+  </boundary_conditions>
     
     <cuboids>
         <cuboid>
