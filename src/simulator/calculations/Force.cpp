@@ -1,5 +1,6 @@
 #include "Force.h"
 #include "../particle/container/DirectSumContainer.h"
+#include "io/input/cli/SimParams.h"
 #include "utils/ArrayUtils.h"
 #include <iostream>
 
@@ -74,6 +75,15 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
           }
         }
       }
+    }
+  }
+
+  if (SimParams::enable_gravity) {
+    for (auto &particle : particles.particles) {
+      double gravitational_force_y = particle.getM() * SimParams::gravity;
+      particle.updateF(particle.getF()[0],
+                       particle.getF()[1] + gravitational_force_y,
+                       particle.getF()[2]);
     }
   }
 }

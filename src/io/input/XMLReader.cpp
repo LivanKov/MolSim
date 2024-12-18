@@ -78,7 +78,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
                 std::to_string(simParameters.write_frequency));
 
     if (xmlParams.gravity().present()) {
-      SimParams::gravity_applied = true;
+      SimParams::enable_gravity = true;
       simParameters.gravity = xmlParams.gravity().get();
       logger.info("g_gravity: " + std::to_string(simParameters.gravity));
     }
