@@ -38,4 +38,8 @@ struct SimParams {
   bool resume_from_checkpoint;
   bool checkpoint_only;
   double resume_start_time;
+
+  // velocity threshold
+  static bool enable_v_threshold;
+  static double v_threshold;
 };

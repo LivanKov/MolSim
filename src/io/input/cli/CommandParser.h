@@ -33,7 +33,7 @@ SimParams parse(int argc, char **argv, SimParams &parameters) {
 
   int opt;
 
-  while ((opt = getopt(argc, argv, "e:d:i:t:o:hxl:fnurc")) != -1) {
+  while ((opt = getopt(argc, argv, "e:d:i:t:o:hxl:fnurcv:")) != -1) {
     switch (opt) {
     case 'e':
       parameters.end_time = atof(optarg);
@@ -73,6 +73,10 @@ SimParams parse(int argc, char **argv, SimParams &parameters) {
       break;
     case 'c':
       parameters.checkpoint_only = true;
+      break;
+    case 'v':
+      parameters.enable_v_threshold = true;
+      parameters.v_threshold = atof(optarg);
       break;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argv[0]);

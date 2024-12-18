@@ -5,13 +5,18 @@
         <delta_time>0.0005</delta_time>
         <output_basename>../output</output_basename>
         <write_frequency>10</write_frequency>
-        <r_cutoff_radius>3</r_cutoff_radius>
+        <r_cutoff_radius>3.0</r_cutoff_radius>
         <gravity>-12.44</gravity>
         <enable_brownian>false</enable_brownian>
         <domain_size>
-            <x>243.0</x>
+            <x>123.0</x>
             <y>180.0</y>
             <z>0.0</z>
+            <lower-left-corner>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </lower-left-corner>
         </domain_size>
     </simulation_parameters>
 
@@ -37,7 +42,7 @@
                 <z>0.0</z>
             </coordinate>
             <dimensions>
-                <x>200</x>
+                <x>100</x>
                 <y>20</y>
                 <z>1</z>
             </dimensions>
