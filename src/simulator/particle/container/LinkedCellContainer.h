@@ -101,7 +101,7 @@ public:
    * @param p The particle for which neighbors are retrieved.
    * @return A vector of shared pointers to neighboring particles.
    */
-  std::vector<ParticlePointer> get_neighbours(int particle_id, bool check_periodic_neighbours = true);
+  std::vector<ParticlePointer> get_neighbours(int particle_id);
 
   /**
    * @brief Retrieves the index of a cell based on its coordinates.
@@ -190,6 +190,9 @@ public:
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,
                             std::array<double, 3> current_up_right);
+                            
+  std::vector<int> get_additional_neighbour_indices(int cell_index);
+
 
   /**
    * @brief Assigns halo status to cells at the border of the array

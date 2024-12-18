@@ -141,7 +141,7 @@ void LinkedCellContainer::update_particle_location(
 }
 
 std::vector<ParticlePointer>
-LinkedCellContainer::get_neighbours(int particle_id, bool check_periodic_neighbours) {
+LinkedCellContainer::get_neighbours(int particle_id) {
   std::vector<ParticlePointer> neighbours{};
   if (cells_map[particle_id]->left_domain || cells_map[particle_id]->outbound) {
     return neighbours;
@@ -183,15 +183,89 @@ LinkedCellContainer::get_neighbours(int particle_id, bool check_periodic_neighbo
     }
   }
 
-  auto& cell = cells[cell_index];
+  auto additional_indices = get_additional_neighbour_indices(cell_index);
 
-  // add periodic neighbours
-  if(check_periodic_neighbours && cell.is_halo && placement_map[cell.placement] == BoundaryCondition::Periodic) {
-    
-
+  for(auto& index : additional_indices) {
+    neighbours.push_back(cells_map[index]);
   }
 
   return neighbours;
+}
+
+std::vector<int> LinkedCellContainer::get_additional_neighbour_indices(int cell_index) {
+  
+  auto& cell = cells[cell_index];
+
+  std::vector<int>indices;
+
+  // add periodic indices
+  if(cell.is_halo && placement_map[cell.placement] == BoundaryCondition::Periodic) {
+     auto neighbour_indices = get_additional_neighbour_indices(cell_index);
+      switch(cell.placement) {
+        case Placement::LEFT:
+          indices.insert(indices.end(), cells[cell_index + x - 1].particle_ids.begin(), cells[cell_index + x - 1].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index + x + x - 1].particle_ids.begin(), cells[cell_index + x + x - 1].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index - 1].particle_ids.begin(), cells[cell_index - 1].particle_ids.end());
+          break;
+        case Placement::RIGHT:
+          indices.insert(indices.end(), cells[cell_index - (x - 1)].particle_ids.begin(), cells[cell_index - (x - 1)].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index - (x + x - 1)].particle_ids.begin(), cells[cell_index - (x + x - 1)].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index + 1].particle_ids.begin(), cells[cell_index + 1].particle_ids.end());
+          break;
+        case Placement::TOP:
+          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x)].particle_ids.begin(), cells[cell_index - ((y - 1) * x)].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x - 1)].particle_ids.begin(), cells[cell_index - ((y - 1) * x - 1)].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x + 1)].particle_ids.begin(), cells[cell_index - ((y - 1) * x + 1)].particle_ids.end());
+          break;
+        case Placement::BOTTOM:
+          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x)].particle_ids.begin(), cells[cell_index + ((y - 1) * x)].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x - 1)].particle_ids.begin(), cells[cell_index + ((y - 1) * x - 1)].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x + 1)].particle_ids.begin(), cells[cell_index + ((y - 1) * x + 1)].particle_ids.end());
+          break;
+        case Placement::BOTTOM_LEFT_CORNER:
+          indices.insert(indices.end(), cells[cell_index + (y * x) - 1].particle_ids.begin(), cells[cell_index + (y * x) - 1].particle_ids.end());
+          
+          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x)].particle_ids.begin(), cells[cell_index + ((y - 1) * x)].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x) + 1].particle_ids.begin(), cells[cell_index + ((y - 1) * x) + 1].particle_ids.end());
+          
+          indices.insert(indices.end(), cells[cell_index + x - 1].particle_ids.begin(), cells[cell_index + x - 1].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index + x + x - 1].particle_ids.begin(), cells[cell_index + x + x - 1].particle_ids.end());
+          break;
+        case Placement::BOTTOM_RIGHT_CORNER:
+          indices.insert(indices.end(), cells[cell_index + ((y - 2) * x) + 1].particle_ids.begin(), cells[cell_index + ((y - 2) * x) + 1].particle_ids.end());
+          
+          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x)].particle_ids.begin(), cells[cell_index + ((y - 1) * x)].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x) - 1].particle_ids.begin(), cells[cell_index + ((y - 1) * x) - 1].particle_ids.end());
+          
+          indices.insert(indices.end(), cells[cell_index - x + 1].particle_ids.begin(), cells[cell_index - x + 1].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index + 1].particle_ids.begin(), cells[cell_index + 1].particle_ids.end());
+          break;
+        case Placement::TOP_LEFT_CORNER:
+          indices.insert(indices.end(), cells[cell_index - ((y - 2) * x) - 1].particle_ids.begin(), cells[cell_index - ((y - 2) * x) - 1].particle_ids.end());
+          
+          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x)].particle_ids.begin(), cells[cell_index - ((y - 1) * x)].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x) + 1].particle_ids.begin(), cells[cell_index - ((y - 1) * x) + 1].particle_ids.end());
+          
+          indices.insert(indices.end(), cells[cell_index + x - 1].particle_ids.begin(), cells[cell_index + x - 1].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index - 1].particle_ids.begin(), cells[cell_index - 1].particle_ids.end());
+          break;
+        case Placement::TOP_RIGHT_CORNER:
+          indices.insert(indices.end(), cells[cell_index - (y * x) + 1].particle_ids.begin(), cells[cell_index - ((y - 2) * x) + 1].particle_ids.end());
+          
+          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x)].particle_ids.begin(), cells[cell_index - ((y - 1) * x)].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x) - 1].particle_ids.begin(), cells[cell_index - ((y - 1) * x) - 1].particle_ids.end());
+          
+          indices.insert(indices.end(), cells[cell_index - x + 1].particle_ids.begin(), cells[cell_index - x + 1].particle_ids.end());
+          indices.insert(indices.end(), cells[cell_index - x - x + 1].particle_ids.begin(), cells[cell_index - x - x + 1].particle_ids.end());
+          break;
+        default:
+          break;
+      }
+
+  }
+
+  return indices;
+
 }
 
 void LinkedCellContainer::clear() {
