@@ -9,7 +9,7 @@
         <gravity>-12.44</gravity>
         <enable_brownian>false</enable_brownian>
         <domain_size>
-            <x>303.0</x>
+            <x>243.0</x>
             <y>180.0</y>
             <z>0.0</z>
         </domain_size>
@@ -20,8 +20,8 @@
         <target_temp>0.5</target_temp>
         <delta_temp>0.0005</delta_temp>
         <is_gradual>true</is_gradual>
-        <n_thermostats>1000</n_thermostats>
-    <thermostats>
+        <n_thermostats>1000.0</n_thermostats>
+    </thermostats>
     <boundary_conditions>
         <left>Reflecting</left>
         <right>Reflecting</right>
@@ -37,8 +37,8 @@
                 <z>0.0</z>
             </coordinate>
             <dimensions>
-                <x>250</x>
-                <y>50</y>
+                <x>200</x>
+                <y>20</y>
                 <z>1</z>
             </dimensions>
             <mesh_width>1.2</mesh_width>
@@ -52,24 +52,4 @@
             </initial_velocity>
         </cuboid>
     </cuboids>
-
-     <discs>
-        <disc>
-            <center>
-                <x>150.0</x>
-                <y>150.0</y>
-                <z>0.0</z>
-            </center>
-            <initial_velocity>
-                <x>0.0</x>
-                <y>0.0</y>
-                <z>0.0</z>
-            </initial_velocity>
-            <radius>20</radius>
-            <mesh_width>1.2</mesh_width>
-            <mass>1.0</mass>
-            <epsilon>1.0</epsilon>
-            <sigma>1.2</sigma>
-        </disc>
-    </discs>
 </MolSim>

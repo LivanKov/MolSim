@@ -29,6 +29,15 @@
                                         <xs:element name="x" type="xs:double"/>
                                         <xs:element name="y" type="xs:double"/>
                                         <xs:element name="z" type="xs:double"/>
+                                        <xs:element name="lower-left-corner" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="x" type="xs:double"/>
+                                                    <xs:element name="y" type="xs:double"/>
+                                                    <xs:element name="z" type="xs:double"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
@@ -42,7 +51,7 @@
                             <xs:element name="target_temp" type="xs:double"/>
                             <xs:element name="delta_temp" type="xs:double"/>
                             <xs:element name="is_gradual" type="xs:boolean"/>
-                            <xs:element name="n_thermostats" type="xs:double"/>
+                            <xs:element name="n_thermostats" type="xs:unsignedInt"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>

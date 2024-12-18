@@ -20,13 +20,21 @@ struct SimParams {
   bool reflective;
   bool periodic;
   double gravity;
+  static bool gravity_applied;
+  static std::array<double, 3> lower_left_corner;
+  static bool fixed_Domain;
 
   // Thermostats
   double initial_temp;
   double target_temp;
   double delta_temp;
   bool is_gradual;
-  double n_thermostats;
+  unsigned int n_thermostats;
   size_t dimensions;
   bool enable_brownian;
+
+  // Checkpoint
+  bool resume_from_checkpoint;
+  bool checkpoint_only;
+  double resume_start_time;
 };

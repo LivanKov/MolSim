@@ -812,6 +812,36 @@ z (const z_type& x)
   this->z_.set (x);
 }
 
+const domain_size::lower_left_corner_optional& domain_size::
+lower_left_corner () const
+{
+  return this->lower_left_corner_;
+}
+
+domain_size::lower_left_corner_optional& domain_size::
+lower_left_corner ()
+{
+  return this->lower_left_corner_;
+}
+
+void domain_size::
+lower_left_corner (const lower_left_corner_type& x)
+{
+  this->lower_left_corner_.set (x);
+}
+
+void domain_size::
+lower_left_corner (const lower_left_corner_optional& x)
+{
+  this->lower_left_corner_ = x;
+}
+
+void domain_size::
+lower_left_corner (::std::auto_ptr< lower_left_corner_type > x)
+{
+  this->lower_left_corner_.set (x);
+}
+
 
 // disc
 // 
@@ -1170,6 +1200,64 @@ void particle::
 mass (const mass_type& x)
 {
   this->mass_.set (x);
+}
+
+
+// lower_left_corner
+// 
+
+const lower_left_corner::x_type& lower_left_corner::
+x () const
+{
+  return this->x_.get ();
+}
+
+lower_left_corner::x_type& lower_left_corner::
+x ()
+{
+  return this->x_.get ();
+}
+
+void lower_left_corner::
+x (const x_type& x)
+{
+  this->x_.set (x);
+}
+
+const lower_left_corner::y_type& lower_left_corner::
+y () const
+{
+  return this->y_.get ();
+}
+
+lower_left_corner::y_type& lower_left_corner::
+y ()
+{
+  return this->y_.get ();
+}
+
+void lower_left_corner::
+y (const y_type& x)
+{
+  this->y_.set (x);
+}
+
+const lower_left_corner::z_type& lower_left_corner::
+z () const
+{
+  return this->z_.get ();
+}
+
+lower_left_corner::z_type& lower_left_corner::
+z ()
+{
+  return this->z_.get ();
+}
+
+void lower_left_corner::
+z (const z_type& x)
+{
+  this->z_.set (x);
 }
 
 
@@ -2672,7 +2760,8 @@ domain_size (const x_type& x,
 : ::xml_schema::type (),
   x_ (x, this),
   y_ (y, this),
-  z_ (z, this)
+  z_ (z, this),
+  lower_left_corner_ (this)
 {
 }
 
@@ -2683,7 +2772,8 @@ domain_size (const domain_size& x,
 : ::xml_schema::type (x, f, c),
   x_ (x.x_, f, this),
   y_ (x.y_, f, this),
-  z_ (x.z_, f, this)
+  z_ (x.z_, f, this),
+  lower_left_corner_ (x.lower_left_corner_, f, this)
 {
 }
 
@@ -2694,7 +2784,8 @@ domain_size (const ::xercesc::DOMElement& e,
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   x_ (this),
   y_ (this),
-  z_ (this)
+  z_ (this),
+  lower_left_corner_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -2746,6 +2837,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // lower-left-corner
+    //
+    if (n.name () == "lower-left-corner" && n.namespace_ ().empty ())
+    {
+      ::std::auto_ptr< lower_left_corner_type > r (
+        lower_left_corner_traits::create (i, f, this));
+
+      if (!this->lower_left_corner_)
+      {
+        this->lower_left_corner_.set (r);
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -2787,6 +2892,7 @@ operator= (const domain_size& x)
     this->x_ = x.x_;
     this->y_ = x.y_;
     this->z_ = x.z_;
+    this->lower_left_corner_ = x.lower_left_corner_;
   }
 
   return *this;
@@ -3453,6 +3559,141 @@ operator= (const particle& x)
 
 particle::
 ~particle ()
+{
+}
+
+// lower_left_corner
+//
+
+lower_left_corner::
+lower_left_corner (const x_type& x,
+                   const y_type& y,
+                   const z_type& z)
+: ::xml_schema::type (),
+  x_ (x, this),
+  y_ (y, this),
+  z_ (z, this)
+{
+}
+
+lower_left_corner::
+lower_left_corner (const lower_left_corner& x,
+                   ::xml_schema::flags f,
+                   ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  x_ (x.x_, f, this),
+  y_ (x.y_, f, this),
+  z_ (x.z_, f, this)
+{
+}
+
+lower_left_corner::
+lower_left_corner (const ::xercesc::DOMElement& e,
+                   ::xml_schema::flags f,
+                   ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  x_ (this),
+  y_ (this),
+  z_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void lower_left_corner::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // x
+    //
+    if (n.name () == "x" && n.namespace_ ().empty ())
+    {
+      if (!x_.present ())
+      {
+        this->x_.set (x_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // y
+    //
+    if (n.name () == "y" && n.namespace_ ().empty ())
+    {
+      if (!y_.present ())
+      {
+        this->y_.set (y_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // z
+    //
+    if (n.name () == "z" && n.namespace_ ().empty ())
+    {
+      if (!z_.present ())
+      {
+        this->z_.set (z_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!x_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "x",
+      "");
+  }
+
+  if (!y_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "y",
+      "");
+  }
+
+  if (!z_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "z",
+      "");
+  }
+}
+
+lower_left_corner* lower_left_corner::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class lower_left_corner (*this, f, c);
+}
+
+lower_left_corner& lower_left_corner::
+operator= (const lower_left_corner& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->x_ = x.x_;
+    this->y_ = x.y_;
+    this->z_ = x.z_;
+  }
+
+  return *this;
+}
+
+lower_left_corner::
+~lower_left_corner ()
 {
 }
 

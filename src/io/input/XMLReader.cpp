@@ -77,6 +77,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
                 std::to_string(simParameters.write_frequency));
 
     if (xmlParams.gravity().present()) {
+      SimParams::gravity_applied = true;
       simParameters.gravity = xmlParams.gravity().get();
       logger.info("g_gravity: " + std::to_string(simParameters.gravity));
     }
@@ -145,6 +146,17 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
       simParameters.r_cutoff_radius = xmlParams.r_cutoff_radius();
       logger.info("Cutoff Radius: " +
                   std::to_string(simParameters.r_cutoff_radius));
+
+      if (xmlParams.domain_size().get().lower_left_corner().present()) {
+        SimParams::fixed_Domain = true;
+        auto lowerLeftCorner =
+            xmlParams.domain_size().get().lower_left_corner().get();
+        SimParams::lower_left_corner = {lowerLeftCorner.x(),
+                                           lowerLeftCorner.y(),
+                                           lowerLeftCorner.z()};
+        logger.info("Domain is fixed to: " +
+                    containerToStrings(simParameters.lower_left_corner));
+      }
 
       if (simParameters.domain_size[2] == 0) {
         particles.initialize(

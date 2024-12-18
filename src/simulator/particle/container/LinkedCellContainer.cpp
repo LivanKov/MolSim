@@ -1,5 +1,6 @@
 #include "LinkedCellContainer.h"
 #include "../../Simulation.h"
+#include "io/input/cli/SimParams.h"
 #include <cmath>
 
 size_t LinkedCellContainer::Cell::size() const { return particle_ids.size(); }
@@ -11,6 +12,12 @@ void LinkedCellContainer::Cell::remove(int id) { particle_ids.erase(id); }
 void LinkedCellContainer::initialize(
     const std::initializer_list<double> &domain_size, double r_cutoff,
     const DomainBoundaryConditions &boundary_conditions) {
+  if (SimParams::fixed_Domain) {
+    left_corner_coordinates = {SimParams::lower_left_corner[0],
+                               SimParams::lower_left_corner[1],
+                               SimParams::lower_left_corner[2]};
+  }
+
   logger.info("Initializing LinkedCellContainer");
   domain_size_ = std::vector<double>(domain_size);
   r_cutoff_ = r_cutoff;
@@ -127,6 +134,17 @@ void LinkedCellContainer::update_particle_location(
     }
     if (is_within_domain(cells_map[particle_id]->getX())) {
       cells[current_index].insert(particle_id);
+      cells[current_index].insert(cells_map[particle_id]->getType());
+
+      // if (cells[current_index].is_halo && reflective_flag) {
+      if (cells[current_index].is_halo) {
+        // handle_boundary_conditions(particle_id);
+        auto vel = cells_map[particle_id]->getV();
+        cells_map[particle_id]->updateV(-vel[0], -vel[1], -vel[2]);
+        // cells_map[particle_id]->left_domain = true;
+        // particles_left_domain++;
+      }
+
     } else {
       particles_outbound.push_back(particle_id);
     }
@@ -271,6 +289,106 @@ void LinkedCellContainer::readjust() {
   clear();
   for (auto &p : particles_) {
     insert(p, true);
+  }
+}
+
+void LinkedCellContainer::handle_boundary_conditions(int particle_id,
+                                                     int cell_id) {
+  // ensure that the particle is in halo cell
+  if (!cells[cell_id].is_halo) {
+    return;
+  }
+
+  auto &velocity = cells_map[particle_id]->getV();
+  logger.debug("Checking");
+  // Left boundary
+  if (cell_id % x == 0) {
+    if (boundary_conditions_.left == BoundaryCondition::Reflecting) {
+      logger.debug("Reflecting left boundary");
+      cells_map[particle_id]->updateV(-velocity[0], velocity[1], velocity[2]);
+      // logger.debug("Velocity: " +
+      // std::to_string(cells_map[particle_id]->getV()[0]) + " " +
+      // std::to_string(cells_map[particle_id]->getV()[1]) + " " +
+      // std::to_string(cells_map[particle_id]->getV()[2]));
+    }
+  }
+
+  // Right boundary
+  if ((cell_id + 1) % x == 0) {
+    if (boundary_conditions_.right == BoundaryCondition::Reflecting) {
+      logger.debug("Reflecting right boundary");
+      cells_map[particle_id]->updateV(-velocity[0], velocity[1], velocity[2]);
+    }
+  }
+
+  // Bottom boundary
+  for (size_t i = 0; i < z; i++) {
+    if (x * y * i <= cell_id && cell_id < x * y * i + x) {
+      if (boundary_conditions_.bottom == BoundaryCondition::Reflecting) {
+        logger.debug("Reflecting bottom boundary");
+        logger.debug("Particle location: " +
+                     std::to_string(cells_map[particle_id]->getX()[0]) + " " +
+                     std::to_string(cells_map[particle_id]->getX()[1]) + " " +
+                     std::to_string(cells_map[particle_id]->getX()[2]));
+        logger.debug(
+            "Velocity: " + std::to_string(cells_map[particle_id]->getV()[0]) +
+            " " + std::to_string(cells_map[particle_id]->getV()[1]) + " " +
+            std::to_string(cells_map[particle_id]->getV()[2]));
+        cells_map[particle_id]->updateV(velocity[0], -velocity[1], velocity[2]);
+        logger.debug(
+            "Velocity: " + std::to_string(cells_map[particle_id]->getV()[0]) +
+            " " + std::to_string(cells_map[particle_id]->getV()[1]) + " " +
+            std::to_string(cells_map[particle_id]->getV()[2]));
+      }
+    }
+  }
+
+  // Top boundary
+  for (size_t i = 1; i <= z; i++) {
+    if (x * y * i - x <= cell_id && cell_id < x * y * i) {
+      if (boundary_conditions_.top == BoundaryCondition::Reflecting) {
+        logger.debug("Reflecting top boundary");
+        cells_map[particle_id]->updateV(velocity[0], -velocity[1], velocity[2]);
+      }
+    }
+  }
+
+  if (z > 1) {
+    // Front boundary
+    if (cell_id < x * y) {
+      if (boundary_conditions_.front == BoundaryCondition::Reflecting) {
+        logger.debug("Reflecting front boundary");
+        cells_map[particle_id]->updateV(velocity[0], velocity[1], -velocity[2]);
+      }
+    }
+    // Back boundary
+    if (cell_id >= x * y * (z - 1)) {
+      if (boundary_conditions_.back == BoundaryCondition::Reflecting) {
+        logger.debug("Reflecting back boundary");
+        cells_map[particle_id]->updateV(velocity[0], velocity[1], -velocity[2]);
+      }
+    }
+  }
+}
+
+size_t LinkedCellContainer::size() { return particles.size(); }
+
+Particle &LinkedCellContainer::operator[](size_t index) {
+  return particles[index];
+}
+
+void LinkedCellContainer::mark_halo_cells() {
+  for (size_t i = 0; i < x; i++) {
+    for (size_t j = 0; j < y; j++) {
+      for (size_t k = 0; k < z; k++) {
+        if (i == 0 || i == x - 1 || j == 0 || j == y - 1 ||
+            (z > 1 && (k == 0 || k == z - 1))) {
+          size_t index = i + j * x + k * x * y;
+          cells[index].is_halo = true;
+          halo_count++;
+        }
+      }
+    }
   }
 }
 
