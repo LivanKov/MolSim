@@ -134,6 +134,10 @@ void LinkedCellContainer::update_particle_location(
     }
     if (is_within_domain(cells_map[particle_id]->getX())) {
       cells[current_index].insert(particle_id);
+
+      if(!cells[current_index].is_halo && cells_map[particle_id]->is_periodic_copy)
+        cells_map[particle_id]->is_periodic_copy = false;
+
     } else {
       particles_outbound.push_back(particle_id);
     }
