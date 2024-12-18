@@ -14,14 +14,24 @@ class PeriodicBoundaryTest : public ::testing::Test {
 protected:
     LinkedCellContainer container;
 
-    PeriodicBoundaryTest() : container{} {
+    LinkedCellContainer b_container;
+
+    PeriodicBoundaryTest() : container{}, b_container{} {
         container.initialize({10.0, 10.0}, 2.5,
             {BoundaryCondition::Periodic, // Left
              BoundaryCondition::Periodic, // Right
              BoundaryCondition::Periodic, // Top
              BoundaryCondition::Periodic  // Bottom
             });
+
+        b_container.initialize({10.0, 10.0}, 2.5,
+            {BoundaryCondition::Periodic,   // Left
+             BoundaryCondition::Reflecting, // Right
+             BoundaryCondition::Periodic,   // Top
+             BoundaryCondition::Periodic    // Bottom
+            });
     }
+
 };
 
 
@@ -199,5 +209,69 @@ TEST_F(PeriodicBoundaryTest, PeriodicTransitionTest) {
     EXPECT_TRUE(!container[0].left_domain);
 
     EXPECT_TRUE(!container[0].outbound);
+    // Check that all cells are empty    
+}
+
+
+TEST_F(PeriodicBoundaryTest, ParticleMovesFromCornerToCorner) {
+    // Place a particle in the bottom-left corner
+    Particle p({0.1, 0.1, 0.0}, {-1.0, -1.0, 0.0}, 1.0, 0);
+    container.insert(p, true);
+
+    EXPECT_EQ(container.cells[0].size(), 1);
+
+    Calculation<Position>::run(container, 1, OPTIONS::LINKED_CELLS);
+
+    // Check that the particle has moved to the top-right corner
+    EXPECT_EQ(container.cells[0].size(), 0);
+
+    Calculation<BoundaryConditions>::run(container);
+
+    EXPECT_EQ(container.cells[container.cells.size() - 1].size(), 1);
+}
+
+
+TEST_F(PeriodicBoundaryTest, ReflectingTransitionTest) {
+    // Create a particle at the left edge of the domain
+    Particle left_edge_particle({0.1, 5.0, 0.0}, {-2.0, 0.0, 0.0}, 1.0, 0);
+    b_container.insert(left_edge_particle,true);
+
+    EXPECT_TRUE(b_container.size() == 1);
+    EXPECT_EQ(b_container.cells[8].size(), 1);
+
+    Calculation<Position>::run(b_container, 1, OPTIONS::LINKED_CELLS);
+
+    // Check that all cells are empty
+    for (const auto& cell : b_container.cells) {
+        EXPECT_EQ(cell.size(), 0) << "Cell should be empty after particle transition";
+    }
+
+    EXPECT_EQ(b_container.particles_outbound.size(), 1);
+
+    Calculation<BoundaryConditions>::run(b_container);
+
+    EXPECT_EQ(b_container.particles_outbound.size(), 0);
+
+    EXPECT_EQ(b_container.cells[11].size(), 1);
+
+    EXPECT_EQ(b_container.size(), 1);
+
+    EXPECT_TRUE(b_container[0].is_periodic_copy);
+
+    EXPECT_TRUE(!b_container[0].left_domain);
+
+    EXPECT_TRUE(!b_container[0].outbound);
+
+    Calculation<Position>::run(b_container, 1, OPTIONS::LINKED_CELLS);
+
+    EXPECT_EQ(b_container.cells[11].size(), 0);
+
+    EXPECT_EQ(b_container.cells[10].size(), 1);
+
+    EXPECT_TRUE(!b_container[0].is_periodic_copy);
+
+    EXPECT_TRUE(!b_container[0].left_domain);
+
+    EXPECT_TRUE(!b_container[0].outbound);
     // Check that all cells are empty    
 }
