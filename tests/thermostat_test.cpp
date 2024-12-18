@@ -11,6 +11,7 @@
 
 #include "simulator/particle/ParticleGenerator.h"
 #include "utils/logger/Logger.h"
+#include "io/input/cli/SimParams.h"
 
 class ThermostatTest : public testing::Test {
 protected:
@@ -19,6 +20,7 @@ protected:
     LinkedCellContainer particles{};
 
     void SetUp() override {
+        SimParams::enable_thermo = true;
         thermostat = std::make_unique<Thermostat>(particles,300, 350, 3, 0.5, false, false);
     }
 
