@@ -40,6 +40,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
     if (!inputFile.is_open()) {
       throw std::runtime_error("Could not open file: " + filename);
     }
+    logger.info("Parsing XML file: " + filename);
 
     std::unique_ptr<MolSim> doc =
         MolSim_(filename, xml_schema::flags::dont_validate);

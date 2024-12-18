@@ -6,12 +6,21 @@
         <output_basename>../output</output_basename>
         <write_frequency>10</write_frequency>
         <r_cutoff_radius>3</r_cutoff_radius>
+        <enable_brownian>false</enable_brownian>
         <domain_size>
             <x>243.0</x>
             <y>180.0</y>
             <z>0.0</z>
         </domain_size>
     </simulation_parameters>
+
+    <thermostats>
+        <initial_temp>1.0</initial_temp>
+        <target_temp>1.0</target_temp>
+        <delta_temp>0.1</delta_temp>
+        <is_gradual>false</is_gradual>
+        <n_thermostats>1</n_thermostats>
+    </thermostats>
 
     <cuboids>
         <cuboid>
