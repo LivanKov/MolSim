@@ -204,68 +204,65 @@ std::vector<int> LinkedCellContainer::get_additional_neighbour_indices(int cell_
 
   // add periodic indices
   if(cell.is_halo && placement_map[cell.placement] == BoundaryCondition::Periodic) {
-     auto neighbour_indices = get_additional_neighbour_indices(cell_index);
+      size_t max_index = x * y * z - 1;
+      auto safe_insert = [&](size_t idx) {
+          if(idx <= max_index) {
+              indices.insert(indices.end(), cells[idx].particle_ids.begin(), cells[idx].particle_ids.end());
+          }
+      };
+
       switch(cell.placement) {
         case Placement::LEFT:
-          indices.insert(indices.end(), cells[cell_index + x - 1].particle_ids.begin(), cells[cell_index + x - 1].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index + x + x - 1].particle_ids.begin(), cells[cell_index + x + x - 1].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index - 1].particle_ids.begin(), cells[cell_index - 1].particle_ids.end());
+          safe_insert(cell_index + x - 1);
+          safe_insert(cell_index + x + x - 1);
+          safe_insert(cell_index - 1);
           break;
         case Placement::RIGHT:
-          indices.insert(indices.end(), cells[cell_index - (x - 1)].particle_ids.begin(), cells[cell_index - (x - 1)].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index - (x + x - 1)].particle_ids.begin(), cells[cell_index - (x + x - 1)].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index + 1].particle_ids.begin(), cells[cell_index + 1].particle_ids.end());
+          safe_insert(cell_index - (x - 1));
+          safe_insert(cell_index - (x + x - 1));
+          safe_insert(cell_index + 1);
           break;
         case Placement::TOP:
-          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x)].particle_ids.begin(), cells[cell_index - ((y - 1) * x)].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x - 1)].particle_ids.begin(), cells[cell_index - ((y - 1) * x - 1)].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x + 1)].particle_ids.begin(), cells[cell_index - ((y - 1) * x + 1)].particle_ids.end());
+          safe_insert(cell_index - ((y - 1) * x));
+          safe_insert(cell_index - ((y - 1) * x - 1));
+          safe_insert(cell_index - ((y - 1) * x + 1));
           break;
         case Placement::BOTTOM:
-          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x)].particle_ids.begin(), cells[cell_index + ((y - 1) * x)].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x - 1)].particle_ids.begin(), cells[cell_index + ((y - 1) * x - 1)].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x + 1)].particle_ids.begin(), cells[cell_index + ((y - 1) * x + 1)].particle_ids.end());
+          safe_insert(cell_index + ((y - 1) * x));
+          safe_insert(cell_index + ((y - 1) * x - 1));
+          safe_insert(cell_index + ((y - 1) * x + 1));
           break;
         case Placement::BOTTOM_LEFT_CORNER:
-          indices.insert(indices.end(), cells[cell_index + (y * x) - 1].particle_ids.begin(), cells[cell_index + (y * x) - 1].particle_ids.end());
-          
-          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x)].particle_ids.begin(), cells[cell_index + ((y - 1) * x)].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x) + 1].particle_ids.begin(), cells[cell_index + ((y - 1) * x) + 1].particle_ids.end());
-          
-          indices.insert(indices.end(), cells[cell_index + x - 1].particle_ids.begin(), cells[cell_index + x - 1].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index + x + x - 1].particle_ids.begin(), cells[cell_index + x + x - 1].particle_ids.end());
+          safe_insert(cell_index + (y * x) - 1);
+          safe_insert(cell_index + ((y - 1) * x));
+          safe_insert(cell_index + ((y - 1) * x) + 1);
+          safe_insert(cell_index + x - 1);
+          safe_insert(cell_index + x + x - 1);
           break;
         case Placement::BOTTOM_RIGHT_CORNER:
-          indices.insert(indices.end(), cells[cell_index + ((y - 2) * x) + 1].particle_ids.begin(), cells[cell_index + ((y - 2) * x) + 1].particle_ids.end());
-          
-          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x)].particle_ids.begin(), cells[cell_index + ((y - 1) * x)].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index + ((y - 1) * x) - 1].particle_ids.begin(), cells[cell_index + ((y - 1) * x) - 1].particle_ids.end());
-          
-          indices.insert(indices.end(), cells[cell_index - x + 1].particle_ids.begin(), cells[cell_index - x + 1].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index + 1].particle_ids.begin(), cells[cell_index + 1].particle_ids.end());
+          safe_insert(cell_index + ((y - 2) * x) + 1);
+          safe_insert(cell_index + ((y - 1) * x));
+          safe_insert(cell_index + ((y - 1) * x) - 1);
+          safe_insert(cell_index - x + 1);
+          safe_insert(cell_index + 1);
           break;
         case Placement::TOP_LEFT_CORNER:
-          indices.insert(indices.end(), cells[cell_index - ((y - 2) * x) - 1].particle_ids.begin(), cells[cell_index - ((y - 2) * x) - 1].particle_ids.end());
-          
-          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x)].particle_ids.begin(), cells[cell_index - ((y - 1) * x)].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x) + 1].particle_ids.begin(), cells[cell_index - ((y - 1) * x) + 1].particle_ids.end());
-          
-          indices.insert(indices.end(), cells[cell_index + x - 1].particle_ids.begin(), cells[cell_index + x - 1].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index - 1].particle_ids.begin(), cells[cell_index - 1].particle_ids.end());
+          safe_insert(cell_index - ((y - 2) * x) - 1);
+          safe_insert(cell_index - ((y - 1) * x));
+          safe_insert(cell_index - ((y - 1) * x) + 1);
+          safe_insert(cell_index + x - 1);
+          safe_insert(cell_index - 1);
           break;
         case Placement::TOP_RIGHT_CORNER:
-          indices.insert(indices.end(), cells[cell_index - (y * x) + 1].particle_ids.begin(), cells[cell_index - ((y - 2) * x) + 1].particle_ids.end());
-          
-          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x)].particle_ids.begin(), cells[cell_index - ((y - 1) * x)].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index - ((y - 1) * x) - 1].particle_ids.begin(), cells[cell_index - ((y - 1) * x) - 1].particle_ids.end());
-          
-          indices.insert(indices.end(), cells[cell_index - x + 1].particle_ids.begin(), cells[cell_index - x + 1].particle_ids.end());
-          indices.insert(indices.end(), cells[cell_index - x - x + 1].particle_ids.begin(), cells[cell_index - x - x + 1].particle_ids.end());
+          safe_insert(cell_index - (y * x) + 1);
+          safe_insert(cell_index - ((y - 1) * x));
+          safe_insert(cell_index - ((y - 1) * x) - 1);
+          safe_insert(cell_index - x + 1);
+          safe_insert(cell_index - x - x + 1);
           break;
         default:
           break;
       }
-
   }
 
   return indices;
