@@ -1,3 +1,12 @@
+#include "simulator/particle/ParticleGenerator.h"
+#include "simulator/particle/container/LinkedCellContainer.h"
+#include "utils/logger/Logger.h"
+#include "simulator/calculations/BoundaryConditions.h"
+#include <array>
+#include <cmath>
+#include <gtest/gtest.h>
+
+
 class PeriodicBoundaryTest : public ::testing::Test {
 protected:
     LinkedCellContainer container;
