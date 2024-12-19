@@ -9,7 +9,8 @@ void BoundaryConditions::run(LinkedCellContainer &particles) {
       auto position = particles.cells[cell_index].placement;
       if (particles.placement_map[position] == BoundaryCondition::Reflecting) {
         handle_reflect_conditions(particle_id, cell_index, particles);
-      } else if(particles.placement_map[position] == BoundaryCondition::Periodic){
+      } else if (particles.placement_map[position] ==
+                 BoundaryCondition::Periodic) {
         particles.create_ghost_particles(particle_id, cell_index);
       }
     }

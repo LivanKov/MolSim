@@ -201,14 +201,15 @@ public:
 
   void create_ghost_particles(int particle_id, int cell_index);
 
-  GhostParticle create_ghost_particle(int particle_id, const std::array<double, 3>& position_offset);
+  GhostParticle
+  create_ghost_particle(int particle_id,
+                        const std::array<double, 3> &position_offset);
 
   std::vector<GhostParticle> get_additional_neighbour_indices(int particle_id);
 
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,
                             std::array<double, 3> current_up_right);
-
 
   /**
    * @brief Assigns halo status to cells at the border of the array

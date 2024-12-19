@@ -90,7 +90,7 @@ void Simulation::run(LinkedCellContainer &particles) {
   auto start_time = std::chrono::high_resolution_clock::now();
 
   while (current_time < params_.end_time) {
-    
+
     size_t molecules_this_iteration = particles.size();
 
     Calculation<Position>::run(particles, params_.time_delta, option);
@@ -123,8 +123,10 @@ void Simulation::run(LinkedCellContainer &particles) {
   // Calculate updates per second
   double updates_per_second = total_molecule_updates / runtime.count();
 
-  std::cout << "Total runtime: " << std::to_string(runtime.count()) << " seconds" << std::endl;
-  std::cout << "Molecules updated per second: " << std::to_string(updates_per_second) << std::endl;
+  std::cout << "Total runtime: " << std::to_string(runtime.count())
+            << " seconds" << std::endl;
+  std::cout << "Molecules updated per second: "
+            << std::to_string(updates_per_second) << std::endl;
 
   logger.info("output written. Terminating...");
 

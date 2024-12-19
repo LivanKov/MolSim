@@ -100,9 +100,9 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       }
     }
 
-
     for (auto &particle : particles.particles) {
-      for (auto &neighbour : particles.get_additional_neighbour_indices(particle.getType())) {
+      for (auto &neighbour :
+           particles.get_additional_neighbour_indices(particle.getType())) {
         if (*(neighbour.ptr) != particle) {
           auto r12 = neighbour.position - particle.getX();
           double distance = ArrayUtils::L2Norm(r12);

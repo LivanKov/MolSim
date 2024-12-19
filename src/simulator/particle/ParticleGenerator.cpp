@@ -28,7 +28,8 @@ void ParticleGenerator::insertCuboid(
 
         std::array<double, 3> velocity = initialVelocity;
 
-        Particle particle(position, velocity, m, particles.particle_id, epsilon, sigma);
+        Particle particle(position, velocity, m, particles.particle_id, epsilon,
+                          sigma);
         particles.particle_id++;
         Logger::getInstance().trace("New Particle generated");
         particles.insert(particle, true);
@@ -45,7 +46,8 @@ void ParticleGenerator::insertCuboid(
 void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
                                    const std::array<double, 3> &initialVelocity,
                                    size_t radius, double h, double mass,
-                                   LinkedCellContainer &particles, double epsilon, double sigma) {
+                                   LinkedCellContainer &particles,
+                                   double epsilon, double sigma) {
 
   // start on the point with the leftest x point then go the rightest x point
   for (double x = center[0] - radius * h; x <= center[0] + radius * h; x += h) {
@@ -65,7 +67,8 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
         std::array position = {x, y, z};
         std::array<double, 3> velocity = initialVelocity;
 
-        Particle particle(position, velocity, mass, particles.particle_id, epsilon, sigma);
+        Particle particle(position, velocity, mass, particles.particle_id,
+                          epsilon, sigma);
         particles.particle_id++;
         Logger::getInstance().trace("New Particle generated");
         particles.insert(particle, true);
