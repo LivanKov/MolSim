@@ -38,12 +38,13 @@ void Simulation::run(LinkedCellContainer &particles) {
 
   Logger &logger = Logger::getInstance(params_.log_level);
 
-  logger.warn("Starting a simulation with:");
+  logger.info("Starting a simulation with:");
   logger.info("\tEnd time: " + std::to_string(params_.end_time));
   logger.info("\tDelta: " + std::to_string(params_.time_delta));
 
   int iteration{0};
   double current_time{0};
+  size_t total_molecule_updates = 0;
 
   ForceType FORCE_TYPE = params_.calculate_grav_force
                              ? ForceType::GRAVITATIONAL
@@ -89,11 +90,15 @@ void Simulation::run(LinkedCellContainer &particles) {
   auto start_time = std::chrono::high_resolution_clock::now();
 
   while (current_time < params_.end_time) {
+    
+    size_t molecules_this_iteration = particles.size();
 
     Calculation<Position>::run(particles, params_.time_delta, option);
     Calculation<BoundaryConditions>::run(particles);
     Calculation<Force>::run(particles, FORCE_TYPE, option);
     Calculation<Velocity>::run(particles, params_.time_delta);
+
+    total_molecule_updates += molecules_this_iteration;
 
     // Apply the thermostat periodically
     if (SimParams::enable_thermo && iteration % params_.n_thermostats == 0) {
@@ -116,10 +121,10 @@ void Simulation::run(LinkedCellContainer &particles) {
   std::chrono::duration<double> runtime = end_time - start_time;
 
   // Calculate updates per second
-  double updates_per_second = iteration / runtime.count();
+  double updates_per_second = total_molecule_updates / runtime.count();
 
-  logger.warn("Total runtime: " + std::to_string(runtime.count()) + " seconds");
-  logger.warn("Updates per second: " + std::to_string(updates_per_second));
+  std::cout << "Total runtime: " << std::to_string(runtime.count()) << " seconds" << std::endl;
+  std::cout << "Molecules updated per second: " << std::to_string(updates_per_second) << std::endl;
 
   logger.info("output written. Terminating...");
 
@@ -131,5 +136,5 @@ void Simulation::run(LinkedCellContainer &particles) {
   logger.info("Amount of halo particles:" +
               std::to_string(particles.halo_count));
 
-  logger.warn("Simulation finished.");
+  logger.info("Simulation finished.");
 };

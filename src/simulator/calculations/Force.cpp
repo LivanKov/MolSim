@@ -1,5 +1,6 @@
 #include "Force.h"
 #include "../particle/container/DirectSumContainer.h"
+#include "io/input/cli/SimParams.h"
 #include "utils/ArrayUtils.h"
 #include <iostream>
 
@@ -25,19 +26,31 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
 
     for (auto it = particles.particles.pair_begin();
          it != particles.particles.pair_end(); ++it) {
-      // double sigma = (it->first->getSigma() + it->second->getSigma())/2;
-      // double epsilon = sqrt(it->first->getEpsilon() *
-      // it->second->getEpsilon());
+
       auto r12 = it->second->getX() - it->first->getX();
       double distance = ArrayUtils::L2Norm(r12);
 
       if (distance > 1e-5) {
 
         double totalForce;
-        double term = SIGMA / distance;
+        double sigma;
+        if (it->first->getSigma() == it->second->getSigma()) {
+          sigma = it->first->getSigma();
+        } else {
+          sigma = (it->first->getSigma() + it->second->getSigma()) / 2;
+        }
+
+        double term = sigma / distance;
         double term6 = pow(term, 6);
         double term12 = pow(term, 12);
-        totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
+        double epsilon;
+        if (it->first->getEpsilon() == it->second->getEpsilon()) {
+          epsilon = it->first->getEpsilon();
+        } else {
+          epsilon = sqrt(it->first->getEpsilon() * it->second->getEpsilon());
+        }
+
+        totalForce = 24 * epsilon * (term6 - 2 * term12) / distance;
 
         auto force = (totalForce / distance) * r12;
 
@@ -59,10 +72,24 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
           if (distance > 1e-5) {
 
             double totalForce;
-            double term = SIGMA / distance;
+            double sigma;
+            if (particle.getSigma() == neighbour->getSigma()) {
+              sigma = particle.getSigma();
+            } else {
+              sigma = (particle.getSigma() + neighbour->getSigma()) / 2;
+            }
+
+            double term = sigma / distance;
             double term6 = pow(term, 6);
             double term12 = pow(term, 12);
-            totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
+            double epsilon;
+            if (particle.getEpsilon() == neighbour->getEpsilon()) {
+              epsilon = particle.getEpsilon();
+            } else {
+              epsilon = sqrt(particle.getEpsilon() * neighbour->getEpsilon());
+            }
+
+            totalForce = 24 * epsilon * (term6 - 2 * term12) / distance;
 
             auto force = (totalForce / distance) * r12;
 
@@ -94,6 +121,15 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
           }
         }
       }
+    }
+  }
+
+  if (SimParams::enable_gravity) {
+    for (auto &particle : particles.particles) {
+      double gravitational_force_y = particle.getM() * SimParams::gravity;
+      particle.updateF(particle.getF()[0],
+                       particle.getF()[1] + gravitational_force_y,
+                       particle.getF()[2]);
     }
   }
 }

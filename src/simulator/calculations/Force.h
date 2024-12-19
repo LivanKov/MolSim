@@ -2,9 +2,6 @@
 #include "../particle/container/LinkedCellContainer.h"
 #include "Calculation.h"
 
-#define EPSILON 5.0
-#define SIGMA 1.0
-
 /**
  * @enum ForceType
  * @brief Enum class for the force calculation type.
