@@ -101,8 +101,7 @@ LinkedCellContainer::LinkedCellContainer()
       x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{}, particle_id{0},
       particles_left_domain{0}, is_wrapper{false}, halo_count{0},
       reflective_flag{false}, periodic_flag{false}, halo_cell_indices{},
-      particles_outbound{}, placement_map{}, cell_ghost_particles_map{},
-      particle_ghost_particles_map{} {}
+      particles_outbound{}, placement_map{}, cell_ghost_particles_map{} {}
 
 void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
@@ -162,7 +161,6 @@ LinkedCellContainer::get_neighbours(int particle_id) {
   std::array<double, 3> position = cells_map[particle_id]->getX();
   int cell_index = get_cell_index(position);
 
-  // logger.info("Current cell index: " + std::to_string(index));
   for (auto &i : cells[cell_index].particle_ids) {
     neighbours.push_back(cells_map[i]);
   }
@@ -195,13 +193,6 @@ LinkedCellContainer::get_neighbours(int particle_id) {
       }
     }
   }
-
-  /*auto additional_neighbours = get_additional_neighbour_indices(cell_index);
-
-  for (auto &neighbour : additional_neighbours) {
-    neighbours.push_back(neighbour);
-  }*/
-
   return neighbours;
 }
 
@@ -323,7 +314,6 @@ void LinkedCellContainer::set_boundary_conditions(
 
 void LinkedCellContainer::clear_ghost_particles() {
   cell_ghost_particles_map.clear();
-  particle_ghost_particles_map.clear();
 }
 
 void LinkedCellContainer::create_ghost_particles(int particle_id,

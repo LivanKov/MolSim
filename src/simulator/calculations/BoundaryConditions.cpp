@@ -73,33 +73,6 @@ void BoundaryConditions::handle_periodic_conditions(
 
   std::array<double, 3> location = particles.cells_map[particle_id]->getX();
 
-  /*switch(position) {
-      case Placement::LEFT:
-          particles.cells_map[particle_id]->updateX(location[0] +
-  particles.domain_size_[0],location[1],location[2]); break; case
-  Placement::RIGHT: particles.cells_map[particle_id]->updateX(location[0] -
-  particles.domain_size_[0],location[1],location[2]); break; case
-  Placement::BOTTOM: particles.cells_map[particle_id]->updateX(location[0],
-  location[1] + particles.domain_size_[1],location[2]); break; case
-  Placement::TOP: particles.cells_map[particle_id]->updateX(location[0],
-  location[1] - particles.domain_size_[1],location[2]); break; case
-  Placement::BOTTOM_LEFT_CORNER:
-          particles.cells_map[particle_id]->updateX(location[0] +
-  particles.domain_size_[0], location[1] +
-  particles.domain_size_[1],location[2]); break; case
-  Placement::TOP_RIGHT_CORNER:
-          particles.cells_map[particle_id]->updateX(location[0] -
-  particles.domain_size_[0], location[1] -
-  particles.domain_size_[1],location[2]); break; case
-  Placement::TOP_LEFT_CORNER:
-          particles.cells_map[particle_id]->updateX(location[0] +
-  particles.domain_size_[0], location[1] -
-  particles.domain_size_[1],location[2]); break; case
-  Placement::BOTTOM_RIGHT_CORNER:
-          particles.cells_map[particle_id]->updateX(location[0] -
-  particles.domain_size_[0], location[1] +
-  particles.domain_size_[1],location[2]); break; default: break;
-  }*/
   if (location[0] < particles.left_corner_coordinates[0])
     particles.cells_map[particle_id]->updateX(
         location[0] + particles.domain_size_[0], location[1], location[2]);
