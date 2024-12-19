@@ -35,10 +35,10 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       if (distance > 1e-5) {
 
         double totalForce;
-        double term = SIGMA / distance;
+        double term = it->first->getSigma() / distance;
         double term6 = pow(term, 6);
         double term12 = pow(term, 12);
-        totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
+        totalForce = 24 * it->first->getEpsilon() * (term6 - 2 * term12) / distance;
 
         auto force = (totalForce / distance) * r12;
 
@@ -63,10 +63,11 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
           if (distance > 1e-5) {
 
             double totalForce;
-            double term = SIGMA / distance;
+            double term = particle.getSigma() / distance;
             double term6 = pow(term, 6);
             double term12 = pow(term, 12);
-            totalForce = 24 * EPSILON * (term6 - 2 * term12) / distance;
+            totalForce =
+                24 * particle.getEpsilon() * (term6 - 2 * term12) / distance;
 
             auto force = (totalForce / distance) * r12;
 

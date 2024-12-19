@@ -75,8 +75,8 @@ SimParams parse(int argc, char **argv, SimParams &parameters) {
       parameters.checkpoint_only = true;
       break;
     case 'v':
-      parameters.enable_v_threshold = true;
-      parameters.v_threshold = atof(optarg);
+      SimParams::enable_v_threshold = true;
+      SimParams::v_threshold = atof(optarg);
       break;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argv[0]);

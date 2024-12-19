@@ -153,9 +153,8 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         SimParams::fixed_Domain = true;
         auto lowerLeftCorner =
             xmlParams.domain_size().get().lower_left_corner().get();
-        SimParams::lower_left_corner = {lowerLeftCorner.x(),
-                                           lowerLeftCorner.y(),
-                                           lowerLeftCorner.z()};
+        SimParams::lower_left_corner = {
+            lowerLeftCorner.x(), lowerLeftCorner.y(), lowerLeftCorner.z()};
         logger.info("Domain is fixed to: " +
                     containerToStrings(simParameters.lower_left_corner));
       }
@@ -210,15 +209,9 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         logger.info("Initial Velocity: " +
                     containerToStrings(initial_velocity));
 
-        if (simParameters.linked_cells) {
-          // TODO: add epsilon and sigma, and set the linked_cell flag to false
-          // inside generator
-          ParticleGenerator::insertCuboid(position, dimensions, mesh_width,
-                                          mass, initial_velocity, particles);
-        } else {
-          ParticleGenerator::insertCuboid(position, dimensions, mesh_width,
-                                          mass, initial_velocity, particles);
-        }
+        ParticleGenerator::insertCuboid(position, dimensions, mesh_width, mass,
+                                        initial_velocity, particles, epsilon,
+                                        sigma);
 
         logger.info("Particles check: " + std::to_string(particles.size()));
         logger.info("Particles' cell check: " +
@@ -252,15 +245,9 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         logger.info("Initial Velocity: " +
                     containerToStrings(initial_velocity));
 
-        if (simParameters.linked_cells) {
-          // TODO: add epsilon and sigma, and set the linked_cell flag to false
-          // inside generator
-          ParticleGenerator::insertDisc(center, initial_velocity, radius,
-                                        mesh_width, mass, particles);
-        } else {
-          ParticleGenerator::insertDisc(center, initial_velocity, radius,
-                                        mesh_width, mass, particles);
-        }
+        ParticleGenerator::insertDisc(center, initial_velocity, radius,
+                                      mesh_width, mass, particles, epsilon,
+                                      sigma);
       }
     }
 
@@ -280,14 +267,8 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
                     containerToStrings(initial_velocity));
         logger.info("Mass: " + std::to_string(mass));
 
-        if (simParameters.linked_cells) {
-          // TODO: set the linked_cell flag to false inside generator
-          ParticleGenerator::insertSingleMolecule(position, initial_velocity,
-                                                  mass, particles);
-        } else {
-          ParticleGenerator::insertSingleMolecule(position, initial_velocity,
-                                                  mass, particles);
-        }
+        ParticleGenerator::insertSingleMolecule(position, initial_velocity,
+                                                mass, particles);
       }
     }
 
