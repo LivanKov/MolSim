@@ -10,8 +10,13 @@
         <enable_brownian>false</enable_brownian>
         <domain_size>
             <x>63.0</x>
-            <y>36.0</y>
+            <y>39.0</y>
             <z>0.0</z>
+            <lower-left-corner>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </lower-left-corner>
         </domain_size>
     </simulation_parameters>
 
@@ -23,9 +28,9 @@
         <n_thermostats>1000</n_thermostats>
     </thermostats>
     <boundary_conditions>
-        <left>Reflecting</left>
-        <right>Reflecting</right>
-        <top>Outflow</top>
+        <left>Periodic</left>
+        <right>Periodic</right>
+        <top>Reflecting</top>
         <bottom>Reflecting</bottom>
     </boundary_conditions>
 
