@@ -38,6 +38,14 @@ enum Placement {
   BOTTOM_LEFT_CORNER
 };
 
+struct GhostParticle {
+  double sigma;
+  double epsilon;
+  std::array<double, 3> position;
+  ParticlePointer ptr;
+  int id;
+};
+
 /**
  * @class LinkedCellContainer
  * @brief Class that provides a container for particles that uses linked cells
@@ -101,7 +109,7 @@ public:
    * @param p The particle for which neighbors are retrieved.
    * @return A vector of shared pointers to neighboring particles.
    */
-  std::vector<ParticlePointer> get_neighbours(int particle_id, bool check_periodic_neighbours = true);
+  std::vector<ParticlePointer> get_neighbours(int particle_id);
 
   /**
    * @brief Retrieves the index of a cell based on its coordinates.
@@ -187,9 +195,20 @@ public:
 
   std::vector<int> particles_outbound;
 
+  std::unordered_map<int, std::vector<GhostParticle>> cell_ghost_particles_map;
+
+  void clear_ghost_particles();
+
+  void create_ghost_particles(int particle_id, int cell_index);
+
+  GhostParticle create_ghost_particle(int particle_id, const std::array<double, 3>& position_offset);
+
+  std::vector<GhostParticle> get_additional_neighbour_indices(int particle_id);
+
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,
                             std::array<double, 3> current_up_right);
+
 
   /**
    * @brief Assigns halo status to cells at the border of the array

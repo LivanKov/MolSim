@@ -8,9 +8,9 @@ public:
   CheckpointWriter();
   ~CheckpointWriter();
 
-  static void writeCheckpoint(LinkedCellContainer &particles, const std::string &filename, double delta_t,
-                       double t_end);
+  static void writeCheckpoint(LinkedCellContainer &particles,
+                              const std::string &filename, double delta_t,
+                              double t_end);
 
 private:
 };
-

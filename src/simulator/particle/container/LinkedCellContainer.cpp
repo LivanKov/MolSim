@@ -2,6 +2,7 @@
 #include "../../Simulation.h"
 #include "io/input/cli/SimParams.h"
 #include <cmath>
+#include <iostream>
 
 size_t LinkedCellContainer::Cell::size() const { return particle_ids.size(); }
 
@@ -65,27 +66,32 @@ void LinkedCellContainer::initialize(
   placement_map[Placement::RIGHT] = boundary_conditions.right;
   placement_map[Placement::FRONT] = boundary_conditions.front;
   placement_map[Placement::BACK] = boundary_conditions.back;
-  
-  if(placement_map[Placement::TOP] == placement_map[Placement::RIGHT])
-    placement_map[Placement::TOP_RIGHT_CORNER] = placement_map[Placement::RIGHT];
-  else 
+
+  if (placement_map[Placement::TOP] == placement_map[Placement::RIGHT])
+    placement_map[Placement::TOP_RIGHT_CORNER] =
+        placement_map[Placement::RIGHT];
+  else
     placement_map[Placement::TOP_RIGHT_CORNER] = placement_map[Placement::TOP];
 
-  if(placement_map[Placement::TOP] == placement_map[Placement::LEFT])
+  if (placement_map[Placement::TOP] == placement_map[Placement::LEFT])
     placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::LEFT];
-  else 
+  else
     placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::TOP];
 
-  if(placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT])
-    placement_map[Placement::BOTTOM_RIGHT_CORNER] = placement_map[Placement::RIGHT];
-  else 
-    placement_map[Placement::BOTTOM_RIGHT_CORNER] = placement_map[Placement::BOTTOM];
+  if (placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT])
+    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
+        placement_map[Placement::RIGHT];
+  else
+    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
+        placement_map[Placement::BOTTOM];
 
-  if(placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT])
-    placement_map[Placement::BOTTOM_LEFT_CORNER] = placement_map[Placement::LEFT];
-  else 
-    placement_map[Placement::BOTTOM_LEFT_CORNER] = placement_map[Placement::BOTTOM];
-  
+  if (placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT])
+    placement_map[Placement::BOTTOM_LEFT_CORNER] =
+        placement_map[Placement::LEFT];
+  else
+    placement_map[Placement::BOTTOM_LEFT_CORNER] =
+        placement_map[Placement::BOTTOM];
+
   mark_halo_cells();
 }
 
@@ -95,7 +101,7 @@ LinkedCellContainer::LinkedCellContainer()
       x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{}, particle_id{0},
       particles_left_domain{0}, is_wrapper{false}, halo_count{0},
       reflective_flag{false}, periodic_flag{false}, halo_cell_indices{},
-      particles_outbound{}, placement_map{} {}
+      particles_outbound{}, placement_map{}, cell_ghost_particles_map{} {}
 
 void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
@@ -128,12 +134,18 @@ void LinkedCellContainer::update_particle_location(
   size_t old_index = get_cell_index(old_position);
   size_t current_index = get_cell_index(cells_map[particle_id]->getX());
 
-  if (current_index != old_index) {
-    if (is_within_domain(old_position)) {
+  bool current_within_domain = is_within_domain(cells_map[particle_id]->getX());
+
+  bool old_within_domain = is_within_domain(old_position);
+
+  if (current_index != old_index ||
+      current_within_domain != old_within_domain) {
+    if (old_within_domain) {
       cells[old_index].remove(particle_id);
     }
-    if (is_within_domain(cells_map[particle_id]->getX())) {
+    if (current_within_domain) {
       cells[current_index].insert(particle_id);
+
     } else {
       particles_outbound.push_back(particle_id);
     }
@@ -141,7 +153,7 @@ void LinkedCellContainer::update_particle_location(
 }
 
 std::vector<ParticlePointer>
-LinkedCellContainer::get_neighbours(int particle_id, bool check_periodic_neighbours) {
+LinkedCellContainer::get_neighbours(int particle_id) {
   std::vector<ParticlePointer> neighbours{};
   if (cells_map[particle_id]->left_domain || cells_map[particle_id]->outbound) {
     return neighbours;
@@ -149,7 +161,6 @@ LinkedCellContainer::get_neighbours(int particle_id, bool check_periodic_neighbo
   std::array<double, 3> position = cells_map[particle_id]->getX();
   int cell_index = get_cell_index(position);
 
-  // logger.info("Current cell index: " + std::to_string(index));
   for (auto &i : cells[cell_index].particle_ids) {
     neighbours.push_back(cells_map[i]);
   }
@@ -182,16 +193,17 @@ LinkedCellContainer::get_neighbours(int particle_id, bool check_periodic_neighbo
       }
     }
   }
-
-  auto& cell = cells[cell_index];
-
-  // add periodic neighbours
-  if(check_periodic_neighbours && cell.is_halo && placement_map[cell.placement] == BoundaryCondition::Periodic) {
-    
-
-  }
-
   return neighbours;
+}
+
+std::vector<GhostParticle>
+LinkedCellContainer::get_additional_neighbour_indices(int particle_id) {
+
+  auto cell_index = get_cell_index(cells_map[particle_id]->getX());
+
+  std::vector<GhostParticle> ghost_neighbours = cell_ghost_particles_map[cell_index];
+
+  return ghost_neighbours;
 }
 
 void LinkedCellContainer::clear() {
@@ -290,7 +302,6 @@ void LinkedCellContainer::readjust() {
   }
 }
 
-
 void LinkedCellContainer::set_boundary_conditions(
     DomainBoundaryConditions conditions) {
   this->boundary_conditions_ = conditions;
@@ -299,4 +310,129 @@ void LinkedCellContainer::set_boundary_conditions(
   placement_map[Placement::LEFT] = conditions.left;
   placement_map[Placement::RIGHT] = conditions.right;
   placement_map[Placement::FRONT] = conditions.front;
+}
+
+void LinkedCellContainer::clear_ghost_particles() {
+  cell_ghost_particles_map.clear();
+}
+
+GhostParticle LinkedCellContainer::create_ghost_particle(int particle_id, const std::array<double, 3>& position_offset) {
+  GhostParticle ghost;
+  ghost.sigma = cells_map[particle_id]->getSigma();
+  ghost.epsilon = cells_map[particle_id]->getEpsilon();
+  ghost.position = {
+    cells_map[particle_id]->getX()[0] + position_offset[0],
+    cells_map[particle_id]->getX()[1] + position_offset[1],
+    cells_map[particle_id]->getX()[2] + position_offset[2]
+  };
+  ghost.id = particle_id;
+  ghost.ptr = cells_map[particle_id];
+  return ghost;
+}
+
+void LinkedCellContainer::create_ghost_particles(int particle_id, int cell_index) {
+  const auto& placement = cells[cell_index].placement;
+  
+  // Helper arrays for offsets
+  const std::array<double, 3> right_offset = {domain_size_[0], 0, 0};
+  const std::array<double, 3> left_offset = {-domain_size_[0], 0, 0};
+  const std::array<double, 3> top_offset = {0, -domain_size_[1], 0};
+  const std::array<double, 3> bottom_offset = {0, domain_size_[1], 0};
+
+  switch (placement) {
+    case Placement::LEFT: {
+      auto ghost = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index + x - 1].push_back(ghost);
+      cell_ghost_particles_map[cell_index + x + x - 1].push_back(ghost);
+      cell_ghost_particles_map[cell_index - 1].push_back(ghost);
+      break;
+    }
+    case Placement::RIGHT: {
+      auto ghost = create_ghost_particle(particle_id, left_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost);
+      cell_ghost_particles_map[cell_index - (x + x - 1)].push_back(ghost);
+      cell_ghost_particles_map[cell_index + 1].push_back(ghost);
+      break;
+    }
+    case Placement::TOP: {
+      auto ghost = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(ghost);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1].push_back(ghost);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1].push_back(ghost);
+      break;
+    }
+    case Placement::BOTTOM: {
+      auto ghost = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(ghost);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1].push_back(ghost);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(ghost);
+      break;
+    }
+    case Placement::BOTTOM_LEFT_CORNER: {
+      // Corner ghost
+      auto ghost_corner = create_ghost_particle(particle_id, {right_offset[0], bottom_offset[1], 0});
+      cell_ghost_particles_map[cell_index + y * x - 1].push_back(ghost_corner);
+      
+      // Right side ghost
+      auto ghost_right = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
+      cell_ghost_particles_map[cell_index + x + x - 1].push_back(ghost_right);
+      
+      // Bottom side ghost
+      auto ghost_bottom = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x)].push_back(ghost_bottom);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(ghost_bottom);
+      break;
+    }
+    case Placement::TOP_RIGHT_CORNER: {
+      // Corner ghost
+      auto ghost_corner = create_ghost_particle(particle_id, {left_offset[0], top_offset[1], 0});
+      cell_ghost_particles_map[cell_index - (y * x - 1)].push_back(ghost_corner);
+      
+      // Left side ghost
+      auto ghost_left = create_ghost_particle(particle_id, left_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
+      cell_ghost_particles_map[cell_index - (x + x - 1)].push_back(ghost_left);
+      
+      // Top side ghost
+      auto ghost_top = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x)].push_back(ghost_top);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1].push_back(ghost_top);
+      break;
+    }
+    case Placement::TOP_LEFT_CORNER: {
+      // Corner ghost
+      auto ghost_corner = create_ghost_particle(particle_id, {right_offset[0], top_offset[1], 0});
+      cell_ghost_particles_map[cell_index - (y-2) * x - 1].push_back(ghost_corner);
+      
+      // Right side ghost
+      auto ghost_right = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
+      cell_ghost_particles_map[cell_index - 1].push_back(ghost_right);
+      
+      // Top side ghost
+      auto ghost_top = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x)].push_back(ghost_top);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1].push_back(ghost_top);
+      break;
+    }
+    case Placement::BOTTOM_RIGHT_CORNER: {
+      // Corner ghost
+      auto ghost_corner = create_ghost_particle(particle_id, {left_offset[0], bottom_offset[1], 0});
+      cell_ghost_particles_map[cell_index + (y-2) * x + 1].push_back(ghost_corner);
+      
+      // Left side ghost
+      auto ghost_left = create_ghost_particle(particle_id, left_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
+      cell_ghost_particles_map[cell_index + 1].push_back(ghost_left);
+      
+      // Bottom side ghost
+      auto ghost_bottom = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x)].push_back(ghost_bottom);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1].push_back(ghost_bottom);
+      break;
+    }
+    default:
+      break;
+  }
 }

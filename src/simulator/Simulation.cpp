@@ -99,8 +99,9 @@ void Simulation::run(LinkedCellContainer &particles) {
     Calculation<Velocity>::run(particles, params_.time_delta);
 
     total_molecule_updates += molecules_this_iteration;
+
     // Apply the thermostat periodically
-    if (SimParams::enable_thermo && iteration % params_.n_thermostats == 0 ) {
+    if (SimParams::enable_thermo && iteration % params_.n_thermostats == 0) {
       thermostat.apply();
       logger.info("Thermostat applied at iteration: " +
                   std::to_string(iteration));

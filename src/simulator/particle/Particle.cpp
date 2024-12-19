@@ -18,7 +18,6 @@ Particle::Particle(int type_arg) {
   f = {0., 0., 0.};
   old_f = {0., 0., 0.};
   left_domain = false;
-  is_periodic_copy = false;
   outbound = false;
 }
 
@@ -34,7 +33,6 @@ Particle::Particle(const Particle &other) {
   left_domain = other.left_domain;
   epsilon = other.epsilon;
   sigma = other.sigma;
-  is_periodic_copy = other.is_periodic_copy;
   outbound = other.outbound;
 }
 
@@ -53,7 +51,6 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   left_domain = false;
   epsilon = epsilon_arg;
   sigma = sigma_arg;
-  is_periodic_copy = false;
   outbound = false;
 }
 
@@ -81,7 +78,7 @@ std::string Particle::toString() const {
   std::stringstream stream;
   stream << "Particle: X:" << x << " v: " << v << " f: " << f
          << " old_f: " << old_f << " type: " << type
-         << " left domain: " << left_domain << std::endl;
+         << " left domain: " << left_domain << "OldX: " << old_x << std::endl;
   return stream.str();
 }
 
