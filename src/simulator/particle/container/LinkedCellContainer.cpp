@@ -316,219 +316,123 @@ void LinkedCellContainer::clear_ghost_particles() {
   cell_ghost_particles_map.clear();
 }
 
-void LinkedCellContainer::create_ghost_particles(int particle_id,
-                                                 int cell_index) {
-  switch (cells[cell_index].placement) {
-  case Placement::LEFT:{
-    GhostParticle g;
-    g.sigma = cells_map[particle_id]->getSigma();
-    g.epsilon = cells_map[particle_id]->getEpsilon();
-    g.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0] + domain_size_[0],
-        cells_map[particle_id]->getX()[1], cells_map[particle_id]->getX()[2]};
-    g.id = particle_id;
-    g.ptr = cells_map[particle_id];
-    cell_ghost_particles_map[cell_index + x - 1].push_back(g);
-    cell_ghost_particles_map[cell_index + x + x - 1].push_back(g);
-    cell_ghost_particles_map[cell_index - 1].push_back(g);
-    break;
+GhostParticle LinkedCellContainer::create_ghost_particle(int particle_id, const std::array<double, 3>& position_offset) {
+  GhostParticle ghost;
+  ghost.sigma = cells_map[particle_id]->getSigma();
+  ghost.epsilon = cells_map[particle_id]->getEpsilon();
+  ghost.position = {
+    cells_map[particle_id]->getX()[0] + position_offset[0],
+    cells_map[particle_id]->getX()[1] + position_offset[1],
+    cells_map[particle_id]->getX()[2] + position_offset[2]
+  };
+  ghost.id = particle_id;
+  ghost.ptr = cells_map[particle_id];
+  return ghost;
+}
+
+void LinkedCellContainer::create_ghost_particles(int particle_id, int cell_index) {
+  const auto& placement = cells[cell_index].placement;
+  
+  // Helper arrays for offsets
+  const std::array<double, 3> right_offset = {domain_size_[0], 0, 0};
+  const std::array<double, 3> left_offset = {-domain_size_[0], 0, 0};
+  const std::array<double, 3> top_offset = {0, -domain_size_[1], 0};
+  const std::array<double, 3> bottom_offset = {0, domain_size_[1], 0};
+
+  switch (placement) {
+    case Placement::LEFT: {
+      auto ghost = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index + x - 1].push_back(ghost);
+      cell_ghost_particles_map[cell_index + x + x - 1].push_back(ghost);
+      cell_ghost_particles_map[cell_index - 1].push_back(ghost);
+      break;
     }
-  case Placement::RIGHT:{
-    GhostParticle g;
-    g.sigma = cells_map[particle_id]->getSigma();
-    g.epsilon = cells_map[particle_id]->getEpsilon();
-    g.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0] - domain_size_[0],
-        cells_map[particle_id]->getX()[1], cells_map[particle_id]->getX()[2]};
-    g.id = particle_id;
-    g.ptr = cells_map[particle_id];
-    cell_ghost_particles_map[cell_index - x + 1].push_back(g);
-    cell_ghost_particles_map[cell_index - (x + x - 1)].push_back(g);
-    cell_ghost_particles_map[cell_index + 1].push_back(g);
-    break;
+    case Placement::RIGHT: {
+      auto ghost = create_ghost_particle(particle_id, left_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost);
+      cell_ghost_particles_map[cell_index - (x + x - 1)].push_back(ghost);
+      cell_ghost_particles_map[cell_index + 1].push_back(ghost);
+      break;
     }
-  case Placement::TOP:{
-    GhostParticle g;
-    g.sigma = cells_map[particle_id]->getSigma();
-    g.epsilon = cells_map[particle_id]->getEpsilon();
-    g.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0], cells_map[particle_id]->getX()[1] -
-                                              domain_size_[1],
-        cells_map[particle_id]->getX()[2]};
-    g.id = particle_id;
-    g.ptr = cells_map[particle_id];
-    cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(g);
-    cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1].push_back(g);
-    cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1].push_back(g);
-    break;
+    case Placement::TOP: {
+      auto ghost = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(ghost);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1].push_back(ghost);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1].push_back(ghost);
+      break;
     }
-  case Placement::BOTTOM:{
-    GhostParticle g;
-    g.sigma = cells_map[particle_id]->getSigma();
-    g.epsilon = cells_map[particle_id]->getEpsilon();
-    g.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0], cells_map[particle_id]->getX()[1] +
-                                              domain_size_[1],
-        cells_map[particle_id]->getX()[2]};
-    g.id = particle_id;
-    g.ptr = cells_map[particle_id];
-    cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(g);
-    cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1].push_back(g);
-    cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(g);
-    break;
+    case Placement::BOTTOM: {
+      auto ghost = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(ghost);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1].push_back(ghost);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(ghost);
+      break;
     }
-  case Placement::BOTTOM_LEFT_CORNER:{
-    GhostParticle g;
-    GhostParticle g_1;
-    GhostParticle g_2;
-    g.sigma = cells_map[particle_id]->getSigma();
-    g.epsilon = cells_map[particle_id]->getEpsilon();
-    g.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0] + domain_size_[0],
-        cells_map[particle_id]->getX()[1] + domain_size_[1],
-        cells_map[particle_id]->getX()[2]};
-    g.id = particle_id;
-    g.ptr = cells_map[particle_id];
-
-    g_1.sigma = cells_map[particle_id]->getSigma();
-    g_1.epsilon = cells_map[particle_id]->getEpsilon();
-    g_1.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0] + domain_size_[0],
-        cells_map[particle_id]->getX()[1],
-        cells_map[particle_id]->getX()[2]};
-    g_1.id = particle_id;
-    g_1.ptr = cells_map[particle_id];
-
-    g_2.sigma = cells_map[particle_id]->getSigma();
-    g_2.epsilon = cells_map[particle_id]->getEpsilon();
-    g_2.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0],
-        cells_map[particle_id]->getX()[1] + domain_size_[1],
-        cells_map[particle_id]->getX()[2]};
-    g_2.id = particle_id;
-    g_2.ptr = cells_map[particle_id];
-    cell_ghost_particles_map[cell_index + x - 1].push_back(g_1);
-    cell_ghost_particles_map[cell_index + x + x - 1].push_back(g_1);
-    cell_ghost_particles_map[cell_index + y * x - 1].push_back(g);
-    cell_ghost_particles_map[cell_index + ((y - 1) * x)].push_back(g_2);
-    cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(g_2);
-    break;
-  }
-  case Placement::TOP_RIGHT_CORNER:{
-    GhostParticle g;
-    g.sigma = cells_map[particle_id]->getSigma();
-    g.epsilon = cells_map[particle_id]->getEpsilon();
-    g.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0] - domain_size_[0],
-        cells_map[particle_id]->getX()[1] - domain_size_[1],
-        cells_map[particle_id]->getX()[2]};
-    g.id = particle_id;
-    g.ptr = cells_map[particle_id];
-
-    GhostParticle g_1;
-    g_1.sigma = cells_map[particle_id]->getSigma();
-    g_1.epsilon = cells_map[particle_id]->getEpsilon();
-    g_1.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0] - domain_size_[0],
-        cells_map[particle_id]->getX()[1],
-        cells_map[particle_id]->getX()[2]};
-    g_1.id = particle_id;
-    g_1.ptr = cells_map[particle_id];
-
-    GhostParticle g_2;
-    g_2.sigma = cells_map[particle_id]->getSigma();
-    g_2.epsilon = cells_map[particle_id]->getEpsilon();
-    g_2.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0],
-        cells_map[particle_id]->getX()[1] - domain_size_[1],
-        cells_map[particle_id]->getX()[2]};
-    g_2.id = particle_id;
-    g_2.ptr = cells_map[particle_id];
-
-    cell_ghost_particles_map[cell_index - x + 1].push_back(g_1);
-    cell_ghost_particles_map[cell_index - (x + x - 1)].push_back(g_1);
-    cell_ghost_particles_map[cell_index - (y * x - 1)].push_back(g);
-    cell_ghost_particles_map[cell_index - ((y - 1) * x)].push_back(g_2);
-    cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1].push_back(g_2);
-    break;
-  }
-  case Placement::TOP_LEFT_CORNER:{
-    GhostParticle g;
-    g.sigma = cells_map[particle_id]->getSigma();
-    g.epsilon = cells_map[particle_id]->getEpsilon();
-    g.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0] + domain_size_[0],
-        cells_map[particle_id]->getX()[1] - domain_size_[1],
-        cells_map[particle_id]->getX()[2]};
-    g.id = particle_id;
-    g.ptr = cells_map[particle_id];
-
-    GhostParticle g_1;
-    g_1.sigma = cells_map[particle_id]->getSigma();
-    g_1.epsilon = cells_map[particle_id]->getEpsilon();
-    g_1.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0] + domain_size_[0],
-        cells_map[particle_id]->getX()[1],
-        cells_map[particle_id]->getX()[2]};
-    g_1.id = particle_id;
-    g_1.ptr = cells_map[particle_id];
-
-    GhostParticle g_2;
-    g_2.sigma = cells_map[particle_id]->getSigma();
-    g_2.epsilon = cells_map[particle_id]->getEpsilon();
-    g_2.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0],
-        cells_map[particle_id]->getX()[1] - domain_size_[1],
-        cells_map[particle_id]->getX()[2]};
-    g_2.id = particle_id;
-    g_2.ptr = cells_map[particle_id];
-    
-    cell_ghost_particles_map[cell_index + x - 1].push_back(g_1);
-    cell_ghost_particles_map[cell_index - 1].push_back(g_1);
-    cell_ghost_particles_map[cell_index - (y-2) * x - 1].push_back(g);
-    cell_ghost_particles_map[cell_index - ((y - 1) * x)].push_back(g_2);
-    cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1].push_back(g_2);
-    break;
-  }
-  case Placement::BOTTOM_RIGHT_CORNER:{
-    GhostParticle g;
-    g.sigma = cells_map[particle_id]->getSigma();
-    g.epsilon = cells_map[particle_id]->getEpsilon();
-    g.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0] - domain_size_[0],
-        cells_map[particle_id]->getX()[1] + domain_size_[1],
-        cells_map[particle_id]->getX()[2]};
-    g.id = particle_id;
-    g.ptr = cells_map[particle_id];
-
-    GhostParticle g_1;
-    g_1.sigma = cells_map[particle_id]->getSigma();
-    g_1.epsilon = cells_map[particle_id]->getEpsilon();
-    g_1.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0] - domain_size_[0],
-        cells_map[particle_id]->getX()[1],
-        cells_map[particle_id]->getX()[2]};
-    g_1.id = particle_id;
-    g_1.ptr = cells_map[particle_id];
-
-    GhostParticle g_2;
-    g_2.sigma = cells_map[particle_id]->getSigma();
-    g_2.epsilon = cells_map[particle_id]->getEpsilon();
-    g_2.position = std::array<double, 3>{
-        cells_map[particle_id]->getX()[0],
-        cells_map[particle_id]->getX()[1] + domain_size_[1],
-        cells_map[particle_id]->getX()[2]};
-    g_2.id = particle_id;
-    g_2.ptr = cells_map[particle_id];
-
-    cell_ghost_particles_map[cell_index - x + 1].push_back(g_1);
-    cell_ghost_particles_map[cell_index + 1].push_back(g_1);
-    cell_ghost_particles_map[cell_index + (y-2) * x + 1].push_back(g);
-    cell_ghost_particles_map[cell_index + ((y - 1) * x)].push_back(g_2);
-    cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1].push_back(g_2);
-    break;
-  }
-  default:
-    break;
+    case Placement::BOTTOM_LEFT_CORNER: {
+      // Corner ghost
+      auto ghost_corner = create_ghost_particle(particle_id, {right_offset[0], bottom_offset[1], 0});
+      cell_ghost_particles_map[cell_index + y * x - 1].push_back(ghost_corner);
+      
+      // Right side ghost
+      auto ghost_right = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
+      cell_ghost_particles_map[cell_index + x + x - 1].push_back(ghost_right);
+      
+      // Bottom side ghost
+      auto ghost_bottom = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x)].push_back(ghost_bottom);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(ghost_bottom);
+      break;
+    }
+    case Placement::TOP_RIGHT_CORNER: {
+      // Corner ghost
+      auto ghost_corner = create_ghost_particle(particle_id, {left_offset[0], top_offset[1], 0});
+      cell_ghost_particles_map[cell_index - (y * x - 1)].push_back(ghost_corner);
+      
+      // Left side ghost
+      auto ghost_left = create_ghost_particle(particle_id, left_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
+      cell_ghost_particles_map[cell_index - (x + x - 1)].push_back(ghost_left);
+      
+      // Top side ghost
+      auto ghost_top = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x)].push_back(ghost_top);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1].push_back(ghost_top);
+      break;
+    }
+    case Placement::TOP_LEFT_CORNER: {
+      // Corner ghost
+      auto ghost_corner = create_ghost_particle(particle_id, {right_offset[0], top_offset[1], 0});
+      cell_ghost_particles_map[cell_index - (y-2) * x - 1].push_back(ghost_corner);
+      
+      // Right side ghost
+      auto ghost_right = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
+      cell_ghost_particles_map[cell_index - 1].push_back(ghost_right);
+      
+      // Top side ghost
+      auto ghost_top = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x)].push_back(ghost_top);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1].push_back(ghost_top);
+      break;
+    }
+    case Placement::BOTTOM_RIGHT_CORNER: {
+      // Corner ghost
+      auto ghost_corner = create_ghost_particle(particle_id, {left_offset[0], bottom_offset[1], 0});
+      cell_ghost_particles_map[cell_index + (y-2) * x + 1].push_back(ghost_corner);
+      
+      // Left side ghost
+      auto ghost_left = create_ghost_particle(particle_id, left_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
+      cell_ghost_particles_map[cell_index + 1].push_back(ghost_left);
+      
+      // Bottom side ghost
+      auto ghost_bottom = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x)].push_back(ghost_bottom);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1].push_back(ghost_bottom);
+      break;
+    }
+    default:
+      break;
   }
 }

@@ -197,15 +197,13 @@ public:
 
   std::unordered_map<int, std::vector<GhostParticle>> cell_ghost_particles_map;
 
-  std::unordered_map<int, std::vector<GhostParticle>>
-      particle_ghost_particles_map;
-
   void clear_ghost_particles();
 
   void create_ghost_particles(int particle_id, int cell_index);
 
-  std::vector<GhostParticle> get_additional_neighbour_indices(int particle_id);
+  GhostParticle create_ghost_particle(int particle_id, const std::array<double, 3>& position_offset);
 
+  std::vector<GhostParticle> get_additional_neighbour_indices(int particle_id);
 
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,
