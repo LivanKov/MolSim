@@ -196,88 +196,23 @@ LinkedCellContainer::get_neighbours(int particle_id) {
     }
   }
 
-  auto additional_indices = get_additional_neighbour_indices(cell_index);
+  /*auto additional_neighbours = get_additional_neighbour_indices(cell_index);
 
-  for (auto &index : additional_indices) {
-    neighbours.push_back(cells_map[index]);
-  }
+  for (auto &neighbour : additional_neighbours) {
+    neighbours.push_back(neighbour);
+  }*/
 
   return neighbours;
 }
 
-std::vector<int>
-LinkedCellContainer::get_additional_neighbour_indices(int cell_index) {
+std::vector<GhostParticle>
+LinkedCellContainer::get_additional_neighbour_indices(int particle_id) {
 
-  auto &cell = cells[cell_index];
+  auto cell_index = get_cell_index(cells_map[particle_id]->getX());
 
-  std::vector<int> indices;
+  std::vector<GhostParticle> ghost_neighbours = cell_ghost_particles_map[cell_index];
 
-  // add periodic indices
-  if (cell.is_halo &&
-      placement_map[cell.placement] == BoundaryCondition::Periodic) {
-    size_t max_index = x * y * z - 1;
-    auto safe_insert = [&](size_t idx) {
-      if (idx <= max_index) {
-        indices.insert(indices.end(), cells[idx].particle_ids.begin(),
-                       cells[idx].particle_ids.end());
-      }
-    };
-
-    switch (cell.placement) {
-    case Placement::LEFT:
-      safe_insert(cell_index + x - 1);
-      safe_insert(cell_index + x + x - 1);
-      safe_insert(cell_index - 1);
-      break;
-    case Placement::RIGHT:
-      safe_insert(cell_index - (x - 1));
-      safe_insert(cell_index - (x + x - 1));
-      safe_insert(cell_index + 1);
-      break;
-    case Placement::TOP:
-      safe_insert(cell_index - ((y - 1) * x));
-      safe_insert(cell_index - ((y - 1) * x - 1));
-      safe_insert(cell_index - ((y - 1) * x + 1));
-      break;
-    case Placement::BOTTOM:
-      safe_insert(cell_index + ((y - 1) * x));
-      safe_insert(cell_index + ((y - 1) * x - 1));
-      safe_insert(cell_index + ((y - 1) * x + 1));
-      break;
-    case Placement::BOTTOM_LEFT_CORNER:
-      safe_insert(cell_index + (y * x) - 1);
-      safe_insert(cell_index + ((y - 1) * x));
-      safe_insert(cell_index + ((y - 1) * x) + 1);
-      safe_insert(cell_index + x - 1);
-      safe_insert(cell_index + x + x - 1);
-      break;
-    case Placement::BOTTOM_RIGHT_CORNER:
-      safe_insert(cell_index + ((y - 2) * x) + 1);
-      safe_insert(cell_index + ((y - 1) * x));
-      safe_insert(cell_index + ((y - 1) * x) - 1);
-      safe_insert(cell_index - x + 1);
-      safe_insert(cell_index + 1);
-      break;
-    case Placement::TOP_LEFT_CORNER:
-      safe_insert(cell_index - ((y - 2) * x) - 1);
-      safe_insert(cell_index - ((y - 1) * x));
-      safe_insert(cell_index - ((y - 1) * x) + 1);
-      safe_insert(cell_index + x - 1);
-      safe_insert(cell_index - 1);
-      break;
-    case Placement::TOP_RIGHT_CORNER:
-      safe_insert(cell_index - (y * x) + 1);
-      safe_insert(cell_index - ((y - 1) * x));
-      safe_insert(cell_index - ((y - 1) * x) - 1);
-      safe_insert(cell_index - x + 1);
-      safe_insert(cell_index - x - x + 1);
-      break;
-    default:
-      break;
-    }
-  }
-
-  return indices;
+  return ghost_neighbours;
 }
 
 void LinkedCellContainer::clear() {
@@ -402,6 +337,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[0] + domain_size_[0],
         cells_map[particle_id]->getX()[1], cells_map[particle_id]->getX()[2]};
     g.id = particle_id;
+    g.ptr = cells_map[particle_id];
     cell_ghost_particles_map[cell_index + x - 1].push_back(g);
     cell_ghost_particles_map[cell_index + x + x - 1].push_back(g);
     cell_ghost_particles_map[cell_index - 1].push_back(g);
@@ -415,6 +351,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[0] - domain_size_[0],
         cells_map[particle_id]->getX()[1], cells_map[particle_id]->getX()[2]};
     g.id = particle_id;
+    g.ptr = cells_map[particle_id];
     cell_ghost_particles_map[cell_index - x + 1].push_back(g);
     cell_ghost_particles_map[cell_index - (x + x - 1)].push_back(g);
     cell_ghost_particles_map[cell_index + 1].push_back(g);
@@ -429,6 +366,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
                                               domain_size_[1],
         cells_map[particle_id]->getX()[2]};
     g.id = particle_id;
+    g.ptr = cells_map[particle_id];
     cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(g);
     cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1].push_back(g);
     cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1].push_back(g);
@@ -443,6 +381,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
                                               domain_size_[1],
         cells_map[particle_id]->getX()[2]};
     g.id = particle_id;
+    g.ptr = cells_map[particle_id];
     cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(g);
     cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1].push_back(g);
     cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(g);
@@ -459,6 +398,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[1] + domain_size_[1],
         cells_map[particle_id]->getX()[2]};
     g.id = particle_id;
+    g.ptr = cells_map[particle_id];
 
     g_1.sigma = cells_map[particle_id]->getSigma();
     g_1.epsilon = cells_map[particle_id]->getEpsilon();
@@ -467,6 +407,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[1],
         cells_map[particle_id]->getX()[2]};
     g_1.id = particle_id;
+    g_1.ptr = cells_map[particle_id];
 
     g_2.sigma = cells_map[particle_id]->getSigma();
     g_2.epsilon = cells_map[particle_id]->getEpsilon();
@@ -475,6 +416,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[1] + domain_size_[1],
         cells_map[particle_id]->getX()[2]};
     g_2.id = particle_id;
+    g_2.ptr = cells_map[particle_id];
     cell_ghost_particles_map[cell_index + x - 1].push_back(g_1);
     cell_ghost_particles_map[cell_index + x + x - 1].push_back(g_1);
     cell_ghost_particles_map[cell_index + y * x - 1].push_back(g);
@@ -491,6 +433,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[1] - domain_size_[1],
         cells_map[particle_id]->getX()[2]};
     g.id = particle_id;
+    g.ptr = cells_map[particle_id];
 
     GhostParticle g_1;
     g_1.sigma = cells_map[particle_id]->getSigma();
@@ -500,6 +443,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[1],
         cells_map[particle_id]->getX()[2]};
     g_1.id = particle_id;
+    g_1.ptr = cells_map[particle_id];
 
     GhostParticle g_2;
     g_2.sigma = cells_map[particle_id]->getSigma();
@@ -509,6 +453,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[1] - domain_size_[1],
         cells_map[particle_id]->getX()[2]};
     g_2.id = particle_id;
+    g_2.ptr = cells_map[particle_id];
 
     cell_ghost_particles_map[cell_index - x + 1].push_back(g_1);
     cell_ghost_particles_map[cell_index - (x + x - 1)].push_back(g_1);
@@ -526,6 +471,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[1] - domain_size_[1],
         cells_map[particle_id]->getX()[2]};
     g.id = particle_id;
+    g.ptr = cells_map[particle_id];
 
     GhostParticle g_1;
     g_1.sigma = cells_map[particle_id]->getSigma();
@@ -535,6 +481,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[1],
         cells_map[particle_id]->getX()[2]};
     g_1.id = particle_id;
+    g_1.ptr = cells_map[particle_id];
 
     GhostParticle g_2;
     g_2.sigma = cells_map[particle_id]->getSigma();
@@ -544,6 +491,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[1] - domain_size_[1],
         cells_map[particle_id]->getX()[2]};
     g_2.id = particle_id;
+    g_2.ptr = cells_map[particle_id];
     
     cell_ghost_particles_map[cell_index + x - 1].push_back(g_1);
     cell_ghost_particles_map[cell_index - 1].push_back(g_1);
@@ -561,6 +509,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[1] + domain_size_[1],
         cells_map[particle_id]->getX()[2]};
     g.id = particle_id;
+    g.ptr = cells_map[particle_id];
 
     GhostParticle g_1;
     g_1.sigma = cells_map[particle_id]->getSigma();
@@ -570,6 +519,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[1],
         cells_map[particle_id]->getX()[2]};
     g_1.id = particle_id;
+    g_1.ptr = cells_map[particle_id];
 
     GhostParticle g_2;
     g_2.sigma = cells_map[particle_id]->getSigma();
@@ -579,6 +529,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         cells_map[particle_id]->getX()[1] + domain_size_[1],
         cells_map[particle_id]->getX()[2]};
     g_2.id = particle_id;
+    g_2.ptr = cells_map[particle_id];
 
     cell_ghost_particles_map[cell_index - x + 1].push_back(g_1);
     cell_ghost_particles_map[cell_index + 1].push_back(g_1);
