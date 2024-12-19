@@ -38,6 +38,13 @@ enum Placement {
   BOTTOM_LEFT_CORNER
 };
 
+struct GhostParticle {
+  double sigma;
+  double epsilon;
+  std::array<double, 3> position;
+  int id;
+};
+
 /**
  * @class LinkedCellContainer
  * @brief Class that provides a container for particles that uses linked cells
@@ -187,12 +194,20 @@ public:
 
   std::vector<int> particles_outbound;
 
+  std::unordered_map<int, std::vector<GhostParticle>> cell_ghost_particles_map;
+
+  std::unordered_map<int, std::vector<GhostParticle>>
+      particle_ghost_particles_map;
+
+  void clear_ghost_particles();
+
+  void create_ghost_particles(int particle_id, int cell_index);
+
 private:
   void readjust_coordinates(std::array<double, 3> current_low_left,
                             std::array<double, 3> current_up_right);
-                            
-  std::vector<int> get_additional_neighbour_indices(int cell_index);
 
+  std::vector<int> get_additional_neighbour_indices(int cell_index);
 
   /**
    * @brief Assigns halo status to cells at the border of the array

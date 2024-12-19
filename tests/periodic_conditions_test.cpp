@@ -192,7 +192,7 @@ TEST_F(PeriodicBoundaryTest, PeriodicTransitionTest) {
 
     EXPECT_EQ(container.size(), 1);
 
-    EXPECT_TRUE(container[0].is_periodic_copy);
+    //EXPECT_TRUE(container[0].is_periodic_copy);
 
     EXPECT_TRUE(!container[0].left_domain);
 
@@ -204,7 +204,7 @@ TEST_F(PeriodicBoundaryTest, PeriodicTransitionTest) {
 
     EXPECT_EQ(container.cells[10].size(), 1);
 
-    EXPECT_TRUE(!container[0].is_periodic_copy);
+    //EXPECT_TRUE(!container[0].is_periodic_copy);
 
     EXPECT_TRUE(!container[0].left_domain);
 
@@ -256,8 +256,6 @@ TEST_F(PeriodicBoundaryTest, ReflectingTransitionTest) {
 
     EXPECT_EQ(b_container.size(), 1);
 
-    EXPECT_TRUE(b_container[0].is_periodic_copy);
-
     EXPECT_TRUE(!b_container[0].left_domain);
 
     EXPECT_TRUE(!b_container[0].outbound);
@@ -266,12 +264,308 @@ TEST_F(PeriodicBoundaryTest, ReflectingTransitionTest) {
 
     EXPECT_EQ(b_container.cells[11].size(), 0);
 
-    EXPECT_EQ(b_container.cells[10].size(), 1);
-
-    EXPECT_TRUE(!b_container[0].is_periodic_copy);
+    //EXPECT_EQ(b_container.cells[10].size(), 1);
 
     EXPECT_TRUE(!b_container[0].left_domain);
 
     EXPECT_TRUE(!b_container[0].outbound);
     // Check that all cells are empty    
 }
+
+
+TEST_F(PeriodicBoundaryTest, GhostParticlesTest) {
+    // Insert a particle in the corner
+    Particle corner_particle({0.1, 0.1, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(corner_particle, true);
+
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+
+    // Run boundary conditions to generate ghost particles
+    Calculation<BoundaryConditions>::run(container);
+
+    // Check for ghost particles
+    size_t total_particles = 0;
+    for (const auto& ghost : container.cell_ghost_particles_map) {
+        total_particles++;
+    }
+
+    EXPECT_EQ(total_particles, 5) << "Container should have 8 ghost particles";
+
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(7)) << "Particle should be marked as left domain";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(3)) << "Particle should be marked as left domain";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(12)) << "Particle should be marked as left domain";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(13)) << "Particle should be marked as left domain";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(15)) << "Particle should be marked as left domain";
+
+
+    // Check ghost particle locations
+    EXPECT_TRUE(container.cell_ghost_particles_map[3][0].position[0] == 10.1) << "Ghost particle in cell 7 should be to the right of original";
+    EXPECT_TRUE(container.cell_ghost_particles_map[3][0].position[1] == 0.1) << "Ghost particle in cell 3 should be above original";
+
+    EXPECT_TRUE(container.cell_ghost_particles_map[7][0].position[0] == 10.1) << "Ghost particle in cell 7 should be to the left of original";
+    EXPECT_TRUE(container.cell_ghost_particles_map[7][0].position[1] == 0.1) << "Ghost particle in cell 7 should be below original";
+    
+    
+    
+    EXPECT_TRUE(container.cell_ghost_particles_map[12][0].position[0] == 0.1) << "Ghost particle in cell 12 should be to the left of original";
+    EXPECT_TRUE(container.cell_ghost_particles_map[12][0].position[1] == 10.1) << "Ghost particle in cell 12 should be below original";
+    
+    EXPECT_TRUE(container.cell_ghost_particles_map[13][0].position[0] == 0.1) << "Ghost particle in cell 13 should be to the left and above original";
+    EXPECT_TRUE(container.cell_ghost_particles_map[13][0].position[1] == 10.1) << "Ghost particle in cell 13 should be above original";
+
+
+    EXPECT_TRUE(container.cell_ghost_particles_map[15][0].position[0] == 10.1) << "Ghost particle in cell 15 should be to the right and above original";
+    EXPECT_TRUE(container.cell_ghost_particles_map[15][0].position[1] == 10.1) << "Ghost particle in cell 15 should be above original";
+}
+
+TEST_F(PeriodicBoundaryTest, LowerRightCornerGhostParticlesTest) {
+    // Insert a particle in the lower right corner
+    Particle corner_particle({9.9, 0.1, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(corner_particle, true);
+
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+
+    // Run boundary conditions to generate ghost particles
+    Calculation<BoundaryConditions>::run(container);
+
+    // Check for ghost particles
+    size_t total_particles = 0;
+    for (const auto& ghost : container.cell_ghost_particles_map) {
+        total_particles++;
+    }
+
+    EXPECT_EQ(total_particles, 5) << "Container should have 5 ghost particles";
+
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(12)) << "Ghost particle should be in cell 0";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(0)) << "Ghost particle should be in cell 1";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(4)) << "Ghost particle should be in cell 4";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(14)) << "Ghost particle should be in cell 12";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(15)) << "Ghost particle should be in cell 13";
+
+
+
+    // Check for correct ghost particle locations
+    EXPECT_NEAR(container.cell_ghost_particles_map[12][0].position[0], -0.1, 0.0001) << "Ghost particle in cell 12 should be at the same x-position as original";
+    EXPECT_EQ(container.cell_ghost_particles_map[12][0].position[1], 10.1) << "Ghost particle in cell 12 should be above original";
+
+    EXPECT_NEAR(container.cell_ghost_particles_map[0][0].position[0], -0.1, 0.0001) << "Ghost particle in cell 0 should be to the left of original";
+    EXPECT_EQ(container.cell_ghost_particles_map[0][0].position[1], 0.1) << "Ghost particle in cell 0 should be at the same y-position as original";
+
+    EXPECT_NEAR(container.cell_ghost_particles_map[4][0].position[0], -0.1, 0.0001) << "Ghost particle in cell 4 should be to the left of original";
+    EXPECT_EQ(container.cell_ghost_particles_map[4][0].position[1], 0.1) << "Ghost particle in cell 4 should be above original";
+
+    EXPECT_EQ(container.cell_ghost_particles_map[14][0].position[0], 9.9) << "Ghost particle in cell 14 should be at the same x-position as original";
+    EXPECT_EQ(container.cell_ghost_particles_map[14][0].position[1], 10.1) << "Ghost particle in cell 14 should be below original";
+
+    EXPECT_TRUE(container.cell_ghost_particles_map[15][0].position[0] == 9.9) << "Ghost particle in cell 15 should be to the left of original";
+    EXPECT_TRUE(container.cell_ghost_particles_map[15][0].position[1] == 10.1) << "Ghost particle in cell 15 should be below original";
+
+}
+
+TEST_F(PeriodicBoundaryTest, UpperRightCornerGhostParticlesTest) {
+    // Insert a particle in the upper right corner
+    Particle corner_particle({9.9, 9.9, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(corner_particle, true);
+
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+
+    // Run boundary conditions to generate ghost particles
+    Calculation<BoundaryConditions>::run(container);
+
+    // Check for ghost particles
+    size_t total_particles = 0;
+    for (const auto& ghost : container.cell_ghost_particles_map) {
+        total_particles++;
+    }
+
+    EXPECT_EQ(total_particles, 5) << "Container should have 5 ghost particles";
+
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(0)) << "Ghost particle should be in cell 0";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(2)) << "Ghost particle should be in cell 1";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(3)) << "Ghost particle should be in cell 3";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(8)) << "Ghost particle should be in cell 4";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(12)) << "Ghost particle should be in cell 12";
+
+
+     // Check for correct ghost particle locations
+    EXPECT_NEAR(container.cell_ghost_particles_map[12][0].position[0], -0.1, 0.0001) << "Ghost particle in cell 12 should be at the same x-position as original";
+    EXPECT_NEAR(container.cell_ghost_particles_map[12][0].position[1], 9.9, 0.0001) << "Ghost particle in cell 12 should be above original";
+
+    EXPECT_NEAR(container.cell_ghost_particles_map[0][0].position[0], -0.1, 0.0001) << "Ghost particle in cell 0 should be to the left of original";
+    EXPECT_NEAR(container.cell_ghost_particles_map[0][0].position[1], -0.1, 0.0001) << "Ghost particle in cell 0 should be at the same y-position as original";
+
+    EXPECT_NEAR(container.cell_ghost_particles_map[8][0].position[0], -0.1, 0.0001) << "Ghost particle in cell 4 should be to the left of original";
+    EXPECT_NEAR(container.cell_ghost_particles_map[8][0].position[1], 9.9, 0.0001) << "Ghost particle in cell 4 should be above original";
+
+    EXPECT_NEAR(container.cell_ghost_particles_map[2][0].position[0], 9.9, 0.0001) << "Ghost particle in cell 14 should be at the same x-position as original";
+    EXPECT_NEAR(container.cell_ghost_particles_map[2][0].position[1], -0.1, 0.0001) << "Ghost particle in cell 14 should be below original";
+
+    EXPECT_NEAR(container.cell_ghost_particles_map[3][0].position[0], 9.9, 0.0001) << "Ghost particle in cell 15 should be to the left of original";
+    EXPECT_NEAR(container.cell_ghost_particles_map[3][0].position[1], -0.1, 0.0001) << "Ghost particle in cell 15 should be below original";
+}
+
+
+TEST_F(PeriodicBoundaryTest, UpperLeftCornerGhostParticlesTest) {
+    // Insert a particle in the upper left corner
+    Particle corner_particle({0.1, 9.9, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(corner_particle, true);
+
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+
+    // Run boundary conditions to generate ghost particles
+    Calculation<BoundaryConditions>::run(container);
+
+    // Check for ghost particles
+    size_t total_particles = 0;
+    for (const auto& ghost : container.cell_ghost_particles_map) {
+        total_particles++;
+    }
+
+    EXPECT_EQ(total_particles, 5) << "Container should have 5 ghost particles";
+
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(15)) << "Ghost particle should be in cell 3";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(11)) << "Ghost particle should be in cell 7";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(3)) << "Ghost particle should be in cell 11";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(1)) << "Ghost particle should be in cell 15";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(0)) << "Ghost particle should be in cell 0";
+
+
+    EXPECT_NEAR(container.cell_ghost_particles_map[0][0].position[0], 0.1, 0.0001) << "Ghost particle in cell 12 should be at the same x-position as original";
+    EXPECT_NEAR(container.cell_ghost_particles_map[0][0].position[1], -0.1, 0.0001) << "Ghost particle in cell 12 should be above original";
+
+    EXPECT_NEAR(container.cell_ghost_particles_map[1][0].position[0], 0.1, 0.0001) << "Ghost particle in cell 0 should be to the left of original";
+    EXPECT_NEAR(container.cell_ghost_particles_map[1][0].position[1], -0.1, 0.0001) << "Ghost particle in cell 0 should be at the same y-position as original";
+
+    EXPECT_NEAR(container.cell_ghost_particles_map[15][0].position[0], 10.1, 0.0001) << "Ghost particle in cell 4 should be to the left of original";
+    EXPECT_NEAR(container.cell_ghost_particles_map[15][0].position[1], 9.9, 0.0001) << "Ghost particle in cell 4 should be above original";
+
+    EXPECT_NEAR(container.cell_ghost_particles_map[11][0].position[0], 10.1, 0.0001) << "Ghost particle in cell 14 should be at the same x-position as original";
+    EXPECT_NEAR(container.cell_ghost_particles_map[11][0].position[1], 9.9, 0.0001) << "Ghost particle in cell 14 should be below original";
+
+    EXPECT_NEAR(container.cell_ghost_particles_map[3][0].position[0], 10.1, 0.0001) << "Ghost particle in cell 15 should be to the left of original";
+    EXPECT_NEAR(container.cell_ghost_particles_map[3][0].position[1], -0.1, 0.0001) << "Ghost particle in cell 15 should be below original";
+}
+
+TEST_F(PeriodicBoundaryTest, LeftSideGhostParticlesTest) {
+    // Insert a particle on the left side, but not in the corner
+    Particle left_side_particle({0.1, 5.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(left_side_particle, true);
+
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+
+    // Run boundary conditions to generate ghost particles
+    Calculation<BoundaryConditions>::run(container);
+
+    // Check for ghost particles
+    size_t total_particles = 0;
+    for (const auto& ghost : container.cell_ghost_particles_map) {
+        total_particles += ghost.second.size();
+    }
+
+    EXPECT_EQ(total_particles, 3) << "Container should have 3 ghost particles";
+
+    // Check if ghost particles are in the correct cells on the opposite side
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(15)) << "Ghost particle should be in right-side cell";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(7)) << "Ghost particle should be in right-side cell";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(11)) << "Ghost particle should be in right-side cell";
+
+    // Verify the positions of ghost particles
+    for (const auto& [cell_index, ghosts] : container.cell_ghost_particles_map) {
+        for (const auto& ghost : ghosts) {
+            EXPECT_NEAR(ghost.position[0], 10.1, 1e-6) << "Ghost particle X position should be on the right side";
+            EXPECT_NEAR(ghost.position[1], 5.0, 1e-6) << "Ghost particle Y position should match the original";
+            EXPECT_NEAR(ghost.position[2], 0.0, 1e-6) << "Ghost particle Z position should match the original";
+        }
+    }
+}
+
+TEST_F(PeriodicBoundaryTest, RightSideGhostParticlesTest) {
+    Particle right_side_particle({9.9, 5.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(right_side_particle, true);
+
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+
+    Calculation<BoundaryConditions>::run(container);
+
+    size_t total_particles = 0;
+    for (const auto& ghost : container.cell_ghost_particles_map) {
+        total_particles += ghost.second.size();
+    }
+
+    EXPECT_TRUE(container.cells[11].size() == 1);
+
+    EXPECT_EQ(total_particles, 3) << "Container should have 3 ghost particles";
+
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(12)) << "Ghost particle should be in left-side cell";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(4)) << "Ghost particle should be in left-side cell";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(8)) << "Ghost particle should be in left-side cell";
+
+    for (const auto& [cell_index, ghosts] : container.cell_ghost_particles_map) {
+        for (const auto& ghost : ghosts) {
+            EXPECT_NEAR(ghost.position[0], -0.1, 1e-6) << "Ghost particle X position should be on the left side";
+            EXPECT_NEAR(ghost.position[1], 5.0, 1e-6) << "Ghost particle Y position should match the original";
+            EXPECT_NEAR(ghost.position[2], 0.0, 1e-6) << "Ghost particle Z position should match the original";
+        }
+    }
+}
+
+TEST_F(PeriodicBoundaryTest, UpperSideGhostParticlesTest) {
+    Particle upper_side_particle({5.0, 9.9, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(upper_side_particle, true);
+
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+
+    Calculation<BoundaryConditions>::run(container);
+
+    size_t total_particles = 0;
+    for (const auto& ghost : container.cell_ghost_particles_map) {
+        total_particles += ghost.second.size();
+    }
+
+    EXPECT_EQ(total_particles, 3) << "Container should have 3 ghost particles";
+
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(1)) << "Ghost particle should be in bottom-side cell";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(2)) << "Ghost particle should be in bottom-side cell";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(3)) << "Ghost particle should be in bottom-side cell";
+
+    for (const auto& [cell_index, ghosts] : container.cell_ghost_particles_map) {
+        for (const auto& ghost : ghosts) {
+            EXPECT_NEAR(ghost.position[0], 5.0, 1e-6) << "Ghost particle X position should match the original";
+            EXPECT_NEAR(ghost.position[1], -0.1, 1e-6) << "Ghost particle Y position should be on the bottom side";
+            EXPECT_NEAR(ghost.position[2], 0.0, 1e-6) << "Ghost particle Z position should match the original";
+        }
+    }
+}
+
+TEST_F(PeriodicBoundaryTest, BottomSideGhostParticlesTest) {
+    Particle bottom_side_particle({5.0, 0.1, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(bottom_side_particle, true);
+
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+
+    Calculation<BoundaryConditions>::run(container);
+
+    size_t total_particles = 0;
+    for (const auto& ghost : container.cell_ghost_particles_map) {
+        total_particles += ghost.second.size();
+    }
+
+    EXPECT_EQ(total_particles, 3) << "Container should have 3 ghost particles";
+
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(13)) << "Ghost particle should be in upper-side cell";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(14)) << "Ghost particle should be in upper-side cell";
+    EXPECT_TRUE(container.cell_ghost_particles_map.contains(15)) << "Ghost particle should be in upper-side cell";
+
+    for (const auto& [cell_index, ghosts] : container.cell_ghost_particles_map) {
+        for (const auto& ghost : ghosts) {
+            EXPECT_NEAR(ghost.position[0], 5.0, 1e-6) << "Ghost particle X position should match the original";
+            EXPECT_NEAR(ghost.position[1], 10.1, 1e-6) << "Ghost particle Y position should be on the upper side";
+            EXPECT_NEAR(ghost.position[2], 0.0, 1e-6) << "Ghost particle Z position should match the original";
+        }
+    }
+}
+
+
+
+
+

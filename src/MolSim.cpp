@@ -7,7 +7,7 @@
 
 int main(int argc, char *argsv[]) {
   SimParams parameters{};
-  
+
   CommandParser::parse(argc, argsv, parameters);
   Logger &logger = Logger::getInstance(parameters.log_level);
   logger.info("Log level is set." + parameters.log_level);

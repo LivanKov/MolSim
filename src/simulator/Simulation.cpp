@@ -95,9 +95,8 @@ void Simulation::run(LinkedCellContainer &particles) {
     Calculation<Force>::run(particles, FORCE_TYPE, option);
     Calculation<Velocity>::run(particles, params_.time_delta);
 
-    
     // Apply the thermostat periodically
-    if (SimParams::enable_thermo && iteration % params_.n_thermostats == 0 ) {
+    if (SimParams::enable_thermo && iteration % params_.n_thermostats == 0) {
       thermostat.apply();
       logger.info("Thermostat applied at iteration: " +
                   std::to_string(iteration));

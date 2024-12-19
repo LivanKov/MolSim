@@ -153,9 +153,8 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         SimParams::fixed_Domain = true;
         auto lowerLeftCorner =
             xmlParams.domain_size().get().lower_left_corner().get();
-        SimParams::lower_left_corner = {lowerLeftCorner.x(),
-                                           lowerLeftCorner.y(),
-                                           lowerLeftCorner.z()};
+        SimParams::lower_left_corner = {
+            lowerLeftCorner.x(), lowerLeftCorner.y(), lowerLeftCorner.z()};
         logger.info("Domain is fixed to: " +
                     containerToStrings(simParameters.lower_left_corner));
       }
