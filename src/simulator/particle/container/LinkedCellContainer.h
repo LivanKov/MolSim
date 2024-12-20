@@ -25,6 +25,10 @@ struct DomainBoundaryConditions {
   BoundaryCondition front, back;
 };
 
+/**
+ *@brief Enum class for cell placement
+ */
+
 enum Placement {
   TOP,
   BOTTOM,
@@ -37,6 +41,11 @@ enum Placement {
   BOTTOM_RIGHT_CORNER,
   BOTTOM_LEFT_CORNER
 };
+
+/**
+ * @struct GhostParticle
+ * @brief Struct for ghost particle, stores the values necessary for the calculation
+ */
 
 struct GhostParticle {
   double sigma;
@@ -54,14 +63,37 @@ struct GhostParticle {
 class LinkedCellContainer {
 
   /** @struct Cell
-   *    @brief Manages a vector of shared pointers to Particle objects.
+   *  @brief Manages a collection of particles within a spatial cell of the linked cell structure.
+   *  
+   *  This struct represents a single cell in the linked cell data structure, which is used
+   *  to optimize particle interaction calculations by spatial partitioning. Each cell
+   *  maintains a set of particle IDs that fall within its spatial boundaries.
    */
   struct Cell {
+    /** @brief Set of particle IDs contained in this cell. */
     std::unordered_set<int> particle_ids;
+    
+    /** @brief Returns the number of particles in this cell.
+     *  @return Number of particles in the cell.
+     */
     size_t size() const;
+    
+    /** @brief Adds a particle to this cell.
+     *  @param id The ID of the particle to add.
+     */
     void insert(int id);
+    
+    /** @brief Removes a particle from this cell.
+     *  @param id The ID of the particle to remove.
+     */
     void remove(int id);
+    
+    /** @brief Flag indicating if this is a halo cell.
+     *  Halo cells are used for boundary condition calculations.
+     */
     bool is_halo = false;
+    
+    /** @brief The placement of this cell relative to the domain boundaries. */
     Placement placement;
   };
 
@@ -88,9 +120,21 @@ public:
    */
   void insert(Particle &p, bool placement = false);
 
+  /**
+   * @brief Checks if a particle is within the simulation domain.
+   * @param position The position of the particle.
+   * @return True if the particle is within the domain, false otherwise.
+   */
   bool is_within_domain(const std::array<double, 3> &position);
 
+  /*
+   * @brief Clears the container of all particles.
+   */
   void clear();
+
+  /**
+   * @brief Adjusts the domain placement to ensure all particles are within the domain.
+   */
 
   void readjust();
 
@@ -117,6 +161,11 @@ public:
    * @return The index of the cell in the unwrapped cell array.
    */
   size_t get_cell_index(const std::array<double, 3> &position) const;
+
+  /**
+   * @brief sets the boundary conditions for the domain
+   * @param conditions the boundary conditions
+   */
 
   void set_boundary_conditions(DomainBoundaryConditions conditions);
 
@@ -163,23 +212,64 @@ public:
    */
 
   std::vector<Cell> cells;
+
+  /**
+   * @brief A container of all particles in the domain.
+   */
   DirectSumContainer particles;
+
+  /**
+   * @brief cell size for x,y,z
+   * 
+   */
+  /** @brief The cutoff radius for each dimension.
+   *  These values determine the size of each cell in the x, y, and z directions.
+   */
   double r_cutoff_x;
   double r_cutoff_y;
   double r_cutoff_z;
+
+  /** @brief Logger instance for debugging and error reporting. */
   Logger &logger = Logger::getInstance();
 
+  /**
+   * @brief Returns the total number of particles in the container.
+   * @return Size of the container.
+   */
   size_t size();
 
+  /**
+   * @brief Operator overload for accessing particles by index.
+   * @param index The index of the particle to access.
+   * @return Reference to the particle at the given index.
+   */
   Particle &operator[](size_t index);
 
+  /**
+   * @brief Maps particle IDs to their corresponding cell pointers.
+   * Used for efficient particle lookup in the linked cell structure.
+   */
   std::unordered_map<int, ParticlePointer> cells_map;
 
+  /**
+   * @brief Counter for particles that have left the simulation domain.
+   */
   size_t particles_left_domain;
+  
+  /**
+   * @brief Unique identifier for the next particle to be added.
+   */
   size_t particle_id;
 
+  /**
+   * @brief Flag indicating if this container is a wrapper around another container.
+   */
   bool is_wrapper;
 
+  /**
+   * @brief Count of halo cells in the container.
+   * Halo cells are the boundary cells used for periodic boundary conditions.
+   */
   size_t halo_count;
 
   /**
@@ -187,27 +277,67 @@ public:
    */
   DomainBoundaryConditions boundary_conditions_;
 
+  /**
+   * @brief Flag indicating if reflective boundary conditions are active.
+   */
   bool reflective_flag;
 
+  /**
+   * @brief Flag indicating if periodic boundary conditions are active.
+   */
   bool periodic_flag;
 
+  /**
+   * @brief Indices of cells that are marked as halo cells.
+   */
   std::vector<size_t> halo_cell_indices;
 
+  /**
+   * @brief List of particle IDs that have moved outside the domain.
+   */
   std::vector<int> particles_outbound;
 
+  /**
+   * @brief Maps cell IDs to their corresponding ghost particles.
+   * Used for implementing periodic boundary conditions.
+   */
   std::unordered_map<int, std::vector<GhostParticle>> cell_ghost_particles_map;
 
+  /**
+   * @brief Removes all ghost particles from the container.
+   */
   void clear_ghost_particles();
 
+  /**
+   * @brief Creates ghost particles for a given particle in a specific cell.
+   * @param particle_id ID of the particle to create ghosts for.
+   * @param cell_index Index of the cell containing the particle.
+   */
   void create_ghost_particles(int particle_id, int cell_index);
 
+  /**
+   * @brief Creates a single ghost particle with a position offset.
+   * @param particle_id ID of the original particle.
+   * @param position_offset The offset to apply to the ghost particle's position.
+   * @return The created ghost particle.
+   */
   GhostParticle
   create_ghost_particle(int particle_id,
                         const std::array<double, 3> &position_offset);
 
+  /**
+   * @brief Gets additional neighboring ghost particles for a given particle.
+   * @param particle_id ID of the particle to find neighbors for.
+   * @return Vector of ghost particles that are neighbors of the given particle.
+   */
   std::vector<GhostParticle> get_additional_neighbour_indices(int particle_id);
 
 private:
+  /**
+   * @brief Adjusts the coordinates of the domain based on new boundaries.
+   * @param current_low_left The new lower left corner coordinates.
+   * @param current_up_right The new upper right corner coordinates.
+   */
   void readjust_coordinates(std::array<double, 3> current_low_left,
                             std::array<double, 3> current_up_right);
 

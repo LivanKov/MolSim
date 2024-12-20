@@ -17,8 +17,8 @@
     <boundary_conditions>
         <left>Periodic</left>
         <right>Periodic</right>
-        <top>Reflecting</top>
-        <bottom>Reflecting</bottom>
+        <top>Periodic</top>
+        <bottom>Periodic</bottom>
   </boundary_conditions>
     
     <cuboids>
