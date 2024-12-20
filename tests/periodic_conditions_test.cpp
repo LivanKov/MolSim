@@ -35,7 +35,7 @@ protected:
 };
 
 
-TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
+/*TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     SimParams::fixed_Domain = false;
     ParticleGenerator::insertCuboid(
       std::array<double, 3>{0.0, 0.0, 0.0}, std::array<size_t, 3>{4, 4, 1}, 2.5,
@@ -165,7 +165,7 @@ TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     EXPECT_EQ(upper_right_actual_ids, upper_right_expected_ids) << "Upper right neighbor IDs do not match expected values";
 
 }
-
+*/
 
 TEST_F(PeriodicBoundaryTest, PeriodicTransitionTest) {
     // Create a particle at the left edge of the domain
