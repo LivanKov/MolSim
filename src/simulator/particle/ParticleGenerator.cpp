@@ -94,5 +94,5 @@ void ParticleGenerator::insertSingleMolecule(
   if (!SimParams::fixed_Domain) {
     particles.readjust();
   }
-  Logger::getInstance().info("New single molecule generated");
+  Logger::getInstance().info("New single molecule generated.");
 }
