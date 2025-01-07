@@ -6,9 +6,8 @@
 #include <array>
 #include <cmath>
 #include <gtest/gtest.h>
-#include <simulator/calculations/Calculation.h>
-#include <simulator/calculations/BoundaryConditions.h>
-#include <simulator/calculations/Position.h>
+#include "simulator/calculations/Calculation.h"
+#include "simulator/calculations/Position.h"
 
 class PeriodicBoundaryTest : public ::testing::Test {
 protected:
@@ -35,11 +34,14 @@ protected:
 };
 
 
-/*TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
+TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     SimParams::fixed_Domain = false;
     ParticleGenerator::insertCuboid(
       std::array<double, 3>{0.0, 0.0, 0.0}, std::array<size_t, 3>{4, 4, 1}, 2.5,
       1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
+
+    Calculation<BoundaryConditions>::run(container);
+
 
     // Test basic container setup
     ASSERT_EQ(container.size(), 16) << "Container should have 16 particles";
@@ -59,6 +61,8 @@ protected:
 
     // Get and verify neighbors for corner particle
     auto neighbours = container.get_neighbours(0);
+
+    auto additional_neighbour_indices = container.get_additional_neighbour_indices(0);
     
     // Print debug info
     std::cout << "Number of neighbors found: " << neighbours.size() << std::endl;
@@ -69,13 +73,19 @@ protected:
     std::cout << std::endl;
 
     // TODO: Uncomment and adjust expected neighbor count once verified
-    EXPECT_EQ(neighbours.size(), 9) << "Corner particle should have 8 neighbors with periodic conditions";
+    EXPECT_EQ(neighbours.size() + additional_neighbour_indices.size(), 9) << "Corner particle should have 8 neighbors with periodic conditions";
 
     std::vector<int> expected_ids = {0, 1, 4, 5, 12, 13, 3, 7, 15};
     std::vector<int> actual_ids;
+    
     for (const auto& n : neighbours) {
         actual_ids.push_back(n->getId());
     }
+
+    for (const auto& n : additional_neighbour_indices) {
+        actual_ids.push_back(n.id);
+    }
+
     std::sort(actual_ids.begin(), actual_ids.end());
     std::sort(expected_ids.begin(), expected_ids.end());
     
@@ -89,6 +99,8 @@ protected:
 
     // Get and verify neighbors for bottom right particle
     auto bottom_right_neighbours = container.get_neighbours(3);
+
+    additional_neighbour_indices = container.get_additional_neighbour_indices(3);
     
     std::cout << "Number of neighbors for bottom right particle: " << bottom_right_neighbours.size() << std::endl;
     std::cout << "Bottom right neighbor particle IDs: ";
@@ -97,13 +109,18 @@ protected:
     }
     std::cout << std::endl;
 
-    EXPECT_EQ(bottom_right_neighbours.size(), 9) << "Bottom right particle should have 9 neighbors with periodic conditions";
+    EXPECT_EQ(bottom_right_neighbours.size() + additional_neighbour_indices.size(), 9) << "Bottom right particle should have 9 neighbors with periodic conditions";
 
     std::vector<int> bottom_right_expected_ids = {2, 3, 6, 7, 0, 4, 14, 15, 12};
     std::vector<int> bottom_right_actual_ids;
     for (const auto& n : bottom_right_neighbours) {
         bottom_right_actual_ids.push_back(n->getId());
     }
+
+    for (const auto& n : additional_neighbour_indices) {
+        bottom_right_actual_ids.push_back(n.id);
+    }
+
     std::sort(bottom_right_actual_ids.begin(), bottom_right_actual_ids.end());
     std::sort(bottom_right_expected_ids.begin(), bottom_right_expected_ids.end());
     
@@ -117,6 +134,8 @@ protected:
 
     // Get and verify neighbors for upper left particle
     auto upper_left_neighbours = container.get_neighbours(12);
+
+    additional_neighbour_indices = container.get_additional_neighbour_indices(12);
     
     std::cout << "Number of neighbors for upper left particle: " << upper_left_neighbours.size() << std::endl;
     std::cout << "Upper left neighbor particle IDs: ";
@@ -125,13 +144,18 @@ protected:
     }
     std::cout << std::endl;
 
-    EXPECT_EQ(upper_left_neighbours.size(), 9) << "Upper left particle should have 9 neighbors with periodic conditions";
+    EXPECT_EQ(upper_left_neighbours.size() + additional_neighbour_indices.size(), 9) << "Upper left particle should have 9 neighbors with periodic conditions";
 
     std::vector<int> upper_left_expected_ids = {8, 9, 12, 13, 0, 1, 11, 15, 3};
     std::vector<int> upper_left_actual_ids;
     for (const auto& n : upper_left_neighbours) {
         upper_left_actual_ids.push_back(n->getId());
     }
+
+    for (const auto& n : additional_neighbour_indices) {
+        upper_left_actual_ids.push_back(n.id);
+    }
+
     std::sort(upper_left_actual_ids.begin(), upper_left_actual_ids.end());
     std::sort(upper_left_expected_ids.begin(), upper_left_expected_ids.end());
     
@@ -144,6 +168,8 @@ protected:
 
     // Get and verify neighbors for upper right particle
     auto upper_right_neighbours = container.get_neighbours(15);
+
+    additional_neighbour_indices = container.get_additional_neighbour_indices(15);
     
     std::cout << "Number of neighbors for upper right particle: " << upper_right_neighbours.size() << std::endl;
     std::cout << "Upper right neighbor particle IDs: ";
@@ -152,20 +178,24 @@ protected:
     }
     std::cout << std::endl;
 
-    EXPECT_EQ(upper_right_neighbours.size(), 9) << "Upper right particle should have 9 neighbors with periodic conditions";
+    EXPECT_EQ(upper_right_neighbours.size() + additional_neighbour_indices.size(), 9) << "Upper right particle should have 9 neighbors with periodic conditions";
 
     std::vector<int> upper_right_expected_ids = {10, 11, 14, 15, 2, 3, 8, 12, 0};
     std::vector<int> upper_right_actual_ids;
     for (const auto& n : upper_right_neighbours) {
         upper_right_actual_ids.push_back(n->getId());
     }
+
+    for (const auto& n : additional_neighbour_indices) {
+        upper_right_actual_ids.push_back(n.id);
+    }
+
     std::sort(upper_right_actual_ids.begin(), upper_right_actual_ids.end());
     std::sort(upper_right_expected_ids.begin(), upper_right_expected_ids.end());
     
     EXPECT_EQ(upper_right_actual_ids, upper_right_expected_ids) << "Upper right neighbor IDs do not match expected values";
-
 }
-*/
+
 
 TEST_F(PeriodicBoundaryTest, PeriodicTransitionTest) {
     // Create a particle at the left edge of the domain
