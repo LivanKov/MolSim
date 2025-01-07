@@ -91,7 +91,7 @@ void VTKWriter::plotParticle(Particle &p) {
   dataIterator->push_back(p.getOldF()[2]);
 
   dataIterator++;
-  dataIterator->push_back(p.getType());
+  dataIterator->push_back(p.getId());
 
   Points::DataArray_sequence &pointsSequence =
       vtkFile->UnstructuredGrid()->Piece().Points().DataArray();

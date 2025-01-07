@@ -27,7 +27,7 @@ void CheckpointWriter::writeCheckpoint(LinkedCellContainer &particles,
     file << std::fixed << std::setprecision(6) << p.getX()[0] << " "
          << p.getX()[1] << " " << p.getX()[2] << " " << p.getV()[0] << " "
          << p.getV()[1] << " " << p.getV()[2] << " " << p.getM() << " "
-         << p.getType() << "\n";
+         << p.getId() << "\n";
   }
 
   file.close();

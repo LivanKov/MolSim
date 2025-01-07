@@ -9,6 +9,8 @@
 
 #include <array>
 #include <string>
+#include <vector>
+#include <memory>
 
 /**
  * @class Particle
@@ -147,7 +149,7 @@ public:
    * @return integer variable containing the mass of the particle.
    */
 
-  int getType() const;
+  int getId() const;
 
   /**
    * @brief returns the value, that correponds to particle epsilon.
@@ -259,6 +261,11 @@ public:
    */
 
   bool left_domain;
+
+  std::vector<std::shared_ptr<Particle>> membrane_neighbours;
+
+  std::vector<std::shared_ptr<Particle>> diagonal_membrane_neighbours;
+
 };
 
 /**

@@ -57,7 +57,7 @@ void LinkedCellContainer::initialize(
   cells = std::vector<Cell>(x * y * z, Cell());
 
   for (auto &p : particles.get_all_particles()) {
-    cells_map[p->getType()] = p;
+    cells_map[p->getId()] = p;
   }
 
   placement_map[Placement::TOP] = boundary_conditions.top;
@@ -107,13 +107,13 @@ void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
   if (placement && is_within_domain(p_ptr->getX())) {
     size_t index = get_cell_index(p_ptr->getX());
-    cells[index].insert(p_ptr->getType());
+    cells[index].insert(p_ptr->getId());
   } else if (!is_within_domain(p_ptr->getX())) {
     p_ptr->left_domain = true;
     particles_left_domain++;
   }
   particles.insert(p_ptr);
-  cells_map[p_ptr->getType()] = p_ptr;
+  cells_map[p_ptr->getId()] = p_ptr;
 }
 
 bool LinkedCellContainer::is_within_domain(

@@ -19,6 +19,8 @@ Particle::Particle(int type_arg) {
   old_f = {0., 0., 0.};
   left_domain = false;
   outbound = false;
+  membrane_neighbours = {};
+  diagonal_membrane_neighbours = {};
 }
 
 Particle::Particle(const Particle &other) {
@@ -34,6 +36,8 @@ Particle::Particle(const Particle &other) {
   epsilon = other.epsilon;
   sigma = other.sigma;
   outbound = other.outbound;
+  membrane_neighbours = other.membrane_neighbours;
+  diagonal_membrane_neighbours = other.diagonal_membrane_neighbours;
 }
 
 // Todo: maybe use initializater list instead of copy?
@@ -52,6 +56,8 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   epsilon = epsilon_arg;
   sigma = sigma_arg;
   outbound = false;
+  membrane_neighbours = {};
+  diagonal_membrane_neighbours = {};
 }
 
 Particle::~Particle() { Logger::getInstance().trace("Particle destroyed!"); }
@@ -68,7 +74,7 @@ const std::array<double, 3> &Particle::getOldF() const { return old_f; }
 
 double Particle::getM() const { return m; }
 
-int Particle::getType() const { return type; }
+int Particle::getId() const { return type; }
 
 double Particle::getEpsilon() const { return epsilon; }
 

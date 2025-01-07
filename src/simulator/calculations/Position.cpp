@@ -11,7 +11,7 @@ void Position::run(LinkedCellContainer &particles, double time_delta,
     p.updateOldX(old_x);
 
     if (option == OPTIONS::LINKED_CELLS) {
-      particles.update_particle_location(p.getType(), p.getOldX());
+      particles.update_particle_location(p.getId(), p.getOldX());
     }
   }
 }
