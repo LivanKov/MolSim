@@ -330,7 +330,7 @@ public:
    * @param particle_id ID of the particle to find neighbors for.
    * @return Vector of ghost particles that are neighbors of the given particle.
    */
-  std::vector<GhostParticle> get_additional_neighbour_indices(int particle_id);
+  std::vector<GhostParticle> get_periodic_neighbours(int particle_id);
 
 private:
   /**

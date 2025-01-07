@@ -62,7 +62,7 @@ TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     // Get and verify neighbors for corner particle
     auto neighbours = container.get_neighbours(0);
 
-    auto additional_neighbour_indices = container.get_additional_neighbour_indices(0);
+    auto additional_neighbour_indices = container.get_periodic_neighbours(0);
     
     // Print debug info
     std::cout << "Number of neighbors found: " << neighbours.size() << std::endl;
@@ -100,7 +100,7 @@ TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     // Get and verify neighbors for bottom right particle
     auto bottom_right_neighbours = container.get_neighbours(3);
 
-    additional_neighbour_indices = container.get_additional_neighbour_indices(3);
+    additional_neighbour_indices = container.get_periodic_neighbours(3);
     
     std::cout << "Number of neighbors for bottom right particle: " << bottom_right_neighbours.size() << std::endl;
     std::cout << "Bottom right neighbor particle IDs: ";
@@ -135,7 +135,7 @@ TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     // Get and verify neighbors for upper left particle
     auto upper_left_neighbours = container.get_neighbours(12);
 
-    additional_neighbour_indices = container.get_additional_neighbour_indices(12);
+    additional_neighbour_indices = container.get_periodic_neighbours(12);
     
     std::cout << "Number of neighbors for upper left particle: " << upper_left_neighbours.size() << std::endl;
     std::cout << "Upper left neighbor particle IDs: ";
@@ -169,7 +169,7 @@ TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     // Get and verify neighbors for upper right particle
     auto upper_right_neighbours = container.get_neighbours(15);
 
-    additional_neighbour_indices = container.get_additional_neighbour_indices(15);
+    additional_neighbour_indices = container.get_periodic_neighbours(15);
     
     std::cout << "Number of neighbors for upper right particle: " << upper_right_neighbours.size() << std::endl;
     std::cout << "Upper right neighbor particle IDs: ";

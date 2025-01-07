@@ -197,7 +197,7 @@ LinkedCellContainer::get_neighbours(int particle_id) {
 }
 
 std::vector<GhostParticle>
-LinkedCellContainer::get_additional_neighbour_indices(int particle_id) {
+LinkedCellContainer::get_periodic_neighbours(int particle_id) {
 
   auto cell_index = get_cell_index(cells_map[particle_id]->getX());
 
