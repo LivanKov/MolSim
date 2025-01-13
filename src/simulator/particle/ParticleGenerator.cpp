@@ -16,7 +16,7 @@ ParticleGenerator::ParticleGenerator() = default;
 
 void ParticleGenerator::insertCuboid(
     const std::array<double, 3> &lowerLeftFrontCorner,
-    const std::array<size_t, 3> &dimensions, double h, double m,
+    const std::array<size_t, 3> &dimensions, double h, double mass,
     const std::array<double, 3> &initialVelocity,
     LinkedCellContainer &particle_container, double epsilon, double sigma,
     bool is_membrane, double z_gravity) {
@@ -29,7 +29,7 @@ void ParticleGenerator::insertCuboid(
 
         std::array<double, 3> velocity = initialVelocity;
 
-        Particle particle(position, velocity, m, particle_container.particle_id,
+        Particle particle(position, velocity, mass, particle_container.particle_id,
                           epsilon, sigma);
         particle_container.particle_id++;
         Logger::getInstance().trace("New Particle generated");
