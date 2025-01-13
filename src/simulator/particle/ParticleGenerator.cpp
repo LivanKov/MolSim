@@ -32,6 +32,9 @@ void ParticleGenerator::insertCuboid(
 
         Particle particle(position, velocity, mass,
                           particle_container.particle_id, epsilon, sigma);
+
+        if(std::find(additional_force_coordinates.begin(), additional_force_coordinates.end(), position) != additional_force_coordinates.end())
+          SimParams::additional_force_particle_ids.insert(particle_container.particle_id);
         particle_container.particle_id++;
         Logger::getInstance().trace("New Particle generated");
         particle_container.insert(particle, true);

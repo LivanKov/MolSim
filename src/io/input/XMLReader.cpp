@@ -193,6 +193,8 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         double epsilon = cuboid.epsilon();
         double sigma = cuboid.sigma();
 
+        if()
+
         std::array<double, 3> initial_velocity = {
             cuboid.initial_velocity().x(), cuboid.initial_velocity().y(),
             cuboid.initial_velocity().z()};

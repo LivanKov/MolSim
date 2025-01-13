@@ -1,6 +1,7 @@
 #include "simulator/particle/container/LinkedCellContainer.h"
 #include <array>
 #include <string>
+#include <unordered_set>
 #pragma once
 
 struct SimParams {
@@ -44,7 +45,8 @@ struct SimParams {
   static double v_threshold;
 
   // additional force
-  static std::vector<std::array<double, 3>> additional_force_coordinates;
+  static std::unordered_set<int> additional_force_particle_ids;
   static double additional_force_z_gravity;
   static double additional_force_time_limit;
+  static bool enable_additional_force;
 };
