@@ -32,13 +32,14 @@ public:
    * @param averageVelocity Mean value of the velocity of the Brownian Motion.
    * @return ParticleContainer in accordance to the arguments passed.
    */
-  static void insertCuboid(const std::array<double, 3> &lowerLeftFrontCorner,
-                           const std::array<size_t, 3> &dimensions, double h,
-                           double mass,
-                           const std::array<double, 3> &initialVelocity,
+  static void insertCuboid(
+      const std::array<double, 3> &lowerLeftFrontCorner,
+      const std::array<size_t, 3> &dimensions, double h, double mass,
+      const std::array<double, 3> &initialVelocity,
 
-                           LinkedCellContainer &particles, double epsilon = 5.0,
-                           double sigma = 1.0, bool is_membrane = false, std::vector<std::array<double, 3>> additional_force_coordinates = {});
+      LinkedCellContainer &particles, double epsilon = 5.0, double sigma = 1.0,
+      bool is_membrane = false,
+      std::vector<std::array<double, 3>> additional_force_coordinates = {});
 
   /**
    * @brief Generate a disc of particles. The disc gets plotted along the
