@@ -8,9 +8,9 @@
 #pragma once
 
 #include <array>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 /**
  * @class Particle
@@ -265,7 +265,6 @@ public:
   std::vector<std::shared_ptr<Particle>> membrane_neighbours;
 
   std::vector<std::shared_ptr<Particle>> diagonal_membrane_neighbours;
-
 };
 
 /**
