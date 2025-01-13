@@ -19,7 +19,7 @@ void ParticleGenerator::insertCuboid(
     const std::array<size_t, 3> &dimensions, double h, double m,
     const std::array<double, 3> &initialVelocity,
     LinkedCellContainer &particle_container, double epsilon, double sigma,
-    bool is_membrane) {
+    bool is_membrane, double z_gravity) {
   for (size_t i = 0; i < dimensions[2]; ++i) {
     for (size_t j = 0; j < dimensions[1]; ++j) {
       for (size_t k = 0; k < dimensions[0]; ++k) {

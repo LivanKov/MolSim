@@ -57,7 +57,7 @@ public:
                          size_t radius, double h, double mass,
                          LinkedCellContainer &particle_container,
                          double epsilon = 5.0, double sigma = 1.0,
-                         bool is_membrane = false);
+                         bool is_membrane = false, bool z_gravity = 0.0);
 
   static void insertSingleMolecule(const std::array<double, 3> &position,
                                    const std::array<double, 3> &velocity,
