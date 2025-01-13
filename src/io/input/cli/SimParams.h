@@ -42,4 +42,9 @@ struct SimParams {
   // velocity threshold
   static bool enable_v_threshold;
   static double v_threshold;
+
+  // additional force
+  static std::vector<std::array<double, 3>> additional_force_coordinates;
+  static double additional_force_z_gravity;
+  static double additional_force_time_limit;
 };

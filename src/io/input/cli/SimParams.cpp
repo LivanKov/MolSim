@@ -8,3 +8,6 @@ bool SimParams::enable_thermo = false;
 double SimParams::gravity = 0.0;
 bool SimParams::enable_v_threshold = false;
 double SimParams::v_threshold = 0.0;
+std::vector<std::array<double, 3>> SimParams::additional_force_coordinates = {};
+double SimParams::additional_force_z_gravity = 0.0;
+double SimParams::additional_force_time_limit = 0.0;
