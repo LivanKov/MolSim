@@ -239,8 +239,10 @@ class center;
 class initial_velocity;
 class coordinate;
 class dimensions;
+class additional_force;
 class position;
 class velocity;
+class particle_coordinates;
 
 #include <memory>    // ::std::auto_ptr
 #include <limits>    // std::numeric_limits
@@ -1452,6 +1454,23 @@ class cuboid: public ::xml_schema::type
   void
   initial_velocity (::std::auto_ptr< initial_velocity_type > p);
 
+  // additional_force
+  //
+  typedef ::additional_force additional_force_type;
+  typedef ::xsd::cxx::tree::traits< additional_force_type, char > additional_force_traits;
+
+  const additional_force_type&
+  additional_force () const;
+
+  additional_force_type&
+  additional_force ();
+
+  void
+  additional_force (const additional_force_type& x);
+
+  void
+  additional_force (::std::auto_ptr< additional_force_type > p);
+
   // Constructors.
   //
   cuboid (const coordinate_type&,
@@ -1460,7 +1479,8 @@ class cuboid: public ::xml_schema::type
           const mass_type&,
           const epsilon_type&,
           const sigma_type&,
-          const initial_velocity_type&);
+          const initial_velocity_type&,
+          const additional_force_type&);
 
   cuboid (::std::auto_ptr< coordinate_type >,
           ::std::auto_ptr< dimensions_type >,
@@ -1468,7 +1488,8 @@ class cuboid: public ::xml_schema::type
           const mass_type&,
           const epsilon_type&,
           const sigma_type&,
-          ::std::auto_ptr< initial_velocity_type >);
+          ::std::auto_ptr< initial_velocity_type >,
+          ::std::auto_ptr< additional_force_type >);
 
   cuboid (const ::xercesc::DOMElement& e,
           ::xml_schema::flags f = 0,
@@ -1503,6 +1524,7 @@ class cuboid: public ::xml_schema::type
   ::xsd::cxx::tree::one< epsilon_type > epsilon_;
   ::xsd::cxx::tree::one< sigma_type > sigma_;
   ::xsd::cxx::tree::one< initial_velocity_type > initial_velocity_;
+  ::xsd::cxx::tree::one< additional_force_type > additional_force_;
 };
 
 class particle: public ::xml_schema::type
@@ -2007,6 +2029,74 @@ class dimensions: public ::xml_schema::type
   ::xsd::cxx::tree::one< z_type > z_;
 };
 
+class additional_force: public ::xml_schema::type
+{
+  public:
+  // particle_coordinates
+  //
+  typedef ::particle_coordinates particle_coordinates_type;
+  typedef ::xsd::cxx::tree::sequence< particle_coordinates_type > particle_coordinates_sequence;
+  typedef particle_coordinates_sequence::iterator particle_coordinates_iterator;
+  typedef particle_coordinates_sequence::const_iterator particle_coordinates_const_iterator;
+  typedef ::xsd::cxx::tree::traits< particle_coordinates_type, char > particle_coordinates_traits;
+
+  const particle_coordinates_sequence&
+  particle_coordinates () const;
+
+  particle_coordinates_sequence&
+  particle_coordinates ();
+
+  void
+  particle_coordinates (const particle_coordinates_sequence& s);
+
+  // z-grav
+  //
+  typedef ::xml_schema::double_ z_grav_type;
+  typedef ::xsd::cxx::tree::traits< z_grav_type, char, ::xsd::cxx::tree::schema_type::double_ > z_grav_traits;
+
+  const z_grav_type&
+  z_grav () const;
+
+  z_grav_type&
+  z_grav ();
+
+  void
+  z_grav (const z_grav_type& x);
+
+  // Constructors.
+  //
+  additional_force (const z_grav_type&);
+
+  additional_force (const ::xercesc::DOMElement& e,
+                    ::xml_schema::flags f = 0,
+                    ::xml_schema::container* c = 0);
+
+  additional_force (const additional_force& x,
+                    ::xml_schema::flags f = 0,
+                    ::xml_schema::container* c = 0);
+
+  virtual additional_force*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  additional_force&
+  operator= (const additional_force& x);
+
+  virtual 
+  ~additional_force ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  particle_coordinates_sequence particle_coordinates_;
+  ::xsd::cxx::tree::one< z_grav_type > z_grav_;
+};
+
 class position: public ::xml_schema::type
 {
   public:
@@ -2169,6 +2259,91 @@ class velocity: public ::xml_schema::type
   ::xsd::cxx::tree::one< x_type > x_;
   ::xsd::cxx::tree::one< y_type > y_;
   ::xsd::cxx::tree::one< z_type > z_;
+};
+
+class particle_coordinates: public ::xml_schema::type
+{
+  public:
+  // x
+  //
+  typedef ::xml_schema::double_ x_type;
+  typedef ::xsd::cxx::tree::traits< x_type, char, ::xsd::cxx::tree::schema_type::double_ > x_traits;
+
+  const x_type&
+  x () const;
+
+  x_type&
+  x ();
+
+  void
+  x (const x_type& x);
+
+  // y
+  //
+  typedef ::xml_schema::double_ y_type;
+  typedef ::xsd::cxx::tree::traits< y_type, char, ::xsd::cxx::tree::schema_type::double_ > y_traits;
+
+  const y_type&
+  y () const;
+
+  y_type&
+  y ();
+
+  void
+  y (const y_type& x);
+
+  // z
+  //
+  typedef ::xml_schema::double_ z_type;
+  typedef ::xsd::cxx::tree::optional< z_type > z_optional;
+  typedef ::xsd::cxx::tree::traits< z_type, char, ::xsd::cxx::tree::schema_type::double_ > z_traits;
+
+  const z_optional&
+  z () const;
+
+  z_optional&
+  z ();
+
+  void
+  z (const z_type& x);
+
+  void
+  z (const z_optional& x);
+
+  // Constructors.
+  //
+  particle_coordinates (const x_type&,
+                        const y_type&);
+
+  particle_coordinates (const ::xercesc::DOMElement& e,
+                        ::xml_schema::flags f = 0,
+                        ::xml_schema::container* c = 0);
+
+  particle_coordinates (const particle_coordinates& x,
+                        ::xml_schema::flags f = 0,
+                        ::xml_schema::container* c = 0);
+
+  virtual particle_coordinates*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  particle_coordinates&
+  operator= (const particle_coordinates& x);
+
+  virtual 
+  ~particle_coordinates ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< x_type > x_;
+  ::xsd::cxx::tree::one< y_type > y_;
+  z_optional z_;
 };
 
 #include <iosfwd>

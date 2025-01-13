@@ -139,6 +139,22 @@
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
+                                        <xs:element name="additional_force">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="particle_coordinates" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="x" type="xs:double"/>
+                                                                <xs:element name="y" type="xs:double"/>
+                                                                <xs:element name="z" type="xs:double" minOccurs="0"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="z-grav" type="xs:double"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
