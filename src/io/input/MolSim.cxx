@@ -1556,6 +1556,24 @@ z_grav (const z_grav_type& x)
   this->z_grav_.set (x);
 }
 
+const additional_force::time_limit_type& additional_force::
+time_limit () const
+{
+  return this->time_limit_.get ();
+}
+
+additional_force::time_limit_type& additional_force::
+time_limit ()
+{
+  return this->time_limit_.get ();
+}
+
+void additional_force::
+time_limit (const time_limit_type& x)
+{
+  this->time_limit_.set (x);
+}
+
 
 // position
 // 
@@ -4397,10 +4415,12 @@ dimensions::
 //
 
 additional_force::
-additional_force (const z_grav_type& z_grav)
+additional_force (const z_grav_type& z_grav,
+                  const time_limit_type& time_limit)
 : ::xml_schema::type (),
   particle_coordinates_ (this),
-  z_grav_ (z_grav, this)
+  z_grav_ (z_grav, this),
+  time_limit_ (time_limit, this)
 {
 }
 
@@ -4410,7 +4430,8 @@ additional_force (const additional_force& x,
                   ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   particle_coordinates_ (x.particle_coordinates_, f, this),
-  z_grav_ (x.z_grav_, f, this)
+  z_grav_ (x.z_grav_, f, this),
+  time_limit_ (x.time_limit_, f, this)
 {
 }
 
@@ -4420,7 +4441,8 @@ additional_force (const ::xercesc::DOMElement& e,
                   ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   particle_coordinates_ (this),
-  z_grav_ (this)
+  z_grav_ (this),
+  time_limit_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -4461,6 +4483,17 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // time_limit
+    //
+    if (n.name () == "time_limit" && n.namespace_ ().empty ())
+    {
+      if (!time_limit_.present ())
+      {
+        this->time_limit_.set (time_limit_traits::create (i, f, this));
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -4468,6 +4501,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   {
     throw ::xsd::cxx::tree::expected_element< char > (
       "z-grav",
+      "");
+  }
+
+  if (!time_limit_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "time_limit",
       "");
   }
 }
@@ -4487,6 +4527,7 @@ operator= (const additional_force& x)
     static_cast< ::xml_schema::type& > (*this) = x;
     this->particle_coordinates_ = x.particle_coordinates_;
     this->z_grav_ = x.z_grav_;
+    this->time_limit_ = x.time_limit_;
   }
 
   return *this;

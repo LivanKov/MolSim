@@ -2063,9 +2063,24 @@ class additional_force: public ::xml_schema::type
   void
   z_grav (const z_grav_type& x);
 
+  // time_limit
+  //
+  typedef ::xml_schema::double_ time_limit_type;
+  typedef ::xsd::cxx::tree::traits< time_limit_type, char, ::xsd::cxx::tree::schema_type::double_ > time_limit_traits;
+
+  const time_limit_type&
+  time_limit () const;
+
+  time_limit_type&
+  time_limit ();
+
+  void
+  time_limit (const time_limit_type& x);
+
   // Constructors.
   //
-  additional_force (const z_grav_type&);
+  additional_force (const z_grav_type&,
+                    const time_limit_type&);
 
   additional_force (const ::xercesc::DOMElement& e,
                     ::xml_schema::flags f = 0,
@@ -2095,6 +2110,7 @@ class additional_force: public ::xml_schema::type
   protected:
   particle_coordinates_sequence particle_coordinates_;
   ::xsd::cxx::tree::one< z_grav_type > z_grav_;
+  ::xsd::cxx::tree::one< time_limit_type > time_limit_;
 };
 
 class position: public ::xml_schema::type
