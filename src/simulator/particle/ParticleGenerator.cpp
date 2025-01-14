@@ -56,8 +56,7 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
                                    const std::array<double, 3> &initialVelocity,
                                    size_t radius, double h, double mass,
                                    LinkedCellContainer &particles,
-                                   double epsilon, double sigma,
-                                   bool is_membrane) {
+                                   double epsilon, double sigma) {
 
   // start on the point with the leftest x point then go the rightest x point
   for (double x = center[0] - radius * h; x <= center[0] + radius * h; x += h) {
@@ -88,9 +87,6 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
   }
   if (!SimParams::fixed_Domain) {
     particles.readjust();
-  }
-  if (is_membrane) {
-    Logger::getInstance().info("Membrane generated");
   }
   Logger::getInstance().info("New disk generated");
 }
