@@ -91,6 +91,9 @@ void Simulation::run(LinkedCellContainer &particles) {
 
   while (current_time < params_.end_time) {
 
+    SimParams::enable_additional_force = SimParams::additional_force_time_limit >=
+                                        current_time ? true : false;
+
     size_t molecules_this_iteration = particles.size();
 
     Calculation<Position>::run(particles, params_.time_delta, option);

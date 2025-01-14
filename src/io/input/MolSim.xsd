@@ -139,7 +139,7 @@
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
-                                        <xs:element name="additional_force">
+                                        <xs:element name="additional_force" minOccurs="0">
                                             <xs:complexType>
                                                 <xs:sequence>
                                                     <xs:element name="particle_coordinates" maxOccurs="unbounded">

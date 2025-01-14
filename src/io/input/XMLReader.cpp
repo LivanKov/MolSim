@@ -193,7 +193,11 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         double epsilon = cuboid.epsilon();
         double sigma = cuboid.sigma();
 
-        if()
+        if (cuboid.additional_force().present()) {
+          SimParams::enable_additional_force = true;  
+          SimParams::additional_force_z_gravity = cuboid.additional_force().get().z_grav();
+          SimParams::additional_force_time_limit = cuboid.additional_force().get().time_limit();
+        }
 
         std::array<double, 3> initial_velocity = {
             cuboid.initial_velocity().x(), cuboid.initial_velocity().y(),
