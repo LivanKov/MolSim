@@ -49,4 +49,8 @@ struct SimParams {
   static double additional_force_z_gravity;
   static double additional_force_time_limit;
   static bool enable_additional_force;
+
+  //membrane parameters
+  static double membrane_stiffness;
+  static double membrane_bond_length;
 };

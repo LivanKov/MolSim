@@ -211,7 +211,8 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         }
 
         if(cuboid.membrane().present()) {
-        
+          SimParams::membrane_bond_length = cuboid.membrane().get().r_0();
+          SimParams::membrane_stiffness = cuboid.membrane().get().k();
         }
 
         std::array<double, 3> initial_velocity = {
