@@ -2,6 +2,8 @@
 #include "../particle/container/LinkedCellContainer.h"
 #include "Calculation.h"
 
+#define TWO_SQRT 1.41421356237
+
 /**
  * @enum ForceType
  * @brief Enum class for the force calculation type.
@@ -28,6 +30,5 @@ private:
    */
   static void gravitational(LinkedCellContainer &particles, OPTIONS OPTION);
 
-  static void membrane(LinkedCellContainer &particles, double stiffness,
-                       double bond_length);
+  static void membrane(LinkedCellContainer &particles);
 };
