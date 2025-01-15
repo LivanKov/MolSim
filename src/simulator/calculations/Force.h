@@ -27,4 +27,7 @@ private:
    * @param particles DirectSumContainer reference.
    */
   static void gravitational(LinkedCellContainer &particles, OPTIONS OPTION);
+
+  static void membrane(LinkedCellContainer &particles, double stiffness,
+                       double bond_length);
 };
