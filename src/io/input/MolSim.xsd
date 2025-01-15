@@ -147,12 +147,20 @@
                                                             <xs:sequence>
                                                                 <xs:element name="x" type="xs:double"/>
                                                                 <xs:element name="y" type="xs:double"/>
-                                                                <xs:element name="z" type="xs:double" minOccurs="0"/>
+                                                                <xs:element name="z" type="xs:double"/>
                                                             </xs:sequence>
                                                         </xs:complexType>
                                                     </xs:element>
                                                     <xs:element name="z-grav" type="xs:double"/>
                                                     <xs:element name="time_limit" type="xs:double"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="membrane" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="k" type="xs:double"/>
+                                                    <xs:element name="r_0" type="xs:double"/>
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>

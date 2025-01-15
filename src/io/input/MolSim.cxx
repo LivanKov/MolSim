@@ -1162,6 +1162,36 @@ additional_force (::std::unique_ptr< additional_force_type > x)
   this->additional_force_.set (std::move (x));
 }
 
+const cuboid::membrane_optional& cuboid::
+membrane () const
+{
+  return this->membrane_;
+}
+
+cuboid::membrane_optional& cuboid::
+membrane ()
+{
+  return this->membrane_;
+}
+
+void cuboid::
+membrane (const membrane_type& x)
+{
+  this->membrane_.set (x);
+}
+
+void cuboid::
+membrane (const membrane_optional& x)
+{
+  this->membrane_ = x;
+}
+
+void cuboid::
+membrane (::std::unique_ptr< membrane_type > x)
+{
+  this->membrane_.set (std::move (x));
+}
+
 
 // particle
 //
@@ -1581,6 +1611,46 @@ time_limit (const time_limit_type& x)
 }
 
 
+// membrane
+//
+
+const membrane::k_type& membrane::
+k () const
+{
+  return this->k_.get ();
+}
+
+membrane::k_type& membrane::
+k ()
+{
+  return this->k_.get ();
+}
+
+void membrane::
+k (const k_type& x)
+{
+  this->k_.set (x);
+}
+
+const membrane::r_0_type& membrane::
+r_0 () const
+{
+  return this->r_0_.get ();
+}
+
+membrane::r_0_type& membrane::
+r_0 ()
+{
+  return this->r_0_.get ();
+}
+
+void membrane::
+r_0 (const r_0_type& x)
+{
+  this->r_0_.set (x);
+}
+
+
 // position
 //
 
@@ -1736,28 +1806,22 @@ y (const y_type& x)
   this->y_.set (x);
 }
 
-const particle_coordinates::z_optional& particle_coordinates::
+const particle_coordinates::z_type& particle_coordinates::
 z () const
 {
-  return this->z_;
+  return this->z_.get ();
 }
 
-particle_coordinates::z_optional& particle_coordinates::
+particle_coordinates::z_type& particle_coordinates::
 z ()
 {
-  return this->z_;
+  return this->z_.get ();
 }
 
 void particle_coordinates::
 z (const z_type& x)
 {
   this->z_.set (x);
-}
-
-void particle_coordinates::
-z (const z_optional& x)
-{
-  this->z_ = x;
 }
 
 
@@ -3326,7 +3390,8 @@ cuboid (const coordinate_type& coordinate,
   epsilon_ (epsilon, this),
   sigma_ (sigma, this),
   initial_velocity_ (initial_velocity, this),
-  additional_force_ (this)
+  additional_force_ (this),
+  membrane_ (this)
 {
 }
 
@@ -3346,7 +3411,8 @@ cuboid (::std::unique_ptr< coordinate_type > coordinate,
   epsilon_ (epsilon, this),
   sigma_ (sigma, this),
   initial_velocity_ (std::move (initial_velocity), this),
-  additional_force_ (this)
+  additional_force_ (this),
+  membrane_ (this)
 {
 }
 
@@ -3362,7 +3428,8 @@ cuboid (const cuboid& x,
   epsilon_ (x.epsilon_, f, this),
   sigma_ (x.sigma_, f, this),
   initial_velocity_ (x.initial_velocity_, f, this),
-  additional_force_ (x.additional_force_, f, this)
+  additional_force_ (x.additional_force_, f, this),
+  membrane_ (x.membrane_, f, this)
 {
 }
 
@@ -3378,7 +3445,8 @@ cuboid (const ::xercesc::DOMElement& e,
   epsilon_ (this),
   sigma_ (this),
   initial_velocity_ (this),
-  additional_force_ (this)
+  additional_force_ (this),
+  membrane_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -3497,6 +3565,20 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
+    // membrane
+    //
+    if (n.name () == "membrane" && n.namespace_ ().empty ())
+    {
+      ::std::unique_ptr< membrane_type > r (
+        membrane_traits::create (i, f, this));
+
+      if (!this->membrane_)
+      {
+        this->membrane_.set (::std::move (r));
+        continue;
+      }
+    }
+
     break;
   }
 
@@ -3571,6 +3653,7 @@ operator= (const cuboid& x)
     this->sigma_ = x.sigma_;
     this->initial_velocity_ = x.initial_velocity_;
     this->additional_force_ = x.additional_force_;
+    this->membrane_ = x.membrane_;
   }
 
   return *this;
@@ -4535,6 +4618,118 @@ additional_force::
 {
 }
 
+// membrane
+//
+
+membrane::
+membrane (const k_type& k,
+          const r_0_type& r_0)
+: ::xml_schema::type (),
+  k_ (k, this),
+  r_0_ (r_0, this)
+{
+}
+
+membrane::
+membrane (const membrane& x,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+: ::xml_schema::type (x, f, c),
+  k_ (x.k_, f, this),
+  r_0_ (x.r_0_, f, this)
+{
+}
+
+membrane::
+membrane (const ::xercesc::DOMElement& e,
+          ::xml_schema::flags f,
+          ::xml_schema::container* c)
+: ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+  k_ (this),
+  r_0_ (this)
+{
+  if ((f & ::xml_schema::flags::base) == 0)
+  {
+    ::xsd::cxx::xml::dom::parser< char > p (e, true, false, false);
+    this->parse (p, f);
+  }
+}
+
+void membrane::
+parse (::xsd::cxx::xml::dom::parser< char >& p,
+       ::xml_schema::flags f)
+{
+  for (; p.more_content (); p.next_content (false))
+  {
+    const ::xercesc::DOMElement& i (p.cur_element ());
+    const ::xsd::cxx::xml::qualified_name< char > n (
+      ::xsd::cxx::xml::dom::name< char > (i));
+
+    // k
+    //
+    if (n.name () == "k" && n.namespace_ ().empty ())
+    {
+      if (!k_.present ())
+      {
+        this->k_.set (k_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // r_0
+    //
+    if (n.name () == "r_0" && n.namespace_ ().empty ())
+    {
+      if (!r_0_.present ())
+      {
+        this->r_0_.set (r_0_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  if (!k_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "k",
+      "");
+  }
+
+  if (!r_0_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "r_0",
+      "");
+  }
+}
+
+membrane* membrane::
+_clone (::xml_schema::flags f,
+        ::xml_schema::container* c) const
+{
+  return new class membrane (*this, f, c);
+}
+
+membrane& membrane::
+operator= (const membrane& x)
+{
+  if (this != &x)
+  {
+    static_cast< ::xml_schema::type& > (*this) = x;
+    this->k_ = x.k_;
+    this->r_0_ = x.r_0_;
+  }
+
+  return *this;
+}
+
+membrane::
+~membrane ()
+{
+}
+
 // position
 //
 
@@ -4810,11 +5005,12 @@ velocity::
 
 particle_coordinates::
 particle_coordinates (const x_type& x,
-                      const y_type& y)
+                      const y_type& y,
+                      const z_type& z)
 : ::xml_schema::type (),
   x_ (x, this),
   y_ (y, this),
-  z_ (this)
+  z_ (z, this)
 {
 }
 
@@ -4881,7 +5077,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     //
     if (n.name () == "z" && n.namespace_ ().empty ())
     {
-      if (!this->z_)
+      if (!z_.present ())
       {
         this->z_.set (z_traits::create (i, f, this));
         continue;
@@ -4902,6 +5098,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   {
     throw ::xsd::cxx::tree::expected_element< char > (
       "y",
+      "");
+  }
+
+  if (!z_.present ())
+  {
+    throw ::xsd::cxx::tree::expected_element< char > (
+      "z",
       "");
   }
 }

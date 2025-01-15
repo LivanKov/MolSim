@@ -53,7 +53,7 @@
 
 #include <xsd/cxx/config.hxx>
 
-#if (XSD_INT_VERSION != 4000000L)
+#if (LIBXSD_VERSION != 400002000000000L)
 #error XSD runtime version mismatch
 #endif
 
@@ -244,6 +244,7 @@ class initial_velocity;
 class coordinate;
 class dimensions;
 class additional_force;
+class membrane;
 class position;
 class velocity;
 class particle_coordinates;
@@ -1485,6 +1486,27 @@ class cuboid: public ::xml_schema::type
   void
   additional_force (::std::unique_ptr< additional_force_type > p);
 
+  // membrane
+  //
+  typedef ::membrane membrane_type;
+  typedef ::xsd::cxx::tree::optional< membrane_type > membrane_optional;
+  typedef ::xsd::cxx::tree::traits< membrane_type, char > membrane_traits;
+
+  const membrane_optional&
+  membrane () const;
+
+  membrane_optional&
+  membrane ();
+
+  void
+  membrane (const membrane_type& x);
+
+  void
+  membrane (const membrane_optional& x);
+
+  void
+  membrane (::std::unique_ptr< membrane_type > p);
+
   // Constructors.
   //
   cuboid (const coordinate_type&,
@@ -1537,6 +1559,7 @@ class cuboid: public ::xml_schema::type
   ::xsd::cxx::tree::one< sigma_type > sigma_;
   ::xsd::cxx::tree::one< initial_velocity_type > initial_velocity_;
   additional_force_optional additional_force_;
+  membrane_optional membrane_;
 };
 
 class particle: public ::xml_schema::type
@@ -2125,6 +2148,72 @@ class additional_force: public ::xml_schema::type
   ::xsd::cxx::tree::one< time_limit_type > time_limit_;
 };
 
+class membrane: public ::xml_schema::type
+{
+  public:
+  // k
+  //
+  typedef ::xml_schema::double_ k_type;
+  typedef ::xsd::cxx::tree::traits< k_type, char, ::xsd::cxx::tree::schema_type::double_ > k_traits;
+
+  const k_type&
+  k () const;
+
+  k_type&
+  k ();
+
+  void
+  k (const k_type& x);
+
+  // r_0
+  //
+  typedef ::xml_schema::double_ r_0_type;
+  typedef ::xsd::cxx::tree::traits< r_0_type, char, ::xsd::cxx::tree::schema_type::double_ > r_0_traits;
+
+  const r_0_type&
+  r_0 () const;
+
+  r_0_type&
+  r_0 ();
+
+  void
+  r_0 (const r_0_type& x);
+
+  // Constructors.
+  //
+  membrane (const k_type&,
+            const r_0_type&);
+
+  membrane (const ::xercesc::DOMElement& e,
+            ::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0);
+
+  membrane (const membrane& x,
+            ::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0);
+
+  virtual membrane*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  membrane&
+  operator= (const membrane& x);
+
+  virtual 
+  ~membrane ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< k_type > k_;
+  ::xsd::cxx::tree::one< r_0_type > r_0_;
+};
+
 class position: public ::xml_schema::type
 {
   public:
@@ -2323,25 +2412,22 @@ class particle_coordinates: public ::xml_schema::type
   // z
   //
   typedef ::xml_schema::double_ z_type;
-  typedef ::xsd::cxx::tree::optional< z_type > z_optional;
   typedef ::xsd::cxx::tree::traits< z_type, char, ::xsd::cxx::tree::schema_type::double_ > z_traits;
 
-  const z_optional&
+  const z_type&
   z () const;
 
-  z_optional&
+  z_type&
   z ();
 
   void
   z (const z_type& x);
 
-  void
-  z (const z_optional& x);
-
   // Constructors.
   //
   particle_coordinates (const x_type&,
-                        const y_type&);
+                        const y_type&,
+                        const z_type&);
 
   particle_coordinates (const ::xercesc::DOMElement& e,
                         ::xml_schema::flags f = 0,
@@ -2371,7 +2457,7 @@ class particle_coordinates: public ::xml_schema::type
   protected:
   ::xsd::cxx::tree::one< x_type > x_;
   ::xsd::cxx::tree::one< y_type > y_;
-  z_optional z_;
+  ::xsd::cxx::tree::one< z_type > z_;
 };
 
 #include <iosfwd>
