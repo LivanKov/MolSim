@@ -12,3 +12,5 @@ std::unordered_set<int> SimParams::additional_force_particle_ids = {};
 double SimParams::additional_force_z_gravity = 0.0;
 double SimParams::additional_force_time_limit = 0.0;
 bool SimParams::enable_additional_force = false;
+double SimParams::membrane_stiffness = 0.0;
+double SimParams::membrane_bond_length = 0.0;
