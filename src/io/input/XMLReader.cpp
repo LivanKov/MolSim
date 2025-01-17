@@ -203,14 +203,13 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
 
         std::vector<std::array<double, 3>> additional_force_coordinates{};
 
-        for (const auto &coordinate : cuboid.additional_force().get()
-                                           .particle_coordinates()) {
-          additional_force_coordinates.push_back(
-              std::array<double, 3>{coordinate.x(), coordinate.y(),
-                                    coordinate.z()});
+        for (const auto &coordinate :
+             cuboid.additional_force().get().particle_coordinates()) {
+          additional_force_coordinates.push_back(std::array<double, 3>{
+              coordinate.x(), coordinate.y(), coordinate.z()});
         }
 
-        if(cuboid.membrane().present()) {
+        if (cuboid.membrane().present()) {
           SimParams::membrane_bond_length = cuboid.membrane().get().r_0();
           SimParams::membrane_stiffness = cuboid.membrane().get().k();
         }

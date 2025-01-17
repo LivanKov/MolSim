@@ -174,6 +174,11 @@ public:
   void set_boundary_conditions(DomainBoundaryConditions conditions);
 
   /**
+   * @brief Unique identifier for the next particle to be added.
+   */
+  size_t particle_id;
+
+  /**
    * @brief The size of the simulation domain.
    */
   std::vector<double> domain_size_;
@@ -260,11 +265,6 @@ public:
    * @brief Counter for particles that have left the simulation domain.
    */
   size_t particles_left_domain;
-
-  /**
-   * @brief Unique identifier for the next particle to be added.
-   */
-  size_t particle_id;
 
   /**
    * @brief Flag indicating if this container is a wrapper around another

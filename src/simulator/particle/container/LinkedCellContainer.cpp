@@ -96,12 +96,12 @@ void LinkedCellContainer::initialize(
 }
 
 LinkedCellContainer::LinkedCellContainer()
-    : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0.0, 0.0,
-                                                                   0.0},
-      x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{}, particle_id{0},
+    : particle_id{0}, domain_size_{0, 0, 0}, left_corner_coordinates{0.0, 0.0,
+                                                                     0.0},
+      placement_map{}, r_cutoff_{0}, x{0}, y{0}, z{0}, cells_map{},
       particles_left_domain{0}, is_wrapper{false}, halo_count{0},
-      reflective_flag{false}, periodic_flag{false}, halo_cell_indices{},
-      particles_outbound{}, placement_map{}, cell_ghost_particles_map{} {}
+      boundary_conditions_{}, reflective_flag{false}, periodic_flag{false},
+      halo_cell_indices{}, particles_outbound{}, cell_ghost_particles_map{} {}
 
 void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
@@ -184,7 +184,9 @@ LinkedCellContainer::get_neighbours(int particle_id) {
         int nj = j + dj;
         int nk = k + dk;
 
-        if (ni >= 0 && ni < x && nj >= 0 && nj < y && nk >= 0 && nk < z) {
+        if (ni >= 0 && static_cast<size_t>(ni) < x && nj >= 0 &&
+            static_cast<size_t>(nj) < y && nk >= 0 &&
+            static_cast<size_t>(nk) < z) {
           int neighborIndex = ni + (nj * x) + nk * x * y;
           for (auto &s : cells[neighborIndex].particle_ids) {
             neighbours.push_back(cells_map[s]);

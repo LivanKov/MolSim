@@ -143,11 +143,12 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       particle.updateF(particle.getF()[0],
                        particle.getF()[1] + gravitational_force_y,
                        particle.getF()[2]);
-      if(SimParams::additional_force_particle_ids.contains(particle.getId()) && SimParams::enable_additional_force) {
-          double additional_force = particle.getM() * SimParams::additional_force_z_gravity;
-          particle.updateF(particle.getF()[0],
-                       particle.getF()[1],
-                       particle.getF()[2] + additional_force);
+      if (SimParams::additional_force_particle_ids.contains(particle.getId()) &&
+          SimParams::enable_additional_force) {
+        double additional_force =
+            particle.getM() * SimParams::additional_force_z_gravity;
+        particle.updateF(particle.getF()[0], particle.getF()[1],
+                         particle.getF()[2] + additional_force);
       }
     }
   }
@@ -208,7 +209,9 @@ void Force::membrane(LinkedCellContainer &particles) {
       auto r12 = neighbour->getX() - p.getX();
       double distance = ArrayUtils::L2Norm(r12);
       if (distance > 1e-5) {
-        auto totalForce = SimParams::membrane_stiffness * (distance - SimParams::membrane_bond_length) * r12 / distance;
+        auto totalForce = SimParams::membrane_stiffness *
+                          (distance - SimParams::membrane_bond_length) * r12 /
+                          distance;
         p.updateF(p.getF() + totalForce);
         neighbour->updateF(neighbour->getF() - totalForce);
       }
@@ -238,11 +241,14 @@ void Force::membrane(LinkedCellContainer &particles) {
       }
     }
 
-    for(auto neighbour : p.diagonal_membrane_neighbours) {
+    for (auto neighbour : p.diagonal_membrane_neighbours) {
       auto r12 = neighbour->getX() - p.getX();
       double distance = ArrayUtils::L2Norm(r12);
       if (distance > 1e-5) {
-        auto totalForce = SimParams::membrane_stiffness * (distance - SimParams::membrane_bond_length * TWO_SQRT) * r12 / distance;
+        auto totalForce =
+            SimParams::membrane_stiffness *
+            (distance - SimParams::membrane_bond_length * TWO_SQRT) * r12 /
+            distance;
         p.updateF(p.getF() + totalForce);
         neighbour->updateF(neighbour->getF() - totalForce);
       }
@@ -271,6 +277,5 @@ void Force::membrane(LinkedCellContainer &particles) {
         neighbour->updateF(neighbour->getF() - force);
       }
     }
-
   }
 }

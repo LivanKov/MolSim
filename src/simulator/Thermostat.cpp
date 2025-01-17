@@ -107,7 +107,6 @@ void Thermostat::apply() {
       std::to_string(get_current_temperature()));
 }
 
-
 double Thermostat::calculate_kinetic_energy() const {
   double kinetic_energy = 0.0;
   size_t particle_count = particles_.size();
@@ -190,7 +189,7 @@ void Thermostat::initialize() {
         "No scaling required, because scaling_factor is 1.0");
     return;
   }
-  
+
   for (size_t i = 0; i < particles_.size(); ++i) {
     auto &p = particles_[i];
     auto &current_velocity = p.getV();

@@ -63,7 +63,6 @@ void BoundaryConditions::handle_reflect_conditions(
 
 void BoundaryConditions::handle_periodic_conditions(
     int particle_id, int cell_index, LinkedCellContainer &particles) {
-  auto position = particles.cells[cell_index].placement;
   particles.cells_map[particle_id]->outbound = false;
   particles.particles_outbound.erase(
       std::remove(particles.particles_outbound.begin(),

@@ -33,8 +33,11 @@ void ParticleGenerator::insertCuboid(
         Particle particle(position, velocity, mass,
                           particle_container.particle_id, epsilon, sigma);
 
-        if(std::find(additional_force_coordinates.begin(), additional_force_coordinates.end(), position) != additional_force_coordinates.end())
-          SimParams::additional_force_particle_ids.insert(particle_container.particle_id);
+        if (std::find(additional_force_coordinates.begin(),
+                      additional_force_coordinates.end(),
+                      position) != additional_force_coordinates.end())
+          SimParams::additional_force_particle_ids.insert(
+              particle_container.particle_id);
         particle_container.particle_id++;
         Logger::getInstance().trace("New Particle generated");
         particle_container.insert(particle, true);
@@ -126,8 +129,9 @@ void ParticleGenerator::generate_membrane(
         int nj = j + dj;
         int nk = k + dk;
 
-        if (ni >= 0 && ni < dimensions[0] && nj >= 0 && nj < dimensions[1] &&
-            nk >= 0 && nk < dimensions[2]) {
+        if (ni >= 0 && static_cast<size_t>(ni) < dimensions[0] && nj >= 0 &&
+            static_cast<size_t>(nj) < dimensions[1] && nk >= 0 &&
+            static_cast<size_t>(nk) < dimensions[2]) {
           int membrane_neighbour_index =
               ni + (nj * dimensions[0]) + nk * dimensions[0] * dimensions[1];
           int neighbour_id =
