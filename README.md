@@ -80,7 +80,7 @@ In this example:
 - **-o ../output/simulation_output** overrides the `output_path` specified in the XML file to set the output file path.
 - **-t 5** overrides the `write_frequence` specified in the XML file to set the write frequency to write a file every 5 iterations.
 
-### EML Example
+### XML Example
 Here is an example of an XML input file:
 
 ```xml
