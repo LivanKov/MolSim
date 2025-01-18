@@ -62,7 +62,7 @@ void LinkedCellContainer::initialize(
   for (auto &p : particles.get_all_particles()) {
     cells_map[p->getId()] = p;
   }
-
+  set_boundary_conditions(boundary_conditions);
   mark_halo_cells();
 }
 
@@ -220,20 +220,28 @@ void LinkedCellContainer::mark_halo_cells() {
 
           if (index == 0) {
             cells[index].placement = Placement::BOTTOM_LEFT_CORNER;
+
           } else if (index == x - 1) {
             cells[index].placement = Placement::BOTTOM_RIGHT_CORNER;
+            cells[index].boundary_condition = placement_map[BOTTOM_RIGHT_CORNER];
           } else if (index == x * y - x) {
             cells[index].placement = Placement::TOP_LEFT_CORNER;
+            cells[index].boundary_condition = placement_map[TOP_LEFT_CORNER];
           } else if (index == x * y - 1) {
             cells[index].placement = Placement::TOP_RIGHT_CORNER;
+            cells[index].boundary_condition = placement_map[TOP_RIGHT_CORNER];
           } else if (index < x) {
             cells[index].placement = Placement::BOTTOM;
+            cells[index].boundary_condition = placement_map[BOTTOM];
           } else if (index >= x * (y - 1)) {
             cells[index].placement = Placement::TOP;
+            cells[index].boundary_condition = placement_map[TOP];
           } else if (index % x == 0) {
             cells[index].placement = Placement::LEFT;
+            cells[index].boundary_condition = placement_map[LEFT];
           } else if ((index + 1) % x == 0) {
             cells[index].placement = Placement::RIGHT;
+            cells[index].boundary_condition = placement_map[RIGHT];
           }
         }
       }
