@@ -223,7 +223,8 @@ void LinkedCellContainer::mark_halo_cells() {
 
           } else if (index == x - 1) {
             cells[index].placement = Placement::BOTTOM_RIGHT_CORNER;
-            cells[index].boundary_condition = placement_map[BOTTOM_RIGHT_CORNER];
+            cells[index].boundary_condition =
+                placement_map[BOTTOM_RIGHT_CORNER];
           } else if (index == x * y - x) {
             cells[index].placement = Placement::TOP_LEFT_CORNER;
             cells[index].boundary_condition = placement_map[TOP_LEFT_CORNER];
