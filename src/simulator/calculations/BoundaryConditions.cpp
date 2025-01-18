@@ -6,24 +6,24 @@ void BoundaryConditions::run(LinkedCellContainer &particles) {
   particles.clear_ghost_particles();
   for (auto &cell_index : particles.halo_cell_indices) {
     for (auto &particle_id : particles.cells[cell_index].particle_ids) {
-      auto position = particles.cells[cell_index].placement;
-      if (particles.placement_map[position] == BoundaryCondition::Reflecting) {
+      auto &cell = particles.cells[cell_index];
+      if (cell.boundary_condition == BoundaryCondition::Reflecting) {
         handle_reflect_conditions(particle_id, cell_index, particles);
-      } else if (particles.placement_map[position] ==
+      } else if (cell.boundary_condition ==
                  BoundaryCondition::Periodic) {
         particles.create_ghost_particles(particle_id, cell_index);
       }
     }
 
     for (auto &particle_id : particles.particles_outbound) {
-      auto &particle = particles.cells_map[particle_id];
-      if (!particle->left_domain && !particle->outbound) {
-        auto cell_index = particles.get_cell_index(particle->getOldX());
-        auto position = particles.cells[cell_index].placement;
-        particle->outbound = true;
-        if (particles.placement_map[position] == BoundaryCondition::Outflow) {
+      auto &particle = particles[particle_id];
+      if (!particle.left_domain && !particle.outbound) {
+        auto cell_index = particles.get_cell_index(particle.getOldX());
+        auto &cell = particles.cells[cell_index];
+        particle.outbound = true;
+        if (cell.boundary_condition == BoundaryCondition::Outflow) {
           handle_outflow_conditions(particle_id, cell_index, particles);
-        } else if (particles.placement_map[position] ==
+        } else if (cell.boundary_condition ==
                    BoundaryCondition::Periodic) {
           handle_periodic_conditions(particle_id, cell_index, particles);
         }
