@@ -69,8 +69,6 @@ void BoundaryConditions::handle_periodic_conditions(
                   particles.particles_outbound.end(), particle_id),
       particles.particles_outbound.end());
 
-  auto old_x = particles.cells_map[particle_id]->getOldX();
-
   std::array<double, 3> location = particles.cells_map[particle_id]->getX();
 
   if (location[0] < particles.left_corner_coordinates[0])

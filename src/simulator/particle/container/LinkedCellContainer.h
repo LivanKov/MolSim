@@ -74,7 +74,7 @@ class LinkedCellContainer {
    */
   struct Cell {
     /** @brief Set of particle IDs contained in this cell. */
-    std::unordered_set<int> particle_ids;
+    std::vector<int> particle_ids;
 
     /** @brief Returns the number of particles in this cell.
      *  @return Number of particles in the cell.
@@ -98,6 +98,9 @@ class LinkedCellContainer {
 
     /** @brief The placement of this cell relative to the domain boundaries. */
     Placement placement;
+
+    /** @brief boundary condition of this cell */
+    BoundaryCondition boundary_condition;
   };
 
 public:

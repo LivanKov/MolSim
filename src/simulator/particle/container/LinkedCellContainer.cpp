@@ -6,9 +6,12 @@
 
 size_t LinkedCellContainer::Cell::size() const { return particle_ids.size(); }
 
-void LinkedCellContainer::Cell::insert(int id) { particle_ids.insert(id); }
+void LinkedCellContainer::Cell::insert(int id) { particle_ids.push_back(id); }
 
-void LinkedCellContainer::Cell::remove(int id) { particle_ids.erase(id); }
+void LinkedCellContainer::Cell::remove(int id) {
+  particle_ids.erase(std::remove(particle_ids.begin(), particle_ids.end(), id),
+                     particle_ids.end());
+}
 
 void LinkedCellContainer::initialize(
     const std::initializer_list<double> &domain_size, double r_cutoff,
@@ -59,38 +62,6 @@ void LinkedCellContainer::initialize(
   for (auto &p : particles.get_all_particles()) {
     cells_map[p->getId()] = p;
   }
-
-  placement_map[Placement::TOP] = boundary_conditions.top;
-  placement_map[Placement::BOTTOM] = boundary_conditions.bottom;
-  placement_map[Placement::LEFT] = boundary_conditions.left;
-  placement_map[Placement::RIGHT] = boundary_conditions.right;
-  placement_map[Placement::FRONT] = boundary_conditions.front;
-  placement_map[Placement::BACK] = boundary_conditions.back;
-
-  if (placement_map[Placement::TOP] == placement_map[Placement::RIGHT])
-    placement_map[Placement::TOP_RIGHT_CORNER] =
-        placement_map[Placement::RIGHT];
-  else
-    placement_map[Placement::TOP_RIGHT_CORNER] = placement_map[Placement::TOP];
-
-  if (placement_map[Placement::TOP] == placement_map[Placement::LEFT])
-    placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::LEFT];
-  else
-    placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::TOP];
-
-  if (placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT])
-    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
-        placement_map[Placement::RIGHT];
-  else
-    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
-        placement_map[Placement::BOTTOM];
-
-  if (placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT])
-    placement_map[Placement::BOTTOM_LEFT_CORNER] =
-        placement_map[Placement::LEFT];
-  else
-    placement_map[Placement::BOTTOM_LEFT_CORNER] =
-        placement_map[Placement::BOTTOM];
 
   mark_halo_cells();
 }
@@ -306,13 +277,39 @@ void LinkedCellContainer::readjust() {
 }
 
 void LinkedCellContainer::set_boundary_conditions(
-    DomainBoundaryConditions conditions) {
-  this->boundary_conditions_ = conditions;
-  placement_map[Placement::TOP] = conditions.top;
-  placement_map[Placement::BOTTOM] = conditions.bottom;
-  placement_map[Placement::LEFT] = conditions.left;
-  placement_map[Placement::RIGHT] = conditions.right;
-  placement_map[Placement::FRONT] = conditions.front;
+    DomainBoundaryConditions boundary_conditions) {
+  this->boundary_conditions_ = boundary_conditions;
+  placement_map[Placement::TOP] = boundary_conditions.top;
+  placement_map[Placement::BOTTOM] = boundary_conditions.bottom;
+  placement_map[Placement::LEFT] = boundary_conditions.left;
+  placement_map[Placement::RIGHT] = boundary_conditions.right;
+  placement_map[Placement::FRONT] = boundary_conditions.front;
+  placement_map[Placement::BACK] = boundary_conditions.back;
+
+  if (placement_map[Placement::TOP] == placement_map[Placement::RIGHT])
+    placement_map[Placement::TOP_RIGHT_CORNER] =
+        placement_map[Placement::RIGHT];
+  else
+    placement_map[Placement::TOP_RIGHT_CORNER] = placement_map[Placement::TOP];
+
+  if (placement_map[Placement::TOP] == placement_map[Placement::LEFT])
+    placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::LEFT];
+  else
+    placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::TOP];
+
+  if (placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT])
+    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
+        placement_map[Placement::RIGHT];
+  else
+    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
+        placement_map[Placement::BOTTOM];
+
+  if (placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT])
+    placement_map[Placement::BOTTOM_LEFT_CORNER] =
+        placement_map[Placement::LEFT];
+  else
+    placement_map[Placement::BOTTOM_LEFT_CORNER] =
+        placement_map[Placement::BOTTOM];
 }
 
 void LinkedCellContainer::clear_ghost_particles() {
