@@ -103,9 +103,9 @@ void LinkedCellContainer::update_particle_location(
     int particle_id, const std::array<double, 3> &old_position) {
 
   size_t old_index = get_cell_index(old_position);
-  size_t current_index = get_cell_index(cells_map[particle_id]->getX());
+  size_t current_index = get_cell_index(particles[particle_id].getX());
 
-  bool current_within_domain = is_within_domain(cells_map[particle_id]->getX());
+  bool current_within_domain = is_within_domain(particles[particle_id].getX());
 
   bool old_within_domain = is_within_domain(old_position);
 
@@ -126,10 +126,11 @@ void LinkedCellContainer::update_particle_location(
 std::vector<ParticlePointer>
 LinkedCellContainer::get_neighbours(int particle_id) {
   std::vector<ParticlePointer> neighbours{};
-  if (cells_map[particle_id]->left_domain || cells_map[particle_id]->outbound) {
+  if (particles[particle_id].left_domain ||
+      particles[particle_id].outbound) {
     return neighbours;
   }
-  std::array<double, 3> position = cells_map[particle_id]->getX();
+  std::array<double, 3> position = particles[particle_id].getX();
   int cell_index = get_cell_index(position);
 
   for (auto &i : cells[cell_index].particle_ids) {
@@ -328,11 +329,11 @@ void LinkedCellContainer::clear_ghost_particles() {
 GhostParticle LinkedCellContainer::create_ghost_particle(
     int particle_id, const std::array<double, 3> &position_offset) {
   GhostParticle ghost;
-  ghost.sigma = cells_map[particle_id]->getSigma();
-  ghost.epsilon = cells_map[particle_id]->getEpsilon();
-  ghost.position = {cells_map[particle_id]->getX()[0] + position_offset[0],
-                    cells_map[particle_id]->getX()[1] + position_offset[1],
-                    cells_map[particle_id]->getX()[2] + position_offset[2]};
+  ghost.sigma = particles[particle_id].getSigma();
+  ghost.epsilon = particles[particle_id].getEpsilon();
+  ghost.position = {particles[particle_id].getX()[0] + position_offset[0],
+                    particles[particle_id].getX()[1] + position_offset[1],
+                    particles[particle_id].getX()[2] + position_offset[2]};
   ghost.id = particle_id;
   ghost.ptr = cells_map[particle_id];
   return ghost;

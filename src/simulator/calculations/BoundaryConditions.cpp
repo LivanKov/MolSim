@@ -34,22 +34,22 @@ void BoundaryConditions::run(LinkedCellContainer &particles) {
 
 void BoundaryConditions::handle_reflect_conditions(
     int particle_id, int cell_index, LinkedCellContainer &particles) {
-  auto &velocity = particles.cells_map[particle_id]->getV();
+  auto &velocity = particles[particle_id].getV();
   auto &cell = particles.cells[cell_index];
   // Left boundary or Right boundary
   if (cell.placement == Placement::LEFT || cell.placement == Placement::RIGHT)
-    particles.cells_map[particle_id]->updateV(-velocity[0], velocity[1],
+    particles[particle_id].updateV(-velocity[0], velocity[1],
                                               velocity[2]);
 
   // Bottom boundary
   if (cell.placement == Placement::BOTTOM || cell.placement == Placement::TOP)
-    particles.cells_map[particle_id]->updateV(velocity[0], -velocity[1],
+    particles[particle_id].updateV(velocity[0], -velocity[1],
                                               velocity[2]);
 
   // Front or Back
   if (particles.z > 1 &&
       (cell.placement == Placement::FRONT || cell.placement == Placement::BACK))
-    particles.cells_map[particle_id]->updateV(velocity[0], velocity[1],
+    particles[particle_id].updateV(velocity[0], velocity[1],
                                               -velocity[2]);
 
   // handle corners
@@ -57,36 +57,36 @@ void BoundaryConditions::handle_reflect_conditions(
       cell.placement == Placement::TOP_RIGHT_CORNER ||
       cell.placement == Placement::TOP_LEFT_CORNER ||
       cell.placement == Placement::BOTTOM_RIGHT_CORNER)
-    particles.cells_map[particle_id]->updateV(-velocity[0], -velocity[1],
+    particles[particle_id].updateV(-velocity[0], -velocity[1],
                                               velocity[2]);
 }
 
 void BoundaryConditions::handle_periodic_conditions(
     int particle_id, int cell_index, LinkedCellContainer &particles) {
-  particles.cells_map[particle_id]->outbound = false;
+  particles[particle_id].outbound = false;
   particles.particles_outbound.erase(
       std::remove(particles.particles_outbound.begin(),
                   particles.particles_outbound.end(), particle_id),
       particles.particles_outbound.end());
 
-  std::array<double, 3> location = particles.cells_map[particle_id]->getX();
+  std::array<double, 3> location = particles[particle_id].getX();
 
   if (location[0] < particles.left_corner_coordinates[0])
-    particles.cells_map[particle_id]->updateX(
+    particles[particle_id].updateX(
         location[0] + particles.domain_size_[0], location[1], location[2]);
   if (location[0] >
       particles.left_corner_coordinates[0] + particles.domain_size_[0])
-    particles.cells_map[particle_id]->updateX(
+    particles[particle_id].updateX(
         location[0] - particles.domain_size_[0], location[1], location[2]);
   if (location[1] < particles.left_corner_coordinates[1])
-    particles.cells_map[particle_id]->updateX(
+    particles[particle_id].updateX(
         location[0], location[1] + particles.domain_size_[1], location[2]);
   if (location[1] >
       particles.left_corner_coordinates[1] + particles.domain_size_[1])
-    particles.cells_map[particle_id]->updateX(
+    particles[particle_id].updateX(
         location[0], location[1] - particles.domain_size_[1], location[2]);
 
-  particles.cells_map[particle_id]->updateOldX(location[0], location[1],
+  particles[particle_id].updateOldX(location[0], location[1],
                                                location[2]);
   particles.update_particle_location(particle_id, location);
 }
@@ -94,7 +94,7 @@ void BoundaryConditions::handle_periodic_conditions(
 void BoundaryConditions::handle_outflow_conditions(
     int particle_id, int cell_index, LinkedCellContainer &particles) {
 
-  auto &particle = particles.cells_map[particle_id];
-  particle->left_domain = true;
+  auto &particle = particles[particle_id];
+  particle.left_domain = true;
   particles.particles_left_domain++;
 }
