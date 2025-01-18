@@ -1,4 +1,4 @@
-#include "DirectSumContainer.h"
+#include "ParticleContainer.h"
 #include "utils/logger/Logger.h"
 #include <array>
 #include <initializer_list>
@@ -59,7 +59,7 @@ struct GhostParticle {
 /**
  * @class LinkedCellContainer
  * @brief Class that provides a container for particles that uses linked cells
- * to speed up the computation.Inherits from DirectSumContainer.
+ * to speed up the computation.Inherits from ParticleContainer.
  */
 class LinkedCellContainer {
 
@@ -225,7 +225,7 @@ public:
   /**
    * @brief A container of all particles in the domain.
    */
-  DirectSumContainer particles;
+  ParticleContainer particles;
 
   /**
    * @brief cell size for x,y,z

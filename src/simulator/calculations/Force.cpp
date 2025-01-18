@@ -1,5 +1,5 @@
 #include "Force.h"
-#include "../particle/container/DirectSumContainer.h"
+#include "../particle/container/ParticleContainer.h"
 #include "io/input/cli/SimParams.h"
 #include "utils/ArrayUtils.h"
 #include <iostream>

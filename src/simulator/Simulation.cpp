@@ -8,7 +8,7 @@
 #include "io/output/VTKWriter.h"
 #include "io/output/XYZWriter.h"
 #include "particle/ParticleGenerator.h"
-#include "particle/container/DirectSumContainer.h"
+#include "particle/container/ParticleContainer.h"
 #include "simulator/calculations/BoundaryConditions.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"

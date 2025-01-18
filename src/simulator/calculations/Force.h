@@ -1,4 +1,4 @@
-#include "../particle/container/DirectSumContainer.h"
+#include "../particle/container/ParticleContainer.h"
 #include "../particle/container/LinkedCellContainer.h"
 #include "Calculation.h"
 
@@ -21,12 +21,12 @@ struct Force : AbstractPolicy {
 private:
   /***
    * @brief Lennard-Jones force calculation.
-   * @param particles DirectSumContainer reference.
+   * @param particles ParticleContainer reference.
    **/
   static void lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION);
   /**
    * @brief Gravitational force calculation.
-   * @param particles DirectSumContainer reference.
+   * @param particles ParticleContainer reference.
    */
   static void gravitational(LinkedCellContainer &particles, OPTIONS OPTION);
 

@@ -9,7 +9,7 @@
 struct BoundaryConditions : AbstractPolicy {
   /**
    * @brief Runs the boundary conditions for particles.
-   * @param particles DirectSumContainer reference.
+   * @param particles ParticleContainer reference.
    */
   static void run(LinkedCellContainer &particles);
 
