@@ -91,16 +91,6 @@ void BoundaryConditions::handle_periodic_conditions(
   particles.cells_map[particle_id]->updateOldX(location[0], location[1],
                                                location[2]);
   particles.update_particle_location(particle_id, location);
-  if (!particles.is_within_domain(particles.cells_map[particle_id]->getX())) {
-    std::cout << "Out of domain" << std::endl;
-    std::cout << particles.cells_map[particle_id]->toString() << std::endl;
-    std::cout << particles.is_within_domain(
-                     particles.cells_map[particle_id]->getOldX())
-              << std::endl;
-    std::cout << "older location: " << old_x[0] << " " << old_x[1] << " "
-              << old_x[2] << std::endl;
-    std::cout << particles.is_within_domain(old_x) << std::endl;
-  }
 }
 
 void BoundaryConditions::handle_outflow_conditions(
