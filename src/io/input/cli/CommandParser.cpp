@@ -1,8 +1,7 @@
 #include "CommandParser.h"
 #include <getopt.h>
-#include <string>
 #include <iostream>
-
+#include <string>
 
 void CommandParser::print_help() {
   std::cout << "Usage: MolSim [options]\n";
@@ -26,7 +25,7 @@ void CommandParser::print_help() {
                "performance\n";
 }
 
-SimParams& CommandParser::parse(int argc, char **argv, SimParams &parameters) {
+SimParams &CommandParser::parse(int argc, char **argv, SimParams &parameters) {
   if (argc < 2) {
     print_help();
   }

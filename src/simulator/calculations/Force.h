@@ -1,5 +1,5 @@
-#include "../particle/container/ParticleContainer.h"
 #include "../particle/container/LinkedCellContainer.h"
+#include "../particle/container/ParticleContainer.h"
 #include "Calculation.h"
 
 #define TWO_SQRT 1.41421356237
