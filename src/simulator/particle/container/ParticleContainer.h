@@ -129,6 +129,8 @@ public:
 
   std::vector<ParticlePointer> &get_all_particles();
 
+  ParticlePointer& at(size_t index);
+
 protected:
   /**
    * @brief Creates particle pairs for newly inserted particle.

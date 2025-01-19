@@ -98,6 +98,10 @@ std::vector<ParticlePointer> &ParticleContainer::get_all_particles() {
   return _particle_container;
 }
 
+ParticlePointer& ParticleContainer::at(size_t index) {
+  return _particle_container[index];
+}
+
 void ParticleContainer::create_pairs(const ParticlePointer &new_particle) {
   for (auto const &p : _particle_container) {
     if (*new_particle != *p)

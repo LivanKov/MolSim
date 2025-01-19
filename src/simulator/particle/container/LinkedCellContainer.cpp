@@ -58,10 +58,6 @@ void LinkedCellContainer::initialize(
           ? (static_cast<size_t>((domain_size_[2] / r_cutoff)))
           : 1;
   cells = std::vector<Cell>(x * y * z, Cell());
-
-  for (auto &p : particles.get_all_particles()) {
-    cells_map[p->getId()] = p;
-  }
   set_boundary_conditions(boundary_conditions);
   mark_halo_cells();
 }
@@ -69,7 +65,7 @@ void LinkedCellContainer::initialize(
 LinkedCellContainer::LinkedCellContainer()
     : particle_id{0}, domain_size_{0, 0, 0}, left_corner_coordinates{0.0, 0.0,
                                                                      0.0},
-      placement_map{}, r_cutoff_{0}, x{0}, y{0}, z{0}, cells_map{},
+      placement_map{}, r_cutoff_{0}, x{0}, y{0}, z{0},
       particles_left_domain{0}, is_wrapper{false}, halo_count{0},
       boundary_conditions_{}, reflective_flag{false}, periodic_flag{false},
       halo_cell_indices{}, particles_outbound{}, cell_ghost_particles_map{} {}
@@ -84,7 +80,6 @@ void LinkedCellContainer::insert(Particle &p, bool placement) {
     particles_left_domain++;
   }
   particles.insert(p_ptr);
-  cells_map[p_ptr->getId()] = p_ptr;
 }
 
 bool LinkedCellContainer::is_within_domain(
@@ -134,7 +129,7 @@ LinkedCellContainer::get_neighbours(int particle_id) {
   int cell_index = get_cell_index(position);
 
   for (auto &i : cells[cell_index].particle_ids) {
-    neighbours.push_back(cells_map[i]);
+    neighbours.push_back(particles.at(i));
   }
 
   size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) /
@@ -161,7 +156,7 @@ LinkedCellContainer::get_neighbours(int particle_id) {
             static_cast<size_t>(nk) < z) {
           int neighborIndex = ni + (nj * x) + nk * x * y;
           for (auto &s : cells[neighborIndex].particle_ids) {
-            neighbours.push_back(cells_map[s]);
+            neighbours.push_back(particles.at(s));
           }
         }
       }
@@ -173,7 +168,7 @@ LinkedCellContainer::get_neighbours(int particle_id) {
 std::vector<GhostParticle>
 LinkedCellContainer::get_periodic_neighbours(int particle_id) {
 
-  auto cell_index = get_cell_index(cells_map[particle_id]->getX());
+  auto cell_index = get_cell_index(particles[particle_id].getX());
 
   std::vector<GhostParticle> ghost_neighbours =
       cell_ghost_particles_map[cell_index];
@@ -205,6 +200,10 @@ size_t LinkedCellContainer::size() { return particles.size(); }
 
 Particle &LinkedCellContainer::operator[](size_t index) {
   return particles[index];
+}
+
+ParticlePointer& LinkedCellContainer::at(size_t index) {
+  return particles.at(index);
 }
 
 void LinkedCellContainer::mark_halo_cells() {
@@ -335,7 +334,7 @@ GhostParticle LinkedCellContainer::create_ghost_particle(
                     particles[particle_id].getX()[1] + position_offset[1],
                     particles[particle_id].getX()[2] + position_offset[2]};
   ghost.id = particle_id;
-  ghost.ptr = cells_map[particle_id];
+  ghost.ptr = particles.at(particle_id);
   return ghost;
 }
 

@@ -258,11 +258,8 @@ public:
    */
   Particle &operator[](size_t index);
 
-  /**
-   * @brief Maps particle IDs to their corresponding cell pointers.
-   * Used for efficient particle lookup in the linked cell structure.
-   */
-  std::unordered_map<int, ParticlePointer> cells_map;
+
+  ParticlePointer& at(size_t index);
 
   /**
    * @brief Counter for particles that have left the simulation domain.

@@ -141,12 +141,12 @@ void ParticleGenerator::generate_membrane(
           if (std::abs(di) + std::abs(dj) + std::abs(dk) > 1) {
             particle_container[particle_id]
                 .diagonal_membrane_neighbours.push_back(
-                    particle_container.cells_map[neighbour_id]);
+                    particle_container.at(neighbour_id));
           } else {
             // horizontal membrane member
             particle_container[particle_id]
                 .membrane_neighbours.push_back(
-                    particle_container.cells_map[neighbour_id]);
+                    particle_container.at(neighbour_id));
           }
         }
       }
