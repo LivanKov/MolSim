@@ -220,7 +220,8 @@ void LinkedCellContainer::mark_halo_cells() {
 
           if (index == 0) {
             cells[index].placement = Placement::BOTTOM_LEFT_CORNER;
-
+            cells[index].boundary_condition =
+                placement_map[BOTTOM_LEFT_CORNER];
           } else if (index == x - 1) {
             cells[index].placement = Placement::BOTTOM_RIGHT_CORNER;
             cells[index].boundary_condition =
@@ -344,6 +345,39 @@ ParticleIterator LinkedCellContainer::begin() {
 
 ParticleIterator LinkedCellContainer::end() {
   return particles.end();
+}
+
+void LinkedCellContainer::precompute_neighbours() {
+  for(size_t index = 0; index < cells.size(); ++index) {
+    //x-coordinate
+    size_t i = index % x;
+    //y-coordinate
+    size_t j = (index / x) % y;
+    //z-coordinate
+    size_t k = index / (x * y);
+
+
+    for (int di = -1; di <= 1; ++di) {
+      for (int dj = -1; dj <= 1; ++dj) {
+        for (int dk = -1; dk <= 1; ++dk) {
+          if (di == 0 && dj == 0 && dk == 0) {
+            continue;
+          }
+          int ni = i + di;
+          int nj = j + dj;
+          int nk = k + dk;
+
+          if (ni >= 0 && static_cast<size_t>(ni) < x && nj >= 0 &&
+              static_cast<size_t>(nj) < y && nk >= 0 &&
+              static_cast<size_t>(nk) < z) {
+            int neighborIndex = ni + (nj * x) + nk * x * y;
+            cells[index].neighbour_indices.push_back(neighborIndex);
+            
+          }
+        }
+      }
+    }
+  }
 }
 
 void LinkedCellContainer::create_ghost_particles(int particle_id,

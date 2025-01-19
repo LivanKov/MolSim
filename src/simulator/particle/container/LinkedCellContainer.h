@@ -101,6 +101,8 @@ class LinkedCellContainer {
 
     /** @brief boundary condition of this cell */
     BoundaryCondition boundary_condition;
+
+    std::vector<size_t> neighbour_indices;
   };
 
 public:
@@ -339,9 +341,9 @@ public:
    */
   std::vector<GhostParticle> get_periodic_neighbours(int particle_id);
 
+  void precompute_neighbours();
 
   ParticleIterator begin();
-
 
   ParticleIterator end();
 
