@@ -339,6 +339,12 @@ public:
    */
   std::vector<GhostParticle> get_periodic_neighbours(int particle_id);
 
+
+  ParticleIterator begin();
+
+
+  ParticleIterator end();
+
 private:
   /**
    * @brief Adjusts the coordinates of the domain based on new boundaries.

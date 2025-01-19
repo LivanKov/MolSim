@@ -338,6 +338,14 @@ GhostParticle LinkedCellContainer::create_ghost_particle(
   return ghost;
 }
 
+ParticleIterator LinkedCellContainer::begin() {
+  return particles.begin();
+}
+
+ParticleIterator LinkedCellContainer::end() {
+  return particles.end();
+}
+
 void LinkedCellContainer::create_ghost_particles(int particle_id,
                                                  int cell_index) {
   const auto &placement = cells[cell_index].placement;

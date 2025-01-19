@@ -19,7 +19,7 @@ void Force::run(LinkedCellContainer &particles, ForceType type,
 void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
   if (OPTION == OPTIONS::DIRECT_SUM) {
 
-    for (auto &p : particles.particles) {
+    for (auto &p : particles) {
       p.updateOldF(p.getF());
       p.updateF(0, 0, 0);
     }
@@ -59,11 +59,11 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       }
     }
   } else {
-    for (auto &p : particles.particles) {
+    for (auto &p : particles) {
       p.updateOldF(p.getF());
       p.updateF(0, 0, 0);
     }
-    for (auto &particle : particles.particles) {
+    for (auto &particle : particles) {
       for (auto &neighbour : particles.get_neighbours(particle.getId())) {
         if (*neighbour != particle) {
           auto r12 = neighbour->getX() - particle.getX();
@@ -100,7 +100,7 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       }
     }
 
-    for (auto &particle : particles.particles) {
+    for (auto &particle : particles) {
       for (auto &neighbour :
            particles.get_periodic_neighbours(particle.getId())) {
         if (*(neighbour.ptr) != particle) {
@@ -138,7 +138,7 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
   }
 
   if (SimParams::enable_gravity) {
-    for (auto &particle : particles.particles) {
+    for (auto &particle : particles) {
       double gravitational_force_y = particle.getM() * SimParams::gravity;
       particle.updateF(particle.getF()[0],
                        particle.getF()[1] + gravitational_force_y,
@@ -158,7 +158,7 @@ void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
   // store the current force as the old force and reset current to 0
 
   if (OPTION == OPTIONS::DIRECT_SUM) {
-    for (auto &p : particles.particles) {
+    for (auto &p : particles) {
       p.updateOldF(p.getF());
       p.updateF(0, 0, 0);
     }
@@ -183,11 +183,11 @@ void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
       }
     }
   } else {
-    for (auto &p : particles.particles) {
+    for (auto &p : particles) {
       p.updateOldF(p.getF());
       p.updateF(0, 0, 0);
     }
-    for (auto &particle : particles.particles) {
+    for (auto &particle : particles) {
       for (auto neighbour : particles.get_neighbours(particle.getId())) {
         auto r12 = neighbour->getX() - particle.getX();
         double distance = ArrayUtils::L2Norm(r12);
@@ -204,7 +204,7 @@ void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
 }
 
 void Force::membrane(LinkedCellContainer &particles) {
-  for (auto &p : particles.particles) {
+  for (auto &p : particles) {
     for (auto neighbour : p.membrane_neighbours) {
       auto r12 = neighbour->getX() - p.getX();
       double distance = ArrayUtils::L2Norm(r12);
