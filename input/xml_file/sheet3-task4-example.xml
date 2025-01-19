@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MolSim>
+    <simulation_parameters>
+        <end_time>10</end_time>
+        <delta_time>0.002</delta_time>
+        <output_basename>../output</output_basename>
+        <write_frequency>10</write_frequency>
+        <r_cutoff_radius>3.0</r_cutoff_radius>
+        <enable_brownian>false</enable_brownian>
+        <domain_size>
+            <x>120.0</x>
+            <y>50.0</y>
+            <z>0.0</z>
+        </domain_size>
+    </simulation_parameters>
+    <boundary_conditions>
+        <left>Periodic</left>
+        <right>Periodic</right>
+        <top>Reflecting</top>
+        <bottom>Reflecting</bottom>
+  </boundary_conditions>
+    <discs>
+        <disc>
+            <center>
+                <x>60.0</x>
+                <y>25.0</y>
+                <z>0.0</z>
+            </center>
+            <initial_velocity>
+                <x>0.0</x>
+                <y>-10.0</y>
+                <z>0.0</z>
+            </initial_velocity>
+            <radius>15</radius>
+            <mesh_width>1.1225</mesh_width>
+            <mass>1.0</mass>
+            <epsilon>5.0</epsilon>
+            <sigma>1.0</sigma>
+        </disc>
+    </discs>
+</MolSim>

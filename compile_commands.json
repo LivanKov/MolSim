@@ -1,0 +1,242 @@
+[
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/MolSim.cpp.o -c /home/ivan/MolSim/src/MolSim.cpp",
+  "file": "/home/ivan/MolSim/src/MolSim.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/io/input/CheckpointReader.cpp.o -c /home/ivan/MolSim/src/io/input/CheckpointReader.cpp",
+  "file": "/home/ivan/MolSim/src/io/input/CheckpointReader.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/io/input/FileReader.cpp.o -c /home/ivan/MolSim/src/io/input/FileReader.cpp",
+  "file": "/home/ivan/MolSim/src/io/input/FileReader.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/io/input/XMLReader.cpp.o -c /home/ivan/MolSim/src/io/input/XMLReader.cpp",
+  "file": "/home/ivan/MolSim/src/io/input/XMLReader.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/io/input/cli/SimParams.cpp.o -c /home/ivan/MolSim/src/io/input/cli/SimParams.cpp",
+  "file": "/home/ivan/MolSim/src/io/input/cli/SimParams.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/io/output/CheckpointWriter.cpp.o -c /home/ivan/MolSim/src/io/output/CheckpointWriter.cpp",
+  "file": "/home/ivan/MolSim/src/io/output/CheckpointWriter.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/io/output/FileWriter.cpp.o -c /home/ivan/MolSim/src/io/output/FileWriter.cpp",
+  "file": "/home/ivan/MolSim/src/io/output/FileWriter.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/io/output/VTKWriter.cpp.o -c /home/ivan/MolSim/src/io/output/VTKWriter.cpp",
+  "file": "/home/ivan/MolSim/src/io/output/VTKWriter.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/io/output/XYZWriter.cpp.o -c /home/ivan/MolSim/src/io/output/XYZWriter.cpp",
+  "file": "/home/ivan/MolSim/src/io/output/XYZWriter.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/io/output/outputUtils/vtk-unstructured.cpp.o -c /home/ivan/MolSim/src/io/output/outputUtils/vtk-unstructured.cpp",
+  "file": "/home/ivan/MolSim/src/io/output/outputUtils/vtk-unstructured.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/simulator/Simulation.cpp.o -c /home/ivan/MolSim/src/simulator/Simulation.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/Simulation.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/simulator/Thermostat.cpp.o -c /home/ivan/MolSim/src/simulator/Thermostat.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/Thermostat.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/simulator/calculations/BoundaryConditions.cpp.o -c /home/ivan/MolSim/src/simulator/calculations/BoundaryConditions.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/calculations/BoundaryConditions.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/simulator/calculations/Force.cpp.o -c /home/ivan/MolSim/src/simulator/calculations/Force.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/calculations/Force.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/simulator/calculations/Position.cpp.o -c /home/ivan/MolSim/src/simulator/calculations/Position.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/calculations/Position.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/simulator/calculations/Velocity.cpp.o -c /home/ivan/MolSim/src/simulator/calculations/Velocity.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/calculations/Velocity.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/simulator/particle/Particle.cpp.o -c /home/ivan/MolSim/src/simulator/particle/Particle.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/particle/Particle.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/simulator/particle/ParticleGenerator.cpp.o -c /home/ivan/MolSim/src/simulator/particle/ParticleGenerator.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/particle/ParticleGenerator.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/simulator/particle/container/DirectSumContainer.cpp.o -c /home/ivan/MolSim/src/simulator/particle/container/DirectSumContainer.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/particle/container/DirectSumContainer.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/simulator/particle/container/LinkedCellContainer.cpp.o -c /home/ivan/MolSim/src/simulator/particle/container/LinkedCellContainer.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/particle/container/LinkedCellContainer.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/utils/logger/Logger.cpp.o -c /home/ivan/MolSim/src/utils/logger/Logger.cpp",
+  "file": "/home/ivan/MolSim/src/utils/logger/Logger.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/libs/libxsd -I/home/ivan/MolSim/src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -Wall -std=gnu++20 -o CMakeFiles/MolSim.dir/src/io/input/MolSim.cxx.o -c /home/ivan/MolSim/src/io/input/MolSim.cxx",
+  "file": "/home/ivan/MolSim/src/io/input/MolSim.cxx"
+},
+{
+  "directory": "/home/ivan/MolSim/build/_deps/spdlog-build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -std=c++11 -o CMakeFiles/spdlog.dir/src/spdlog.cpp.o -c /home/ivan/MolSim/build/_deps/spdlog-src/src/spdlog.cpp",
+  "file": "/home/ivan/MolSim/build/_deps/spdlog-src/src/spdlog.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/_deps/spdlog-build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -std=c++11 -o CMakeFiles/spdlog.dir/src/stdout_sinks.cpp.o -c /home/ivan/MolSim/build/_deps/spdlog-src/src/stdout_sinks.cpp",
+  "file": "/home/ivan/MolSim/build/_deps/spdlog-src/src/stdout_sinks.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/_deps/spdlog-build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -std=c++11 -o CMakeFiles/spdlog.dir/src/color_sinks.cpp.o -c /home/ivan/MolSim/build/_deps/spdlog-src/src/color_sinks.cpp",
+  "file": "/home/ivan/MolSim/build/_deps/spdlog-src/src/color_sinks.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/_deps/spdlog-build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -std=c++11 -o CMakeFiles/spdlog.dir/src/file_sinks.cpp.o -c /home/ivan/MolSim/build/_deps/spdlog-src/src/file_sinks.cpp",
+  "file": "/home/ivan/MolSim/build/_deps/spdlog-src/src/file_sinks.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/_deps/spdlog-build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -std=c++11 -o CMakeFiles/spdlog.dir/src/async.cpp.o -c /home/ivan/MolSim/build/_deps/spdlog-src/src/async.cpp",
+  "file": "/home/ivan/MolSim/build/_deps/spdlog-src/src/async.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/_deps/spdlog-build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -std=c++11 -o CMakeFiles/spdlog.dir/src/cfg.cpp.o -c /home/ivan/MolSim/build/_deps/spdlog-src/src/cfg.cpp",
+  "file": "/home/ivan/MolSim/build/_deps/spdlog-src/src/cfg.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/_deps/spdlog-build",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -I/home/ivan/MolSim/build/_deps/spdlog-src/include -O3 -DNDEBUG -std=c++11 -o CMakeFiles/spdlog.dir/src/bundled_fmtlib_format.cpp.o -c /home/ivan/MolSim/build/_deps/spdlog-src/src/bundled_fmtlib_format.cpp",
+  "file": "/home/ivan/MolSim/build/_deps/spdlog-src/src/bundled_fmtlib_format.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/basic_test.cpp.o -c /home/ivan/MolSim/tests/basic_test.cpp",
+  "file": "/home/ivan/MolSim/tests/basic_test.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/generator_test.cpp.o -c /home/ivan/MolSim/tests/generator_test.cpp",
+  "file": "/home/ivan/MolSim/tests/generator_test.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/linked_cell.cpp.o -c /home/ivan/MolSim/tests/linked_cell.cpp",
+  "file": "/home/ivan/MolSim/tests/linked_cell.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/boundary_conditions_test.cpp.o -c /home/ivan/MolSim/tests/boundary_conditions_test.cpp",
+  "file": "/home/ivan/MolSim/tests/boundary_conditions_test.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/thermostat_test.cpp.o -c /home/ivan/MolSim/tests/thermostat_test.cpp",
+  "file": "/home/ivan/MolSim/tests/thermostat_test.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/periodic_conditions_test.cpp.o -c /home/ivan/MolSim/tests/periodic_conditions_test.cpp",
+  "file": "/home/ivan/MolSim/tests/periodic_conditions_test.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/__/src/simulator/particle/container/DirectSumContainer.cpp.o -c /home/ivan/MolSim/src/simulator/particle/container/DirectSumContainer.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/particle/container/DirectSumContainer.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/__/src/simulator/particle/Particle.cpp.o -c /home/ivan/MolSim/src/simulator/particle/Particle.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/particle/Particle.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/__/src/utils/logger/Logger.cpp.o -c /home/ivan/MolSim/src/utils/logger/Logger.cpp",
+  "file": "/home/ivan/MolSim/src/utils/logger/Logger.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/__/src/simulator/particle/ParticleGenerator.cpp.o -c /home/ivan/MolSim/src/simulator/particle/ParticleGenerator.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/particle/ParticleGenerator.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/__/src/simulator/particle/container/LinkedCellContainer.cpp.o -c /home/ivan/MolSim/src/simulator/particle/container/LinkedCellContainer.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/particle/container/LinkedCellContainer.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/__/src/simulator/Thermostat.cpp.o -c /home/ivan/MolSim/src/simulator/Thermostat.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/Thermostat.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/__/src/simulator/calculations/BoundaryConditions.cpp.o -c /home/ivan/MolSim/src/simulator/calculations/BoundaryConditions.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/calculations/BoundaryConditions.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/__/src/simulator/calculations/Position.cpp.o -c /home/ivan/MolSim/src/simulator/calculations/Position.cpp",
+  "file": "/home/ivan/MolSim/src/simulator/calculations/Position.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/tests",
+  "command": "/usr/bin/c++ -DSPDLOG_COMPILED_LIB -I/home/ivan/MolSim/tests/../src -I/home/ivan/MolSim/build/_deps/spdlog-src/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/basic_test.dir/__/src/io/input/cli/SimParams.cpp.o -c /home/ivan/MolSim/src/io/input/cli/SimParams.cpp",
+  "file": "/home/ivan/MolSim/src/io/input/cli/SimParams.cpp"
+},
+{
+  "directory": "/home/ivan/MolSim/build/_deps/googletest-build/googlemock",
+  "command": "/usr/bin/c++  -I/home/ivan/MolSim/build/_deps/googletest-src/googlemock/include -I/home/ivan/MolSim/build/_deps/googletest-src/googlemock -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -Wall -Wshadow -Wundef -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o CMakeFiles/gmock.dir/src/gmock-all.cc.o -c /home/ivan/MolSim/build/_deps/googletest-src/googlemock/src/gmock-all.cc",
+  "file": "/home/ivan/MolSim/build/_deps/googletest-src/googlemock/src/gmock-all.cc"
+},
+{
+  "directory": "/home/ivan/MolSim/build/_deps/googletest-build/googlemock",
+  "command": "/usr/bin/c++  -isystem /home/ivan/MolSim/build/_deps/googletest-src/googlemock/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googlemock -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -Wall -Wshadow -Wundef -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o CMakeFiles/gmock_main.dir/src/gmock_main.cc.o -c /home/ivan/MolSim/build/_deps/googletest-src/googlemock/src/gmock_main.cc",
+  "file": "/home/ivan/MolSim/build/_deps/googletest-src/googlemock/src/gmock_main.cc"
+},
+{
+  "directory": "/home/ivan/MolSim/build/_deps/googletest-build/googletest",
+  "command": "/usr/bin/c++  -I/home/ivan/MolSim/build/_deps/googletest-src/googletest/include -I/home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -Wall -Wshadow -Wundef -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o CMakeFiles/gtest.dir/src/gtest-all.cc.o -c /home/ivan/MolSim/build/_deps/googletest-src/googletest/src/gtest-all.cc",
+  "file": "/home/ivan/MolSim/build/_deps/googletest-src/googletest/src/gtest-all.cc"
+},
+{
+  "directory": "/home/ivan/MolSim/build/_deps/googletest-build/googletest",
+  "command": "/usr/bin/c++  -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest/include -isystem /home/ivan/MolSim/build/_deps/googletest-src/googletest -O3 -DNDEBUG -Wall -Wshadow -Wundef -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o CMakeFiles/gtest_main.dir/src/gtest_main.cc.o -c /home/ivan/MolSim/build/_deps/googletest-src/googletest/src/gtest_main.cc",
+  "file": "/home/ivan/MolSim/build/_deps/googletest-src/googletest/src/gtest_main.cc"
+}
+]

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MolSim>
+    <simulation_parameters>
+        <end_time>15</end_time>
+        <delta_time>0.0005</delta_time>
+        <output_basename>../output</output_basename>
+        <write_frequency>10</write_frequency>
+        <r_cutoff_radius>3.0</r_cutoff_radius>
+        <gravity>-12.44</gravity>
+        <enable_brownian>false</enable_brownian>
+        <domain_size>
+            <x>183.0</x>
+            <y>180.0</y>
+            <z>0.0</z>
+            <lower-left-corner>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </lower-left-corner>
+        </domain_size>
+    </simulation_parameters>
+
+    <thermostats>
+        <initial_temp>0.5</initial_temp>
+        <target_temp>0.5</target_temp>
+        <delta_temp>0.0005</delta_temp>
+        <is_gradual>true</is_gradual>
+        <n_thermostats>1000.0</n_thermostats>
+    </thermostats>
+    <boundary_conditions>
+        <left>Reflecting</left>
+        <right>Reflecting</right>
+        <top>Reflecting</top>
+        <bottom>Reflecting</bottom>
+    </boundary_conditions>
+
+    <cuboids>
+        <cuboid>
+            <coordinate>
+                <x>1.5</x>
+                <y>2.0</y>
+                <z>0.0</z>
+            </coordinate>
+            <dimensions>
+                <x>150</x>
+                <y>30</y>
+                <z>1</z>
+            </dimensions>
+            <mesh_width>1.2</mesh_width>
+            <mass>1.0</mass>
+            <epsilon>1.0</epsilon>
+            <sigma>1.2</sigma>
+            <initial_velocity>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </initial_velocity>
+        </cuboid>
+    </cuboids>
+</MolSim>
