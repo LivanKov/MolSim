@@ -60,6 +60,7 @@ void LinkedCellContainer::initialize(
   cells = std::vector<Cell>(x * y * z, Cell());
   set_boundary_conditions(boundary_conditions);
   mark_halo_cells();
+  precompute_neighbours();
 }
 
 LinkedCellContainer::LinkedCellContainer()

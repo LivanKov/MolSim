@@ -11,11 +11,13 @@
 
 class PeriodicBoundaryTest : public ::testing::Test {
 protected:
-    LinkedCellContainer container;
+    LinkedCellContainer container;  
 
     LinkedCellContainer b_container;
 
-    PeriodicBoundaryTest() : container{}, b_container{} {
+    LinkedCellContainer d_container;
+
+    PeriodicBoundaryTest() : container{}, b_container{}, d_container{} {
         container.initialize({10.0, 10.0}, 2.5,
             {BoundaryCondition::Periodic, // Left
              BoundaryCondition::Periodic, // Right
@@ -28,6 +30,14 @@ protected:
              BoundaryCondition::Reflecting, // Right
              BoundaryCondition::Periodic,   // Top
              BoundaryCondition::Periodic    // Bottom
+            });
+        d_container.initialize({4.0, 4.0, 6.0}, 2.0,
+            {BoundaryCondition::Periodic, // Left
+             BoundaryCondition::Periodic, // Right
+             BoundaryCondition::Periodic, // Top
+             BoundaryCondition::Periodic, // Bottom
+             BoundaryCondition::Periodic, // Front
+             BoundaryCondition::Periodic  // Back
             });
     }
 
@@ -604,6 +614,200 @@ TEST_F(PeriodicBoundaryTest, BottomSideGhostParticlesTest) {
     }
 }
 
+TEST_F(PeriodicBoundaryTest, PreComputeNeighbouringCellsTest) {
+
+    std::vector<size_t> expected_indices{4,5,1};
+    auto& indices = container.cells[0].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {0,4,5,6,2};
+    indices = container.cells[1].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {1,3,5,6,7};
+    indices = container.cells[2].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {2,6,7};
+    indices = container.cells[3].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {0,1,5,8,9};
+    indices = container.cells[4].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+
+    expected_indices = {0,1,2,4,6,8,9,10};
+    indices = container.cells[5].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+
+    expected_indices = {1,2,3,5,7,9,10,11};
+    indices = container.cells[6].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {2,3,6,10,11};
+    indices = container.cells[7].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {4,5,9,12,13};
+    indices = container.cells[8].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {4,5,6,8,10,12,13,14};
+    indices = container.cells[9].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {5,6,7,9,11,13,14,15};
+    indices = container.cells[10].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {6,7,10,14,15};
+    indices = container.cells[11].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {8,9,13};
+    indices = container.cells[12].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {8,9,10,12,14};
+    indices = container.cells[13].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {9,10,11,13,15};
+    indices = container.cells[14].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {10,11,14};
+    indices = container.cells[15].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+}
+
+TEST_F(PeriodicBoundaryTest, PreComputingThreeDimensionsTest) {
+
+    ASSERT_EQ(d_container.x, 2);
+    ASSERT_EQ(d_container.y, 2);
+    ASSERT_EQ(d_container.z, 3);
+
+    std::vector<size_t>expected_indices = {1,2,3,4,5,6,7};
+    auto& indices = d_container.cells[0].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {0,2,3,4,5,6,7};
+    indices = d_container.cells[1].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {0,1,3,4,5,6,7};
+    indices = d_container.cells[2].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+    expected_indices = {0,1,2,4,5,6,7};
+    indices = d_container.cells[3].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+
+    expected_indices = {0,1,2,4,5,6,7};
+    indices = d_container.cells[3].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+
+    expected_indices = {0,1,2,3,5,6,7,8,9,10,11};
+    indices = d_container.cells[4].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+
+    expected_indices = {0,1,2,3,4,6,7,8,9,10,11};
+    indices = d_container.cells[5].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+
+    expected_indices = {0,1,2,3,4,5,7,8,9,10,11};
+    indices = d_container.cells[6].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+
+    expected_indices = {0,1,2,3,4,5,6,8,9,10,11};
+    indices = d_container.cells[7].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+
+    expected_indices = {4,5,6,7,9,10,11};
+    indices = d_container.cells[8].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+
+    expected_indices = {4,5,6,7,8,10,11};
+    indices = d_container.cells[9].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+
+    expected_indices = {4,5,6,7,8,9,11};
+    indices = d_container.cells[10].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+
+
+    expected_indices = {4,5,6,7,8,9,10};
+    indices = d_container.cells[11].neighbour_indices;
+    std::sort(indices.begin(), indices.end());
+    std::sort(expected_indices.begin(), expected_indices.end());
+    ASSERT_EQ(expected_indices, indices);
+}
 
 
 
