@@ -53,4 +53,8 @@ struct SimParams {
   // membrane parameters
   static double membrane_stiffness;
   static double membrane_bond_length;
+
+  //precompute parameters
+  static bool precompute_sigma;
+  static bool precompute_epsilon;
 };

@@ -21,6 +21,7 @@ Particle::Particle(int type_arg) {
   outbound = false;
   membrane_neighbours = {};
   diagonal_membrane_neighbours = {};
+  cell_index = -1;
 }
 
 Particle::Particle(const Particle &other) {
@@ -38,6 +39,7 @@ Particle::Particle(const Particle &other) {
   outbound = other.outbound;
   membrane_neighbours = other.membrane_neighbours;
   diagonal_membrane_neighbours = other.diagonal_membrane_neighbours;
+  cell_index = other.cell_index;
 }
 
 // Todo: maybe use initializater list instead of copy?
@@ -58,6 +60,7 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   outbound = false;
   membrane_neighbours = {};
   diagonal_membrane_neighbours = {};
+  cell_index = -1;
 }
 
 Particle::~Particle() { Logger::getInstance().trace("Particle destroyed!"); }
