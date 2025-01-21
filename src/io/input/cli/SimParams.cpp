@@ -1,4 +1,5 @@
 #include "SimParams.h"
+#include "simulator/calculations/Force.h"
 
 // Define and initialize static members
 std::array<double, 3> SimParams::lower_left_corner = {0.0, 0.0, 0.0};
@@ -8,3 +9,5 @@ bool SimParams::enable_thermo = false;
 double SimParams::gravity = 0.0;
 bool SimParams::enable_v_threshold = false;
 double SimParams::v_threshold = 0.0;
+bool SimParams::enable_omp = false;
+OMPSTRATEGY SimParams::ompstrategy = OMPSTRATEGY::FORK_JOIN;

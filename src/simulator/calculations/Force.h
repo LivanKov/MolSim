@@ -2,11 +2,26 @@
 #include "../particle/container/LinkedCellContainer.h"
 #include "Calculation.h"
 
+#pragma once
+
 /**
  * @enum ForceType
  * @brief Enum class for the force calculation type.
  */
 enum ForceType { LENNARD_JONES, GRAVITATIONAL };
+
+enum OMPSTRATEGY {FORK_JOIN, TASKING};
+
+inline std::string to_string(OMPSTRATEGY strategy) {
+  switch (strategy) {
+  case OMPSTRATEGY::FORK_JOIN:
+    return "FORK_JOIN";
+  case OMPSTRATEGY::TASKING:
+    return "TASKING";
+  default:
+    return "UNKNOWN";
+  }
+}
 
 /***
  * @struct Force

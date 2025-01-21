@@ -1,4 +1,5 @@
 #include "SimParams.h"
+#include "simulator/calculations/Calculation.h"
 #include <iostream>
 #include <unistd.h>
 
@@ -33,7 +34,7 @@ SimParams parse(int argc, char **argv, SimParams &parameters) {
 
   int opt;
 
-  while ((opt = getopt(argc, argv, "e:d:i:t:o:hxl:fnurcv:")) != -1) {
+  while ((opt = getopt(argc, argv, "e:d:i:t:o:hxl:fnurcv:pa")) != -1) {
     switch (opt) {
     case 'e':
       parameters.end_time = atof(optarg);
@@ -77,6 +78,14 @@ SimParams parse(int argc, char **argv, SimParams &parameters) {
     case 'v':
       SimParams::enable_v_threshold = true;
       SimParams::v_threshold = atof(optarg);
+      break;
+    case 'p':
+      SimParams::enable_omp = true;
+      SimParams::ompstrategy = OMPSTRATEGY::FORK_JOIN;
+      break;
+    case 'a':
+      SimParams::enable_omp = true;
+      SimParams::ompstrategy = OMPSTRATEGY::TASKING;
       break;
     default:
       fprintf(stderr, "Usage: %s [-h] help\n", argv[0]);

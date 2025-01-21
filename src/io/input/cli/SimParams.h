@@ -1,3 +1,4 @@
+#include "simulator/calculations/Force.h"
 #include "simulator/particle/container/LinkedCellContainer.h"
 #include <array>
 #include <string>
@@ -42,4 +43,8 @@ struct SimParams {
   // velocity threshold
   static bool enable_v_threshold;
   static double v_threshold;
+
+  // Parallelization
+  static bool enable_omp;
+  static OMPSTRATEGY ompstrategy;
 };

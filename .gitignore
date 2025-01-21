@@ -47,3 +47,6 @@
 
 # Ignore output files
 /output/
+
+# Ignore advisor_results
+/advisor_results
