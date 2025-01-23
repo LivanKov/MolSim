@@ -46,6 +46,11 @@ private:
    */
   std::array<double, 3> old_f;
 
+ /**
+  * Thermal motion of this particle
+  */
+  std::array<double, 3> thermal_motion_;
+
   /**
    * Mass of this particle
    */
@@ -127,6 +132,13 @@ public:
    */
 
   const std::array<double, 3> &getOldF() const;
+
+
+  /**
+   * @brief access the array containing the thermal motion of the particle.
+   * @return a reference to the array containing the thermal motion of the particle.
+   */
+  const std::array<double, 3> &getThermalMotion() const;
 
   /**
    * @brief access the array containing the old position of the particle.
@@ -239,6 +251,18 @@ public:
    * @param force: allowed the method to accept a std::array<double, 3>.
    */
   void updateOldF(const std::array<double, 3> &force);
+
+  /**
+   * @brief updates thermal motion of particle.
+   * @param x_arg, y_arg, z_arg: new thermal motion values.
+   */
+  void updateThermalMotion(double x_arg, double y_arg, double z_arg);
+
+  /**
+   * @brief updates thermal motion of particle.
+   * @param thermal_m: allowed the method to accept a std::array<double, 3>.
+   */
+  void updateThermalMotion(const std::array<double, 3> &thermal_m);
 
   /**
    * @brief updates the old position of the particle.

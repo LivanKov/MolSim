@@ -17,6 +17,7 @@ Particle::Particle(int type_arg) {
   Logger::getInstance().trace("Particle generated!");
   f = {0., 0., 0.};
   old_f = {0., 0., 0.};
+  thermal_motion_ = {0., 0., 0.};
   left_domain = false;
   outbound = false;
 }
@@ -26,6 +27,7 @@ Particle::Particle(const Particle &other) {
   v = other.v;
   f = other.f;
   old_f = other.old_f;
+  thermal_motion_ = other.thermal_motion_;
   old_x = other.old_x;
   m = other.m;
   type = other.type;
@@ -47,6 +49,7 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   type = type_arg;
   f = {0., 0., 0.};
   old_f = {0., 0., 0.};
+  thermal_motion_ = {0., 0., 0.};
   Logger::getInstance().trace("Particle generated!");
   left_domain = false;
   epsilon = epsilon_arg;
@@ -65,6 +68,8 @@ const std::array<double, 3> &Particle::getV() const { return v; }
 const std::array<double, 3> &Particle::getF() const { return f; }
 
 const std::array<double, 3> &Particle::getOldF() const { return old_f; }
+
+const std::array<double, 3> &Particle::getThermalMotion() const { return thermal_motion_; }
 
 double Particle::getM() const { return m; }
 
@@ -118,6 +123,17 @@ void Particle::updateOldF(double x_arg, double y_arg, double z_arg) {
 }
 
 void Particle::updateOldF(const std::array<double, 3> &force) { old_f = force; }
+
+
+void Particle::updateThermalMotion(double x_arg, double y_arg, double z_arg) {
+  thermal_motion_ = {x_arg, y_arg, z_arg};
+}
+
+
+void Particle::updateThermalMotion(const std::array<double, 3> &thermal_m) {
+  thermal_motion_ = thermal_m;
+}
+
 
 void Particle::updateOldX(double x_arg, double y_arg, double z_arg) {
   old_x = {x_arg, y_arg, z_arg};
