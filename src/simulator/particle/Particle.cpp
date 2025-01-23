@@ -19,6 +19,7 @@ Particle::Particle(int type_arg) {
   old_f = {0., 0., 0.};
   left_domain = false;
   outbound = false;
+  fixed = false;
 }
 
 Particle::Particle(const Particle &other) {
@@ -34,12 +35,13 @@ Particle::Particle(const Particle &other) {
   epsilon = other.epsilon;
   sigma = other.sigma;
   outbound = other.outbound;
+  fixed = other.fixed;
 }
 
 // Todo: maybe use initializater list instead of copy?
 Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
                    double m_arg, int type_arg, double epsilon_arg,
-                   double sigma_arg) {
+                   double sigma_arg, bool fixed) {
   x = x_arg;
   old_x = x_arg;
   v = v_arg;
@@ -52,6 +54,7 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   epsilon = epsilon_arg;
   sigma = sigma_arg;
   outbound = false;
+  fixed = fixed;
 }
 
 Particle::~Particle() { Logger::getInstance().trace("Particle destroyed!"); }
