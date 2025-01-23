@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<log version="1.0" tool="runtool">
+
+<msg id="1" tool="runtool">
+  <type>log-start</type>
+  <arg>2025/01/19 18:24:02</arg>
+</msg>
+<msg id="2" tool="runtool">
+  <type>bandwidth-measurement-starts</type>
+</msg>
+<msg id="3" tool="runtool">
+  <type>bandwidth-measurement-done</type>
+</msg>
+<msg id="4" tool="runtool">
+  <type>collector-starts</type>
+</msg>
+<msg id="5" tool="runtool">
+  <type>marker-file</type>
+  <arg>/home/ivan/MolSim/MolSim/e000/trc000/trc000.advixe</arg>
+</msg>
+<msg id="6" tool="trc">
+  <type>PROCESS_START</type>
+  <arg>/home/ivan/MolSim/build/MolSim</arg>
+  <arg>877829</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:24:12 2025</timestamp>
+</msg>
+<msg id="7" tool="trc">
+  <type>PROCESS_ANALYSIS_MODE</type>
+  <arg>full</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:24:12 2025</timestamp>
+</msg>
+<msg id="8" tool="trc">
+  <type>LOAD_MODULE</type>
+  <arg>/home/ivan/MolSim/build/MolSim</arg>
+  <arg>0x6116d7ce6000</arg>
+  <arg>0x6116d7dca657</arg>
+  <arg>yes</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:24:12 2025</timestamp>
+</msg>
+<msg id="9" tool="trc">
+  <type>LOAD_MODULE</type>
+  <arg>/lib64/ld-linux-x86-64.so.2</arg>
+  <arg>0x7100a8674000</arg>
+  <arg>0x7100a86af2d7</arg>
+  <arg>no</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:24:12 2025</timestamp>
+</msg>
+<msg id="10" tool="trc">
+  <type>LOAD_MODULE</type>
+  <arg>[vdso]</arg>
+  <arg>0x7ffe66ff4000</arg>
+  <arg>0x7ffe66ff50aa</arg>
+  <arg>no</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:24:12 2025</timestamp>
+</msg>
+<msg id="11" tool="trc">
+  <type>LOAD_MODULE</type>
+  <arg>/usr/local/lib/libxerces-c-3.3.so</arg>
+  <arg>0x710092e00000</arg>
+  <arg>0x7100932d1e9f</arg>
+  <arg>yes</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:24:13 2025</timestamp>
+</msg>
+<msg id="12" tool="trc">
+  <type>LOAD_MODULE</type>
+  <arg>/lib/x86_64-linux-gnu/libstdc++.so.6</arg>
+  <arg>0x710092a00000</arg>
+  <arg>0x710092c2b8bf</arg>
+  <arg>no</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:24:13 2025</timestamp>
+</msg>
+<msg id="13" tool="trc">
+  <type>LOAD_MODULE</type>
+  <arg>/lib/x86_64-linux-gnu/libm.so.6</arg>
+  <arg>0x710092cf0000</arg>
+  <arg>0x710092dd6107</arg>
+  <arg>no</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:24:13 2025</timestamp>
+</msg>
+<msg id="14" tool="trc">
+  <type>LOAD_MODULE</type>
+  <arg>/lib/x86_64-linux-gnu/libgcc_s.so.1</arg>
+  <arg>0x710092cd0000</arg>
+  <arg>0x710092cef2e7</arg>
+  <arg>no</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:24:13 2025</timestamp>
+</msg>
+<msg id="15" tool="trc">
+  <type>LOAD_MODULE</type>
+  <arg>/lib/x86_64-linux-gnu/libc.so.6</arg>
+  <arg>0x710092600000</arg>
+  <arg>0x710092828e4f</arg>
+  <arg>no</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:24:13 2025</timestamp>
+</msg>
+<msg id="16" tool="trc">
+  <type>LOAD_MODULE</type>
+  <arg>/usr/lib/x86_64-linux-gnu/gconv/UTF-16.so</arg>
+  <arg>0x71008e5f2000</arg>
+  <arg>0x71008e5f705f</arg>
+  <arg>no</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:24:13 2025</timestamp>
+</msg>
+<msg id="17" tool="trc">
+  <type>UNLOAD_MODULE</type>
+  <arg>/home/ivan/MolSim/build/MolSim</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:26:32 2025</timestamp>
+</msg>
+<msg id="18" tool="trc">
+  <type>UNLOAD_MODULE</type>
+  <arg>/lib64/ld-linux-x86-64.so.2</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:26:32 2025</timestamp>
+</msg>
+<msg id="19" tool="trc">
+  <type>UNLOAD_MODULE</type>
+  <arg>[vdso]</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:26:32 2025</timestamp>
+</msg>
+<msg id="20" tool="trc">
+  <type>UNLOAD_MODULE</type>
+  <arg>/usr/local/lib/libxerces-c-3.3.so</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:26:32 2025</timestamp>
+</msg>
+<msg id="21" tool="trc">
+  <type>UNLOAD_MODULE</type>
+  <arg>/lib/x86_64-linux-gnu/libstdc++.so.6</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:26:32 2025</timestamp>
+</msg>
+<msg id="22" tool="trc">
+  <type>UNLOAD_MODULE</type>
+  <arg>/lib/x86_64-linux-gnu/libm.so.6</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:26:32 2025</timestamp>
+</msg>
+<msg id="23" tool="trc">
+  <type>UNLOAD_MODULE</type>
+  <arg>/lib/x86_64-linux-gnu/libgcc_s.so.1</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:26:32 2025</timestamp>
+</msg>
+<msg id="24" tool="trc">
+  <type>UNLOAD_MODULE</type>
+  <arg>/lib/x86_64-linux-gnu/libc.so.6</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:26:32 2025</timestamp>
+</msg>
+<msg id="25" tool="trc">
+  <type>UNLOAD_MODULE</type>
+  <arg>/usr/lib/x86_64-linux-gnu/gconv/UTF-16.so</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:26:32 2025</timestamp>
+</msg>
+<msg id="26" tool="trc">
+  <type>PROCESS_FINISH</type>
+  <arg>/home/ivan/MolSim/build/MolSim</arg>
+  <arg>877829</arg>
+  <arg>0x0</arg>
+  <severity>INFO</severity>
+  <timestamp>Sun Jan 19 18:26:32 2025</timestamp>
+</msg>
+<msg id="27" tool="runtool">
+  <type>app-exit-code</type>
+  <arg>0</arg>
+</msg>
+<msg id="28" tool="runtool">
+  <type>marker-file</type>
+  <arg>/home/ivan/MolSim/MolSim/e000/trc000/trc000.advixe</arg>
+</msg>
+<msg id="29" tool="runtool">
+  <type>collector-done</type>
+</msg>
+<msg id="30" tool="runtool">
+  <type>log-end</type>
+  <arg>2025/01/19 18:26:35</arg>
+</msg>
+
+</log>
+

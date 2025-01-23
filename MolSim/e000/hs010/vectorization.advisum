@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- <!DOCTYPE IntelParallelAdvisorSummaryCollection SYSTEM  "IntelParallelAdvisorSummaryCollection.dtd"> -->
+
+<IntelParallelAdvisorSummary version="" 
+                             kind="DATAKIND_SURVEY_EX" >
+  <hotspot filename=""
+           line_no="4294967295"
+           routine="Force::lennard_jones"
+           is_vectorized="0"
+           self_time="6.800973E+00"
+           total_time="2.700656E+01"
+           trip_counts=""
+           func_instance="51"
+           priority="0"/>
+  <hotspot filename=""
+           line_no="4294967295"
+           routine="BoundaryConditions::run"
+           is_vectorized="0"
+           self_time="3.660019E+00"
+           total_time="5.660014E+00"
+           trip_counts=""
+           func_instance="92"
+           priority="0"/>
+  <hotspot filename=""
+           line_no="4294967295"
+           routine="LinkedCellContainer::get_neighbours"
+           is_vectorized="0"
+           self_time="1.340001E+00"
+           total_time="2.089997E+00"
+           trip_counts=""
+           func_instance="61"
+           priority="0"/>
+  <hotspot filename=""
+           line_no="4294967295"
+           routine="Force::lennard_jones"
+           is_vectorized="0"
+           self_time="8.900043E-01"
+           total_time="8.900043E-01"
+           trip_counts=""
+           func_instance="65"
+           priority="0"/>
+  <hotspot filename=""
+           line_no="4294967295"
+           routine="Force::lennard_jones"
+           is_vectorized="0"
+           self_time="6.499972E-01"
+           total_time="6.499972E-01"
+           trip_counts=""
+           func_instance="80"
+           priority="0"/>
+</IntelParallelAdvisorSummary >

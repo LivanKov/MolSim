@@ -1,0 +1,10 @@
+
+=== Start: [2025/01/19 18:24:02] === 
+Peak bandwidth measurement started...
+Peak bandwidth measurement finished.
+Analysis started...
+Result file: /home/ivan/MolSim/MolSim/e000/trc000/trc000.advixe 
+Application exit code: 0 
+Result file: /home/ivan/MolSim/MolSim/e000/trc000/trc000.advixe 
+Analysis completed
+=== End: [2025/01/19 18:26:35] === 

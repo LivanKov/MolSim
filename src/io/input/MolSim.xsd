@@ -139,6 +139,7 @@
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
+                                        <xs:element name="fixed" type="xs:boolean"/>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>

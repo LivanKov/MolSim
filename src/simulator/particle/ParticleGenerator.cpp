@@ -18,7 +18,7 @@ void ParticleGenerator::insertCuboid(
     const std::array<double, 3> &lowerLeftFrontCorner,
     const std::array<size_t, 3> &dimensions, double h, double m,
     const std::array<double, 3> &initialVelocity,
-    LinkedCellContainer &particles, double epsilon, double sigma) {
+    LinkedCellContainer &particles, double epsilon, double sigma, bool fixed) {
   for (size_t i = 0; i < dimensions[2]; ++i) {
     for (size_t j = 0; j < dimensions[1]; ++j) {
       for (size_t k = 0; k < dimensions[0]; ++k) {
@@ -29,7 +29,7 @@ void ParticleGenerator::insertCuboid(
         std::array<double, 3> velocity = initialVelocity;
 
         Particle particle(position, velocity, m, particles.particle_id, epsilon,
-                          sigma);
+                          sigma, fixed);
         particles.particle_id++;
         Logger::getInstance().trace("New Particle generated");
         particles.insert(particle, true);
@@ -47,7 +47,7 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
                                    const std::array<double, 3> &initialVelocity,
                                    size_t radius, double h, double mass,
                                    LinkedCellContainer &particles,
-                                   double epsilon, double sigma) {
+                                   double epsilon, double sigma, bool fixed) {
 
   // start on the point with the leftest x point then go the rightest x point
   for (double x = center[0] - radius * h; x <= center[0] + radius * h; x += h) {
@@ -68,7 +68,7 @@ void ParticleGenerator::insertDisc(const std::array<double, 3> &center,
         std::array<double, 3> velocity = initialVelocity;
 
         Particle particle(position, velocity, mass, particles.particle_id,
-                          epsilon, sigma);
+                          epsilon, sigma, fixed);
         particles.particle_id++;
         Logger::getInstance().trace("New Particle generated");
         particles.insert(particle, true);
