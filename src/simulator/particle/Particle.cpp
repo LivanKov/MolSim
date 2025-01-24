@@ -55,6 +55,9 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   sigma = sigma_arg;
   outbound = false;
   this->fixed = fixed;
+  if(this->fixed) {
+    v = {0., 0., 0.};
+  }
 }
 
 Particle::~Particle() { Logger::getInstance().trace("Particle destroyed!"); }

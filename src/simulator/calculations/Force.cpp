@@ -132,7 +132,9 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
             auto force = (totalForce / distance) * r12;
 
             particle.updateF(particle.getF() + force);
-            neighbour.ptr->updateF(neighbour.ptr->getF() - force);
+            if (!neighbour.ptr->is_fixed()) {
+              neighbour.ptr->updateF(neighbour.ptr->getF() - force);
+            }
           }
         }
       }
