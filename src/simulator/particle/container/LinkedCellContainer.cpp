@@ -67,38 +67,79 @@ void LinkedCellContainer::initialize(
   placement_map[Placement::FRONT] = boundary_conditions.front;
   placement_map[Placement::BACK] = boundary_conditions.back;
 
-  if (placement_map[Placement::TOP] == placement_map[Placement::RIGHT])
-    placement_map[Placement::TOP_RIGHT_CORNER] =
+  if (placement_map[Placement::TOP] == placement_map[Placement::RIGHT] ==
+      placement_map[Placement::FRONT])
+    placement_map[Placement::TOP_RIGHT_CORNER_FRONT] =
         placement_map[Placement::RIGHT];
   else
-    placement_map[Placement::TOP_RIGHT_CORNER] = placement_map[Placement::TOP];
+    placement_map[Placement::TOP_RIGHT_CORNER_FRONT] =
+        placement_map[Placement::TOP];
 
-  if (placement_map[Placement::TOP] == placement_map[Placement::LEFT])
-    placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::LEFT];
-  else
-    placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::TOP];
-
-  if (placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT])
-    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
-        placement_map[Placement::RIGHT];
-  else
-    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
-        placement_map[Placement::BOTTOM];
-
-  if (placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT])
-    placement_map[Placement::BOTTOM_LEFT_CORNER] =
+  if (placement_map[Placement::TOP] == placement_map[Placement::LEFT] ==
+      placement_map[Placement::FRONT])
+    placement_map[Placement::TOP_LEFT_CORNER_FRONT] =
         placement_map[Placement::LEFT];
   else
-    placement_map[Placement::BOTTOM_LEFT_CORNER] =
+    placement_map[Placement::TOP_LEFT_CORNER_FRONT] =
+        placement_map[Placement::TOP];
+
+  if (placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT] ==
+      placement_map[Placement::FRONT])
+    placement_map[Placement::BOTTOM_RIGHT_CORNER_FRONT] =
+        placement_map[Placement::RIGHT];
+  else
+    placement_map[Placement::BOTTOM_RIGHT_CORNER_FRONT] =
         placement_map[Placement::BOTTOM];
 
+  if (placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT] ==
+      placement_map[Placement::FRONT])
+    placement_map[Placement::BOTTOM_LEFT_CORNER_FRONT] =
+        placement_map[Placement::LEFT];
+  else
+    placement_map[Placement::BOTTOM_LEFT_CORNER_FRONT] =
+        placement_map[Placement::BOTTOM];
+
+  if (domain_size.size() == 3) {
+
+    if (placement_map[Placement::TOP] == placement_map[Placement::RIGHT] ==
+        placement_map[Placement::BACK])
+      placement_map[Placement::TOP_RIGHT_CORNER_BACK] =
+          placement_map[Placement::RIGHT];
+    else
+      placement_map[Placement::TOP_RIGHT_CORNER_BACK] =
+          placement_map[Placement::TOP];
+
+    if (placement_map[Placement::TOP] == placement_map[Placement::LEFT] ==
+        placement_map[Placement::BACK])
+      placement_map[Placement::TOP_LEFT_CORNER_BACK] =
+          placement_map[Placement::LEFT];
+    else
+      placement_map[Placement::TOP_LEFT_CORNER_BACK] =
+          placement_map[Placement::TOP];
+
+    if (placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT] ==
+        placement_map[Placement::BACK])
+      placement_map[Placement::BOTTOM_RIGHT_CORNER_BACK] =
+          placement_map[Placement::RIGHT];
+    else
+      placement_map[Placement::BOTTOM_RIGHT_CORNER_BACK] =
+          placement_map[Placement::BOTTOM];
+
+    if (placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT] ==
+        placement_map[Placement::BACK])
+      placement_map[Placement::BOTTOM_LEFT_CORNER_BACK] =
+          placement_map[Placement::LEFT];
+    else
+      placement_map[Placement::BOTTOM_LEFT_CORNER_BACK] =
+          placement_map[Placement::BOTTOM];
+  }
   mark_halo_cells();
 }
 
 LinkedCellContainer::LinkedCellContainer()
-    : domain_size_{0, 0, 0}, r_cutoff_{0}, left_corner_coordinates{0.0, 0.0,
-                                                                   0.0},
-      x{0}, y{0}, z{0}, boundary_conditions_{}, cells_map{}, particle_id{0},
+    : domain_size_{0, 0, 0}, r_cutoff_{0},
+      left_corner_coordinates{0.0, 0.0, 0.0}, x{0}, y{0}, z{0},
+      boundary_conditions_{}, cells_map{}, particle_id{0},
       particles_left_domain{0}, is_wrapper{false}, halo_count{0},
       reflective_flag{false}, periodic_flag{false}, halo_cell_indices{},
       particles_outbound{}, placement_map{}, cell_ghost_particles_map{} {}
