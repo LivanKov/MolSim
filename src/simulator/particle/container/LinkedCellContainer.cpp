@@ -305,32 +305,7 @@ void LinkedCellContainer::mark_halo_cells() {
           cells[index].is_halo = true;
           halo_cell_indices.push_back(index);
           halo_count++;
-
-          if (index == 0) {
-            cells[index].placement = Placement::BOTTOM_LEFT_CORNER_FRONT;
-          } else if (index == x - 1) {
-            cells[index].placement = Placement::BOTTOM_RIGHT_CORNER_FRONT;
-          } else if (index == x * y * z - x) {
-            cells[index].placement = Placement::TOP_LEFT_CORNER_BACK;
-          } else if (index == x * y * z - 1) {
-            cells[index].placement = Placement::TOP_RIGHT_CORNER_BACK;
-          } else if (index == x * y - 1) {
-            cells[index].placement = Placement::TOP_RIGHT_CORNER_FRONT;
-          } else if (index == x * y - x) {
-            cells[index].placement = Placement::TOP_LEFT_CORNER_FRONT;
-          } else if (index == x * y * z - x * y) {
-            cells[index].placement = Placement::BOTTOM_LEFT_CORNER_BACK;
-          } else if (index == x * y * z - x * y + x - 1) {
-            cells[index].placement = Placement::BOTTOM_RIGHT_CORNER_BACK;
-          } else if (index < x) {
-            cells[index].placement = Placement::BOTTOM;
-          } else if (index >= x * (y - 1)) {
-            cells[index].placement = Placement::TOP;
-          } else if (index % x == 0) {
-            cells[index].placement = Placement::LEFT;
-          } else if ((index + 1) % x == 0) {
-            cells[index].placement = Placement::RIGHT;
-          }
+          cells[index].placement = determine_placement(index, i, j, k);
         }
       }
     }
@@ -571,14 +546,11 @@ Placement LinkedCellContainer::determine_placement(size_t index, size_t i, size_
             }
         } 
     } else if (count_extremes == 1) {
-        // Face case
         if (x_min) return LEFT;
         if (x_max) return RIGHT;
         if (y_min) return BOTTOM;
         if (y_max) return TOP;
         if (z_min) return FRONT;
         return BACK;
-    } else {
-        throw std::invalid_argument("Cell is inner and has no placement");
     }
 }
