@@ -1465,16 +1465,20 @@ class cuboid: public ::xml_schema::type
   // fixed
   //
   typedef ::xml_schema::boolean fixed_type;
+  typedef ::xsd::cxx::tree::optional< fixed_type > fixed_optional;
   typedef ::xsd::cxx::tree::traits< fixed_type, char > fixed_traits;
 
-  const fixed_type&
+  const fixed_optional&
   fixed () const;
 
-  fixed_type&
+  fixed_optional&
   fixed ();
 
   void
   fixed (const fixed_type& x);
+
+  void
+  fixed (const fixed_optional& x);
 
   // Constructors.
   //
@@ -1484,8 +1488,7 @@ class cuboid: public ::xml_schema::type
           const mass_type&,
           const epsilon_type&,
           const sigma_type&,
-          const initial_velocity_type&,
-          const fixed_type&);
+          const initial_velocity_type&);
 
   cuboid (::std::unique_ptr< coordinate_type >,
           ::std::unique_ptr< dimensions_type >,
@@ -1493,8 +1496,7 @@ class cuboid: public ::xml_schema::type
           const mass_type&,
           const epsilon_type&,
           const sigma_type&,
-          ::std::unique_ptr< initial_velocity_type >,
-          const fixed_type&);
+          ::std::unique_ptr< initial_velocity_type >);
 
   cuboid (const ::xercesc::DOMElement& e,
           ::xml_schema::flags f = 0,
@@ -1529,7 +1531,7 @@ class cuboid: public ::xml_schema::type
   ::xsd::cxx::tree::one< epsilon_type > epsilon_;
   ::xsd::cxx::tree::one< sigma_type > sigma_;
   ::xsd::cxx::tree::one< initial_velocity_type > initial_velocity_;
-  ::xsd::cxx::tree::one< fixed_type > fixed_;
+  fixed_optional fixed_;
 };
 
 class particle: public ::xml_schema::type

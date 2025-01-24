@@ -209,9 +209,14 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         logger.info("Initial Velocity: " +
                     containerToStrings(initial_velocity));
 
+        bool is_fixed = false;
+        if (cuboid.fixed().present()) {
+          is_fixed = cuboid.fixed().get();
+        }
+
         ParticleGenerator::insertCuboid(position, dimensions, mesh_width, mass,
                                         initial_velocity, particles, epsilon,
-                                        sigma);
+                                        sigma, is_fixed);
 
         logger.info("Particles check: " + std::to_string(particles.size()));
         logger.info("Particles' cell check: " +

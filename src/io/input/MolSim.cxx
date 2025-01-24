@@ -1132,22 +1132,28 @@ initial_velocity (::std::unique_ptr< initial_velocity_type > x)
   this->initial_velocity_.set (std::move (x));
 }
 
-const cuboid::fixed_type& cuboid::
+const cuboid::fixed_optional& cuboid::
 fixed () const
 {
-  return this->fixed_.get ();
+  return this->fixed_;
 }
 
-cuboid::fixed_type& cuboid::
+cuboid::fixed_optional& cuboid::
 fixed ()
 {
-  return this->fixed_.get ();
+  return this->fixed_;
 }
 
 void cuboid::
 fixed (const fixed_type& x)
 {
   this->fixed_.set (x);
+}
+
+void cuboid::
+fixed (const fixed_optional& x)
+{
+  this->fixed_ = x;
 }
 
 
@@ -3183,8 +3189,7 @@ cuboid (const coordinate_type& coordinate,
         const mass_type& mass,
         const epsilon_type& epsilon,
         const sigma_type& sigma,
-        const initial_velocity_type& initial_velocity,
-        const fixed_type& fixed)
+        const initial_velocity_type& initial_velocity)
 : ::xml_schema::type (),
   coordinate_ (coordinate, this),
   dimensions_ (dimensions, this),
@@ -3193,7 +3198,7 @@ cuboid (const coordinate_type& coordinate,
   epsilon_ (epsilon, this),
   sigma_ (sigma, this),
   initial_velocity_ (initial_velocity, this),
-  fixed_ (fixed, this)
+  fixed_ (this)
 {
 }
 
@@ -3204,8 +3209,7 @@ cuboid (::std::unique_ptr< coordinate_type > coordinate,
         const mass_type& mass,
         const epsilon_type& epsilon,
         const sigma_type& sigma,
-        ::std::unique_ptr< initial_velocity_type > initial_velocity,
-        const fixed_type& fixed)
+        ::std::unique_ptr< initial_velocity_type > initial_velocity)
 : ::xml_schema::type (),
   coordinate_ (std::move (coordinate), this),
   dimensions_ (std::move (dimensions), this),
@@ -3214,7 +3218,7 @@ cuboid (::std::unique_ptr< coordinate_type > coordinate,
   epsilon_ (epsilon, this),
   sigma_ (sigma, this),
   initial_velocity_ (std::move (initial_velocity), this),
-  fixed_ (fixed, this)
+  fixed_ (this)
 {
 }
 
@@ -3355,7 +3359,7 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     //
     if (n.name () == "fixed" && n.namespace_ ().empty ())
     {
-      if (!fixed_.present ())
+      if (!this->fixed_)
       {
         this->fixed_.set (fixed_traits::create (i, f, this));
         continue;
@@ -3411,13 +3415,6 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
   {
     throw ::xsd::cxx::tree::expected_element< char > (
       "initial_velocity",
-      "");
-  }
-
-  if (!fixed_.present ())
-  {
-    throw ::xsd::cxx::tree::expected_element< char > (
-      "fixed",
       "");
   }
 }
