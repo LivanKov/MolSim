@@ -67,6 +67,11 @@ private:
    */
   double sigma;
 
+  /**
+   * @brief check if particle is fixed.
+   */
+  bool fixed;
+
 public:
   /**
    * @brief Constructor.
@@ -161,6 +166,9 @@ public:
    * @return double variable containing the sigma of the particle.
    */
   double getSigma() const;
+
+
+  bool is_fixed() const;
 
   bool outbound;
 
@@ -259,12 +267,6 @@ public:
    */
 
   bool left_domain;
-
-  /**
-   * @brief check if particle is fixed.
-   */
-
-  bool fixed;
 };
 
 /**

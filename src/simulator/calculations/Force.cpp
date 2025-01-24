@@ -65,7 +65,7 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
     }
     for (auto &particle : particles.particles) {
       for (auto &neighbour : particles.get_neighbours(particle.getType())) {
-        if (*neighbour != particle && !particle.fixed) {
+        if (*neighbour != particle && !particle.is_fixed()) {
           auto r12 = neighbour->getX() - particle.getX();
           double distance = ArrayUtils::L2Norm(r12);
 
@@ -94,7 +94,7 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
             auto force = (totalForce / distance) * r12;
 
             particle.updateF(particle.getF() + force);
-            if (!neighbour->fixed) {
+            if (!neighbour->is_fixed()) {
               neighbour->updateF(neighbour->getF() - force);
             }
           }

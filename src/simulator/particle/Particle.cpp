@@ -54,7 +54,7 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   epsilon = epsilon_arg;
   sigma = sigma_arg;
   outbound = false;
-  fixed = fixed;
+  this->fixed = fixed;
 }
 
 Particle::~Particle() { Logger::getInstance().trace("Particle destroyed!"); }
@@ -76,6 +76,8 @@ int Particle::getType() const { return type; }
 double Particle::getEpsilon() const { return epsilon; }
 
 double Particle::getSigma() const { return sigma; }
+
+bool Particle::is_fixed() const { return fixed; }
 
 std::string Particle::toString() const {
   std::stringstream stream;
