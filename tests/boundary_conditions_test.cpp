@@ -154,7 +154,7 @@ TEST_F(BoundaryConditionsTest, CornerCrossing) {
 
   EXPECT_EQ(container.cells[99].size(), 1);
   EXPECT_TRUE(container.cells[99].particle_ids.contains(0));
-  EXPECT_TRUE(container.cells[99].placement == Placement::TOP_RIGHT_CORNER);
+  EXPECT_TRUE(container.cells[99].placement == Placement::TOP_RIGHT_CORNER_FRONT);
 
   EXPECT_EQ(position[0], 9.9); // Reflected from the x boundary
   EXPECT_EQ(position[1], 9.9); // Reflected from the y boundary

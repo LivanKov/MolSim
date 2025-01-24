@@ -53,10 +53,10 @@ void BoundaryConditions::handle_reflect_conditions(
                                               -velocity[2]);
 
   // handle corners
-  if (cell.placement == Placement::BOTTOM_LEFT_CORNER ||
-      cell.placement == Placement::TOP_RIGHT_CORNER ||
-      cell.placement == Placement::TOP_LEFT_CORNER ||
-      cell.placement == Placement::BOTTOM_RIGHT_CORNER)
+  if (cell.placement == Placement::BOTTOM_LEFT_CORNER_FRONT ||
+      cell.placement == Placement::TOP_RIGHT_CORNER_FRONT ||
+      cell.placement == Placement::TOP_LEFT_CORNER_FRONT ||
+      cell.placement == Placement::BOTTOM_RIGHT_CORNER_FRONT)
     particles.cells_map[particle_id]->updateV(-velocity[0], -velocity[1],
                                               velocity[2]);
 }

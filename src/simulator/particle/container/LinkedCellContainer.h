@@ -4,6 +4,7 @@
 #include <initializer_list>
 #include <unordered_map>
 #include <unordered_set>
+#include <optional>
 
 #pragma once
 
@@ -51,7 +52,11 @@ enum Placement {
   TOP_FRONT,
   TOP_BACK,
   BOTTOM_FRONT,
-  BOTTOM_BACK
+  BOTTOM_BACK,
+  RIGHT_TOP,
+  RIGHT_BOTTOM,
+  LEFT_TOP,
+  LEFT_BOTTOM
 };
 
 /**
@@ -357,4 +362,7 @@ private:
    * @brief Assigns halo status to cells at the border of the array
    */
   void mark_halo_cells();
+
+
+  Placement determine_placement(size_t index, size_t i, size_t j, size_t k);
 };

@@ -10,7 +10,12 @@
         <domain_size>
             <x>60.0</x>
             <y>45.0</y>
-            <z>0.0</z>
+            <z>60.0</z>
+            <lower-left-corner>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>-30.0</z>
+            </lower-left-corner>
         </domain_size>
     </simulation_parameters>
 
@@ -19,19 +24,21 @@
         <right>Periodic</right>
         <top>Periodic</top>
         <bottom>Periodic</bottom>
+        <front>Periodic</front>
+        <back>Periodic</back>
   </boundary_conditions>
     
     <cuboids>
         <cuboid>
             <coordinate>
-                <x>0.0</x>
-                <y>0.0</y>
-                <z>0.0</z>
+                <x>10.0</x>
+                <y>10.0</y>
+                <z>-1.0</z>
             </coordinate>
             <dimensions>
                 <x>40</x>
                 <y>8</y>
-                <z>1</z>
+                <z>3</z>
             </dimensions>
             <mesh_width>1.1225</mesh_width>
             <mass>1.0</mass>
@@ -45,8 +52,8 @@
         </cuboid>
         <cuboid>
             <coordinate>
-                <x>15.0</x>
-                <y>15.0</y>
+                <x>25.0</x>
+                <y>25.0</y>
                 <z>0.0</z>
             </coordinate>
             <dimensions>

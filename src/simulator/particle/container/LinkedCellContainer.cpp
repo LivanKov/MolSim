@@ -132,6 +132,26 @@ void LinkedCellContainer::initialize(
     else
       placement_map[Placement::BOTTOM_LEFT_CORNER_BACK] =
           placement_map[Placement::BOTTOM];
+
+    if (placement_map[Placement::RIGHT] == placement_map[Placement::TOP])
+      placement_map[Placement::RIGHT_TOP] = placement_map[Placement::RIGHT];
+    else
+      placement_map[Placement::RIGHT_TOP] = placement_map[Placement::TOP];
+
+    if (placement_map[Placement::RIGHT] == placement_map[Placement::BOTTOM])
+      placement_map[Placement::RIGHT_BOTTOM] = placement_map[Placement::RIGHT];
+    else
+      placement_map[Placement::RIGHT_BOTTOM] = placement_map[Placement::BOTTOM];
+
+    if (placement_map[Placement::LEFT] == placement_map[Placement::TOP])
+      placement_map[Placement::LEFT_TOP] = placement_map[Placement::LEFT];
+    else
+      placement_map[Placement::LEFT_TOP] = placement_map[Placement::TOP];
+
+    if (placement_map[Placement::LEFT] == placement_map[Placement::BOTTOM])
+      placement_map[Placement::LEFT_BOTTOM] = placement_map[Placement::LEFT];
+    else
+      placement_map[Placement::LEFT_BOTTOM] = placement_map[Placement::BOTTOM];
   }
   mark_halo_cells();
 }
@@ -287,13 +307,21 @@ void LinkedCellContainer::mark_halo_cells() {
           halo_count++;
 
           if (index == 0) {
-            cells[index].placement = Placement::BOTTOM_LEFT_CORNER;
+            cells[index].placement = Placement::BOTTOM_LEFT_CORNER_FRONT;
           } else if (index == x - 1) {
-            cells[index].placement = Placement::BOTTOM_RIGHT_CORNER;
-          } else if (index == x * y - x) {
-            cells[index].placement = Placement::TOP_LEFT_CORNER;
+            cells[index].placement = Placement::BOTTOM_RIGHT_CORNER_FRONT;
+          } else if (index == x * y * z - x) {
+            cells[index].placement = Placement::TOP_LEFT_CORNER_BACK;
+          } else if (index == x * y * z - 1) {
+            cells[index].placement = Placement::TOP_RIGHT_CORNER_BACK;
           } else if (index == x * y - 1) {
-            cells[index].placement = Placement::TOP_RIGHT_CORNER;
+            cells[index].placement = Placement::TOP_RIGHT_CORNER_FRONT;
+          } else if (index == x * y - x) {
+            cells[index].placement = Placement::TOP_LEFT_CORNER_FRONT;
+          } else if (index == x * y * z - x * y) {
+            cells[index].placement = Placement::BOTTOM_LEFT_CORNER_BACK;
+          } else if (index == x * y * z - x * y + x - 1) {
+            cells[index].placement = Placement::BOTTOM_RIGHT_CORNER_BACK;
           } else if (index < x) {
             cells[index].placement = Placement::BOTTOM;
           } else if (index >= x * (y - 1)) {
@@ -410,7 +438,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
     cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(ghost);
     break;
   }
-  case Placement::BOTTOM_LEFT_CORNER: {
+  case Placement::BOTTOM_LEFT_CORNER_FRONT: {
     // Corner ghost
     auto ghost_corner = create_ghost_particle(
         particle_id, {right_offset[0], bottom_offset[1], 0});
@@ -429,7 +457,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         ghost_bottom);
     break;
   }
-  case Placement::TOP_RIGHT_CORNER: {
+  case Placement::TOP_RIGHT_CORNER_FRONT: {
     // Corner ghost
     auto ghost_corner =
         create_ghost_particle(particle_id, {left_offset[0], top_offset[1], 0});
@@ -447,7 +475,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         ghost_top);
     break;
   }
-  case Placement::TOP_LEFT_CORNER: {
+  case Placement::TOP_LEFT_CORNER_FRONT: {
     // Corner ghost
     auto ghost_corner =
         create_ghost_particle(particle_id, {right_offset[0], top_offset[1], 0});
@@ -466,7 +494,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         ghost_top);
     break;
   }
-  case Placement::BOTTOM_RIGHT_CORNER: {
+  case Placement::BOTTOM_RIGHT_CORNER_FRONT: {
     // Corner ghost
     auto ghost_corner = create_ghost_particle(
         particle_id, {left_offset[0], bottom_offset[1], 0});
@@ -489,4 +517,68 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
   default:
     break;
   }
+}
+
+
+Placement LinkedCellContainer::determine_placement(size_t index, size_t i, size_t j, size_t k) {
+    bool x_min = (i == 0);
+    bool x_max = (i == x - 1);
+    bool y_min = (j == 0);
+    bool y_max = (j == y - 1);
+    bool z_min = (k == 0);
+    bool z_max = (k == z - 1);
+
+    int count_extremes = (x_min || x_max) + (y_min || y_max) + (z_min || z_max);
+
+    if (count_extremes == 3) {
+        // Corner case
+        if (z_min) {
+            if (x_min) {
+                return y_min ? BOTTOM_LEFT_CORNER_FRONT : TOP_LEFT_CORNER_FRONT;
+            } else {
+                return y_min ? BOTTOM_RIGHT_CORNER_FRONT : TOP_RIGHT_CORNER_FRONT;
+            }
+        } else {
+            if (x_min) {
+                return y_min ? BOTTOM_LEFT_CORNER_BACK : TOP_LEFT_CORNER_BACK;
+            } else {
+                return y_min ? BOTTOM_RIGHT_CORNER_BACK : TOP_RIGHT_CORNER_BACK;
+            }
+        }
+    } else if (count_extremes == 2) {
+        // Edge case
+        bool x_extreme = x_min || x_max;
+        bool y_extreme = y_min || y_max;
+        bool z_extreme = z_min || z_max;
+
+        if (x_extreme && z_extreme) {
+            if (x_max) {
+                return z_min ? RIGHT_FRONT : RIGHT_BACK;
+            } else {
+                return z_min ? LEFT_FRONT : LEFT_BACK;
+            }
+        } else if (x_extreme && y_extreme) {
+            if (x_max) {
+                return y_max ? RIGHT_TOP : RIGHT_BOTTOM;
+            } else {
+                return y_max ? LEFT_TOP : LEFT_BOTTOM;
+            }
+        } else {
+            if (y_max) {
+                return z_min ? TOP_FRONT : TOP_BACK;
+            } else {
+                return z_min ? BOTTOM_FRONT : BOTTOM_BACK;
+            }
+        } 
+    } else if (count_extremes == 1) {
+        // Face case
+        if (x_min) return LEFT;
+        if (x_max) return RIGHT;
+        if (y_min) return BOTTOM;
+        if (y_max) return TOP;
+        if (z_min) return FRONT;
+        return BACK;
+    } else {
+        throw std::invalid_argument("Cell is inner and has no placement");
+    }
 }
