@@ -41,6 +41,8 @@ void Simulation::run(LinkedCellContainer &particles) {
   logger.info("Starting a simulation with:");
   logger.info("\tEnd time: " + std::to_string(params_.end_time));
   logger.info("\tDelta: " + std::to_string(params_.time_delta));
+  logger.info("\tAmount of cells: " + std::to_string(particles.cells.size()));
+  logger.info("\tLeft corner coordinates: " + std::to_string(particles.left_corner_coordinates[0]) + " " + std::to_string(particles.left_corner_coordinates[1]) + " " + std::to_string(particles.left_corner_coordinates[2]));
 
   int iteration{0};
   double current_time{0};
