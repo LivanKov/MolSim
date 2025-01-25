@@ -365,7 +365,9 @@ private:
   void mark_halo_cells();
 
 
-  Placement determine_placement(size_t index, size_t i, size_t j, size_t k);
+  Placement determine_placement_3d(size_t index, size_t i, size_t j, size_t k);
+
+  Placement determine_placement_2d(size_t index, size_t i, size_t j);
 
 
   void assign_placements();

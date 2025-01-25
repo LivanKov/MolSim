@@ -64,7 +64,7 @@ void LinkedCellContainer::initialize(
   placement_map[Placement::BOTTOM] = boundary_conditions.bottom;
   placement_map[Placement::LEFT] = boundary_conditions.left;
   placement_map[Placement::RIGHT] = boundary_conditions.right;
-  if(domain_size.size() == 3) {
+  if (domain_size.size() == 3) {
     placement_map[Placement::FRONT] = boundary_conditions.front;
     placement_map[Placement::BACK] = boundary_conditions.back;
   }
@@ -221,7 +221,7 @@ void LinkedCellContainer::mark_halo_cells() {
           cells[index].is_halo = true;
           halo_cell_indices.push_back(index);
           halo_count++;
-          cells[index].placement = determine_placement(index, i, j, k);
+          cells[index].placement = z == 1 ? determine_placement_2d(index, i, j) : determine_placement_3d(index, i, j, k);
         }
       }
     }
@@ -410,133 +410,169 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
   }
 }
 
+Placement LinkedCellContainer::determine_placement_3d(size_t index, size_t i,
+                                                      size_t j, size_t k) {
+  bool x_min = (i == 0);
+  bool x_max = (i == x - 1);
+  bool y_min = (j == 0);
+  bool y_max = (j == y - 1);
+  bool z_min = (k == 0);
+  bool z_max = (k == z - 1);
 
-Placement LinkedCellContainer::determine_placement(size_t index, size_t i, size_t j, size_t k) {
-    bool x_min = (i == 0);
-    bool x_max = (i == x - 1);
-    bool y_min = (j == 0);
-    bool y_max = (j == y - 1);
-    bool z_min = (k == 0);
-    bool z_max = (k == z - 1);
+  int count_extremes = (x_min || x_max) + (y_min || y_max) + (z_min || z_max);
 
-    int count_extremes = (x_min || x_max) + (y_min || y_max) + (z_min || z_max);
-
-    if (count_extremes == 3) {
-        // Corner case
-        if (z_min) {
-            if (x_min) {
-                return y_min ? BOTTOM_LEFT_CORNER : TOP_LEFT_CORNER;
-            } else {
-                return y_min ? BOTTOM_RIGHT_CORNER : TOP_RIGHT_CORNER;
-            }
-        } else {
-            if (x_min) {
-                return y_min ? BOTTOM_LEFT_CORNER_BACK : TOP_LEFT_CORNER_BACK;
-            } else {
-                return y_min ? BOTTOM_RIGHT_CORNER_BACK : TOP_RIGHT_CORNER_BACK;
-            }
-        }
-    } else if (count_extremes == 2) {
-        // Edge case
-        bool x_extreme = x_min || x_max;
-        bool y_extreme = y_min || y_max;
-        bool z_extreme = z_min || z_max;
-
-        if (x_extreme && z_extreme) {
-            if (x_max) {
-                return z_min ? RIGHT_FRONT : RIGHT_BACK;
-            } else {
-                return z_min ? LEFT_FRONT : LEFT_BACK;
-            }
-        } else if (x_extreme && y_extreme) {
-            if (x_max) {
-                return y_max ? RIGHT_TOP : RIGHT_BOTTOM;
-            } else {
-                return y_max ? LEFT_TOP : LEFT_BOTTOM;
-            }
-        } else {
-            if (y_max) {
-                return z_min ? TOP_FRONT : TOP_BACK;
-            } else {
-                return z_min ? BOTTOM_FRONT : BOTTOM_BACK;
-            }
-        } 
-    } else  {
-        if (x_min) return LEFT;
-        if (x_max) return RIGHT;
-        if (y_min) return BOTTOM;
-        if (y_max) return TOP;
-        if (z_min) return FRONT;
-        return BACK;
+  if (count_extremes == 3) {
+    // Corner case
+    if (z_min) {
+      if (x_min) {
+        return y_min ? BOTTOM_LEFT_CORNER : TOP_LEFT_CORNER;
+      } else {
+        return y_min ? BOTTOM_RIGHT_CORNER : TOP_RIGHT_CORNER;
+      }
+    } else {
+      if (x_min) {
+        return y_min ? BOTTOM_LEFT_CORNER_BACK : TOP_LEFT_CORNER_BACK;
+      } else {
+        return y_min ? BOTTOM_RIGHT_CORNER_BACK : TOP_RIGHT_CORNER_BACK;
+      }
     }
+  } else if (count_extremes == 2) {
+    // Edge case
+    bool x_extreme = x_min || x_max;
+    bool y_extreme = y_min || y_max;
+    bool z_extreme = z_min || z_max;
+
+    if (x_extreme && z_extreme) {
+      if (x_max) {
+        return z_min ? RIGHT_FRONT : RIGHT_BACK;
+      } else {
+        return z_min ? LEFT_FRONT : LEFT_BACK;
+      }
+    } else if (x_extreme && y_extreme) {
+      if (x_max) {
+        return y_max ? RIGHT_TOP : RIGHT_BOTTOM;
+      } else {
+        return y_max ? LEFT_TOP : LEFT_BOTTOM;
+      }
+    } else {
+      if (y_max) {
+        return z_min ? TOP_FRONT : TOP_BACK;
+      } else {
+        return z_min ? BOTTOM_FRONT : BOTTOM_BACK;
+      }
+    }
+  } else {
+    if (x_min)
+      return LEFT;
+    if (x_max)
+      return RIGHT;
+    if (y_min)
+      return BOTTOM;
+    if (y_max)
+      return TOP;
+    if (z_min)
+      return FRONT;
+    return BACK;
+  }
 }
 
+Placement LinkedCellContainer::determine_placement_2d(size_t index, size_t i,
+                                                      size_t j) {
+  bool x_min = (i == 0);
+  bool x_max = (i == x - 1);
+  bool y_min = (j == 0);
+  bool y_max = (j == y - 1);
+
+  int count_extremes = (x_min || x_max) + (y_min || y_max);
+
+  if (count_extremes == 2) {
+
+    if (x_min) {
+      if (y_max)
+        return TOP_LEFT_CORNER;
+      else
+        return BOTTOM_LEFT_CORNER;
+    } else if (x_max) {
+      if (y_max)
+        return TOP_RIGHT_CORNER;
+      else
+        return BOTTOM_RIGHT_CORNER;
+    }
+  } else {
+    if (x_min)
+      return LEFT;
+    if (x_max)
+      return RIGHT;
+    if (y_min)
+      return BOTTOM;
+    if (y_max)
+      return TOP;
+  }
+}
 
 void LinkedCellContainer::assign_placements() {
 
-  if(z == 1) {
+  if (z == 1) {
 
-  if (placement_map[Placement::TOP] == placement_map[Placement::RIGHT])
-    placement_map[Placement::TOP_RIGHT_CORNER] =
-        placement_map[Placement::RIGHT];
-  else
-    placement_map[Placement::TOP_RIGHT_CORNER] =
-        placement_map[Placement::TOP];
+    if (placement_map[Placement::TOP] == placement_map[Placement::RIGHT])
+      placement_map[Placement::TOP_RIGHT_CORNER] =
+          placement_map[Placement::RIGHT];
+    else
+      placement_map[Placement::TOP_RIGHT_CORNER] =
+          placement_map[Placement::TOP];
 
-  if (placement_map[Placement::TOP] == placement_map[Placement::LEFT])
-    placement_map[Placement::TOP_LEFT_CORNER] =
-        placement_map[Placement::LEFT];
-  else
-    placement_map[Placement::TOP_LEFT_CORNER] =
-        placement_map[Placement::TOP];
+    if (placement_map[Placement::TOP] == placement_map[Placement::LEFT])
+      placement_map[Placement::TOP_LEFT_CORNER] =
+          placement_map[Placement::LEFT];
+    else
+      placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::TOP];
 
-  if (placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT])
-    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
-        placement_map[Placement::RIGHT];
-  else
-    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
-        placement_map[Placement::BOTTOM];
+    if (placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT])
+      placement_map[Placement::BOTTOM_RIGHT_CORNER] =
+          placement_map[Placement::RIGHT];
+    else
+      placement_map[Placement::BOTTOM_RIGHT_CORNER] =
+          placement_map[Placement::BOTTOM];
 
-  if (placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT])
-    placement_map[Placement::BOTTOM_LEFT_CORNER] =
-        placement_map[Placement::LEFT];
-  else
-    placement_map[Placement::BOTTOM_LEFT_CORNER] =
-        placement_map[Placement::BOTTOM];
+    if (placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT])
+      placement_map[Placement::BOTTOM_LEFT_CORNER] =
+          placement_map[Placement::LEFT];
+    else
+      placement_map[Placement::BOTTOM_LEFT_CORNER] =
+          placement_map[Placement::BOTTOM];
 
-  }else {
+  } else {
 
-    if (placement_map[Placement::TOP] == placement_map[Placement::RIGHT] == 
+    if (placement_map[Placement::TOP] == placement_map[Placement::RIGHT] ==
         placement_map[Placement::FRONT])
-    placement_map[Placement::TOP_RIGHT_CORNER] =
-        placement_map[Placement::RIGHT];
-  else
-    placement_map[Placement::TOP_RIGHT_CORNER] =
-        placement_map[Placement::TOP];
+      placement_map[Placement::TOP_RIGHT_CORNER] =
+          placement_map[Placement::RIGHT];
+    else
+      placement_map[Placement::TOP_RIGHT_CORNER] =
+          placement_map[Placement::TOP];
 
-  if (placement_map[Placement::TOP] == placement_map[Placement::LEFT] == 
-      placement_map[Placement::FRONT])
-    placement_map[Placement::TOP_LEFT_CORNER] =
-        placement_map[Placement::LEFT];
-  else
-    placement_map[Placement::TOP_LEFT_CORNER] =
-        placement_map[Placement::TOP];
+    if (placement_map[Placement::TOP] == placement_map[Placement::LEFT] ==
+        placement_map[Placement::FRONT])
+      placement_map[Placement::TOP_LEFT_CORNER] =
+          placement_map[Placement::LEFT];
+    else
+      placement_map[Placement::TOP_LEFT_CORNER] = placement_map[Placement::TOP];
 
-  if (placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT] == 
-      placement_map[Placement::FRONT])
-    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
-        placement_map[Placement::RIGHT];
-  else
-    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
-        placement_map[Placement::BOTTOM];
+    if (placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT] ==
+        placement_map[Placement::FRONT])
+      placement_map[Placement::BOTTOM_RIGHT_CORNER] =
+          placement_map[Placement::RIGHT];
+    else
+      placement_map[Placement::BOTTOM_RIGHT_CORNER] =
+          placement_map[Placement::BOTTOM];
 
-  if (placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT] == 
-      placement_map[Placement::FRONT])
-    placement_map[Placement::BOTTOM_LEFT_CORNER] =
-        placement_map[Placement::LEFT];
-  else
-    placement_map[Placement::BOTTOM_LEFT_CORNER] =
-        placement_map[Placement::BOTTOM];
+    if (placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT] ==
+        placement_map[Placement::FRONT])
+      placement_map[Placement::BOTTOM_LEFT_CORNER] =
+          placement_map[Placement::LEFT];
+    else
+      placement_map[Placement::BOTTOM_LEFT_CORNER] =
+          placement_map[Placement::BOTTOM];
 
     if (placement_map[Placement::TOP] == placement_map[Placement::RIGHT] ==
         placement_map[Placement::BACK])
@@ -590,5 +626,4 @@ void LinkedCellContainer::assign_placements() {
     else
       placement_map[Placement::LEFT_BOTTOM] = placement_map[Placement::BOTTOM];
   }
-
 }

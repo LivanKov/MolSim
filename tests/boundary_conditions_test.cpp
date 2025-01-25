@@ -36,6 +36,10 @@ TEST_F(BoundaryConditionsTest, ReflectingBoundary) {
   EXPECT_TRUE(container.x == 10);
   EXPECT_EQ(container.boundary_conditions_.left, BoundaryCondition::Reflecting);
 
+  EXPECT_EQ(container.z, 1);
+  EXPECT_EQ(cell.placement, Placement::LEFT);
+  EXPECT_EQ(container.placement_map[Placement::LEFT], BoundaryCondition::Reflecting);
+
   auto p_ = container[0];
   // Position and velocity should reflect
   EXPECT_EQ(p_.getX()[0], 0.5);
