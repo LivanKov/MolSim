@@ -8,14 +8,30 @@ class BoundaryConditionsTest : public ::testing::Test {
 protected:
   LinkedCellContainer container;
 
+  LinkedCellContainer b_container;
+
+  LinkedCellContainer c_container;
+
   BoundaryConditionsTest()
-      : container{}   
+      : container{}, b_container{}, c_container{}   
   {
     container.initialize({10.0, 10.0}, 1.0,
                   {BoundaryCondition::Reflecting, // Left
                    BoundaryCondition::Outflow,    // Right
                    BoundaryCondition::Outflow, // Top
                    BoundaryCondition::Reflecting // Bottom 
+                   });
+    b_container.initialize({2.0, 2.0, 2.0}, 1.0,
+                  {BoundaryCondition::Outflow,    // Left
+                   BoundaryCondition::Outflow,    // Right
+                   BoundaryCondition::Outflow, // Top
+                   BoundaryCondition::Outflow // Bottom 
+                   });
+    c_container.initialize({3.0, 3.0, 3.0}, 1.0,
+                  {BoundaryCondition::Outflow,    // Left
+                   BoundaryCondition::Outflow,    // Right
+                   BoundaryCondition::Outflow, // Top
+                   BoundaryCondition::Outflow // Bottom 
                    });
   }
 
@@ -172,42 +188,42 @@ TEST_F(BoundaryConditionsTest, CornerCrossing) {
 
 TEST_F(BoundaryConditionsTest, VerifyCorners) {
     // Test 2x2x2 cuboid (all cells are corners)
-    EXPECT_EQ(container.cells[0].placement, Placement::BOTTOM_LEFT_CORNER);
-    EXPECT_EQ(container.cells[1].placement, Placement::BOTTOM_RIGHT_CORNER);
-    EXPECT_EQ(container.cells[2].placement, Placement::TOP_LEFT_CORNER);
-    EXPECT_EQ(container.cells[3].placement, Placement::TOP_RIGHT_CORNER);
-    EXPECT_EQ(container.cells[4].placement, Placement::BOTTOM_LEFT_CORNER_BACK);
-    EXPECT_EQ(container.cells[5].placement, Placement::BOTTOM_RIGHT_CORNER_BACK);
-    EXPECT_EQ(container.cells[6].placement, Placement::TOP_LEFT_CORNER_BACK);
-    EXPECT_EQ(container.cells[7].placement, Placement::TOP_RIGHT_CORNER_BACK);
+    EXPECT_EQ(b_container.cells[0].placement, Placement::BOTTOM_LEFT_CORNER);
+    EXPECT_EQ(b_container.cells[1].placement, Placement::BOTTOM_RIGHT_CORNER);
+    EXPECT_EQ(b_container.cells[2].placement, Placement::TOP_LEFT_CORNER);
+    EXPECT_EQ(b_container.cells[3].placement, Placement::TOP_RIGHT_CORNER);
+    EXPECT_EQ(b_container.cells[4].placement, Placement::BOTTOM_LEFT_CORNER_BACK);
+    EXPECT_EQ(b_container.cells[5].placement, Placement::BOTTOM_RIGHT_CORNER_BACK);
+    EXPECT_EQ(b_container.cells[6].placement, Placement::TOP_LEFT_CORNER_BACK);
+    EXPECT_EQ(b_container.cells[7].placement, Placement::TOP_RIGHT_CORNER_BACK);
 }
 
 TEST_F(BoundaryConditionsTest, VerifyEdges) {
     // Test edges in 3x3x3 cuboid
     // Bottom Front Edge (y=0, z=0)
-    EXPECT_EQ(container.cells[1].placement, Placement::BOTTOM_FRONT);
+    EXPECT_EQ(c_container.cells[1].placement, Placement::BOTTOM_FRONT);
     
     // Top Back Edge (y=2, z=2)
     const int top_back_edge_index = 2*9 + 2*3 + 1;  // z=2, y=2, x=1
-    EXPECT_EQ(container.cells[top_back_edge_index].placement, Placement::TOP_BACK);
+    EXPECT_EQ(c_container.cells[top_back_edge_index].placement, Placement::TOP_BACK);
     
     // Right Top Edge (x=2, y=2)
     const int right_top_edge_index = 1*9 + 2*3 + 2;  // z=1, y=2, x=2
-    EXPECT_EQ(container.cells[right_top_edge_index].placement, Placement::RIGHT_TOP);
+    EXPECT_EQ(c_container.cells[right_top_edge_index].placement, Placement::RIGHT_TOP);
 }
 
 TEST_F(BoundaryConditionsTest, VerifyFaces) {
     // Left Face (x=0)
     const int left_face_index = 1*9 + 1*3 + 0;  // z=1, y=1, x=0
-    EXPECT_EQ(container.cells[left_face_index].placement, Placement::LEFT);
+    EXPECT_EQ(c_container.cells[left_face_index].placement, Placement::LEFT);
     
     // Back Face (z=2)
     const int back_face_index = 2*9 + 1*3 + 1;  // z=2, y=1, x=1
-    EXPECT_EQ(container.cells[back_face_index].placement, Placement::BACK);
+    EXPECT_EQ(c_container.cells[back_face_index].placement, Placement::BACK);
     
     // Top Face (y=2)
     const int top_face_index = 1*9 + 2*3 + 1;  // z=1, y=2, x=1
-    EXPECT_EQ(container.cells[top_face_index].placement, Placement::TOP);
+    EXPECT_EQ(c_container.cells[top_face_index].placement, Placement::TOP);
 }
 
 
