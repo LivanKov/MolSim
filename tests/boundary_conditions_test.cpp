@@ -154,7 +154,7 @@ TEST_F(BoundaryConditionsTest, CornerCrossing) {
 
   EXPECT_EQ(container.cells[99].size(), 1);
   EXPECT_TRUE(container.cells[99].particle_ids.contains(0));
-  EXPECT_TRUE(container.cells[99].placement == Placement::TOP_RIGHT_CORNER_FRONT);
+  EXPECT_TRUE(container.cells[99].placement == Placement::TOP_RIGHT_CORNER);
 
   EXPECT_EQ(position[0], 9.9); // Reflected from the x boundary
   EXPECT_EQ(position[1], 9.9); // Reflected from the y boundary
@@ -168,10 +168,10 @@ TEST_F(BoundaryConditionsTest, CornerCrossing) {
 
 TEST_F(BoundaryConditionsTest, VerifyCorners) {
     // Test 2x2x2 cuboid (all cells are corners)
-    EXPECT_EQ(container.cells[0].placement, Placement::BOTTOM_LEFT_CORNER_FRONT);
-    EXPECT_EQ(container.cells[1].placement, Placement::BOTTOM_RIGHT_CORNER_FRONT);
-    EXPECT_EQ(container.cells[2].placement, Placement::TOP_LEFT_CORNER_FRONT);
-    EXPECT_EQ(container.cells[3].placement, Placement::TOP_RIGHT_CORNER_FRONT);
+    EXPECT_EQ(container.cells[0].placement, Placement::BOTTOM_LEFT_CORNER);
+    EXPECT_EQ(container.cells[1].placement, Placement::BOTTOM_RIGHT_CORNER);
+    EXPECT_EQ(container.cells[2].placement, Placement::TOP_LEFT_CORNER);
+    EXPECT_EQ(container.cells[3].placement, Placement::TOP_RIGHT_CORNER);
     EXPECT_EQ(container.cells[4].placement, Placement::BOTTOM_LEFT_CORNER_BACK);
     EXPECT_EQ(container.cells[5].placement, Placement::BOTTOM_RIGHT_CORNER_BACK);
     EXPECT_EQ(container.cells[6].placement, Placement::TOP_LEFT_CORNER_BACK);

@@ -64,39 +64,44 @@ void LinkedCellContainer::initialize(
   placement_map[Placement::BOTTOM] = boundary_conditions.bottom;
   placement_map[Placement::LEFT] = boundary_conditions.left;
   placement_map[Placement::RIGHT] = boundary_conditions.right;
-  placement_map[Placement::FRONT] = boundary_conditions.front;
-  placement_map[Placement::BACK] = boundary_conditions.back;
+  if(domain_size.size() == 3) {
+    placement_map[Placement::FRONT] = boundary_conditions.front;
+    placement_map[Placement::BACK] = boundary_conditions.back;
+  }
+
+
+  assign_placements();
 
   if (placement_map[Placement::TOP] == placement_map[Placement::RIGHT] ==
       placement_map[Placement::FRONT])
-    placement_map[Placement::TOP_RIGHT_CORNER_FRONT] =
+    placement_map[Placement::TOP_RIGHT_CORNER] =
         placement_map[Placement::RIGHT];
   else
-    placement_map[Placement::TOP_RIGHT_CORNER_FRONT] =
+    placement_map[Placement::TOP_RIGHT_CORNER] =
         placement_map[Placement::TOP];
 
   if (placement_map[Placement::TOP] == placement_map[Placement::LEFT] ==
       placement_map[Placement::FRONT])
-    placement_map[Placement::TOP_LEFT_CORNER_FRONT] =
+    placement_map[Placement::TOP_LEFT_CORNER] =
         placement_map[Placement::LEFT];
   else
-    placement_map[Placement::TOP_LEFT_CORNER_FRONT] =
+    placement_map[Placement::TOP_LEFT_CORNER] =
         placement_map[Placement::TOP];
 
   if (placement_map[Placement::BOTTOM] == placement_map[Placement::RIGHT] ==
       placement_map[Placement::FRONT])
-    placement_map[Placement::BOTTOM_RIGHT_CORNER_FRONT] =
+    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
         placement_map[Placement::RIGHT];
   else
-    placement_map[Placement::BOTTOM_RIGHT_CORNER_FRONT] =
+    placement_map[Placement::BOTTOM_RIGHT_CORNER] =
         placement_map[Placement::BOTTOM];
 
   if (placement_map[Placement::BOTTOM] == placement_map[Placement::LEFT] ==
       placement_map[Placement::FRONT])
-    placement_map[Placement::BOTTOM_LEFT_CORNER_FRONT] =
+    placement_map[Placement::BOTTOM_LEFT_CORNER] =
         placement_map[Placement::LEFT];
   else
-    placement_map[Placement::BOTTOM_LEFT_CORNER_FRONT] =
+    placement_map[Placement::BOTTOM_LEFT_CORNER] =
         placement_map[Placement::BOTTOM];
 
   if (domain_size.size() == 3) {
@@ -413,7 +418,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
     cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(ghost);
     break;
   }
-  case Placement::BOTTOM_LEFT_CORNER_FRONT: {
+  case Placement::BOTTOM_LEFT_CORNER: {
     // Corner ghost
     auto ghost_corner = create_ghost_particle(
         particle_id, {right_offset[0], bottom_offset[1], 0});
@@ -432,7 +437,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         ghost_bottom);
     break;
   }
-  case Placement::TOP_RIGHT_CORNER_FRONT: {
+  case Placement::TOP_RIGHT_CORNER: {
     // Corner ghost
     auto ghost_corner =
         create_ghost_particle(particle_id, {left_offset[0], top_offset[1], 0});
@@ -450,7 +455,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         ghost_top);
     break;
   }
-  case Placement::TOP_LEFT_CORNER_FRONT: {
+  case Placement::TOP_LEFT_CORNER: {
     // Corner ghost
     auto ghost_corner =
         create_ghost_particle(particle_id, {right_offset[0], top_offset[1], 0});
@@ -469,7 +474,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         ghost_top);
     break;
   }
-  case Placement::BOTTOM_RIGHT_CORNER_FRONT: {
+  case Placement::BOTTOM_RIGHT_CORNER: {
     // Corner ghost
     auto ghost_corner = create_ghost_particle(
         particle_id, {left_offset[0], bottom_offset[1], 0});
@@ -509,9 +514,9 @@ Placement LinkedCellContainer::determine_placement(size_t index, size_t i, size_
         // Corner case
         if (z_min) {
             if (x_min) {
-                return y_min ? BOTTOM_LEFT_CORNER_FRONT : TOP_LEFT_CORNER_FRONT;
+                return y_min ? BOTTOM_LEFT_CORNER : TOP_LEFT_CORNER;
             } else {
-                return y_min ? BOTTOM_RIGHT_CORNER_FRONT : TOP_RIGHT_CORNER_FRONT;
+                return y_min ? BOTTOM_RIGHT_CORNER : TOP_RIGHT_CORNER;
             }
         } else {
             if (x_min) {
@@ -553,4 +558,9 @@ Placement LinkedCellContainer::determine_placement(size_t index, size_t i, size_
         if (z_min) return FRONT;
         return BACK;
     }
+}
+
+
+void LinkedCellContainer::assign_placements() {
+
 }

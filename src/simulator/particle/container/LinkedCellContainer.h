@@ -37,10 +37,6 @@ enum Placement {
   RIGHT,
   FRONT,
   BACK,
-  TOP_RIGHT_CORNER_FRONT,
-  TOP_LEFT_CORNER_FRONT,
-  BOTTOM_RIGHT_CORNER_FRONT,
-  BOTTOM_LEFT_CORNER_FRONT,
   TOP_RIGHT_CORNER_BACK,
   TOP_LEFT_CORNER_BACK,
   BOTTOM_RIGHT_CORNER_BACK,
@@ -370,4 +366,7 @@ private:
 
 
   Placement determine_placement(size_t index, size_t i, size_t j, size_t k);
+
+
+  void assign_placements();
 };
