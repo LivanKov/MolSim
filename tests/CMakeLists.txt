@@ -7,7 +7,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
-add_executable(basic_test basic_test.cpp generator_test.cpp linked_cell.cpp boundary_conditions_test.cpp thermostat_test.cpp periodic_conditions_test.cpp ../src/simulator/particle/container/DirectSumContainer.cpp ../src/simulator/particle/Particle.cpp ../src/utils/logger/Logger.cpp
+add_executable(basic_test basic_test.cpp generator_test.cpp linked_cell.cpp thermostat_test.cpp boundary_conditions_test.cpp periodic_conditions_test.cpp ../src/simulator/particle/container/DirectSumContainer.cpp ../src/simulator/particle/Particle.cpp ../src/utils/logger/Logger.cpp
         ../src/simulator/particle/ParticleGenerator.cpp ../src/simulator/particle/container/LinkedCellContainer.cpp ../src/simulator/particle/container/DirectSumContainer.cpp ../src/simulator/Thermostat.cpp 
         ../src/simulator/calculations/Calculation.h ../src/simulator/calculations/BoundaryConditions.cpp ../src/simulator/calculations/Position.cpp ../src/io/input/cli/SimParams.cpp)
 
