@@ -89,6 +89,16 @@ void BoundaryConditions::handle_periodic_conditions(
     particles.cells_map[particle_id]->updateX(
         location[0], location[1] - particles.domain_size_[1], location[2]);
 
+  if (particles.z > 1) {
+    if (location[2] < particles.left_corner_coordinates[2])
+      particles.cells_map[particle_id]->updateX(
+          location[0], location[1], location[2] + particles.domain_size_[2]);
+    if (location[2] >
+        particles.left_corner_coordinates[2] + particles.domain_size_[2])
+      particles.cells_map[particle_id]->updateX(
+          location[0], location[1], location[2] - particles.domain_size_[2]);
+  }
+
   particles.cells_map[particle_id]->updateOldX(location[0], location[1],
                                                location[2]);
   particles.update_particle_location(particle_id, location);

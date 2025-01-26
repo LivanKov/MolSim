@@ -24,8 +24,8 @@
         <right>Periodic</right>
         <top>Periodic</top>
         <bottom>Periodic</bottom>
-        <front>Periodic</front>
-        <back>Periodic</back>
+        <front>Reflecting</front>
+        <back>Reflecting</back>
   </boundary_conditions>
     
     <cuboids>

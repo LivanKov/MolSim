@@ -299,6 +299,10 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
   const std::array<double, 3> left_offset = {-domain_size_[0], 0, 0};
   const std::array<double, 3> top_offset = {0, -domain_size_[1], 0};
   const std::array<double, 3> bottom_offset = {0, domain_size_[1], 0};
+  const std::array<double, 3> front_offset = {0, 0, -domain_size_[2]};
+  const std::array<double, 3> back_offset = {0, 0, domain_size_[2]};
+
+  int layer_size = x * y;
 
   switch (placement) {
   case Placement::LEFT: {
@@ -306,6 +310,15 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
     cell_ghost_particles_map[cell_index + x - 1].push_back(ghost);
     cell_ghost_particles_map[cell_index + x + x - 1].push_back(ghost);
     cell_ghost_particles_map[cell_index - 1].push_back(ghost);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index + x - 1 + layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index + x + x - 1 + layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index - 1 + layer_size].push_back(ghost);
+
+      cell_ghost_particles_map[cell_index + x - 1 - layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index + x + x - 1 - layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index - 1 - layer_size].push_back(ghost);
+    }
     break;
   }
   case Placement::RIGHT: {
@@ -313,6 +326,15 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
     cell_ghost_particles_map[cell_index - x + 1].push_back(ghost);
     cell_ghost_particles_map[cell_index - (x + x - 1)].push_back(ghost);
     cell_ghost_particles_map[cell_index + 1].push_back(ghost);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index - x + 1 + layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index - (x + x - 1) + layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index + 1 + layer_size].push_back(ghost);
+
+      cell_ghost_particles_map[cell_index - x + 1 - layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index - (x + x - 1) - layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index + 1 - layer_size].push_back(ghost);
+    }
     break;
   }
   case Placement::TOP: {
@@ -320,6 +342,15 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
     cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(ghost);
     cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1].push_back(ghost);
     cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1].push_back(ghost);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index - (y - 1) * x + layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1 + layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1 + layer_size].push_back(ghost);
+
+      cell_ghost_particles_map[cell_index - (y - 1) * x - layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1 - layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1 - layer_size].push_back(ghost);
+    }
     break;
   }
   case Placement::BOTTOM: {
@@ -327,6 +358,49 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
     cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(ghost);
     cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1].push_back(ghost);
     cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(ghost);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index + (y - 1) * x + layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1 + layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1 + layer_size].push_back(ghost);
+
+      cell_ghost_particles_map[cell_index + (y - 1) * x - layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1 - layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1 - layer_size].push_back(ghost);
+    }
+    break;
+  }
+  case Placement::FRONT: {
+    if(z != 1) { 
+      auto ghost_front = create_ghost_particle(particle_id, front_offset);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1)].push_back(ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1].push_back(ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1].push_back(ghost_front);
+
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x].push_back(ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1 + x].push_back(ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1 + x].push_back(ghost_front);
+
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x].push_back(ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1 - x].push_back(ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1 - x].push_back(ghost_front);
+    }
+    break;
+  }
+  case Placement::BACK: {
+    if(z != 1) {
+      auto ghost_back = create_ghost_particle(particle_id, back_offset);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1)].push_back(ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1].push_back(ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1].push_back(ghost_back);
+
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x].push_back(ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1 + x].push_back(ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1 + x].push_back(ghost_back);
+
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x].push_back(ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1 - x].push_back(ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1 - x].push_back(ghost_back);
+    }
     break;
   }
   case Placement::BOTTOM_LEFT_CORNER: {
@@ -334,11 +408,18 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
     auto ghost_corner = create_ghost_particle(
         particle_id, {right_offset[0], bottom_offset[1], 0});
     cell_ghost_particles_map[cell_index + y * x - 1].push_back(ghost_corner);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index + y * x - 1 + layer_size].push_back(ghost_corner);
+    }
 
     // Right side ghost
     auto ghost_right = create_ghost_particle(particle_id, right_offset);
     cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
     cell_ghost_particles_map[cell_index + x + x - 1].push_back(ghost_right);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index + x + layer_size - 1].push_back(ghost_right);
+      cell_ghost_particles_map[cell_index + x + 1 + layer_size - 1].push_back(ghost_right);
+    }
 
     // Bottom side ghost
     auto ghost_bottom = create_ghost_particle(particle_id, bottom_offset);
@@ -346,6 +427,19 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         ghost_bottom);
     cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(
         ghost_bottom);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + layer_size].push_back(
+          ghost_bottom);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1 + layer_size].push_back(
+          ghost_bottom);
+    }
+
+
+    if(z != 1) {
+      auto ghost_back = create_ghost_particle(particle_id, front_offset);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + layer_size].push_back(ghost_back);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1 + layer_size].push_back(ghost_back);
+    }
     break;
   }
   case Placement::TOP_RIGHT_CORNER: {
@@ -353,17 +447,29 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
     auto ghost_corner =
         create_ghost_particle(particle_id, {left_offset[0], top_offset[1], 0});
     cell_ghost_particles_map[cell_index - (y * x - 1)].push_back(ghost_corner);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index - (y * x - 1) + layer_size].push_back(ghost_corner);
+    }
 
     // Left side ghost
     auto ghost_left = create_ghost_particle(particle_id, left_offset);
     cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
     cell_ghost_particles_map[cell_index - (x + x - 1)].push_back(ghost_left);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index - x + 1 + layer_size].push_back(ghost_left);
+      cell_ghost_particles_map[cell_index - (x + x - 1) + layer_size].push_back(ghost_left);
+    }
 
     // Top side ghost
     auto ghost_top = create_ghost_particle(particle_id, top_offset);
     cell_ghost_particles_map[cell_index - ((y - 1) * x)].push_back(ghost_top);
     cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1].push_back(
         ghost_top);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + layer_size].push_back(ghost_top);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1 + layer_size].push_back(
+          ghost_top);
+    }
     break;
   }
   case Placement::TOP_LEFT_CORNER: {
@@ -372,17 +478,30 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         create_ghost_particle(particle_id, {right_offset[0], top_offset[1], 0});
     cell_ghost_particles_map[cell_index - (y - 2) * x - 1].push_back(
         ghost_corner);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index - (y - 2) * x - 1 + layer_size].push_back(
+          ghost_corner);
+    }
 
     // Right side ghost
     auto ghost_right = create_ghost_particle(particle_id, right_offset);
     cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
     cell_ghost_particles_map[cell_index - 1].push_back(ghost_right);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index + x - 1 + layer_size].push_back(ghost_right);
+      cell_ghost_particles_map[cell_index - 1 + layer_size].push_back(ghost_right);
+    }
 
     // Top side ghost
     auto ghost_top = create_ghost_particle(particle_id, top_offset);
     cell_ghost_particles_map[cell_index - ((y - 1) * x)].push_back(ghost_top);
     cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1].push_back(
         ghost_top);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + layer_size].push_back(ghost_top);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1 + layer_size].push_back(
+          ghost_top);
+    }
     break;
   }
   case Placement::BOTTOM_RIGHT_CORNER: {
@@ -391,11 +510,19 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         particle_id, {left_offset[0], bottom_offset[1], 0});
     cell_ghost_particles_map[cell_index + (y - 2) * x + 1].push_back(
         ghost_corner);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index + (y - 2) * x + 1 + layer_size].push_back(
+          ghost_corner);
+    }
 
     // Left side ghost
     auto ghost_left = create_ghost_particle(particle_id, left_offset);
     cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
     cell_ghost_particles_map[cell_index + 1].push_back(ghost_left);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index - x + 1 + layer_size].push_back(ghost_left);
+      cell_ghost_particles_map[cell_index + 1 + layer_size].push_back(ghost_left);
+    }
 
     // Bottom side ghost
     auto ghost_bottom = create_ghost_particle(particle_id, bottom_offset);
@@ -403,7 +530,16 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         ghost_bottom);
     cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1].push_back(
         ghost_bottom);
+    if(z != 1) {
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + layer_size].push_back(
+          ghost_bottom);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1 + layer_size].push_back(
+          ghost_bottom);
+    }
     break;
+  }
+  case Placement::TOP_LEFT_CORNER_BACK: {
+    
   }
   default:
     break;
