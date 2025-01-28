@@ -60,14 +60,7 @@ void LinkedCellContainer::initialize(
     cells_map[p->getType()] = p;
   }
 
-  placement_map[Placement::TOP] = boundary_conditions.top;
-  placement_map[Placement::BOTTOM] = boundary_conditions.bottom;
-  placement_map[Placement::LEFT] = boundary_conditions.left;
-  placement_map[Placement::RIGHT] = boundary_conditions.right;
-  if (domain_size.size() == 3) {
-    placement_map[Placement::FRONT] = boundary_conditions.front;
-    placement_map[Placement::BACK] = boundary_conditions.back;
-  }
+  set_boundary_conditions(boundary_conditions);
   assign_placements();
   mark_halo_cells();
 }
@@ -221,7 +214,9 @@ void LinkedCellContainer::mark_halo_cells() {
           cells[index].is_halo = true;
           halo_cell_indices.push_back(index);
           halo_count++;
-          cells[index].placement = z == 1 ? determine_placement_2d(index, i, j) : determine_placement_3d(index, i, j, k);
+          cells[index].placement = z == 1
+                                       ? determine_placement_2d(index, i, j)
+                                       : determine_placement_3d(index, i, j, k);
         }
       }
     }
@@ -264,13 +259,15 @@ void LinkedCellContainer::readjust() {
 }
 
 void LinkedCellContainer::set_boundary_conditions(
-    DomainBoundaryConditions conditions) {
-  this->boundary_conditions_ = conditions;
-  placement_map[Placement::TOP] = conditions.top;
-  placement_map[Placement::BOTTOM] = conditions.bottom;
-  placement_map[Placement::LEFT] = conditions.left;
-  placement_map[Placement::RIGHT] = conditions.right;
-  placement_map[Placement::FRONT] = conditions.front;
+    DomainBoundaryConditions boundary_conditions) {
+  placement_map[Placement::TOP] = boundary_conditions.top;
+  placement_map[Placement::BOTTOM] = boundary_conditions.bottom;
+  placement_map[Placement::LEFT] = boundary_conditions.left;
+  placement_map[Placement::RIGHT] = boundary_conditions.right;
+  if (z != 1) {
+    placement_map[Placement::FRONT] = boundary_conditions.front;
+    placement_map[Placement::BACK] = boundary_conditions.back;
+  }
 }
 
 void LinkedCellContainer::clear_ghost_particles() {
@@ -295,8 +292,8 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
   const auto &placement = cells[cell_index].placement;
 
   // Helper arrays for offsets
-  const std::array<double, 3> right_offset = {domain_size_[0], 0, 0};
-  const std::array<double, 3> left_offset = {-domain_size_[0], 0, 0};
+  const std::array<double, 3> left_offset = {domain_size_[0], 0, 0};
+  const std::array<double, 3> right_offset = {-domain_size_[0], 0, 0};
   const std::array<double, 3> top_offset = {0, -domain_size_[1], 0};
   const std::array<double, 3> bottom_offset = {0, domain_size_[1], 0};
   const std::array<double, 3> front_offset = {0, 0, -domain_size_[2]};
@@ -306,33 +303,41 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
 
   switch (placement) {
   case Placement::LEFT: {
-    auto ghost = create_ghost_particle(particle_id, right_offset);
+    auto ghost = create_ghost_particle(particle_id, left_offset);
     cell_ghost_particles_map[cell_index + x - 1].push_back(ghost);
     cell_ghost_particles_map[cell_index + x + x - 1].push_back(ghost);
     cell_ghost_particles_map[cell_index - 1].push_back(ghost);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index + x - 1 + layer_size].push_back(ghost);
-      cell_ghost_particles_map[cell_index + x + x - 1 + layer_size].push_back(ghost);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + x - 1 + layer_size].push_back(
+          ghost);
+      cell_ghost_particles_map[cell_index + x + x - 1 + layer_size].push_back(
+          ghost);
       cell_ghost_particles_map[cell_index - 1 + layer_size].push_back(ghost);
 
-      cell_ghost_particles_map[cell_index + x - 1 - layer_size].push_back(ghost);
-      cell_ghost_particles_map[cell_index + x + x - 1 - layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index + x - 1 - layer_size].push_back(
+          ghost);
+      cell_ghost_particles_map[cell_index + x + x - 1 - layer_size].push_back(
+          ghost);
       cell_ghost_particles_map[cell_index - 1 - layer_size].push_back(ghost);
     }
     break;
   }
   case Placement::RIGHT: {
-    auto ghost = create_ghost_particle(particle_id, left_offset);
+    auto ghost = create_ghost_particle(particle_id, right_offset);
     cell_ghost_particles_map[cell_index - x + 1].push_back(ghost);
     cell_ghost_particles_map[cell_index - (x + x - 1)].push_back(ghost);
     cell_ghost_particles_map[cell_index + 1].push_back(ghost);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index - x + 1 + layer_size].push_back(ghost);
-      cell_ghost_particles_map[cell_index - (x + x - 1) + layer_size].push_back(ghost);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - x + 1 + layer_size].push_back(
+          ghost);
+      cell_ghost_particles_map[cell_index - (x + x - 1) + layer_size].push_back(
+          ghost);
       cell_ghost_particles_map[cell_index + 1 + layer_size].push_back(ghost);
 
-      cell_ghost_particles_map[cell_index - x + 1 - layer_size].push_back(ghost);
-      cell_ghost_particles_map[cell_index - (x + x - 1) - layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index - x + 1 - layer_size].push_back(
+          ghost);
+      cell_ghost_particles_map[cell_index - (x + x - 1) - layer_size].push_back(
+          ghost);
       cell_ghost_particles_map[cell_index + 1 - layer_size].push_back(ghost);
     }
     break;
@@ -342,14 +347,20 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
     cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(ghost);
     cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1].push_back(ghost);
     cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1].push_back(ghost);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index - (y - 1) * x + layer_size].push_back(ghost);
-      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1 + layer_size].push_back(ghost);
-      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1 + layer_size].push_back(ghost);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - (y - 1) * x + layer_size].push_back(
+          ghost);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1 + layer_size]
+          .push_back(ghost);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1 + layer_size]
+          .push_back(ghost);
 
-      cell_ghost_particles_map[cell_index - (y - 1) * x - layer_size].push_back(ghost);
-      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1 - layer_size].push_back(ghost);
-      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1 - layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index - (y - 1) * x - layer_size].push_back(
+          ghost);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1 - layer_size]
+          .push_back(ghost);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1 - layer_size]
+          .push_back(ghost);
     }
     break;
   }
@@ -358,67 +369,94 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
     cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(ghost);
     cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1].push_back(ghost);
     cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(ghost);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index + (y - 1) * x + layer_size].push_back(ghost);
-      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1 + layer_size].push_back(ghost);
-      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1 + layer_size].push_back(ghost);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + (y - 1) * x + layer_size].push_back(
+          ghost);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1 + layer_size]
+          .push_back(ghost);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1 + layer_size]
+          .push_back(ghost);
 
-      cell_ghost_particles_map[cell_index + (y - 1) * x - layer_size].push_back(ghost);
-      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1 - layer_size].push_back(ghost);
-      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1 - layer_size].push_back(ghost);
+      cell_ghost_particles_map[cell_index + (y - 1) * x - layer_size].push_back(
+          ghost);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1 - layer_size]
+          .push_back(ghost);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1 - layer_size]
+          .push_back(ghost);
     }
     break;
   }
   case Placement::FRONT: {
-    if(z != 1) { 
+    if (z != 1) {
       auto ghost_front = create_ghost_particle(particle_id, front_offset);
-      cell_ghost_particles_map[cell_index + layer_size * (z - 1)].push_back(ghost_front);
-      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1].push_back(ghost_front);
-      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1].push_back(ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1)].push_back(
+          ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1].push_back(
+          ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1].push_back(
+          ghost_front);
 
-      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x].push_back(ghost_front);
-      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1 + x].push_back(ghost_front);
-      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1 + x].push_back(ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x].push_back(
+          ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1 + x]
+          .push_back(ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1 + x]
+          .push_back(ghost_front);
 
-      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x].push_back(ghost_front);
-      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1 - x].push_back(ghost_front);
-      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1 - x].push_back(ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x].push_back(
+          ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1 - x]
+          .push_back(ghost_front);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1 - x]
+          .push_back(ghost_front);
     }
     break;
   }
   case Placement::BACK: {
-    if(z != 1) {
+    if (z != 1) {
       auto ghost_back = create_ghost_particle(particle_id, back_offset);
-      cell_ghost_particles_map[cell_index - layer_size * (z - 1)].push_back(ghost_back);
-      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1].push_back(ghost_back);
-      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1].push_back(ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1)].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1].push_back(
+          ghost_back);
 
-      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x].push_back(ghost_back);
-      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1 + x].push_back(ghost_back);
-      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1 + x].push_back(ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1 + x]
+          .push_back(ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1 + x]
+          .push_back(ghost_back);
 
-      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x].push_back(ghost_back);
-      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1 - x].push_back(ghost_back);
-      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1 - x].push_back(ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1 - x]
+          .push_back(ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1 - x]
+          .push_back(ghost_back);
     }
     break;
   }
   case Placement::BOTTOM_LEFT_CORNER: {
     // Corner ghost
     auto ghost_corner = create_ghost_particle(
-        particle_id, {right_offset[0], bottom_offset[1], 0});
+        particle_id, {left_offset[0], bottom_offset[1], 0});
     cell_ghost_particles_map[cell_index + y * x - 1].push_back(ghost_corner);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index + y * x - 1 + layer_size].push_back(ghost_corner);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + y * x - 1 + layer_size].push_back(
+          ghost_corner);
     }
 
     // Right side ghost
-    auto ghost_right = create_ghost_particle(particle_id, right_offset);
+    auto ghost_right = create_ghost_particle(particle_id, left_offset);
     cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
     cell_ghost_particles_map[cell_index + x + x - 1].push_back(ghost_right);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index + x + layer_size - 1].push_back(ghost_right);
-      cell_ghost_particles_map[cell_index + x + 1 + layer_size - 1].push_back(ghost_right);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + x + layer_size - 1].push_back(
+          ghost_right);
+      cell_ghost_particles_map[cell_index + x + x + layer_size - 1].push_back(
+          ghost_right);
     }
 
     // Bottom side ghost
@@ -427,37 +465,66 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         ghost_bottom);
     cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(
         ghost_bottom);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index + ((y - 1) * x) + layer_size].push_back(
-          ghost_bottom);
-      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1 + layer_size].push_back(
-          ghost_bottom);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + layer_size]
+          .push_back(ghost_bottom);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1 + layer_size]
+          .push_back(ghost_bottom);
     }
 
+    if (z != 1) {
+      auto ghost_back =
+          create_ghost_particle(particle_id, {0, 0, front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1)].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1 + x]
+          .push_back(ghost_back);
 
-    if(z != 1) {
-      auto ghost_back = create_ghost_particle(particle_id, front_offset);
-      cell_ghost_particles_map[cell_index + ((y - 1) * x) + layer_size].push_back(ghost_back);
-      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1 + layer_size].push_back(ghost_back);
+      auto ghost_diag_right = create_ghost_particle(
+          particle_id, {left_offset[0], 0, front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x - 1]
+          .push_back(ghost_diag_right);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x - 1 + x]
+          .push_back(ghost_diag_right);
+
+      auto ghost_diag_up = create_ghost_particle(
+          particle_id, {0, bottom_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x * (y - 1)]
+          .push_back(ghost_diag_up);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x * (y - 1) +
+                               1]
+          .push_back(ghost_diag_up);
+
+      auto ghost_diag = create_ghost_particle(
+          particle_id, {left_offset[0], bottom_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * z - 1].push_back(
+          ghost_diag);
     }
     break;
   }
   case Placement::TOP_RIGHT_CORNER: {
     // Corner ghost
     auto ghost_corner =
-        create_ghost_particle(particle_id, {left_offset[0], top_offset[1], 0});
+        create_ghost_particle(particle_id, {right_offset[0], top_offset[1], 0});
     cell_ghost_particles_map[cell_index - (y * x - 1)].push_back(ghost_corner);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index - (y * x - 1) + layer_size].push_back(ghost_corner);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - (y * x - 1) + layer_size].push_back(
+          ghost_corner);
     }
 
     // Left side ghost
-    auto ghost_left = create_ghost_particle(particle_id, left_offset);
+    auto ghost_left = create_ghost_particle(particle_id, right_offset);
     cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
     cell_ghost_particles_map[cell_index - (x + x - 1)].push_back(ghost_left);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index - x + 1 + layer_size].push_back(ghost_left);
-      cell_ghost_particles_map[cell_index - (x + x - 1) + layer_size].push_back(ghost_left);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - x + 1 + layer_size].push_back(
+          ghost_left);
+      cell_ghost_particles_map[cell_index - (x + x - 1) + layer_size].push_back(
+          ghost_left);
     }
 
     // Top side ghost
@@ -465,31 +532,67 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
     cell_ghost_particles_map[cell_index - ((y - 1) * x)].push_back(ghost_top);
     cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1].push_back(
         ghost_top);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index - ((y - 1) * x) + layer_size].push_back(ghost_top);
-      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1 + layer_size].push_back(
-          ghost_top);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + layer_size]
+          .push_back(ghost_top);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1 + layer_size]
+          .push_back(ghost_top);
+    }
+
+    if (z != 1) {
+      auto ghost_back =
+          create_ghost_particle(particle_id, {0, 0, front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1)].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1 - x]
+          .push_back(ghost_back);
+
+      auto ghost_diag_left = create_ghost_particle(
+          particle_id, {right_offset[0], 0, front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x + 1]
+          .push_back(ghost_diag_left);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x + 1 - x]
+          .push_back(ghost_diag_left);
+
+      auto ghost_diag_down = create_ghost_particle(
+          particle_id, {0, top_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x * (y - 1)]
+          .push_back(ghost_diag_down);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x * (y - 1) -
+                               1]
+          .push_back(ghost_diag_down);
+
+      auto ghost_diag = create_ghost_particle(
+          particle_id, {right_offset[0], top_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - y * x + 1]
+          .push_back(ghost_diag);
     }
     break;
   }
   case Placement::TOP_LEFT_CORNER: {
     // Corner ghost
     auto ghost_corner =
-        create_ghost_particle(particle_id, {right_offset[0], top_offset[1], 0});
+        create_ghost_particle(particle_id, {left_offset[0], top_offset[1], 0});
     cell_ghost_particles_map[cell_index - (y - 2) * x - 1].push_back(
         ghost_corner);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index - (y - 2) * x - 1 + layer_size].push_back(
-          ghost_corner);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - (y - 2) * x - 1 + layer_size]
+          .push_back(ghost_corner);
     }
 
     // Right side ghost
-    auto ghost_right = create_ghost_particle(particle_id, right_offset);
+    auto ghost_right = create_ghost_particle(particle_id, left_offset);
     cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
     cell_ghost_particles_map[cell_index - 1].push_back(ghost_right);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index + x - 1 + layer_size].push_back(ghost_right);
-      cell_ghost_particles_map[cell_index - 1 + layer_size].push_back(ghost_right);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + x - 1 + layer_size].push_back(
+          ghost_right);
+      cell_ghost_particles_map[cell_index - 1 + layer_size].push_back(
+          ghost_right);
     }
 
     // Top side ghost
@@ -497,31 +600,69 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
     cell_ghost_particles_map[cell_index - ((y - 1) * x)].push_back(ghost_top);
     cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1].push_back(
         ghost_top);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index - ((y - 1) * x) + layer_size].push_back(ghost_top);
-      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1 + layer_size].push_back(
-          ghost_top);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + layer_size]
+          .push_back(ghost_top);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1 + layer_size]
+          .push_back(ghost_top);
     }
+
+    if (z != 1) {
+      auto ghost_back =
+          create_ghost_particle(particle_id, {0, 0, front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1)].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x + 1]
+          .push_back(ghost_back);
+
+      auto ghost_diag_right = create_ghost_particle(
+          particle_id, {left_offset[0], 0, front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x - 1]
+          .push_back(ghost_diag_right);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x - 1 - x]
+          .push_back(ghost_diag_right);
+
+      auto ghost_diag_down = create_ghost_particle(
+          particle_id, {0, top_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x * (y - 1)]
+          .push_back(ghost_diag_down);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x * (y - 1) +
+                               1]
+          .push_back(ghost_diag_down);
+
+      auto ghost_diag = create_ghost_particle(
+          particle_id, {left_offset[0], top_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - (y - 1) * x +
+                               x - 1]
+          .push_back(ghost_diag);
+    }
+
     break;
   }
   case Placement::BOTTOM_RIGHT_CORNER: {
     // Corner ghost
     auto ghost_corner = create_ghost_particle(
-        particle_id, {left_offset[0], bottom_offset[1], 0});
+        particle_id, {right_offset[0], bottom_offset[1], 0});
     cell_ghost_particles_map[cell_index + (y - 2) * x + 1].push_back(
         ghost_corner);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index + (y - 2) * x + 1 + layer_size].push_back(
-          ghost_corner);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + (y - 2) * x + 1 + layer_size]
+          .push_back(ghost_corner);
     }
 
     // Left side ghost
-    auto ghost_left = create_ghost_particle(particle_id, left_offset);
+    auto ghost_left = create_ghost_particle(particle_id, right_offset);
     cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
     cell_ghost_particles_map[cell_index + 1].push_back(ghost_left);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index - x + 1 + layer_size].push_back(ghost_left);
-      cell_ghost_particles_map[cell_index + 1 + layer_size].push_back(ghost_left);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - x + 1 + layer_size].push_back(
+          ghost_left);
+      cell_ghost_particles_map[cell_index + 1 + layer_size].push_back(
+          ghost_left);
     }
 
     // Bottom side ghost
@@ -530,16 +671,676 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         ghost_bottom);
     cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1].push_back(
         ghost_bottom);
-    if(z != 1) {
-      cell_ghost_particles_map[cell_index + ((y - 1) * x) + layer_size].push_back(
-          ghost_bottom);
-      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1 + layer_size].push_back(
-          ghost_bottom);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + layer_size]
+          .push_back(ghost_bottom);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1 + layer_size]
+          .push_back(ghost_bottom);
+    }
+
+    if (z != 1) {
+      auto ghost_back =
+          create_ghost_particle(particle_id, {0, 0, front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1)].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x - 1]
+          .push_back(ghost_back);
+
+      auto ghost_diag_left = create_ghost_particle(
+          particle_id, {right_offset[0], 0, front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x + 1]
+          .push_back(ghost_diag_left);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1].push_back(
+          ghost_diag_left);
+
+      auto ghost_diag_up = create_ghost_particle(
+          particle_id, {0, bottom_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x * (y - 1)]
+          .push_back(ghost_diag_up);
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x * (y - 1) -
+                               1]
+          .push_back(ghost_diag_up);
+
+      auto ghost_diag = create_ghost_particle(
+          particle_id, {right_offset[0], bottom_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index + layer_size * (z - 1) + (y - 1) * x -
+                               x + 1]
+          .push_back(ghost_diag);
     }
     break;
   }
   case Placement::TOP_LEFT_CORNER_BACK: {
-    
+    auto ghost_corner =
+        create_ghost_particle(particle_id, {left_offset[0], top_offset[1], 0});
+    cell_ghost_particles_map[cell_index - (y - 2) * x - 1].push_back(
+        ghost_corner);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - (y - 2) * x - 1 - layer_size]
+          .push_back(ghost_corner);
+    }
+
+    // Right side ghost
+    auto ghost_right = create_ghost_particle(particle_id, left_offset);
+    cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index - 1].push_back(ghost_right);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + x - 1 - layer_size].push_back(
+          ghost_right);
+      cell_ghost_particles_map[cell_index - 1 - layer_size].push_back(
+          ghost_right);
+    }
+
+    // bottom side ghost
+    auto ghost_top = create_ghost_particle(particle_id, top_offset);
+    cell_ghost_particles_map[cell_index - ((y - 1) * x)].push_back(ghost_top);
+    cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1].push_back(
+        ghost_top);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) - layer_size]
+          .push_back(ghost_top);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) + 1 - layer_size]
+          .push_back(ghost_top);
+    }
+
+    if (z != 1) {
+      auto ghost_back =
+          create_ghost_particle(particle_id, {0, 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1)].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x + 1]
+          .push_back(ghost_back);
+
+      auto ghost_diag_right = create_ghost_particle(
+          particle_id, {left_offset[0], 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x - 1]
+          .push_back(ghost_diag_right);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1].push_back(
+          ghost_diag_right);
+
+      auto ghost_diag_down = create_ghost_particle(
+          particle_id, {0, top_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x * (y - 1)]
+          .push_back(ghost_diag_down);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x * (y - 1) +
+                               1]
+          .push_back(ghost_diag_down);
+
+      auto ghost_diag = create_ghost_particle(
+          particle_id, {left_offset[0], top_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - (y - 1) * x +
+                               x - 1]
+          .push_back(ghost_diag);
+    }
+
+    break;
+  }
+  case Placement::BOTTOM_LEFT_CORNER_BACK: {
+    auto ghost_corner = create_ghost_particle(
+        particle_id, {left_offset[0], bottom_offset[1], 0});
+    cell_ghost_particles_map[cell_index + y * x - 1].push_back(ghost_corner);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + y * x - 1 - layer_size].push_back(
+          ghost_corner);
+    }
+
+    // Right side ghost
+    auto ghost_right = create_ghost_particle(particle_id, left_offset);
+    cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + x + x - 1].push_back(ghost_right);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + x - 1 - layer_size].push_back(
+          ghost_right);
+      cell_ghost_particles_map[cell_index + x + x - 1 - layer_size].push_back(
+          ghost_right);
+    }
+
+    // Upper side ghost
+    auto ghost_bottom = create_ghost_particle(particle_id, bottom_offset);
+    cell_ghost_particles_map[cell_index + ((y - 1) * x)].push_back(
+        ghost_bottom);
+    cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1].push_back(
+        ghost_bottom);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) - layer_size]
+          .push_back(ghost_bottom);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) + 1 - layer_size]
+          .push_back(ghost_bottom);
+    }
+
+    if (z != 1) {
+      auto ghost_front =
+          create_ghost_particle(particle_id, {0, 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1)].push_back(
+          ghost_front);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1].push_back(
+          ghost_front);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x].push_back(
+          ghost_front);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1 + x]
+          .push_back(ghost_front);
+
+      auto ghost_diag_right = create_ghost_particle(
+          particle_id, {left_offset[0], 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x - 1]
+          .push_back(ghost_diag_right);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x - 1 + x]
+          .push_back(ghost_diag_right);
+
+      auto ghost_diag_up = create_ghost_particle(
+          particle_id, {0, bottom_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x * (y - 1)]
+          .push_back(ghost_diag_up);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x * (y - 1) +
+                               1]
+          .push_back(ghost_diag_up);
+
+      auto ghost_diag = create_ghost_particle(
+          particle_id, {left_offset[0], bottom_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x * y - 1]
+          .push_back(ghost_diag);
+    }
+    break;
+  }
+  case Placement::BOTTOM_RIGHT_CORNER_BACK: {
+    auto ghost_corner = create_ghost_particle(
+        particle_id, {right_offset[0], bottom_offset[1], 0});
+    cell_ghost_particles_map[cell_index + (y - 2) * x + 1].push_back(
+        ghost_corner);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + (y - 2) * x + 1 - layer_size]
+          .push_back(ghost_corner);
+    }
+
+    // Left side ghost
+    auto ghost_left = create_ghost_particle(particle_id, right_offset);
+    cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index + 1].push_back(ghost_left);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - x + 1 - layer_size].push_back(
+          ghost_left);
+      cell_ghost_particles_map[cell_index + 1 - layer_size].push_back(
+          ghost_left);
+    }
+
+    // Bottom side ghost
+    auto ghost_bottom = create_ghost_particle(particle_id, bottom_offset);
+    cell_ghost_particles_map[cell_index + ((y - 1) * x)].push_back(
+        ghost_bottom);
+    cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1].push_back(
+        ghost_bottom);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) - layer_size]
+          .push_back(ghost_bottom);
+      cell_ghost_particles_map[cell_index + ((y - 1) * x) - 1 - layer_size]
+          .push_back(ghost_bottom);
+    }
+
+    if (z != 1) {
+      auto ghost_back =
+          create_ghost_particle(particle_id, {0, 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1)].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x - 1]
+          .push_back(ghost_back);
+
+      auto ghost_diag_left = create_ghost_particle(
+          particle_id, {right_offset[0], 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x + 1]
+          .push_back(ghost_diag_left);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1].push_back(
+          ghost_diag_left);
+
+      auto ghost_diag_up = create_ghost_particle(
+          particle_id, {0, bottom_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x * (y - 1)]
+          .push_back(ghost_diag_up);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x * (y - 1) -
+                               1]
+          .push_back(ghost_diag_up);
+
+      auto ghost_diag = create_ghost_particle(
+          particle_id, {right_offset[0], bottom_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) + (y - 1) * x -
+                               x + 1]
+          .push_back(ghost_diag);
+    }
+    break;
+  }
+
+  case Placement::TOP_RIGHT_CORNER_BACK: {
+
+    auto ghost_corner =
+        create_ghost_particle(particle_id, {right_offset[0], top_offset[1], 0});
+    cell_ghost_particles_map[cell_index - (y * x - 1)].push_back(ghost_corner);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - (y * x - 1) - layer_size].push_back(
+          ghost_corner);
+    }
+
+    // Left side ghost
+    auto ghost_left = create_ghost_particle(particle_id, right_offset);
+    cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - (x + x - 1)].push_back(ghost_left);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - x + 1 - layer_size].push_back(
+          ghost_left);
+      cell_ghost_particles_map[cell_index - (x + x - 1) - layer_size].push_back(
+          ghost_left);
+    }
+
+    // Top side ghost
+    auto ghost_top = create_ghost_particle(particle_id, top_offset);
+    cell_ghost_particles_map[cell_index - ((y - 1) * x)].push_back(ghost_top);
+    cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1].push_back(
+        ghost_top);
+    if (z != 1) {
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) - layer_size]
+          .push_back(ghost_top);
+      cell_ghost_particles_map[cell_index - ((y - 1) * x) - 1 - layer_size]
+          .push_back(ghost_top);
+    }
+
+    if (z != 1) {
+      auto ghost_back =
+          create_ghost_particle(particle_id, {0, 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1)].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x].push_back(
+          ghost_back);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1 - x]
+          .push_back(ghost_back);
+
+      auto ghost_diag_left = create_ghost_particle(
+          particle_id, {right_offset[0], 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x + 1]
+          .push_back(ghost_diag_left);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x + 1 - x]
+          .push_back(ghost_diag_left);
+
+      auto ghost_diag_down = create_ghost_particle(
+          particle_id, {0, top_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x * (y - 1)]
+          .push_back(ghost_diag_down);
+      cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x * (y - 1) -
+                               1]
+          .push_back(ghost_diag_down);
+
+      auto ghost_diag = create_ghost_particle(
+          particle_id, {right_offset[0], top_offset[1], back_offset[2]});
+      cell_ghost_particles_map[0].push_back(ghost_diag);
+    }
+    break;
+  }
+
+  case Placement::LEFT_TOP: {
+    auto ghost_right = create_ghost_particle(particle_id, left_offset);
+    cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index - 1].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 + layer_size].push_back(
+        ghost_right);
+    cell_ghost_particles_map[cell_index - 1 + layer_size].push_back(
+        ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 - layer_size].push_back(
+        ghost_right);
+    cell_ghost_particles_map[cell_index - 1 - layer_size].push_back(
+        ghost_right);
+
+    auto ghost_bottom = create_ghost_particle(particle_id, top_offset);
+    cell_ghost_particles_map[cell_index - x * (y - 1)].push_back(ghost_bottom);
+    cell_ghost_particles_map[cell_index - x * (y - 1) + 1].push_back(
+        ghost_bottom);
+    cell_ghost_particles_map[cell_index - x * (y - 1) + layer_size].push_back(
+        ghost_bottom);
+    cell_ghost_particles_map[cell_index - x * (y - 1) + 1 + layer_size]
+        .push_back(ghost_bottom);
+    cell_ghost_particles_map[cell_index - x * (y - 1) - layer_size].push_back(
+        ghost_bottom);
+    cell_ghost_particles_map[cell_index - x * (y - 1) + 1 - layer_size]
+        .push_back(ghost_bottom);
+
+    auto ghost_corner =
+        create_ghost_particle(particle_id, {left_offset[0], top_offset[1], 0});
+    cell_ghost_particles_map[cell_index - x * (y - 1) + x - 1].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index - x * (y - 1) + x - 1 + layer_size]
+        .push_back(ghost_corner);
+    cell_ghost_particles_map[cell_index - x * (y - 1) + x - 1 - layer_size]
+        .push_back(ghost_corner);
+    break;
+  }
+  case Placement::LEFT_BOTTOM: {
+
+    auto ghost_right = create_ghost_particle(particle_id, left_offset);
+    cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + 2 * x - 1].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 + layer_size].push_back(
+        ghost_right);
+    cell_ghost_particles_map[cell_index + 2 * x - 1 + layer_size].push_back(
+        ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 - layer_size].push_back(
+        ghost_right);
+    cell_ghost_particles_map[cell_index + 2 * x - 1 - layer_size].push_back(
+        ghost_right);
+
+    auto ghost_top = create_ghost_particle(particle_id, bottom_offset);
+    cell_ghost_particles_map[cell_index + x * (y - 1)].push_back(ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) + 1].push_back(ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) + layer_size].push_back(
+        ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) + 1 + layer_size]
+        .push_back(ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) - layer_size].push_back(
+        ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) + 1 - layer_size]
+        .push_back(ghost_top);
+
+    auto ghost_corner = create_ghost_particle(
+        particle_id, {left_offset[0], bottom_offset[1], 0});
+    cell_ghost_particles_map[cell_index + x * y - 1].push_back(ghost_corner);
+    cell_ghost_particles_map[cell_index + x * y - 1 + layer_size].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index + x * y - 1 - layer_size].push_back(
+        ghost_corner);
+    break;
+  }
+  case Placement::RIGHT_BOTTOM: {
+    auto ghost_left = create_ghost_particle(particle_id, right_offset);
+    cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index + 1].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 + layer_size].push_back(
+        ghost_left);
+    cell_ghost_particles_map[cell_index + 1 + layer_size].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 - layer_size].push_back(
+        ghost_left);
+    cell_ghost_particles_map[cell_index + 1 - layer_size].push_back(ghost_left);
+
+    auto ghost_top = create_ghost_particle(particle_id, bottom_offset);
+    cell_ghost_particles_map[cell_index + x * (y - 1)].push_back(ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) - 1].push_back(ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) + layer_size].push_back(
+        ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) - 1 + layer_size]
+        .push_back(ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) - layer_size].push_back(
+        ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) - 1 - layer_size]
+        .push_back(ghost_top);
+
+    auto ghost_corner = create_ghost_particle(
+        particle_id, {right_offset[0], bottom_offset[1], 0});
+    cell_ghost_particles_map[cell_index + 1 + x * (y - 2)].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index + 1 + x * (y - 2) + layer_size]
+        .push_back(ghost_corner);
+    cell_ghost_particles_map[cell_index + 1 + x * (y - 2) - layer_size]
+        .push_back(ghost_corner);
+    break;
+  }
+  case Placement::RIGHT_TOP: {
+    auto ghost_left = create_ghost_particle(particle_id, right_offset);
+    cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - 2 * x + 1].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 + layer_size].push_back(
+        ghost_left);
+    cell_ghost_particles_map[cell_index - 2 * x + 1 + layer_size].push_back(
+        ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 - layer_size].push_back(
+        ghost_left);
+    cell_ghost_particles_map[cell_index - 2 * x + 1 - layer_size].push_back(
+        ghost_left);
+
+    auto ghost_top = create_ghost_particle(particle_id, top_offset);
+    cell_ghost_particles_map[cell_index - x * (y - 1)].push_back(ghost_top);
+    cell_ghost_particles_map[cell_index - x * (y - 1) - 1].push_back(ghost_top);
+    cell_ghost_particles_map[cell_index - x * (y - 1) + layer_size].push_back(
+        ghost_top);
+    cell_ghost_particles_map[cell_index - x * (y - 1) - 1 + layer_size]
+        .push_back(ghost_top);
+    cell_ghost_particles_map[cell_index - x * (y - 1) - layer_size].push_back(
+        ghost_top);
+    cell_ghost_particles_map[cell_index - x * (y - 1) - 1 - layer_size]
+        .push_back(ghost_top);
+
+    auto ghost_corner = create_ghost_particle(
+        particle_id, {right_offset[0], top_offset[1], 0});
+    cell_ghost_particles_map[cell_index - x * (y - 1) - x + 1].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index - x * (y - 1) - x + 1 + layer_size]
+        .push_back(ghost_corner);
+    cell_ghost_particles_map[cell_index - x * (y - 1) - x + 1 - layer_size]
+        .push_back(ghost_corner);
+    break;
+  }
+  case Placement::TOP_FRONT: {
+    auto ghost_back = create_ghost_particle(particle_id, front_offset);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1)].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x + 1].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x - 1].push_back(ghost_back);
+
+    auto ghost_bottom = create_ghost_particle(particle_id, top_offset);
+    cell_ghost_particles_map[cell_index - x * (y - 1)].push_back(ghost_bottom);
+    cell_ghost_particles_map[cell_index - x * (y - 1) + layer_size].push_back(ghost_bottom);
+    cell_ghost_particles_map[cell_index - x * (y - 1) + 1].push_back(ghost_bottom);
+    cell_ghost_particles_map[cell_index - x * (y - 1) + layer_size + 1].push_back(ghost_bottom);
+    cell_ghost_particles_map[cell_index - x * (y - 1) - 1].push_back(ghost_bottom);
+    cell_ghost_particles_map[cell_index - x * (y - 1) + layer_size - 1].push_back(ghost_bottom);
+
+    auto ghost_corner = create_ghost_particle(
+        particle_id, {0, top_offset[1], front_offset[2]});
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x * (y - 1)].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x * (y - 1) + 1]
+        .push_back(ghost_corner);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x * (y - 1) - 1]
+        .push_back(ghost_corner);
+    break;
+  }
+  case Placement::BOTTOM_FRONT: {
+    auto ghost_back = create_ghost_particle(particle_id, front_offset);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1)].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x + 1].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x - 1].push_back(ghost_back);
+
+    auto ghost_top = create_ghost_particle(particle_id, bottom_offset);
+    cell_ghost_particles_map[cell_index + x * (y - 1)].push_back(ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) + layer_size].push_back(ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) + 1].push_back(ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) + layer_size + 1].push_back(ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) - 1].push_back(ghost_top);
+    cell_ghost_particles_map[cell_index + x * (y - 1) + layer_size - 1].push_back(ghost_top);
+
+    auto ghost_corner = create_ghost_particle(
+        particle_id, {0, bottom_offset[1], front_offset[2]});
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x * (y - 1)].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x * (y - 1) + 1]
+        .push_back(ghost_corner);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x * (y - 1) - 1]
+        .push_back(ghost_corner);
+    break;
+  }
+  case Placement::BOTTOM_BACK: {
+    auto ghost_front = create_ghost_particle(particle_id, back_offset);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1)].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x + 1].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x - 1].push_back(ghost_front);
+
+    auto ghost_up = create_ghost_particle(particle_id, bottom_offset);
+    cell_ghost_particles_map[cell_index + x * (y - 1)].push_back(ghost_up);
+    cell_ghost_particles_map[cell_index + x * (y - 1) - layer_size].push_back(ghost_up);
+    cell_ghost_particles_map[cell_index + x * (y - 1) + 1].push_back(ghost_up);
+    cell_ghost_particles_map[cell_index + x * (y - 1) - layer_size + 1].push_back(ghost_up);
+    cell_ghost_particles_map[cell_index + x * (y - 1) - 1].push_back(ghost_up);
+    cell_ghost_particles_map[cell_index + x * (y - 1) - layer_size - 1].push_back(ghost_up);
+
+    auto ghost_corner = create_ghost_particle(
+        particle_id, {0, bottom_offset[1], back_offset[2]});
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x * (y - 1)].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x * (y - 1) + 1]
+        .push_back(ghost_corner);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x * (y - 1) - 1]
+        .push_back(ghost_corner);
+    break;
+  }
+  case Placement::TOP_BACK: {
+    auto ghost_front = create_ghost_particle(particle_id, back_offset);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1)].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x + 1].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x - 1].push_back(ghost_front);
+
+    auto ghost_down = create_ghost_particle(particle_id, top_offset);
+    cell_ghost_particles_map[cell_index - x * (y - 1)].push_back(ghost_down);
+    cell_ghost_particles_map[cell_index - x * (y - 1) - layer_size].push_back(ghost_down);
+    cell_ghost_particles_map[cell_index - x * (y - 1) + 1].push_back(ghost_down);
+    cell_ghost_particles_map[cell_index - x * (y - 1) - layer_size + 1].push_back(ghost_down);
+    cell_ghost_particles_map[cell_index - x * (y - 1) - 1].push_back(ghost_down);
+    cell_ghost_particles_map[cell_index - x * (y - 1) - layer_size - 1].push_back(ghost_down);
+
+    auto ghost_corner = create_ghost_particle(
+        particle_id, {0, bottom_offset[1], back_offset[2]});
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x * (y - 1)].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x * (y - 1) + 1]
+        .push_back(ghost_corner);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x * (y - 1) - 1]
+        .push_back(ghost_corner);
+    break;
+  }
+
+  case Placement::RIGHT_FRONT: {
+    auto ghost_back = create_ghost_particle(particle_id, front_offset);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1)].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1 + x].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1 - x].push_back(ghost_back);
+
+    auto ghost_left = create_ghost_particle(particle_id, right_offset);
+    cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 + layer_size].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 + x].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 + layer_size + x].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 - x].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 + layer_size - x].push_back(ghost_left);
+
+    auto ghost_corner = create_ghost_particle(
+        particle_id, {0, right_offset[1], front_offset[2]});
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x + 1].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1]
+        .push_back(ghost_corner);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 2 * x + 1]
+        .push_back(ghost_corner);
+    break;
+  }
+  case Placement::LEFT_FRONT: {
+    auto ghost_back = create_ghost_particle(particle_id, front_offset);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1)].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1 + x].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - x].push_back(ghost_back);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + 1 - x].push_back(ghost_back);
+
+    auto ghost_right = create_ghost_particle(particle_id, left_offset);
+    cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 + layer_size].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 + x].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 + layer_size + x].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 - x].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 + layer_size - x].push_back(ghost_right);
+
+    auto ghost_corner = create_ghost_particle(
+        particle_id, {0, left_offset[1], front_offset[2]});
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x - 1].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) + x - 1 + x].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index + layer_size * (z - 1) - 1].push_back(
+        ghost_corner);
+    break;
+  }
+  case Placement::LEFT_BACK: {
+    auto ghost_front = create_ghost_particle(particle_id, back_offset);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1)].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1 + x].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + 1 - x].push_back(ghost_front);
+
+    auto ghost_right = create_ghost_particle(particle_id, left_offset);
+    cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 - layer_size].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 + x].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 - layer_size + x].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 - x].push_back(ghost_right);
+    cell_ghost_particles_map[cell_index + x - 1 - layer_size - x].push_back(ghost_right);
+
+    auto ghost_corner = create_ghost_particle(
+        particle_id, {0, left_offset[1], back_offset[2]});
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x - 1].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x - 1 + x].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x - 1 - x].push_back(
+        ghost_corner);
+    break;
+  }
+  case Placement::RIGHT_BACK: {
+    auto ghost_front = create_ghost_particle(particle_id, back_offset);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1)].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) + x].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1 + x].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x].push_back(ghost_front);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - 1 - x].push_back(ghost_front);
+
+    auto ghost_left = create_ghost_particle(particle_id, right_offset);
+    cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 - layer_size].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 + x].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 - layer_size + x].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 - x].push_back(ghost_left);
+    cell_ghost_particles_map[cell_index - x + 1 - layer_size - x].push_back(ghost_left);
+
+    auto ghost_corner = create_ghost_particle(
+        particle_id, {0, right_offset[1], back_offset[2]});
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x + 1].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x + 1 + x].push_back(
+        ghost_corner);
+    cell_ghost_particles_map[cell_index - layer_size * (z - 1) - x + 1 - x].push_back(
+        ghost_corner);
+    break;
   }
   default:
     break;
