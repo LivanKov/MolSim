@@ -35,6 +35,22 @@ protected:
 };
 
 
+class ThreeDimensionalPeriodicBoundaryTest : public ::testing::Test {
+protected:
+    LinkedCellContainer container;
+
+    ThreeDimensionalPeriodicBoundaryTest() : container{} {
+        container.initialize({9.0, 9.0, 9.0}, 3.0,
+            {BoundaryCondition::Periodic,   // Left
+             BoundaryCondition::Periodic,   // Right
+             BoundaryCondition::Periodic,   // Top
+             BoundaryCondition::Periodic,   // Bottom
+             BoundaryCondition::Periodic,   // Front
+             BoundaryCondition::Periodic    // Back
+            });
+    }
+
+};
 /*TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     SimParams::fixed_Domain = false;
     ParticleGenerator::insertCuboid(
@@ -564,6 +580,209 @@ TEST_F(PeriodicBoundaryTest, BottomSideGhostParticlesTest) {
         }
     }
 }
+
+//Check ghost particle reflection in the lower-left front corner
+TEST_F(ThreeDimensionalPeriodicBoundaryTest, LowerLeftFrontCornerTest) {
+    Particle particle({0.1, 0.1, 0.1}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(particle, true);
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+    EXPECT_EQ(container.cells[0].size(), 1) << "Container should have 1 particle initially";
+    Calculation<BoundaryConditions>::run(container);
+
+    EXPECT_EQ(container.cell_ghost_particles_map.size(), 4 + 2 + 4 + 2 + 4 + 2 + 1);
+
+    std::vector<size_t> keys{};
+
+    for(const auto& [k, _] : container.cell_ghost_particles_map) {
+        keys.push_back(k);
+    }
+
+    std::sort(keys.begin(), keys.end());
+
+    std::vector<size_t>expected_keys{2, 5, 11, 14, 8, 17, 6, 7, 15, 16, 18, 19, 21, 22, 24, 25, 26, 20, 23};
+
+    std::sort(expected_keys.begin(), expected_keys.end());
+
+    EXPECT_EQ(keys, expected_keys);
+}
+
+
+//Check ghost particle reflection in the lower-right front corner
+TEST_F(ThreeDimensionalPeriodicBoundaryTest, LowerRightFrontCornerTest) {
+    Particle particle({8.0, 0.1, 0.1}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(particle, true);
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+    EXPECT_EQ(container.cells[2].size(), 1) << "Container should have 1 particle initially";
+    Calculation<BoundaryConditions>::run(container);
+
+    EXPECT_EQ(container.cell_ghost_particles_map.size(), 4 + 2 + 4 + 2 + 4 + 2 + 1);
+
+    std::vector<size_t> keys{};
+
+    for(const auto& [k, _] : container.cell_ghost_particles_map) {
+        keys.push_back(k);
+    }
+
+    std::sort(keys.begin(), keys.end());
+
+    std::vector<size_t> expected_keys{0, 3, 9, 12, 6, 15, 7, 8,16, 17, 19, 20, 22, 23, 24, 18, 21, 25, 26};
+
+    std::sort(expected_keys.begin(), expected_keys.end());
+
+    EXPECT_EQ(keys, expected_keys);
+}
+
+
+//Check ghost particle reflection in the lower-right front corner
+TEST_F(ThreeDimensionalPeriodicBoundaryTest, UpperLeftFrontCornerTest) {
+    Particle particle({0.1, 8.0, 0.1}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(particle, true);
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+    EXPECT_EQ(container.cells[6].size(), 1) << "Container should have 1 particle initially";
+    Calculation<BoundaryConditions>::run(container);
+
+    EXPECT_EQ(container.cell_ghost_particles_map.size(), 4 + 2 + 4 + 2 + 4 + 2 + 1);
+
+    std::vector<size_t> keys{};
+
+    for(const auto& [k, _] : container.cell_ghost_particles_map) {
+        keys.push_back(k);
+    }
+
+    std::sort(keys.begin(), keys.end());
+
+    std::vector<size_t> expected_keys{0, 9,1 , 10, 2, 11, 8, 5, 17, 14, 24, 25, 21, 22, 26, 23, 20, 19, 18};
+
+    std::sort(expected_keys.begin(), expected_keys.end());
+
+    EXPECT_EQ(keys, expected_keys);
+}
+
+
+TEST_F(ThreeDimensionalPeriodicBoundaryTest, UpperRightFrontCornerTest) {
+    Particle particle({8.0, 8.0, 0.1}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(particle, true);
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+    EXPECT_EQ(container.cells[8].size(), 1) << "Container should have 1 particle initially";
+    Calculation<BoundaryConditions>::run(container);
+
+    EXPECT_EQ(container.cell_ghost_particles_map.size(), 4 + 2 + 4 + 2 + 4 + 2 + 1);
+
+    std::vector<size_t> keys{};
+
+    for(const auto& [k, _] : container.cell_ghost_particles_map) {
+        keys.push_back(k);
+    }
+
+    std::sort(keys.begin(), keys.end());
+
+    std::vector<size_t> expected_keys{1, 2, 10, 11, 0, 9, 3, 6, 12, 15, 24, 25, 21, 22, 26, 23, 20, 19, 18};
+
+    std::sort(expected_keys.begin(), expected_keys.end());
+
+    EXPECT_EQ(keys, expected_keys);
+}
+
+
+TEST_F(ThreeDimensionalPeriodicBoundaryTest, UpperRightBackCornerTest) {
+    Particle particle({8.0, 8.0, 8.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(particle, true);
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+    EXPECT_EQ(container.cells[26].size(), 1) << "Container should have 1 particle initially";
+    Calculation<BoundaryConditions>::run(container);
+
+    EXPECT_EQ(container.cell_ghost_particles_map.size(), 4 + 2 + 4 + 2 + 4 + 2 + 1);
+
+    std::vector<size_t> keys{};
+
+    for(const auto& [k, _] : container.cell_ghost_particles_map) {
+        keys.push_back(k);
+    }
+
+    std::sort(keys.begin(), keys.end());
+
+    std::vector<size_t> expected_keys{0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 19, 20, 12, 15, 21, 24, 9, 18};
+
+    std::sort(expected_keys.begin(), expected_keys.end());
+
+    EXPECT_EQ(keys, expected_keys);
+}
+
+
+TEST_F(ThreeDimensionalPeriodicBoundaryTest, UpperLeftBackCornerTest) {
+    Particle particle({0.1, 8.0, 8.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(particle, true);
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+    EXPECT_EQ(container.cells[24].size(), 1) << "Container should have 1 particle initially";
+    Calculation<BoundaryConditions>::run(container);
+
+    EXPECT_EQ(container.cell_ghost_particles_map.size(), 4 + 2 + 4 + 2 + 4 + 2 + 1);
+
+    std::vector<size_t> keys{};
+
+    for(const auto& [k, _] : container.cell_ghost_particles_map) {
+        keys.push_back(k);
+    }
+
+    std::sort(keys.begin(), keys.end());
+
+    std::vector<size_t> expected_keys{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 18, 19, 14, 17, 23, 26, 11, 20};
+
+    std::sort(expected_keys.begin(), expected_keys.end());
+
+    EXPECT_EQ(keys, expected_keys);
+}
+
+
+TEST_F(ThreeDimensionalPeriodicBoundaryTest, BottomLeftBackCornerTest) {
+    Particle particle({0.1, 0.1, 8.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(particle, true);
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+    EXPECT_EQ(container.cells[18].size(), 1) << "Container should have 1 particle initially";
+    Calculation<BoundaryConditions>::run(container);
+
+    EXPECT_EQ(container.cell_ghost_particles_map.size(), 4 + 2 + 4 + 2 + 4 + 2 + 1);
+
+    std::vector<size_t> keys{};
+
+    for(const auto& [k, _] : container.cell_ghost_particles_map) {
+        keys.push_back(k);
+    }
+
+    std::sort(keys.begin(), keys.end());
+
+    std::vector<size_t> expected_keys{0, 1, 2, 3, 4, 5, 6, 7, 8, 15, 16, 24, 25, 11, 14, 20, 23, 17, 26};
+
+    std::sort(expected_keys.begin(), expected_keys.end());
+
+    EXPECT_EQ(keys, expected_keys);
+}
+
+
+TEST_F(ThreeDimensionalPeriodicBoundaryTest, BottomRightBackCornerTest) {
+    Particle particle({8.0, 0.1, 8.0}, {0.0, 0.0, 0.0}, 1.0, 0);
+    container.insert(particle, true);
+    EXPECT_EQ(container.size(), 1) << "Container should have 1 particle initially";
+    EXPECT_EQ(container.cells[20].size(), 1) << "Container should have 1 particle initially";
+    Calculation<BoundaryConditions>::run(container);
+
+    EXPECT_EQ(container.cell_ghost_particles_map.size(), 4 + 2 + 4 + 2 + 4 + 2 + 1);
+
+    std::vector<size_t> keys{};
+
+    for(const auto& [k, _] : container.cell_ghost_particles_map) {
+        keys.push_back(k);
+    }
+
+    std::sort(keys.begin(), keys.end());
+
+    std::vector<size_t> expected_keys{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 18, 21, 16, 17, 25, 26, 15, 24};
+
+    std::sort(expected_keys.begin(), expected_keys.end());
+
+    EXPECT_EQ(keys, expected_keys);
+}
+
 
 
 

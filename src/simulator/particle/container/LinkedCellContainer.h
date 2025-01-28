@@ -71,6 +71,8 @@ struct GhostParticle {
   std::array<double, 3> position;
   ParticlePointer ptr;
   int id;
+
+  bool operator==(GhostParticle &other) const;
 };
 
 /**

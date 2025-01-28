@@ -4,6 +4,11 @@
 #include <cmath>
 #include <iostream>
 
+
+bool GhostParticle::operator==(GhostParticle &other) const {
+  return id == other.id && position == other.position;
+}
+
 size_t LinkedCellContainer::Cell::size() const { return particle_ids.size(); }
 
 void LinkedCellContainer::Cell::insert(int id) { particle_ids.insert(id); }
