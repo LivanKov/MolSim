@@ -61,32 +61,6 @@ void BoundaryConditions::handle_reflect_conditions(
       particles.cells_map[particle_id]->updateV(-velocity[0], -velocity[1],
                                                 velocity[2]);
   } else if (particles.domain_size_.size() == 3) {
-    // handle edges
-    if (cell.placement == Placement::BOTTOM_LEFT_EDGE ||
-        cell.placement == Placement::TOP_RIGHT_EDGE ||
-        cell.placement == Placement::TOP_LEFT_EDGE ||
-        cell.placement == Placement::BOTTOM_RIGHT_EDGE) {
-      particles.cells_map[particle_id]->updateV(-velocity[0], -velocity[1],
-                                                velocity[2]);
-    }
-
-    if (cell.placement == Placement::RIGHT_FRONT_EDGE ||
-        cell.placement == Placement::RIGHT_BACK_EDGE ||
-        cell.placement == Placement::LEFT_BACK_EDGE ||
-        cell.placement == Placement::LEFT_FRONT_EDGE) {
-      particles.cells_map[particle_id]->updateV(-velocity[0], velocity[1],
-                                                -velocity[2]);
-    }
-
-    if (cell.placement == Placement::TOP_FRONT_EDGE ||
-        cell.placement == Placement::TOP_BACK_EDGE ||
-        cell.placement == Placement::BOTTOM_FRONT_EDGE ||
-        cell.placement == Placement::BOTTOM_BACK_EDGE) {
-      particles.cells_map[particle_id]->updateV(velocity[0], -velocity[1],
-                                                -velocity[2]);
-    }
-
-    // handle corners 3D
     if (cell.placement == Placement::TOP_BACK_LEFT_CORNER ||
         cell.placement == Placement::TOP_BACK_RIGHT_CORNER ||
         cell.placement == Placement::TOP_FRONT_LEFT_CORNER ||
@@ -94,9 +68,17 @@ void BoundaryConditions::handle_reflect_conditions(
         cell.placement == Placement::BOTTOM_BACK_LEFT_CORNER ||
         cell.placement == Placement::BOTTOM_BACK_RIGHT_CORNER ||
         cell.placement == Placement::BOTTOM_FRONT_LEFT_CORNER ||
-        cell.placement == Placement::BOTTOM_FRONT_RIGHT_CORNER) {
-      particles.cells_map[particle_id]->updateV(-velocity[0], -velocity[1],
-                                                -velocity[2]);
+        cell.placement == Placement::BOTTOM_FRONT_RIGHT_CORNER ||
+        cell.placement == Placement::BOTTOM_BACK_EDGE ||
+        cell.placement == Placement::BOTTOM_FRONT_EDGE ||
+        cell.placement == Placement::BOTTOM_LEFT_EDGE ||
+        cell.placement == Placement::BOTTOM_RIGHT_EDGE ||
+        cell.placement == Placement::TOP_BACK_EDGE ||
+        cell.placement == Placement::TOP_FRONT_EDGE ||
+        cell.placement == Placement::TOP_RIGHT_EDGE ||
+        cell.placement == Placement::TOP_LEFT_EDGE) {
+      particles.cells_map[particle_id]->updateV(velocity[0], -velocity[1],
+                                                velocity[2]);
     }
   }
 }

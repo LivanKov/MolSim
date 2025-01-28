@@ -92,11 +92,17 @@ void Force::compute_serial(LinkedCellContainer &particles) {
 }
 
 void Force::compute_parallel_fork_join(LinkedCellContainer &particles) {
-  std::vector<std::array<double, 3>> thread_local_forces(
-      particles.particles.size(), {0.0, 0.0, 0.0});
+  int num_threads = 1;
+#pragma omp parallel
+  { num_threads = omp_get_num_threads(); }
+  std::vector<std::vector<std::array<double, 3>>> thread_local_forces(
+      num_threads, std::vector<std::array<double, 3>>(
+                       particles.particles.size(), {0.0, 0.0, 0.0}));
 
 #pragma omp parallel default(none) shared(particles, thread_local_forces)
   {
+    const int thread_id = omp_get_thread_num();
+
 #pragma omp for
     for (size_t i = 0; i < particles.particles.size(); ++i) {
       auto &particle = particles.particles[i];
@@ -108,19 +114,32 @@ void Force::compute_parallel_fork_join(LinkedCellContainer &particles) {
           if (distance > 1e-5) {
             auto force =
                 compute_lj_force(&particle, neighbour.get(), r12, distance);
-            thread_local_forces[i] = thread_local_forces[i] + force;
-            thread_local_forces[neighbour->getType()] =
-                thread_local_forces[neighbour->getType()] - force;
+            thread_local_forces[thread_id][i] =
+                thread_local_forces[thread_id][i] + force;
+            thread_local_forces[thread_id][neighbour->getType()] =
+                thread_local_forces[thread_id][neighbour->getType()] - force;
           }
         }
       }
     }
+  }
+
+  // Combine thread-local forces into global forces
+  std::vector<std::array<double, 3>> global_forces(particles.particles.size(),
+                                                   {0.0, 0.0, 0.0});
 
 #pragma omp for
-    for (size_t i = 0; i < particles.particles.size(); ++i) {
-      particles.particles[i].updateF(particles.particles[i].getF() +
-                                     thread_local_forces[i]);
+  for (size_t i = 0; i < particles.particles.size(); ++i) {
+    for (int thread_id = 0; thread_id < num_threads; ++thread_id) {
+      global_forces[i] = global_forces[i] + thread_local_forces[thread_id][i];
     }
+  }
+
+// Apply global forces to particles
+#pragma omp for
+  for (size_t i = 0; i < particles.particles.size(); ++i) {
+    particles.particles[i].updateF(particles.particles[i].getF() +
+                                   global_forces[i]);
   }
 }
 
