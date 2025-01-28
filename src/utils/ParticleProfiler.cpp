@@ -6,9 +6,21 @@
 
 
 
-ParticleProfiler::ParticleProfiler(LinkedCellContainer &particles, size_t number_of_bins, double x_min, double x_max, const std::string& output_file)
-    : particles_(particles), number_of_bins_(number_of_bins), x_min_(x_min), x_max_(x_max), output_file_(output_file) {
-
+ParticleProfiler::ParticleProfiler(LinkedCellContainer &particles, size_t number_of_bins,
+    double x_min, double x_max, const std::string& output_file)
+    : particles_(particles), number_of_bins_(number_of_bins), x_min_(x_min), x_max_(x_max),
+    output_file_(output_file), header_written_(false) {
+    // check for invalid parameters
+    if(number_of_bins == 0) {
+        Logger::getInstance().error("Number of bins must be greater than 0");
+        throw std::invalid_argument("Number of bins must be greater than 0");
+    }
+    // here again
+    if(x_min_ > x_max_) {
+        Logger::getInstance().error("Invalid arguments for x_min and x_max!");
+        throw std::invalid_argument("Not allowed: x_min > x_max");
+    }
+    // calculates the bin width
     bin_width_ = (x_max_ - x_min_) / static_cast<double>(number_of_bins_);
 }
 
@@ -21,9 +33,12 @@ void ParticleProfiler::apply_profiler() {
         return;
     }
 
-    // write the header for the CSV (only once)
-    file << "Bin index,middle X-Position of Bin,Density (Particle per Binwidth),Average Velocity-x,Average Velocity-y,Average Velocity-z\n";
-    //file << "Bin index,middle X-Position of Bin,Density (Particle per Binwidth),Average Velocity-xVelocity-yVelocity-z\n";
+    if (!header_written_) {
+        // write the header for the CSV (only once)
+        file << "Bin index,middle X-Position of Bin,Density (Particle per Binwidth),Average Velocity-x,Average Velocity-y,Average Velocity-z\n";
+        header_written_ = true;
+
+    }
 
     std::vector<size_t> particle_count(number_of_bins_, 0);
     std::vector<std::array<double, 3>> total_velocity(number_of_bins_);

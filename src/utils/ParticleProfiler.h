@@ -28,6 +28,7 @@ class ParticleProfiler {
     double x_max_;
     double bin_width_;
     std::string output_file_;
+    bool header_written_;
 
 
 };
