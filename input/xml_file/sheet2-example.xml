@@ -24,8 +24,8 @@
         <right>Periodic</right>
         <top>Periodic</top>
         <bottom>Periodic</bottom>
-        <front>Reflecting</front>
-        <back>Reflecting</back>
+        <front>Periodic</front>
+        <back>Periodic</back>
   </boundary_conditions>
     
     <cuboids>
@@ -67,7 +67,7 @@
             <sigma>1.0</sigma>
             <initial_velocity>
                 <x>0.0</x>
-                <y>-10.0</y>
+                <y>-20.0</y>
                 <z>0.0</z>
             </initial_velocity>
         </cuboid>

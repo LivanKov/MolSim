@@ -51,19 +51,42 @@ void BoundaryConditions::handle_reflect_conditions(
       (cell.placement == Placement::FRONT || cell.placement == Placement::BACK))
     particles.cells_map[particle_id]->updateV(velocity[0], velocity[1],
                                               -velocity[2]);
+  if (particles.z == 1) {
+    // handle corners
+    if (cell.placement == Placement::BOTTOM_LEFT_CORNER ||
+        cell.placement == Placement::TOP_RIGHT_CORNER ||
+        cell.placement == Placement::TOP_LEFT_CORNER ||
+        cell.placement == Placement::BOTTOM_RIGHT_CORNER)
+      particles.cells_map[particle_id]->updateV(-velocity[0], -velocity[1],
+                                                velocity[2]);
+  } else {
+    if (cell.placement == Placement::BOTTOM_LEFT_CORNER ||
+        cell.placement == Placement::TOP_RIGHT_CORNER ||
+        cell.placement == Placement::TOP_LEFT_CORNER ||
+        cell.placement == Placement::BOTTOM_RIGHT_CORNER || 
+        cell.placement == Placement::BOTTOM_LEFT_CORNER_BACK || 
+        cell.placement == Placement::BOTTOM_RIGHT_CORNER_BACK || 
+        cell.placement == Placement::TOP_LEFT_CORNER_BACK || 
+        cell.placement == Placement::TOP_RIGHT_CORNER_BACK)
+      particles.cells_map[particle_id]->updateV(-velocity[0], -velocity[1],
+                                                -velocity[2]);
+  }
 
-  // handle corners
-  if (cell.placement == Placement::BOTTOM_LEFT_CORNER ||
-      cell.placement == Placement::TOP_RIGHT_CORNER ||
-      cell.placement == Placement::TOP_LEFT_CORNER ||
-      cell.placement == Placement::BOTTOM_RIGHT_CORNER)
-    particles.cells_map[particle_id]->updateV(-velocity[0], -velocity[1],
-                                              velocity[2]);
+  if(particles.z != 1) {
+    if(cell.placement == Placement::TOP_FRONT || cell.placement == Placement::BOTTOM_FRONT || cell.placement == Placement::TOP_BACK || cell.placement == Placement::BOTTOM_BACK) {
+        particles.cells_map[particle_id]->updateV(velocity[0], -velocity[1], -velocity[2]);
+    }
+    if(cell.placement == Placement::RIGHT_TOP || cell.placement == Placement::RIGHT_BOTTOM || cell.placement == Placement::LEFT_TOP || cell.placement == Placement::LEFT_BOTTOM) {
+        particles.cells_map[particle_id]->updateV(-velocity[0], -velocity[1], velocity[2]);
+    }
+    if(cell.placement == Placement::RIGHT_FRONT || cell.placement == Placement::LEFT_FRONT || cell.placement == Placement::RIGHT_BACK || cell.placement == Placement::LEFT_BACK) {
+        particles.cells_map[particle_id]->updateV(-velocity[0], velocity[1], -velocity[2]);
+    }
+  }
 }
 
 void BoundaryConditions::handle_periodic_conditions(
     int particle_id, int cell_index, LinkedCellContainer &particles) {
-  auto position = particles.cells[cell_index].placement;
   particles.cells_map[particle_id]->outbound = false;
   particles.particles_outbound.erase(
       std::remove(particles.particles_outbound.begin(),

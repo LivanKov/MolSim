@@ -209,9 +209,9 @@ Particle &LinkedCellContainer::operator[](size_t index) {
 }
 
 void LinkedCellContainer::mark_halo_cells() {
-  for (size_t i = 0; i < x; i++) {
+  for (size_t k = 0; k < z; k++) {
     for (size_t j = 0; j < y; j++) {
-      for (size_t k = 0; k < z; k++) {
+      for (size_t i = 0; i < x; i++) {
         if (i == 0 || i == x - 1 || j == 0 || j == y - 1 ||
             (z > 1 && (k == 0 || k == z - 1))) {
 
@@ -1567,5 +1567,45 @@ void LinkedCellContainer::assign_placements() {
       placement_map[Placement::LEFT_BOTTOM] = placement_map[Placement::LEFT];
     else
       placement_map[Placement::LEFT_BOTTOM] = placement_map[Placement::BOTTOM];
+    
+    if (placement_map[Placement::TOP] == placement_map[Placement::FRONT])
+      placement_map[Placement::TOP_FRONT] = placement_map[Placement::TOP];
+    else
+      placement_map[Placement::TOP_FRONT] = placement_map[Placement::TOP];
+    
+    if(placement_map[Placement::BOTTOM] == placement_map[Placement::FRONT])
+      placement_map[Placement::BOTTOM_FRONT] = placement_map[Placement::BOTTOM];
+    else
+      placement_map[Placement::BOTTOM_FRONT] = placement_map[Placement::BOTTOM];
+    
+    if(placement_map[Placement::TOP] == placement_map[Placement::BACK])
+      placement_map[Placement::TOP_BACK] = placement_map[Placement::TOP];
+    else
+      placement_map[Placement::TOP_BACK] = placement_map[Placement::TOP];
+    
+    if(placement_map[Placement::BOTTOM] == placement_map[Placement::BACK])
+      placement_map[Placement::BOTTOM_BACK] = placement_map[Placement::BOTTOM];
+    else
+      placement_map[Placement::BOTTOM_BACK] = placement_map[Placement::BOTTOM];
+
+    if(placement_map[Placement::RIGHT] == placement_map[Placement::FRONT])
+      placement_map[Placement::RIGHT_FRONT] = placement_map[Placement::RIGHT];
+    else
+      placement_map[Placement::RIGHT_FRONT] = placement_map[Placement::FRONT];
+
+    if(placement_map[Placement::LEFT] == placement_map[Placement::FRONT])
+      placement_map[Placement::LEFT_FRONT] = placement_map[Placement::LEFT];
+    else
+      placement_map[Placement::LEFT_FRONT] = placement_map[Placement::FRONT];
+
+    if(placement_map[Placement::RIGHT] == placement_map[Placement::BACK])
+      placement_map[Placement::RIGHT_BACK] = placement_map[Placement::RIGHT];
+    else
+      placement_map[Placement::RIGHT_BACK] = placement_map[Placement::BACK];
+
+    if(placement_map[Placement::LEFT] == placement_map[Placement::BACK])
+      placement_map[Placement::LEFT_BACK] = placement_map[Placement::LEFT];
+    else
+      placement_map[Placement::LEFT_BACK] = placement_map[Placement::BACK];
   }
 }
