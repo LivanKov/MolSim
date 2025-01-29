@@ -38,7 +38,7 @@ LinkedCellContainer Simulation::readFile(SimParams &params) {
 void Simulation::run(LinkedCellContainer &particles) {
   // Set OpenMP Threads
   if (SimParams::enable_omp) {
-    omp_set_num_threads(/*16*/4);
+    omp_set_num_threads(omp_get_num_procs());
     std::cout << "Using " << omp_get_max_threads()
               << " threads for the simulation." << std::endl;
     std::cout << "Using " << to_string(SimParams::ompstrategy)
@@ -134,7 +134,7 @@ void Simulation::simulate(LinkedCellContainer &particles, double &current_time,
 
     if (SimParams::enable_thermo && iteration % params_.n_thermostats == 0) {
       thermostat.apply_new();
-      Logger::getInstance().info("Thermostat applied at iteration: " +
+      Logger::getInstance().warn("Thermostat applied at iteration: " +
                                  std::to_string(iteration));
     }
 

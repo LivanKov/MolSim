@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MolSim>
     <simulation_parameters>
-        <end_time>10 </end_time> <!-- Original value -->
-        <delta_time>0.0005</delta_time> <!-- Original value -->
-        <output_basename>../output</output_basename> <!-- Original value -->
-        <write_frequency>10</write_frequency> <!-- Original value -->
+        <end_time>10 </end_time>
+        <delta_time>0.0005</delta_time>
+        <output_basename>../output</output_basename>
+        <write_frequency>10</write_frequency>
         <r_cutoff_radius>2.75</r_cutoff_radius>
-        <gravity>-8</gravity>
+        <gravity>-0.8</gravity>
         <enable_brownian>false</enable_brownian>
         <domain_size>
-            <x>16</x> <!-- Reduced by a factor of 2 -->
-            <y>16</y> <!-- Reduced by a factor of 2 -->
-            <z>6</z> <!-- Reduced by a factor of 2 -->
+            <x>16</x>
+            <y>16</y>
+            <z>6</z>
             <lower-left-corner>
                 <x>0.0</x>
                 <y>0.0</y>
@@ -46,9 +46,9 @@
                 <z>0.5</z>
             </coordinate>
             <dimensions>
-                <x>1.0</x> <!-- Reduced by a factor of 2 -->
-                <y>16</y> <!-- Reduced by a factor of 2 -->
-                <z>6</z> <!-- Reduced by a factor of 2 -->
+                <x>1.0</x>
+                <y>16</y>
+                <z>6</z>
             </dimensions>
             <mesh_width>1.0</mesh_width>
             <mass>1.0</mass>
@@ -64,14 +64,14 @@
 
         <cuboid>
             <coordinate>
-                <x>14</x> <!-- Reduced by a factor of 2 -->
+                <x>14</x>
                 <y>0.5</y>
                 <z>0.5</z>
             </coordinate>
             <dimensions>
-                <x>1.0</x> <!-- Reduced by a factor of 2 -->
-                <y>16</y> <!-- Reduced by a factor of 2 -->
-                <z>6</z> <!-- Reduced by a factor of 2 -->
+                <x>1.0</x>
+                <y>16</y>
+                <z>6</z>
             </dimensions>
             <mesh_width>1.0</mesh_width>
             <mass>1.0</mass>
@@ -87,16 +87,16 @@
 
         <cuboid>
             <coordinate>
-                <x>2</x> <!-- Reduced by a factor of 2 -->
-                <y>1</y> <!-- Reduced by a factor of 2 -->
-                <z>1</z> <!-- Reduced by a factor of 2 -->
+                <x>2</x>
+                <y>1</y>
+                <z>1</z>
             </coordinate>
             <dimensions>
-                <x>10</x> <!-- Reduced by a factor of 2 -->
+                <x>10</x>
                 <y>12</y>
-                <z>5</z> <!-- Reduced by a factor of 2 -->
+                <z>5</z>
             </dimensions>
-            <mesh_width>1.2</mesh_width> <!-- Reduced by a factor of 2 -->
+            <mesh_width>1.2</mesh_width>
             <mass>1.0</mass>
             <epsilon>1.0</epsilon>
             <sigma>1.0</sigma>

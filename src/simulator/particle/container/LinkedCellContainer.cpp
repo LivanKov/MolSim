@@ -46,9 +46,6 @@ void LinkedCellContainer::initialize(
     if (std::abs(remainder_z) > DIVISION_TOLERANCE)
       r_cutoff_z += remainder_z / (std::floor(domain_size_[2] / r_cutoff));
   }
-  //   if (domain_size.size() == 2) {
-  //     domain_size_.push_back(r_cutoff_z);
-  //   }
 
   x = static_cast<size_t>(domain_size_[0] / r_cutoff);
   y = static_cast<size_t>(domain_size_[1] / r_cutoff);
@@ -722,12 +719,12 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
       case Placement::RIGHT: {
         auto ghost = create_ghost_particle(particle_id, right_offset);
         // Neighbors of the halo ghost particle mirrored to the LEFT of the
-        // domain 
+        // domain
         cell_ghost_particles_map[cell_index - x + 1].push_back(ghost);
-        // Right 
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
-            ghost); // Right-Top
+        // Right
         cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+            ghost); // Right-Top
+        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
             ghost); // Right-Bottom
         cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
             ghost); // Right-Back
@@ -747,7 +744,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
       case Placement::TOP: {
         auto ghost = create_ghost_particle(particle_id, top_offset);
         // Neighbors of the halo ghost particle mirrored to the TOP of the
-        // domain 
+        // domain
         cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
             ghost); // Top
         cell_ghost_particles_map[cell_index - (y - 1) * x - 1].push_back(
@@ -805,7 +802,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
       case Placement::FRONT: {
         auto ghost = create_ghost_particle(particle_id, front_offset);
         // Neighbors of the halo ghost particle mirrored to the BACK of the
-        // domain 
+        // domain
         cell_ghost_particles_map[cell_index - (z - 1) * x *
         y].push_back(
             ghost); // Front
@@ -864,7 +861,7 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
       case Placement::LEFT_FRONT_EDGE: {
         auto ghost_1 = create_ghost_particle(particle_id, left_offset);
         // map 6 neighbours
-        cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_1); //Left 
+        cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_1); //Left
         cell_ghost_particles_map[cell_index + x + x - 1].push_back(
             ghost_1); // Left-Top
         cell_ghost_particles_map[cell_index - 1].push_back(
@@ -896,12 +893,12 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         auto ghost_3 = create_ghost_particle(
             particle_id, {left_offset[0], 0, front_offset[2]});
         // map 3 neighbours
-        cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
-            ghost_3); // Left-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x + x * y].push_back(
-            ghost_3); // Left-Top-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x + x * y].push_back(
-            ghost_3); // Left-Bottom-Front Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 - (z - 1) * x * y]
+            .push_back(ghost_3); // Left-Front Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 + x - (z - 1) * x * y]
+            .push_back(ghost_3); // Left-Top-Front Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 - x - (z - 1) * x * y]
+            .push_back(ghost_3); // Left-Bottom-Front Neighbour
         break;
       }
 
@@ -939,21 +936,21 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         auto ghost_3 = create_ghost_particle(particle_id,
                                              {left_offset[0], 0,
                                              back_offset[2]});
-        cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
-            ghost_3); // Left-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x - x * y].push_back(
-            ghost_3); // Left-Top-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x - x * y].push_back(
-            ghost_3); // Left-Bottom-Back Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 + (z - 1) * x * y]
+            .push_back(ghost_3); // Left-Back Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 + x + (z - 1) * x * y]
+            .push_back(ghost_3); // Left-Top-Back Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 - x + (z - 1) * x * y]
+            .push_back(ghost_3); // Left-Bottom-Back Neighbour
         break;
       }
 
       case Placement::RIGHT_FRONT_EDGE: {
         auto ghost_1 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
-            ghost_1); // Right-Top
+        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); //Right
         cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+            ghost_1); // Right-Top
+        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
             ghost_1); // Right-Bottom
         cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
             ghost_1); // Right-Back
@@ -980,21 +977,21 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
 
         auto ghost_3 = create_ghost_particle(
             particle_id, {right_offset[0], 0, front_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
-            ghost_3); // Right-Front
-        cell_ghost_particles_map[cell_index - x + 1 + x + x * y].push_back(
-            ghost_3); // Right-Top-Front
-        cell_ghost_particles_map[cell_index - x + 1 - x + x * y].push_back(
-            ghost_3); // Right-Bottom-Front
+        cell_ghost_particles_map[cell_index - x + 1 - (z - 1) * x * y]
+            .push_back(ghost_3); // Right-Front
+        cell_ghost_particles_map[cell_index - x + 1 + x - (z - 1) * x * y]
+            .push_back(ghost_3); // Right-Top-Front
+        cell_ghost_particles_map[cell_index - x + 1 - x - (z - 1) * x * y]
+            .push_back(ghost_3); // Right-Bottom-Front
         break;
       }
 
       case Placement::RIGHT_BACK_EDGE: {
         auto ghost_1 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
-            ghost_1); // Right-Top
+        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); //Right
         cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+            ghost_1); // Right-Top
+        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
             ghost_1); // Right-Bottom
         cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
             ghost_1); // Right-Front
@@ -1004,29 +1001,27 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
             ghost_1); // Right-Bottom-Front
 
         auto ghost_2 = create_ghost_particle(particle_id, back_offset);
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
-            ghost_2); // Front
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1].push_back(
-            ghost_2); // Front-Left
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + x].push_back(
-            ghost_2); // Front-Top
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - x].push_back(
-            ghost_2); // Front-Bottom
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 +
-        x].push_back(
-            ghost_2); // Front-Left-Top
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 -
-        x].push_back(
-            ghost_2); // Front-Left-Bottom
+        cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
+            ghost_2); // Back
+        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1].push_back(
+            ghost_2); // Back-Left
+        cell_ghost_particles_map[cell_index + (z - 1) * x * y + x].push_back(
+            ghost_2); // Back-Top
+        cell_ghost_particles_map[cell_index + (z - 1) * x * y - x].push_back(
+            ghost_2); // Back-Bottom
+        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 + x]
+            .push_back(ghost_2); // Back-Left-Top
+        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 - x]
+            .push_back(ghost_2); // Back-Left-Bottom
 
         auto ghost_3 = create_ghost_particle(
             particle_id, {right_offset[0], 0, back_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
-            ghost_3); // Right-Back
-        cell_ghost_particles_map[cell_index - x + 1 + x - x * y].push_back(
-            ghost_3); // Right-Top-Back
-        cell_ghost_particles_map[cell_index - x + 1 - x - x * y].push_back(
-            ghost_3); // Right-Bottom-Back
+        cell_ghost_particles_map[cell_index - x + 1 + (z - 1) * x * y]
+            .push_back(ghost_3); // Right-Back
+        cell_ghost_particles_map[cell_index - x + 1 + x + (z - 1) * x * y]
+            .push_back(ghost_3); // Right-Top-Back
+        cell_ghost_particles_map[cell_index - x + 1 - x + (z - 1) * x * y]
+            .push_back(ghost_3); // Right-Bottom-Back
         break;
       }
 
@@ -1064,19 +1059,19 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         auto ghost_3 = create_ghost_particle(particle_id,
                                              {left_offset[0], top_offset[1],
                                              0});
-        cell_ghost_particles_map[cell_index + x - 1 + x].push_back(
+        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x].push_back(
             ghost_3); // Left-Top Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x + x * y].push_back(
-            ghost_3); // Left-Top-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x - x * y].push_back(
-            ghost_3); // Left-Top-Back Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x + x * y]
+            .push_back(ghost_3); // Left-Top-Front Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x - x * y]
+            .push_back(ghost_3); // Left-Top-Back Neighbour
         break;
       }
 
       case Placement::TOP_RIGHT_EDGE: {
         auto ghost_1 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); //Right
+        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
             ghost_1); // Right-Bottom
         cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
             ghost_1); // Right-Back
@@ -1105,19 +1100,19 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         auto ghost_3 = create_ghost_particle(particle_id,
                                              {right_offset[0], top_offset[1],
                                              0});
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
+        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x].push_back(
             ghost_3); // Right-Top
-        cell_ghost_particles_map[cell_index - x + 1 + x + x * y].push_back(
-            ghost_3); // Right-Top-Front
-        cell_ghost_particles_map[cell_index - x + 1 + x - x * y].push_back(
-            ghost_3); // Right-Top-Back
+        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x + x * y]
+            .push_back(ghost_3); // Right-Top-Front
+        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x - x * y]
+            .push_back(ghost_3); // Right-Top-Back
         break;
       }
 
       case Placement::BOTTOM_RIGHT_EDGE: {
         auto ghost_1 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
+        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); //Right
+        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
             ghost_1); // Right-Top
         cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
             ghost_1); // Right-Back
@@ -1145,12 +1140,12 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
             ghost_2); // Bottom-Left-Front
         auto ghost_3 = create_ghost_particle(
             particle_id, {right_offset[0], bottom_offset[1], 0});
-        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x].push_back(
             ghost_3); // Right-Bottom
-        cell_ghost_particles_map[cell_index - x + 1 - x - x * y].push_back(
-            ghost_3); // Right-Bottom-Back
-        cell_ghost_particles_map[cell_index - x + 1 - x + x * y].push_back(
-            ghost_3); // Right-Bottom-Front
+        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x - x * y]
+            .push_back(ghost_3); // Right-Bottom-Back
+        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x + x * y]
+            .push_back(ghost_3); // Right-Bottom-Front
         break;
       }
 
@@ -1186,12 +1181,12 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
 
         auto ghost_3 = create_ghost_particle(
             particle_id, {left_offset[0], bottom_offset[1], 0});
-        cell_ghost_particles_map[cell_index + x - 1 - x].push_back(
+        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x].push_back(
             ghost_3); // Left-bottom Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x - x * y].push_back(
-            ghost_3); // Left-Bottom-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x + x * y].push_back(
-            ghost_3); // Left-Bottom-Front Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x - x * y]
+            .push_back(ghost_3); // Left-Bottom-Back Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x + x * y]
+            .push_back(ghost_3); // Left-Bottom-Front Neighbour
         break;
       }
 
@@ -1231,14 +1226,12 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         auto ghost_3 = create_ghost_particle(particle_id,
                                              {0, top_offset[1],
                                              front_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
-            ghost_3); // Top-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + x *
-        y].push_back(
-            ghost_3); // Top-Right-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost_3); // Top-Left-Front
+        cell_ghost_particles_map[cell_index - (y - 1) * x - (z - 1) * x * y]
+            .push_back(ghost_3); // Top-Front
+        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - (z - 1) * x * y]
+            .push_back(ghost_3); // Top-Right-Front
+        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - (z - 1) * x * y]
+            .push_back(ghost_3); // Top-Left-Front
         break;
       }
 
@@ -1275,14 +1268,12 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
             ghost_2); // Front-Left-Top
         auto ghost_3 = create_ghost_particle(
             particle_id, {0, bottom_offset[1], front_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
-            ghost_3); // Bottom-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + x *
-        y].push_back(
-            ghost_3); // Bottom-Right-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost_3); // Bottom-Left-Front
+        cell_ghost_particles_map[cell_index + (y - 1) * x - (z - 1) * x * y]
+            .push_back(ghost_3); // Bottom-Front
+        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - (z - 1) * x * y]
+            .push_back(ghost_3); // Bottom-Right-Front
+        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - (z - 1) * x * y]
+            .push_back(ghost_3); // Bottom-Left-Front
         break;
       }
 
@@ -1321,14 +1312,12 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
 
         auto ghost_3 = create_ghost_particle(
             particle_id, {0, bottom_offset[1], back_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
-            ghost_3); // Bottom-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost_3); // Bottom-Right-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost_3); // Bottom-Left-Back
+        cell_ghost_particles_map[cell_index + (y - 1) * x + (z - 1) * x * y]
+            .push_back(ghost_3); // Bottom-Back
+        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + (z - 1) * x * y]
+            .push_back(ghost_3); // Bottom-Right-Back
+        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + (z - 1) * x * y]
+            .push_back(ghost_3); // Bottom-Left-Back
         break;
       }
 
@@ -1367,14 +1356,12 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         auto ghost_3 = create_ghost_particle(particle_id,
                                              {0, top_offset[1],
                                              back_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
-            ghost_3); // Top-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost_3); // Top-Right-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost_3); // Top-Left-Back
+        cell_ghost_particles_map[cell_index - (y - 1) * x + (z - 1) * x * y]
+            .push_back(ghost_3); // Top-Back
+        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + (z - 1) * x * y]
+            .push_back(ghost_3); // Top-Right-Back
+        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + (z - 1) * x * y]
+            .push_back(ghost_3); // Top-Left-Back
         break;
       }
 
@@ -1400,8 +1387,8 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         x].push_back(
             ghost_2); // Front-Left-Bottom
         auto ghost_3 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); //Right
+        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
             ghost_3); // Right-Bottom
         cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
             ghost_3); // Right-Back
@@ -1410,28 +1397,27 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         auto ghost_4 = create_ghost_particle(particle_id,
                                              {right_offset[0], top_offset[1],
                                              0});
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
+        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x].push_back(
             ghost_4); // Right-Top
-        cell_ghost_particles_map[cell_index - x + 1 + x - x * y].push_back(
-            ghost_4); // Right-Top-Back
+        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x - x * y]
+            .push_back(ghost_4); // Right-Top-Back
         auto ghost_5 = create_ghost_particle(
             particle_id, {right_offset[0], 0, front_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
-            ghost_5); // Right-Front
-        cell_ghost_particles_map[cell_index - x + 1 - x + x * y].push_back(
-            ghost_5); // Right-Bottom-Front
+        cell_ghost_particles_map[cell_index - x + 1 - (z - 1) * x * y]
+            .push_back(ghost_5); // Right-Front
+        cell_ghost_particles_map[cell_index - x + 1 - x - (z - 1) * x * y]
+            .push_back(ghost_5); // Right-Bottom-Front
         auto ghost_6 = create_ghost_particle(particle_id,
                                              {0, top_offset[1],
                                              front_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
-            ghost_6); // Top-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost_6); // Top-Left-Front
+        cell_ghost_particles_map[cell_index - (y - 1) * x - (z - 1) * x * y]
+            .push_back(ghost_6); // Top-Front
+        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - (z - 1) * x * y]
+            .push_back(ghost_6); // Top-Left-Front
         auto ghost_7 = create_ghost_particle(
             particle_id, {right_offset[0], top_offset[1], front_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 + x + x * y].push_back(
-            ghost_7); // Right-Top-Front
+        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x + x * y]
+            .push_back(ghost_7); // Right-Top-Front
         break;
       }
 
@@ -1468,29 +1454,28 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         auto ghost_4 = create_ghost_particle(particle_id,
                                              {left_offset[0], top_offset[1],
                                              0});
-        cell_ghost_particles_map[cell_index + x - 1 + x].push_back(
+        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x].push_back(
             ghost_4); // Left-Top Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x - x * y].push_back(
-            ghost_4); // Left-Top-Back Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x - x * y]
+            .push_back(ghost_4); // Left-Top-Back Neighbour
         auto ghost_5 = create_ghost_particle(
             particle_id, {left_offset[0], 0, front_offset[2]});
-        cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
-            ghost_5); // Left-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x + x * y].push_back(
-            ghost_5); // Left-Bottom-Front Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 - (z - 1) * x * y]
+            .push_back(ghost_5); // Left-Front Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 - x - (z - 1) * x * y]
+            .push_back(ghost_5); // Left-Bottom-Front Neighbour
         auto ghost_6 = create_ghost_particle(particle_id,
                                              {0, top_offset[1],
                                              front_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
-            ghost_6); // Top-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + x *
-        y].push_back(
-            ghost_6); // Top-Right-Front
+        cell_ghost_particles_map[cell_index - (y - 1) * x - (z - 1) * x * y]
+            .push_back(ghost_6); // Top-Front
+        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - (z - 1) * x * y]
+            .push_back(ghost_6); // Top-Right-Front
         auto ghost_7 = create_ghost_particle(
             particle_id, {left_offset[0], top_offset[1], front_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost_7); // Top-Left-Front
+        cell_ghost_particles_map[cell_index - (y - 1) * x + x - 1 -
+                                 (z - 1) * x * y]
+            .push_back(ghost_7); // Top-Left-Front
         break;
       }
 
@@ -1527,31 +1512,30 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         auto ghost_4 = create_ghost_particle(particle_id,
                                              {left_offset[0], top_offset[1],
                                              0});
-        cell_ghost_particles_map[cell_index + x - 1 + x].push_back(
+        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x].push_back(
             ghost_4); // Left-Top Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x + x * y].push_back(
-            ghost_4); // Left-Top-Front Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x + x * y]
+            .push_back(ghost_4); // Left-Top-Front Neighbour
         auto ghost_5 = create_ghost_particle(particle_id,
                                              {left_offset[0], 0,
                                              back_offset[2]});
-        cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
-            ghost_5); // Left-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x - x * y].push_back(
-            ghost_5); // Left-Bottom-Back Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 + (z - 1) * x * y]
+            .push_back(ghost_5); // Left-Back Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 - x + (z - 1) * x * y]
+            .push_back(ghost_5); // Left-Bottom-Back Neighbour
 
         auto ghost_6 = create_ghost_particle(particle_id,
                                              {0, top_offset[1],
                                              back_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
-            ghost_6); // Top-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost_6); // Top-Right-Back
+        cell_ghost_particles_map[cell_index - (y - 1) * x + (z - 1) * x * y]
+            .push_back(ghost_6); // Top-Back
+        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + (z - 1) * x * y]
+            .push_back(ghost_6); // Top-Right-Back
         auto ghost_7 = create_ghost_particle(
             particle_id, {left_offset[0], top_offset[1], back_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost_7); // Top-Left-Back
+        cell_ghost_particles_map[cell_index - (y - 1) * x + x - 1 +
+                                 (z - 1) * x * y]
+            .push_back(ghost_7); // Top-Left-Back
         break;
       }
 
@@ -1579,8 +1563,8 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
             ghost_2); // Back-Left-Bottom
 
         auto ghost_3 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); //Right
+        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
             ghost_3); // Right-Bottom
         cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
             ghost_3); // Right-Front
@@ -1590,32 +1574,31 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
         auto ghost_4 = create_ghost_particle(particle_id,
                                              {right_offset[0], top_offset[1],
                                              0});
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
+        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x].push_back(
             ghost_4); // Right-Top
-        cell_ghost_particles_map[cell_index - x + 1 + x + x * y].push_back(
-            ghost_4); // Right-Top-Front
+        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x + x * y]
+            .push_back(ghost_4); // Right-Top-Front
 
         auto ghost_5 = create_ghost_particle(
             particle_id, {right_offset[0], 0, back_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
-            ghost_5); // Right-Back
-        cell_ghost_particles_map[cell_index - x + 1 - x - x * y].push_back(
-            ghost_5); // Right-Bottom-Back
+        cell_ghost_particles_map[cell_index - x + 1 + (z - 1) * x * y]
+            .push_back(ghost_5); // Right-Back
+        cell_ghost_particles_map[cell_index - x + 1 - x + (z - 1) * x * y]
+            .push_back(ghost_5); // Right-Bottom-Back
 
         auto ghost_6 = create_ghost_particle(particle_id,
                                              {0, top_offset[1],
                                              back_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
-            ghost_6); // Top-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost_6); // Top-Left-Back
+        cell_ghost_particles_map[cell_index - (y - 1) * x + (z - 1) * x * y]
+            .push_back(ghost_6); // Top-Back
+        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + (z - 1) * x * y]
+            .push_back(ghost_6); // Top-Left-Back
 
         auto ghost_7 = create_ghost_particle(
             particle_id, {right_offset[0], top_offset[1], back_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost_7); // Top-Right-Back
+        cell_ghost_particles_map[cell_index - (y - 1) * x - x + 1 +
+                                 (z - 1) * x * y]
+            .push_back(ghost_7); // Top-Right-Back
         break;
       }
 
@@ -1643,8 +1626,8 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
             ghost_2); // Front-Left-Top
 
         auto ghost_3 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
+        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); //Right
+        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
             ghost_3); // Right-Top
         cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
             ghost_3); // Right-Back
@@ -1653,32 +1636,31 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
 
         auto ghost_4 = create_ghost_particle(
             particle_id, {right_offset[0], bottom_offset[1], 0});
-        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x].push_back(
             ghost_4); // Right-Bottom
-        cell_ghost_particles_map[cell_index - x + 1 - x - x * y].push_back(
-            ghost_4); // Right-Bottom-Back
+        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x - x * y]
+            .push_back(ghost_4); // Right-Bottom-Back
 
         auto ghost_5 = create_ghost_particle(
             particle_id, {right_offset[0], 0, front_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
-            ghost_5); // Right-Front
-        cell_ghost_particles_map[cell_index - x + 1 + x + x * y].push_back(
-            ghost_5); // Right-Top-Front
+        cell_ghost_particles_map[cell_index - x + 1 - (z - 1) * x * y]
+            .push_back(ghost_5); // Right-Front
+        cell_ghost_particles_map[cell_index - x + 1 + x - (z - 1) * x * y]
+            .push_back(ghost_5); // Right-Top-Front
 
         auto ghost_6 = create_ghost_particle(
             particle_id, {0, bottom_offset[1], front_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
-            ghost_6); // Bottom-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost_6); // Bottom-Left-Front
+        cell_ghost_particles_map[cell_index + (y - 1) * x - (z - 1) * x * y]
+            .push_back(ghost_6); // Bottom-Front
+        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - (z - 1) * x * y]
+            .push_back(ghost_6); // Bottom-Left-Front
 
         auto ghost_7 = create_ghost_particle(
             particle_id, {right_offset[0], bottom_offset[1],
             front_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + x *
-        y].push_back(
-            ghost_7); // Bottom-Right-Front
+        cell_ghost_particles_map[cell_index + (y - 1) * x - x + 1 -
+                                 (z - 1) * x * y]
+            .push_back(ghost_7); // Bottom-Right-Front
         break;
       }
 
@@ -1717,32 +1699,31 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
 
         auto ghost_4 = create_ghost_particle(
             particle_id, {left_offset[0], bottom_offset[1], 0});
-        cell_ghost_particles_map[cell_index + x - 1 - x].push_back(
+        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x].push_back(
             ghost_4); // Left-bottom Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x - x * y].push_back(
-            ghost_4); // Left-Bottom-Back Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x - x * y]
+            .push_back(ghost_4); // Left-Bottom-Back Neighbour
 
         auto ghost_5 = create_ghost_particle(
             particle_id, {left_offset[0], 0, front_offset[2]});
-        cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
-            ghost_5); // Left-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x + x * y].push_back(
-            ghost_5); // Left-Top-Front Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 - (z - 1) * x * y]
+            .push_back(ghost_5); // Left-Front Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 + x - (z - 1) * x * y]
+            .push_back(ghost_5); // Left-Top-Front Neighbour
 
         auto ghost_6 = create_ghost_particle(
             particle_id, {0, bottom_offset[1], front_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
-            ghost_6); // Bottom-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + x *
-        y].push_back(
-            ghost_6); // Bottom-Right-Front
+        cell_ghost_particles_map[cell_index + (y - 1) * x - (z - 1) * x * y]
+            .push_back(ghost_6); // Bottom-Front
+        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - (z - 1) * x * y]
+            .push_back(ghost_6); // Bottom-Right-Front
 
         auto ghost_7 = create_ghost_particle(
             particle_id, {left_offset[0], bottom_offset[1],
             front_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost_7); // Bottom-Left-Front
+        cell_ghost_particles_map[cell_index + (y - 1) * x + x - 1 -
+                                 (z - 1) * x * y]
+            .push_back(ghost_7); // Bottom-Left-Front
         break;
       }
 
@@ -1781,32 +1762,31 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
 
         auto ghost_4 = create_ghost_particle(
             particle_id, {left_offset[0], bottom_offset[1], 0});
-        cell_ghost_particles_map[cell_index + x - 1 - x].push_back(
+        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x].push_back(
             ghost_4); // Left-bottom Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x + x * y].push_back(
-            ghost_4); // Left-Bottom-Front Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x + x * y]
+            .push_back(ghost_4); // Left-Bottom-Front Neighbour
 
         auto ghost_5 = create_ghost_particle(particle_id,
                                              {left_offset[0], 0,
                                              back_offset[2]});
-        cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
-            ghost_5); // Left-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x - x * y].push_back(
-            ghost_5); // Left-Top-Back Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 + (z - 1) * x * y]
+            .push_back(ghost_5); // Left-Back Neighbour
+        cell_ghost_particles_map[cell_index + x - 1 + x + (z - 1) * x * y]
+            .push_back(ghost_5); // Left-Top-Back Neighbour
 
         auto ghost_6 = create_ghost_particle(
             particle_id, {0, bottom_offset[1], back_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
-            ghost_6); // Bottom-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost_6); // Bottom-Right-Back
+        cell_ghost_particles_map[cell_index + (y - 1) * x + (z - 1) * x * y]
+            .push_back(ghost_6); // Bottom-Back
+        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + (z - 1) * x * y]
+            .push_back(ghost_6); // Bottom-Right-Back
 
         auto ghost_7 = create_ghost_particle(
             particle_id, {left_offset[0], bottom_offset[1], back_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost_7); // Bottom-Left-Back
+        cell_ghost_particles_map[cell_index + (y - 1) * x + x - 1 +
+                                 (z - 1) * x * y]
+            .push_back(ghost_7); // Bottom-Left-Back
         break;
       }
 
@@ -1834,8 +1814,8 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
             ghost_2); // Back-Left-Top
 
         auto ghost_3 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
+        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); //Right
+        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
             ghost_3); // Right-Top
         cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
             ghost_3); // Right-Front
@@ -1844,32 +1824,31 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
 
         auto ghost_4 = create_ghost_particle(
             particle_id, {right_offset[0], bottom_offset[1], 0});
-        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x].push_back(
             ghost_4); // Right-Bottom
-        cell_ghost_particles_map[cell_index - x + 1 - x + x * y].push_back(
-            ghost_4); // Right-Bottom-Front
+        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x + x * y]
+            .push_back(ghost_4); // Right-Bottom-Front
 
         auto ghost_5 = create_ghost_particle(
             particle_id, {right_offset[0], 0, back_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
-            ghost_5); // Right-Back
-        cell_ghost_particles_map[cell_index - x + 1 + x - x * y].push_back(
-            ghost_5); // Right-Top-Back
+        cell_ghost_particles_map[cell_index - x + 1 + (z - 1) * x * y]
+            .push_back(ghost_5); // Right-Back
+        cell_ghost_particles_map[cell_index - x + 1 + x + (z - 1) * x * y]
+            .push_back(ghost_5); // Right-Top-Back
 
         auto ghost_6 = create_ghost_particle(
             particle_id, {0, bottom_offset[1], back_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
-            ghost_6); // Bottom-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost_6); // Bottom-Left-Back
+        cell_ghost_particles_map[cell_index + (y - 1) * x + (z - 1) * x * y]
+            .push_back(ghost_6); // Bottom-Back
+        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + (z - 1) * x * y]
+            .push_back(ghost_6); // Bottom-Left-Back
 
         auto ghost_7 = create_ghost_particle(
             particle_id, {right_offset[0], bottom_offset[1],
             back_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost_7); // Bottom-Right-Back
+        cell_ghost_particles_map[cell_index + (y - 1) * x - x + 1 +
+                                 (z - 1) * x * y]
+            .push_back(ghost_7); // Bottom-Right-Back
         break;
       }
       default:
