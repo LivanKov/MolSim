@@ -2,6 +2,9 @@
 #include "../src/simulator/calculations/BoundaryConditions.h"
 #include "../src/simulator/calculations/Calculation.h"
 #include "../src/simulator/calculations/Force.h"
+#include "../src/simulator/calculations/Position.h"
+#include "../src/simulator/calculations/Velocity.h"
+
 #include "gtest/gtest.h"
 // #include <initializer_list>
 
@@ -290,14 +293,12 @@ TEST_F(BoundaryConditionsTest, OppositeCornerGhostNeighbours) {
 // Ensures that particles interact correctly across periodic boundaries and
 // experience repulsive forces when close enough.
 TEST_F(BoundaryConditionsTest, PeriodicRepulsiveForceZ) {
-  // Define domain size (9x9x9) and cutoff radius (3.0)
-  std::initializer_list<double> domain_size = {9.0, 9.0, 9.0};
-  double cutoff_radius = 3.0;
+  std::initializer_list<double> domain_size = {10.8, 15, 10.8};
+  double cutoff_radius = 3.6;
 
-  // Periodic boundary conditions on all sides
   DomainBoundaryConditions boundary_conditions{
       BoundaryCondition::Periodic, BoundaryCondition::Periodic,
-      BoundaryCondition::Periodic, BoundaryCondition::Periodic,
+      BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
       BoundaryCondition::Periodic, BoundaryCondition::Periodic};
 
   // Initialize the container
@@ -305,29 +306,95 @@ TEST_F(BoundaryConditionsTest, PeriodicRepulsiveForceZ) {
   container_3d.initialize(domain_size, cutoff_radius, boundary_conditions);
 
   // Insert two particles at periodic opposite z-boundaries
-  Particle particle_A({2.0, 4.0, 0.5}, {0.0, 0.0, 0.0}, 1.0, 0);
-  Particle particle_B({2.0, 4.0, 8.5}, {0.0, 0.0, 0.0}, 1.0, 1);
+  Particle particle_A({1.8, 3.75, 0.2}, {0.0, 0.0, 0.0}, 1.0, 0, 1.0, 1.2);
+  Particle particle_B({1.8, 3.75, 10.6}, {0.0, 0.0, 0.0}, 1.0, 1, 1.0, 1.2);
+
+  Particle particle_C({5.4, 3.75, 0.2}, {0.0, 0.0, 0.0}, 1.0, 2, 1.0, 1.2);
+  Particle particle_D({5.4, 3.75, 10.6}, {0.0, 0.0, 0.0}, 1.0, 3, 1.0, 1.2);
+
+  Particle particle_E({9, 3.75, 0.2}, {0.0, 0.0, 0.0}, 1.0, 4, 1.0, 1.2);
+  Particle particle_F({9, 3.75, 10.6}, {0.0, 0.0, 0.0}, 1.0, 5, 1.0, 1.2);
+
+  Particle particle_G({0.2, 3.75, 1.8}, {0.0, 0.0, 0.0}, 1.0, 6, 1.0, 1.2);
+  Particle particle_H({10.6, 3.75, 1.8}, {0.0, 0.0, 0.0}, 1.0, 7, 1.0, 1.2);
+
+  Particle particle_I({0.2, 3.75, 5.4}, {0.0, 0.0, 0.0}, 1.0, 8, 1.0, 1.2);
+  Particle particle_J({10.6, 3.75, 5.4}, {0.0, 0.0, 0.0}, 1.0, 9, 1.0, 1.2);
+
+  Particle particle_K({0.2, 3.75, 9}, {0.0, 0.0, 0.0}, 1.0, 10, 1.0, 1.2);
+  Particle particle_L({10.6, 3.75, 9}, {0.0, 0.0, 0.0}, 1.0, 11, 1.0, 1.2);
+
   container_3d.insert(particle_A, true);
   container_3d.insert(particle_B, true);
+  container_3d.insert(particle_C, true);
+  container_3d.insert(particle_D, true);
+  container_3d.insert(particle_E, true);
+  container_3d.insert(particle_F, true);
+  container_3d.insert(particle_G, true);
+  container_3d.insert(particle_H, true);
+  container_3d.insert(particle_I, true);
+  container_3d.insert(particle_J, true);
+  container_3d.insert(particle_K, true);
+  container_3d.insert(particle_L, true);
 
-  // Apply boundary conditions to create ghost particles
+
   Calculation<BoundaryConditions>::run(container_3d);
 
-  // Apply force calculation (Lennard-Jones)
   Calculation<Force>::run(container_3d, ForceType::LENNARD_JONES,
                           OPTIONS::LINKED_CELLS);
 
   // Get forces on both particles
   auto force_A = container_3d.cells_map[0]->getF();
   auto force_B = container_3d.cells_map[1]->getF();
+  auto force_C = container_3d.cells_map[2]->getF();
+  auto force_D = container_3d.cells_map[3]->getF();
+  auto force_E = container_3d.cells_map[4]->getF();
+  auto force_F = container_3d.cells_map[5]->getF();
+  auto force_G = container_3d.cells_map[6]->getF();
+  auto force_H = container_3d.cells_map[7]->getF();
+  auto force_I = container_3d.cells_map[8]->getF();
+  auto force_J = container_3d.cells_map[9]->getF();
+  auto force_K = container_3d.cells_map[10]->getF();
+  auto force_L = container_3d.cells_map[11]->getF();
 
   // Check that the z-component of the force is repulsive
   EXPECT_GT(force_A[2], 0.0)
       << "Particle A should be pushed in the +z direction.";
   EXPECT_LT(force_B[2], 0.0)
       << "Particle B should be pushed in the -z direction.";
+  EXPECT_GT(force_C[2], 0.0)
+      << "Particle C should be pushed in the +z direction.";
+  EXPECT_LT(force_D[2], 0.0)
+      << "Particle D should be pushed in the -z direction.";
+  EXPECT_GT(force_E[2], 0.0)
+      << "Particle E should be pushed in the +z direction.";
+  EXPECT_LT(force_F[2], 0.0)
+      << "Particle F should be pushed in the -z direction.";
+
+  EXPECT_GT(force_G[0], 0.0)
+      << "Particle G should be pushed in the +x direction.";
+  EXPECT_LT(force_H[0], 0.0)
+      << "Particle H should be pushed in the -x direction.";
+  EXPECT_GT(force_I[0], 0.0)
+      << "Particle I should be pushed in the +x direction.";
+  EXPECT_LT(force_J[0], 0.0)
+      << "Particle J should be pushed in the -x direction.";
+  EXPECT_GT(force_K[0], 0.0)
+      << "Particle K should be pushed in the +x direction.";
+  EXPECT_LT(force_L[0], 0.0)
+      << "Particle L should be pushed in the -x direction.";
 
   // Verify that forces are equal and opposite (Newton's Third Law)
   EXPECT_NEAR(force_A[2], -force_B[2], 1e-6)
+      << "Forces should be equal and opposite in z-direction.";
+  EXPECT_NEAR(force_C[2], -force_D[2], 1e-6)
+      << "Forces should be equal and opposite in z-direction.";
+  EXPECT_NEAR(force_E[2], -force_F[2], 1e-6)
+      << "Forces should be equal and opposite in z-direction.";
+  EXPECT_NEAR(force_G[0], -force_H[0], 1e-6)
+      << "Forces should be equal and opposite in z-direction.";
+  EXPECT_NEAR(force_I[0], -force_J[0], 1e-6)
+      << "Forces should be equal and opposite in z-direction.";
+  EXPECT_NEAR(force_K[0], -force_L[0], 1e-6)
       << "Forces should be equal and opposite in z-direction.";
 }
