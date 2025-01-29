@@ -133,7 +133,7 @@ void Simulation::simulate(LinkedCellContainer &particles, double &current_time,
     total_molecule_updates += molecules_this_iteration;
 
     if (SimParams::enable_thermo && iteration % params_.n_thermostats == 0) {
-      thermostat.apply();
+      thermostat.apply_new();
       Logger::getInstance().info("Thermostat applied at iteration: " +
                                  std::to_string(iteration));
     }

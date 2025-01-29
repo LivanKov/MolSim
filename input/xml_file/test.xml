@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MolSim>
     <simulation_parameters>
-        <end_time>0.05</end_time>
-        <delta_time>0.0005</delta_time>
-        <output_basename>../output</output_basename>
-        <write_frequency>10</write_frequency>
+        <end_time>10</end_time> <!-- Original value -->
+        <delta_time>0.0005</delta_time> <!-- Original value -->
+        <output_basename>../output</output_basename> <!-- Original value -->
+        <write_frequency>10</write_frequency> <!-- Original value -->
         <r_cutoff_radius>2.75</r_cutoff_radius>
-        <gravity>-0.8</gravity>
+        <gravity>-8</gravity>
         <enable_brownian>false</enable_brownian>
         <domain_size>
-            <x>30</x>
-            <y>30</y>
-            <z>12</z>
+            <x>10</x> <!-- Reduced by a factor of 2 -->
+            <y>10</y> <!-- Reduced by a factor of 2 -->
+            <z>6</z> <!-- Reduced by a factor of 2 -->
             <lower-left-corner>
                 <x>0.0</x>
                 <y>0.0</y>
@@ -27,6 +27,8 @@
         <is_gradual>true</is_gradual>
         <n_thermostats>10</n_thermostats>
     </thermostats>
+
+
     <boundary_conditions>
         <left>Outflow</left>
         <right>Outflow</right>
@@ -41,19 +43,19 @@
 
         <cuboid>
             <coordinate>
-                <x>1.0</x>
-                <y>0.5</y>
-                <z>0.5</z>
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
             </coordinate>
             <dimensions>
-                <x>2</x>
-                <y>30</y>
-                <z>12</z>
+                <x>3</x> <!-- Reduced by a factor of 2 -->
+                <y>3</y> <!-- Reduced by a factor of 2 -->
+                <z>3</z> <!-- Reduced by a factor of 2 -->
             </dimensions>
             <mesh_width>1.0</mesh_width>
             <mass>1.0</mass>
-            <epsilon>2.0</epsilon>
-            <sigma>1.1</sigma>
+            <epsilon>1.0</epsilon>
+            <sigma>1.0</sigma>
             <fixed>true</fixed>
             <initial_velocity>
                 <x>0.0</x>
@@ -64,39 +66,16 @@
 
         <cuboid>
             <coordinate>
-                <x>27.2</x>
-                <y>0.5</y>
-                <z>0.5</z>
+                <x>5</x>
+                <y>1</y>
+                <z>1</z>
             </coordinate>
             <dimensions>
-                <x>2</x>
-                <y>30</y>
-                <z>12</z>
+                <x>3</x> <!-- Reduced by a factor of 2 -->
+                <y>3</y> <!-- Reduced by a factor of 2 -->
+                <z>3</z> <!-- Reduced by a factor of 2 -->
             </dimensions>
             <mesh_width>1.0</mesh_width>
-            <mass>1.0</mass>
-            <epsilon>2.0</epsilon>
-            <sigma>1.1</sigma>
-            <fixed>true</fixed>
-            <initial_velocity>
-                <x>0.0</x>
-                <y>0.0</y>
-                <z>0.0</z>
-            </initial_velocity>
-        </cuboid>
-
-        <cuboid>
-            <coordinate>
-                <x>3.2</x>
-                <y>0.6</y>
-                <z>0.6</z>
-            </coordinate>
-            <dimensions>
-                <x>20</x>
-                <y>25</y>
-                <z>10</z>
-            </dimensions>
-            <mesh_width>1.2</mesh_width>
             <mass>1.0</mass>
             <epsilon>1.0</epsilon>
             <sigma>1.0</sigma>

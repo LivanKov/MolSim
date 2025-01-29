@@ -72,6 +72,11 @@ private:
    */
   bool fixed;
 
+ /**
+  * Thermal motion of this particle
+  */
+ std::array<double, 3> thermal_motion_;
+
 public:
   /**
    * @brief Constructor.
@@ -140,6 +145,12 @@ public:
    */
 
   const std::array<double, 3> &getOldX() const;
+
+ /**
+  * @brief access the array containing the thermal motion of the particle.
+  * @return a reference to the array containing the thermal motion of the particle.
+  */
+ const std::array<double, 3> &getThermalMotion() const;
 
   /**
    * @brief returns the value, that correponds to particle mmass.
@@ -261,6 +272,17 @@ public:
    */
 
   void updateOldX(double x_arg, double y_arg, double z_arg);
+
+ /**
+   * @brief updates thermal motion of particle.
+   * @param x_arg, y_arg, z_arg: new thermal motion values.
+   */
+ void updateThermalMotion(double x_arg, double y_arg, double z_arg);
+ /**
+  * @brief updates thermal motion of particle.
+  * @param thermal_m: allowed the method to accept a std::array<double, 3>.
+  */
+ void updateThermalMotion(const std::array<double, 3> &thermal_m);
 
   /**
    * @brief check if particle is outside the domain.
