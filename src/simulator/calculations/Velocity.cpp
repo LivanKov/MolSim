@@ -5,6 +5,7 @@
 
 void Velocity::run(LinkedCellContainer &particles, double time_delta) {
   for (auto &p : particles.particles) {
+    if(!p.is_fixed()) {
     auto v = p.getV() + time_delta * (p.getOldF() + p.getF()) / (2 * p.getM());
 
     if (SimParams::enable_v_threshold) {
@@ -20,4 +21,5 @@ void Velocity::run(LinkedCellContainer &particles, double time_delta) {
 
     p.updateV(v);
   }
+}
 }
