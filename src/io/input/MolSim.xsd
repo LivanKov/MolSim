@@ -152,7 +152,7 @@
                                                             </xs:sequence>
                                                         </xs:complexType>
                                                     </xs:element>
-                                                    <xs:element name="z-grav" type="xs:double"/>
+                                                    <xs:element name="fzup" type="xs:double"/>
                                                     <xs:element name="time_limit" type="xs:double"/>
                                                 </xs:sequence>
                                             </xs:complexType>

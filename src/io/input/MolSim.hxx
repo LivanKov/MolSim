@@ -53,7 +53,7 @@
 
 #include <xsd/cxx/config.hxx>
 
-#if (XSD_INT_VERSION != 4000000L)
+#if (LIBXSD_VERSION != 400002000000000L)
 #error XSD runtime version mismatch
 #endif
 
@@ -584,6 +584,24 @@ class simulation_parameters: public ::xml_schema::type
   void
   gravity (const gravity_optional& x);
 
+  // z-gravity
+  //
+  typedef ::xml_schema::double_ z_gravity_type;
+  typedef ::xsd::cxx::tree::optional< z_gravity_type > z_gravity_optional;
+  typedef ::xsd::cxx::tree::traits< z_gravity_type, char, ::xsd::cxx::tree::schema_type::double_ > z_gravity_traits;
+
+  const z_gravity_optional&
+  z_gravity () const;
+
+  z_gravity_optional&
+  z_gravity ();
+
+  void
+  z_gravity (const z_gravity_type& x);
+
+  void
+  z_gravity (const z_gravity_optional& x);
+
   // enable_brownian
   //
   typedef ::xml_schema::boolean enable_brownian_type;
@@ -660,6 +678,7 @@ class simulation_parameters: public ::xml_schema::type
   ::xsd::cxx::tree::one< write_frequency_type > write_frequency_;
   ::xsd::cxx::tree::one< r_cutoff_radius_type > r_cutoff_radius_;
   gravity_optional gravity_;
+  z_gravity_optional z_gravity_;
   ::xsd::cxx::tree::one< enable_brownian_type > enable_brownian_;
   domain_size_optional domain_size_;
 };
@@ -2084,19 +2103,19 @@ class additional_force: public ::xml_schema::type
   void
   particle_coordinates (const particle_coordinates_sequence& s);
 
-  // z-grav
+  // fzup
   //
-  typedef ::xml_schema::double_ z_grav_type;
-  typedef ::xsd::cxx::tree::traits< z_grav_type, char, ::xsd::cxx::tree::schema_type::double_ > z_grav_traits;
+  typedef ::xml_schema::double_ fzup_type;
+  typedef ::xsd::cxx::tree::traits< fzup_type, char, ::xsd::cxx::tree::schema_type::double_ > fzup_traits;
 
-  const z_grav_type&
-  z_grav () const;
+  const fzup_type&
+  fzup () const;
 
-  z_grav_type&
-  z_grav ();
+  fzup_type&
+  fzup ();
 
   void
-  z_grav (const z_grav_type& x);
+  fzup (const fzup_type& x);
 
   // time_limit
   //
@@ -2114,7 +2133,7 @@ class additional_force: public ::xml_schema::type
 
   // Constructors.
   //
-  additional_force (const z_grav_type&,
+  additional_force (const fzup_type&,
                     const time_limit_type&);
 
   additional_force (const ::xercesc::DOMElement& e,
@@ -2144,7 +2163,7 @@ class additional_force: public ::xml_schema::type
 
   protected:
   particle_coordinates_sequence particle_coordinates_;
-  ::xsd::cxx::tree::one< z_grav_type > z_grav_;
+  ::xsd::cxx::tree::one< fzup_type > fzup_;
   ::xsd::cxx::tree::one< time_limit_type > time_limit_;
 };
 

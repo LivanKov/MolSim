@@ -386,6 +386,30 @@ gravity (const gravity_optional& x)
   this->gravity_ = x;
 }
 
+const simulation_parameters::z_gravity_optional& simulation_parameters::
+z_gravity () const
+{
+  return this->z_gravity_;
+}
+
+simulation_parameters::z_gravity_optional& simulation_parameters::
+z_gravity ()
+{
+  return this->z_gravity_;
+}
+
+void simulation_parameters::
+z_gravity (const z_gravity_type& x)
+{
+  this->z_gravity_.set (x);
+}
+
+void simulation_parameters::
+z_gravity (const z_gravity_optional& x)
+{
+  this->z_gravity_ = x;
+}
+
 const simulation_parameters::enable_brownian_type& simulation_parameters::
 enable_brownian () const
 {
@@ -1574,22 +1598,22 @@ particle_coordinates (const particle_coordinates_sequence& s)
   this->particle_coordinates_ = s;
 }
 
-const additional_force::z_grav_type& additional_force::
-z_grav () const
+const additional_force::fzup_type& additional_force::
+fzup () const
 {
-  return this->z_grav_.get ();
+  return this->fzup_.get ();
 }
 
-additional_force::z_grav_type& additional_force::
-z_grav ()
+additional_force::fzup_type& additional_force::
+fzup ()
 {
-  return this->z_grav_.get ();
+  return this->fzup_.get ();
 }
 
 void additional_force::
-z_grav (const z_grav_type& x)
+fzup (const fzup_type& x)
 {
-  this->z_grav_.set (x);
+  this->fzup_.set (x);
 }
 
 const additional_force::time_limit_type& additional_force::
@@ -2110,6 +2134,7 @@ simulation_parameters (const end_time_type& end_time,
   write_frequency_ (write_frequency, this),
   r_cutoff_radius_ (r_cutoff_radius, this),
   gravity_ (this),
+  z_gravity_ (this),
   enable_brownian_ (enable_brownian, this),
   domain_size_ (this)
 {
@@ -2126,6 +2151,7 @@ simulation_parameters (const simulation_parameters& x,
   write_frequency_ (x.write_frequency_, f, this),
   r_cutoff_radius_ (x.r_cutoff_radius_, f, this),
   gravity_ (x.gravity_, f, this),
+  z_gravity_ (x.z_gravity_, f, this),
   enable_brownian_ (x.enable_brownian_, f, this),
   domain_size_ (x.domain_size_, f, this)
 {
@@ -2142,6 +2168,7 @@ simulation_parameters (const ::xercesc::DOMElement& e,
   write_frequency_ (this),
   r_cutoff_radius_ (this),
   gravity_ (this),
+  z_gravity_ (this),
   enable_brownian_ (this),
   domain_size_ (this)
 {
@@ -2227,6 +2254,17 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       if (!this->gravity_)
       {
         this->gravity_.set (gravity_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    // z-gravity
+    //
+    if (n.name () == "z-gravity" && n.namespace_ ().empty ())
+    {
+      if (!this->z_gravity_)
+      {
+        this->z_gravity_.set (z_gravity_traits::create (i, f, this));
         continue;
       }
     }
@@ -2321,6 +2359,7 @@ operator= (const simulation_parameters& x)
     this->write_frequency_ = x.write_frequency_;
     this->r_cutoff_radius_ = x.r_cutoff_radius_;
     this->gravity_ = x.gravity_;
+    this->z_gravity_ = x.z_gravity_;
     this->enable_brownian_ = x.enable_brownian_;
     this->domain_size_ = x.domain_size_;
   }
@@ -4495,11 +4534,11 @@ dimensions::
 //
 
 additional_force::
-additional_force (const z_grav_type& z_grav,
+additional_force (const fzup_type& fzup,
                   const time_limit_type& time_limit)
 : ::xml_schema::type (),
   particle_coordinates_ (this),
-  z_grav_ (z_grav, this),
+  fzup_ (fzup, this),
   time_limit_ (time_limit, this)
 {
 }
@@ -4510,7 +4549,7 @@ additional_force (const additional_force& x,
                   ::xml_schema::container* c)
 : ::xml_schema::type (x, f, c),
   particle_coordinates_ (x.particle_coordinates_, f, this),
-  z_grav_ (x.z_grav_, f, this),
+  fzup_ (x.fzup_, f, this),
   time_limit_ (x.time_limit_, f, this)
 {
 }
@@ -4521,7 +4560,7 @@ additional_force (const ::xercesc::DOMElement& e,
                   ::xml_schema::container* c)
 : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
   particle_coordinates_ (this),
-  z_grav_ (this),
+  fzup_ (this),
   time_limit_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
@@ -4552,13 +4591,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       continue;
     }
 
-    // z-grav
+    // fzup
     //
-    if (n.name () == "z-grav" && n.namespace_ ().empty ())
+    if (n.name () == "fzup" && n.namespace_ ().empty ())
     {
-      if (!z_grav_.present ())
+      if (!fzup_.present ())
       {
-        this->z_grav_.set (z_grav_traits::create (i, f, this));
+        this->fzup_.set (fzup_traits::create (i, f, this));
         continue;
       }
     }
@@ -4577,10 +4616,10 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
     break;
   }
 
-  if (!z_grav_.present ())
+  if (!fzup_.present ())
   {
     throw ::xsd::cxx::tree::expected_element< char > (
-      "z-grav",
+      "fzup",
       "");
   }
 
@@ -4606,7 +4645,7 @@ operator= (const additional_force& x)
   {
     static_cast< ::xml_schema::type& > (*this) = x;
     this->particle_coordinates_ = x.particle_coordinates_;
-    this->z_grav_ = x.z_grav_;
+    this->fzup_ = x.fzup_;
     this->time_limit_ = x.time_limit_;
   }
 
