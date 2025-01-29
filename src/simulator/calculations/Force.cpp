@@ -208,21 +208,23 @@ void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
 
 void Force::membrane(LinkedCellContainer &particles) {
   for (auto &p : particles) {
+      p.updateOldF(p.getF());
+      p.updateF(0, 0, 0);
+  }
+
+
+  for (auto &p : particles) {
     for (auto neighbour : p.membrane_neighbours) {
-      auto r12 = neighbour->getX() - p.getX();
+      auto r12 = p.getX() - neighbour->getX();
+      auto r21 = neighbour->getX() - p.getX();
       double distance = ArrayUtils::L2Norm(r12);
       auto totalForce = SimParams::membrane_stiffness *
-                          (distance - SimParams::membrane_bond_length) * r12 /
-                          distance;
+                          (distance - SimParams::membrane_bond_length) * (r21 /
+                          distance);
       p.updateF(p.getF() + totalForce);
       neighbour->updateF(neighbour->getF() - totalForce);
-      double _sigma;
-      if (p.getSigma() == neighbour->getSigma()) {
-        _sigma = p.getSigma();
-      } else {
-        _sigma = (p.getSigma() + neighbour->getSigma()) / 2;
-      }
-      double min_distance = std::pow(2, 1 / 6) * _sigma;
+      double _sigma = (p.getSigma() + neighbour->getSigma()) / 2;
+      double min_distance = MAGIC_NUMBER * _sigma;
 
       // put this in a separate function later
       if (distance < min_distance) {
@@ -243,21 +245,17 @@ void Force::membrane(LinkedCellContainer &particles) {
     }
 
     for (auto neighbour : p.diagonal_membrane_neighbours) {
-      auto r12 = neighbour->getX() - p.getX();
+      auto r12 = p.getX() - neighbour->getX();
+      auto r21 = neighbour->getX() - p.getX();
       double distance = ArrayUtils::L2Norm(r12);
         auto totalForce =
             SimParams::membrane_stiffness *
-            (distance - SimParams::membrane_bond_length * TWO_SQRT) * r12 /
-            distance;
+            (distance - SimParams::membrane_bond_length * TWO_SQRT) * (r21 /
+            distance);
         p.updateF(p.getF() + totalForce);
         neighbour->updateF(neighbour->getF() - totalForce);
-      double _sigma;
-      if (p.getSigma() == neighbour->getSigma()) {
-        _sigma = p.getSigma();
-      } else {
-        _sigma = (p.getSigma() + neighbour->getSigma()) / 2;
-      }
-      double min_distance = std::pow(2, 1.0 / 6.0) * _sigma;
+      double _sigma = p.getSigma() + neighbour->getSigma();
+      double min_distance = MAGIC_NUMBER * _sigma;
 
       // put this in a separate function later
       if (distance < min_distance) {

@@ -29,17 +29,17 @@
     <cuboids>
         <cuboid>
             <coordinate>
-                <x>70.0</x>
-                <y>60.0</y>
-                <z>0.0</z>
+                <x>15.0</x>
+                <y>15.0</y>
+                <z>1.5</z>
             </coordinate>
             <dimensions>
-                <x>5</x>
-                <y>5</y>
+                <x>50</x>
+                <y>50</y>
                 <z>1</z>
             </dimensions>
             <mesh_width>2.2</mesh_width>
-            <mass>1.0</mass>
+            <mass>1.0</mass>    
             <epsilon>1.0</epsilon>
             <sigma>1.0</sigma>
             <initial_velocity>
@@ -49,7 +49,7 @@
             </initial_velocity>
             <membrane>
                 <k>300.0</k>
-                <r_0>8.8</r_0>
+                <r_0>2.2</r_0>
             </membrane>
         </cuboid>
     </cuboids>

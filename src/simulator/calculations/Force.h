@@ -3,6 +3,7 @@
 #include "Calculation.h"
 
 #define TWO_SQRT 1.41421356237
+#define MAGIC_NUMBER 1.12246204831 
 
 /**
  * @enum ForceType
