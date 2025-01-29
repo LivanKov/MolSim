@@ -48,7 +48,8 @@ void Simulation::run(LinkedCellContainer &particles) {
 
   ForceType FORCE_TYPE = params_.calculate_grav_force
                              ? ForceType::GRAVITATIONAL
-                             : ForceType::LENNARD_JONES;
+                             : (params_.is_membrane ? ForceType::MEMBRANE
+                                                    : ForceType::LENNARD_JONES);
   std::unique_ptr<output::FileWriter> writer;
   if (params_.xyz_output) {
     writer = std::make_unique<output::XYZWriter>(particles);

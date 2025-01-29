@@ -16,3 +16,4 @@ double SimParams::membrane_stiffness = 0.0;
 double SimParams::membrane_bond_length = 0.0;
 bool SimParams::precompute_epsilon = false;
 bool SimParams::precompute_sigma = false;
+bool SimParams::is_membrane = false;

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MolSim>
+    <simulation_parameters>
+        <end_time>500</end_time>
+        <delta_time>0.01</delta_time>
+        <output_basename>../output</output_basename>
+        <write_frequency>10</write_frequency>
+        <r_cutoff_radius>8.8</r_cutoff_radius>
+        <enable_brownian>false</enable_brownian>
+        <domain_size>
+            <x>148.0</x>
+            <y>148.0</y>
+            <z>148.0</z>
+            <lower-left-corner>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </lower-left-corner>
+        </domain_size>
+    </simulation_parameters>
+
+    <boundary_conditions>
+        <left>Reflecting</left>
+        <right>Reflecting</right>
+        <top>Reflecting</top>
+        <bottom>Reflecting</bottom>
+    </boundary_conditions>
+
+    <cuboids>
+        <cuboid>
+            <coordinate>
+                <x>70.0</x>
+                <y>60.0</y>
+                <z>0.0</z>
+            </coordinate>
+            <dimensions>
+                <x>5</x>
+                <y>5</y>
+                <z>1</z>
+            </dimensions>
+            <mesh_width>2.2</mesh_width>
+            <mass>1.0</mass>
+            <epsilon>1.0</epsilon>
+            <sigma>1.0</sigma>
+            <initial_velocity>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </initial_velocity>
+            <membrane>
+                <k>300.0</k>
+                <r_0>8.8</r_0>
+            </membrane>
+        </cuboid>
+    </cuboids>
+</MolSim>

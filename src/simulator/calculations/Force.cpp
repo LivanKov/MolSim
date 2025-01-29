@@ -13,6 +13,9 @@ void Force::run(LinkedCellContainer &particles, ForceType type,
   case GRAVITATIONAL:
     gravitational(particles, OPTION);
     break;
+  case MEMBRANE:
+    membrane(particles);
+    break;
   }
 }
 
@@ -208,13 +211,11 @@ void Force::membrane(LinkedCellContainer &particles) {
     for (auto neighbour : p.membrane_neighbours) {
       auto r12 = neighbour->getX() - p.getX();
       double distance = ArrayUtils::L2Norm(r12);
-      if (distance > 1e-5) {
-        auto totalForce = SimParams::membrane_stiffness *
+      auto totalForce = SimParams::membrane_stiffness *
                           (distance - SimParams::membrane_bond_length) * r12 /
                           distance;
-        p.updateF(p.getF() + totalForce);
-        neighbour->updateF(neighbour->getF() - totalForce);
-      }
+      p.updateF(p.getF() + totalForce);
+      neighbour->updateF(neighbour->getF() - totalForce);
       double _sigma;
       if (p.getSigma() == neighbour->getSigma()) {
         _sigma = p.getSigma();
@@ -244,21 +245,19 @@ void Force::membrane(LinkedCellContainer &particles) {
     for (auto neighbour : p.diagonal_membrane_neighbours) {
       auto r12 = neighbour->getX() - p.getX();
       double distance = ArrayUtils::L2Norm(r12);
-      if (distance > 1e-5) {
         auto totalForce =
             SimParams::membrane_stiffness *
             (distance - SimParams::membrane_bond_length * TWO_SQRT) * r12 /
             distance;
         p.updateF(p.getF() + totalForce);
         neighbour->updateF(neighbour->getF() - totalForce);
-      }
       double _sigma;
       if (p.getSigma() == neighbour->getSigma()) {
         _sigma = p.getSigma();
       } else {
         _sigma = (p.getSigma() + neighbour->getSigma()) / 2;
       }
-      double min_distance = std::pow(2, 1 / 6) * _sigma;
+      double min_distance = std::pow(2, 1.0 / 6.0) * _sigma;
 
       // put this in a separate function later
       if (distance < min_distance) {

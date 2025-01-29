@@ -209,9 +209,13 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
           }
         }
 
+        bool membrane = false;
+
         if (cuboid.membrane().present()) {
           SimParams::membrane_bond_length = cuboid.membrane().get().r_0();
           SimParams::membrane_stiffness = cuboid.membrane().get().k();
+          SimParams::is_membrane = true;
+          membrane = true;
         }
 
         std::array<double, 3> initial_velocity = {
@@ -232,7 +236,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
 
         ParticleGenerator::insertCuboid(position, dimensions, mesh_width, mass,
                                         initial_velocity, particles, epsilon,
-                                        sigma);
+                                        sigma, membrane);
 
         logger.info("Particles check: " + std::to_string(particles.size()));
         logger.info("Particles' cell check: " +

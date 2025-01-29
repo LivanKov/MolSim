@@ -57,4 +57,6 @@ struct SimParams {
   //precompute parameters
   static bool precompute_sigma;
   static bool precompute_epsilon;
+
+  static bool is_membrane;
 };

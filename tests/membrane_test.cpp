@@ -22,7 +22,7 @@ TEST_F(MembraneTest, SimpleMembraneTest) {
     SimParams::fixed_Domain = false;
     ParticleGenerator::insertCuboid(
       std::array<double, 3>{0.0, 0.0, 0.0}, std::array<size_t, 3>{3, 3, 1}, 3.0,
-      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container, 1.0, 1.0,true);
+      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container, 1.0, 1.0, true);
 
     ASSERT_TRUE(container.size() == 9);
     
@@ -51,6 +51,15 @@ TEST_F(MembraneTest, SimpleMembraneTest) {
 
     EXPECT_EQ(container[8].membrane_neighbours.size(), 2);
     EXPECT_EQ(container[8].diagonal_membrane_neighbours.size(), 1);
+
+    EXPECT_EQ(container[0].getX()[0], 0.0);
+    EXPECT_EQ(container[0].getX()[1], 0.0);
+    EXPECT_EQ(container[0].getX()[2], 0.0);
+
+    EXPECT_EQ(container[1].getX()[0], 3.0);
+    EXPECT_EQ(container[1].getX()[1], 0.0);
+    EXPECT_EQ(container[1].getX()[2], 0.0);
+
 
 
     //check individual membrane neighbours

@@ -8,7 +8,7 @@
  * @enum ForceType
  * @brief Enum class for the force calculation type.
  */
-enum ForceType { LENNARD_JONES, GRAVITATIONAL };
+enum ForceType { LENNARD_JONES, GRAVITATIONAL, MEMBRANE };
 
 /***
  * @struct Force
