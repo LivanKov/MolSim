@@ -38,7 +38,7 @@ public:
                            const std::array<double, 3> &initialVelocity,
 
                            LinkedCellContainer &particles, double epsilon = 5.0,
-                           double sigma = 1.0);
+                           double sigma = 1.0, bool fixed = false);
 
   /**
    * @brief Generate a disc of particles. The disc gets plotted along the
@@ -56,7 +56,7 @@ public:
                          const std::array<double, 3> &initialVelocity,
                          size_t radius, double h, double mass,
                          LinkedCellContainer &particles, double epsilon = 5.0,
-                         double sigma = 1.0);
+                         double sigma = 1.0, bool fixed = false);
 
   static void insertSingleMolecule(const std::array<double, 3> &position,
                                    const std::array<double, 3> &velocity,
