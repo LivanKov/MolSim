@@ -67,6 +67,9 @@ void Simulation::run(LinkedCellContainer &particles) {
   Thermostat thermostat(particles, params_.initial_temp, params_.target_temp,
                         params_.dimensions, params_.delta_temp,
                         params_.is_gradual, params_.enable_brownian);
+
+  ParticleProfiler particle_profiler(particles, 30, 0, 30, "output_profile.csv");
+
   // Checkout-only mode
   if (params_.checkpoint_only) {
     checkpointMode(particles, current_time, option, FORCE_TYPE);
@@ -83,7 +86,7 @@ void Simulation::run(LinkedCellContainer &particles) {
 
   // Main simulation loop
   simulate(particles, current_time, iteration, total_molecule_updates, writer,
-           thermostat, option, FORCE_TYPE);
+           thermostat, option, FORCE_TYPE, particle_profiler);
 
   logger.info("Simulation finished.");
 }
@@ -119,7 +122,7 @@ void Simulation::simulate(LinkedCellContainer &particles, double &current_time,
                           int &iteration, size_t &total_molecule_updates,
                           std::unique_ptr<output::FileWriter> &writer,
                           Thermostat &thermostat, OPTIONS option,
-                          ForceType force_type) {
+                          ForceType force_type, ParticleProfiler &particle_profiler) {
   auto start_time = std::chrono::high_resolution_clock::now();
 
   while (current_time < params_.end_time) {
@@ -141,6 +144,11 @@ void Simulation::simulate(LinkedCellContainer &particles, double &current_time,
     iteration++;
     if (iteration % params_.write_frequency == 0 && !params_.disable_output) {
       writer->plot_particles(params_.output_path, iteration);
+    }
+
+    if(iteration % 1000 == 0) {
+      particle_profiler.apply_profiler();
+      Logger::getInstance().warn("Profiler applied.");
     }
 
     Logger::getInstance().info("Iteration " + std::to_string(iteration) +

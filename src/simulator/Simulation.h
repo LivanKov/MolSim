@@ -8,6 +8,8 @@
 #include <chrono>
 #include <memory>
 
+#include "utils/ParticleProfiler.h"
+
 #pragma once
 
 /**
@@ -62,7 +64,8 @@ private:
   void simulate(LinkedCellContainer &particles, double &current_time,
                 int &iteration, size_t &total_molecule_updates,
                 std::unique_ptr<output::FileWriter> &writer,
-                Thermostat &thermostat, OPTIONS option, ForceType force_type);
+                Thermostat &thermostat, OPTIONS option, ForceType force_type,
+                ParticleProfiler &particle_profiler);
 
   /**
    * @brief Logs simulation performance metrics such as runtime and updates per
