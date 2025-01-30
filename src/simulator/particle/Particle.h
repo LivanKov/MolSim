@@ -83,7 +83,7 @@ private:
    * @brief Flag to apply additional force to this particle
    */
   bool apply_fzup;
-
+  /*
    * @brief check if particle is fixed.
    */
   bool fixed;

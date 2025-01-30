@@ -250,7 +250,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
 
         ParticleGenerator::insertCuboid(position, dimensions, mesh_width, mass,
                                         initial_velocity, particles, epsilon,
-                                        sigma, membrane, additional_force_coordinates, fixed);
+                                        sigma, membrane, additional_force_coordinates, is_fixed);
 
         logger.info("Particles check: " + std::to_string(particles.size()));
         logger.info("Particles' cell check: " +

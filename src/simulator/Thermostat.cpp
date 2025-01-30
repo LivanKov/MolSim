@@ -208,11 +208,6 @@ void Thermostat::initialize() {
 }
 
 
-double Thermostat::get_current_temperature() {
-  calculate_current_temperature();
-  return current_temperature_;
-}
-
 // ----------------------- thermostat modification: -----------------------------------------
 
 // new application method of thermostat (using thermal motion)

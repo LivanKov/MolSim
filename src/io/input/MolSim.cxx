@@ -1156,7 +1156,6 @@ initial_velocity (::std::unique_ptr< initial_velocity_type > x)
   this->initial_velocity_.set (std::move (x));
 }
 
-
 const cuboid::additional_force_optional& cuboid::
 additional_force () const
 {
@@ -1215,7 +1214,8 @@ void cuboid::
 membrane (::std::unique_ptr< membrane_type > x)
 {
   this->membrane_.set (std::move (x));
-  
+}
+
 const cuboid::fixed_optional& cuboid::
 fixed () const
 {
@@ -3454,7 +3454,7 @@ cuboid (const coordinate_type& coordinate,
   sigma_ (sigma, this),
   initial_velocity_ (initial_velocity, this),
   additional_force_ (this),
-  membrane_ (this)
+  membrane_ (this),
   fixed_ (this)
 {
 }
@@ -3475,9 +3475,8 @@ cuboid (::std::unique_ptr< coordinate_type > coordinate,
   epsilon_ (epsilon, this),
   sigma_ (sigma, this),
   initial_velocity_ (std::move (initial_velocity), this),
-
   additional_force_ (this),
-  membrane_ (this)
+  membrane_ (this),
   fixed_ (this)
 {
 }
@@ -3495,7 +3494,7 @@ cuboid (const cuboid& x,
   sigma_ (x.sigma_, f, this),
   initial_velocity_ (x.initial_velocity_, f, this),
   additional_force_ (x.additional_force_, f, this),
-  membrane_ (x.membrane_, f, this)
+  membrane_ (x.membrane_, f, this),
   fixed_ (x.fixed_, f, this)
 {
 }
@@ -3513,7 +3512,7 @@ cuboid (const ::xercesc::DOMElement& e,
   sigma_ (this),
   initial_velocity_ (this),
   additional_force_ (this),
-  membrane_ (this)
+  membrane_ (this),
   fixed_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
@@ -3643,6 +3642,10 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       if (!this->membrane_)
       {
         this->membrane_.set (::std::move (r));
+        continue;
+      }
+    }
+
     // fixed
     //
     if (n.name () == "fixed" && n.namespace_ ().empty ())
