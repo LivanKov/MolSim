@@ -9,7 +9,7 @@
 struct BoundaryConditions : AbstractPolicy {
   /**
    * @brief Runs the boundary conditions for particles.
-   * @param particles DirectSumContainer reference.
+   * @param particles ParticleContainer reference.
    */
   static void run(LinkedCellContainer &particles);
 
@@ -22,7 +22,7 @@ private:
    */
   static void handle_reflect_conditions(int particle_id, int cell_index,
                                         LinkedCellContainer &particles);
-   /**
+  /**
    * @brief Handles the periodic boundary conditions for particles.
    * @param particle_id Particle ID.
    * @param cell_index Cell index.

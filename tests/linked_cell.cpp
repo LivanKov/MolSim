@@ -131,25 +131,25 @@ TEST_F(LinkedCellTest, NeighbourTest) {
   EXPECT_TRUE(p_1.getX()[0] == 1.5 && p_1.getX()[1] == 1.5 &&
               p_1.getX()[2] == 0.0);
 
-    EXPECT_TRUE(container.get_neighbours(p_1.getType()).size() == 4);
+    EXPECT_TRUE(container.get_neighbours(p_1.getId()).size() == 4);
 
   Particle p_2 = container[4];
 
   EXPECT_TRUE(p_2.getX()[0] == 4.5 && p_2.getX()[1] == 4.5 &&
               p_2.getX()[2] == 0.0);
 
-    EXPECT_TRUE(container.get_neighbours(p_2.getType()).size() == 9);
+    EXPECT_TRUE(container.get_neighbours(p_2.getId()).size() == 9);
 
   Particle p_3 = container[7];
 
   EXPECT_TRUE(p_3.getX()[0] == 4.5 && p_3.getX()[1] == 7.5 &&
               p_3.getX()[2] == 0.0);
 
-    EXPECT_TRUE(container.get_neighbours(p_3.getType()).size() == 6);
+    EXPECT_TRUE(container.get_neighbours(p_3.getId()).size() == 6);
 
   // verify every single neigbour for posterity's sake
 
-  auto neighbours = container.get_neighbours(p_3.getType());
+  auto neighbours = container.get_neighbours(p_3.getId());
 
   // check all surrounding coordinates
   auto it =
@@ -204,8 +204,9 @@ TEST_F(LinkedCellTest, NeighbourTest) {
               center_particle.getX()[1] == 4.5 &&
               center_particle.getX()[2] == 4.5);
 
-    EXPECT_TRUE(container_3d.get_neighbours(center_particle.getType()).size()
-    == 27);
+
+  EXPECT_TRUE(container_3d.get_neighbours(center_particle.getId()).size() == 27);
+
 
 }
 

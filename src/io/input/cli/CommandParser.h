@@ -3,36 +3,13 @@
 #include <iostream>
 #include <unistd.h>
 
+#pragma once
+
 namespace CommandParser {
 
-void print_help() {
-  std::cout << "Usage: MolSim [options]\n";
-  std::cout << "Options:\n";
-  std::cout << "  -h                  Show this help message\n";
-  std::cout << "  -o   <file_path>    Specify output file path (including "
-               "filename)\n";
-  std::cout << "  -i   <file_path>   Specify input file path\n";
-  std::cout
-      << "  -e   <end_time>    Specify how long the simulation should run\n";
-  std::cout << "  -d   <time_delta>   Specify time increments\n";
-  std::cout << "  -t   <write_freq>   Write a file for every -t iteration\n";
+void print_help();
 
-  std::cout << "  -x                  Output .xyz files instead of .vpu\n";
-  std::cout << "  -l   <log_level>    Option to choose the logging level "
-               "[trace, debug, info, warn, error, off]\n";
-  std::cout
-      << "  -f                   Calculate Gravitational Force instead of "
-         "Lennard-Jones Force\n";
-  std::cout << "  -n                  Disable all file output for the sake of "
-               "performance\n";
-}
-
-SimParams parse(int argc, char **argv, SimParams &parameters) {
-  if (argc < 2) {
-    print_help();
-  }
-
-  int opt;
+SimParams &parse(int argc, char **argv, SimParams &parameters);
 
   while ((opt = getopt(argc, argv, "e:d:i:t:o:hxl:fnurcv:pa")) != -1) {
     switch (opt) {

@@ -1,14 +1,18 @@
-#include "../particle/container/DirectSumContainer.h"
 #include "../particle/container/LinkedCellContainer.h"
+#include "../particle/container/ParticleContainer.h"
 #include "Calculation.h"
 
+
 #pragma once
+#define TWO_SQRT 1.41421356237
+#define MAGIC_NUMBER 1.12246204831 
+
 
 /**
  * @enum ForceType
  * @brief Enum class for the force calculation type.
  */
-enum ForceType { LENNARD_JONES, GRAVITATIONAL };
+enum ForceType { LENNARD_JONES, GRAVITATIONAL, MEMBRANE };
 
 /**
  * @enum OMPSTRATEGY
@@ -71,4 +75,6 @@ private:
   compute_lj_force(Particle *p1, Particle *p2, const std::array<double, 3> &r12,
                    double distance);
   static void apply_gravity(LinkedCellContainer &particles);
+  static void gravitational(LinkedCellContainer &particles, OPTIONS OPTION);
+  static void membrane(LinkedCellContainer &particles);
 };

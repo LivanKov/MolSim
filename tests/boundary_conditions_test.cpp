@@ -157,7 +157,7 @@ TEST_F(BoundaryConditionsTest, CornerCrossing) {
   auto velocity = pt.getV();
 
   EXPECT_EQ(container.cells[99].size(), 1);
-  EXPECT_TRUE(container.cells[99].particle_ids.contains(0));
+  EXPECT_TRUE(std::find(container.cells[99].particle_ids.begin(), container.cells[99].particle_ids.end(), 0) != container.cells[99].particle_ids.end());
   EXPECT_TRUE(container.cells[99].placement == Placement::TOP_RIGHT_CORNER);
 
   EXPECT_EQ(position[0], 9.9); // Reflected from the x boundary

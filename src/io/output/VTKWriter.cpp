@@ -53,7 +53,7 @@ void VTKWriter::plot_particles(const std::string &filename, int iteration) {
   std::stringstream strstr;
   strstr << filename << "/" << out_name << "_" << std::setfill('0')
          << std::setw(4) << iteration << ".vtu";
-  for (auto &p : particles.particles) {
+  for (auto &p : particles) {
     if (!p.left_domain) {
       plotParticle(p);
     }
@@ -91,7 +91,7 @@ void VTKWriter::plotParticle(Particle &p) {
   dataIterator->push_back(p.getOldF()[2]);
 
   dataIterator++;
-  dataIterator->push_back(p.getType());
+  dataIterator->push_back(p.getId());
 
   Points::DataArray_sequence &pointsSequence =
       vtkFile->UnstructuredGrid()->Piece().Points().DataArray();

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <sstream>
 
-/** 
+/**
  * @class XMLReader
  * @brief A class for reading XML files and parsing simulation parameters
  *

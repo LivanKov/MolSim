@@ -2,6 +2,7 @@
 #include "simulator/particle/container/LinkedCellContainer.h"
 #include <array>
 #include <string>
+#include <unordered_set>
 #pragma once
 
 struct SimParams {
@@ -22,6 +23,8 @@ struct SimParams {
   bool periodic;
   static double gravity;
   static bool enable_gravity;
+  static double z_gravity;
+  static bool enable_z_gravity;
   static std::array<double, 3> lower_left_corner;
   static bool fixed_Domain;
 
@@ -47,4 +50,20 @@ struct SimParams {
   // Parallelization
   static bool enable_omp;
   static OMPSTRATEGY ompstrategy;
+
+  // additional force (FZup)
+  static double additional_force_zup;
+  static double additional_force_time_limit;
+  static bool apply_fzup;
+
+  // membrane parameters
+  static double membrane_stiffness;
+  static double membrane_bond_length;
+
+  //precompute parameters
+  static bool precompute_sigma;
+  static bool precompute_epsilon;
+
+  static bool is_membrane;
 };
+

@@ -65,6 +65,11 @@ target_link_libraries(MolSim
         spdlog::spdlog
 )
 
+option(OPEN_MP "Build with OpenMP" OFF)
+if(OPEN_MP)
+    add_compile_definitions(PARALLEL)
+endif()
+
 # activate all compiler warnings. Clean up your code :P
 # depending on the compiler different flags are used
 target_compile_options(MolSim

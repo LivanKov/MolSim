@@ -8,7 +8,7 @@
 #include "io/output/VTKWriter.h"
 #include "io/output/XYZWriter.h"
 #include "particle/ParticleGenerator.h"
-#include "particle/container/DirectSumContainer.h"
+#include "particle/container/ParticleContainer.h"
 #include "simulator/calculations/BoundaryConditions.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"
@@ -56,9 +56,16 @@ void Simulation::run(LinkedCellContainer &particles) {
   size_t total_molecule_updates = 0;
   ForceType FORCE_TYPE = params_.calculate_grav_force
                              ? ForceType::GRAVITATIONAL
-                             : ForceType::LENNARD_JONES;
+                             : (params_.is_membrane ? ForceType::MEMBRANE
+                                                    : ForceType::LENNARD_JONES);
 
   std::unique_ptr<output::FileWriter> writer = createFileWriter(particles);
+                             
+  if (params_.xyz_output) {
+    writer = std::make_unique<output::XYZWriter>(particles);
+  } else {
+    writer = std::make_unique<output::VTKWriter>(particles);
+  }
 
   OPTIONS option =
       params_.linked_cells ? OPTIONS::LINKED_CELLS : OPTIONS::DIRECT_SUM;
@@ -110,6 +117,7 @@ void Simulation::checkpointMode(LinkedCellContainer &particles,
     current_time += params_.time_delta;
   }
 
+
   CheckpointWriter::writeCheckpoint(particles, "../output/checkpoint.chk",
                                     params_.time_delta, params_.end_time);
   Logger::getInstance().info("Equilibration completed.");
@@ -123,6 +131,11 @@ void Simulation::simulate(LinkedCellContainer &particles, double &current_time,
   auto start_time = std::chrono::high_resolution_clock::now();
 
   while (current_time < params_.end_time) {
+
+    if(current_time >= SimParams::additional_force_time_limit){
+      SimParams::apply_fzup = false;
+    }
+
     size_t molecules_this_iteration = particles.size();
 
     Calculation<Position>::run(particles, params_.time_delta, option);

@@ -1,4 +1,4 @@
-#include "DirectSumContainer.h"
+#include "ParticleContainer.h"
 #include "utils/logger/Logger.h"
 #include <array>
 #include <initializer_list>
@@ -86,7 +86,7 @@ struct GhostParticle {
 /**
  * @class LinkedCellContainer
  * @brief Class that provides a container for particles that uses linked cells
- * to speed up the computation.Inherits from DirectSumContainer.
+ * to speed up the computation.Inherits from ParticleContainer.
  */
 class LinkedCellContainer {
 
@@ -101,7 +101,8 @@ class LinkedCellContainer {
    */
   struct Cell {
     /** @brief Set of particle IDs contained in this cell. */
-    std::unordered_set<int> particle_ids;
+
+    std::vector<int> particle_ids;
 
     /** @brief Returns the number of particles in this cell.
      *  @return Number of particles in the cell.
@@ -125,6 +126,11 @@ class LinkedCellContainer {
 
     /** @brief The placement of this cell relative to the domain boundaries. */
     Placement placement;
+
+    /** @brief boundary condition of this cell */
+    BoundaryCondition boundary_condition;
+
+    std::vector<size_t> neighbour_indices;
   };
 
 public:
@@ -201,6 +207,11 @@ public:
   void set_boundary_conditions(DomainBoundaryConditions conditions);
 
   /**
+   * @brief Unique identifier for the next particle to be added.
+   */
+  size_t particle_id;
+
+  /**
    * @brief The size of the simulation domain.
    */
   std::vector<double> domain_size_;
@@ -247,7 +258,7 @@ public:
   /**
    * @brief A container of all particles in the domain.
    */
-  DirectSumContainer particles;
+  ParticleContainer particles;
 
   /**
    * @brief cell size for x,y,z
@@ -277,21 +288,13 @@ public:
    */
   Particle &operator[](size_t index);
 
-  /**
-   * @brief Maps particle IDs to their corresponding cell pointers.
-   * Used for efficient particle lookup in the linked cell structure.
-   */
-  std::unordered_map<int, ParticlePointer> cells_map;
+
+  ParticlePointer& at(size_t index);
 
   /**
    * @brief Counter for particles that have left the simulation domain.
    */
   size_t particles_left_domain;
-
-  /**
-   * @brief Unique identifier for the next particle to be added.
-   */
-  size_t particle_id;
 
   /**
    * @brief Flag indicating if this container is a wrapper around another
@@ -364,7 +367,13 @@ public:
    * @param particle_id ID of the particle to find neighbors for.
    * @return Vector of ghost particles that are neighbors of the given particle.
    */
-  std::vector<GhostParticle> get_additional_neighbour_indices(int particle_id);
+  std::vector<GhostParticle> get_periodic_neighbours(int particle_id);
+
+  void precompute_neighbours();
+
+  ParticleIterator begin();
+
+  ParticleIterator end();
 
     /**
    * @brief Assigns halo status to cells at the border of the array
