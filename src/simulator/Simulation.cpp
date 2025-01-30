@@ -22,6 +22,8 @@
 #include <spdlog/spdlog.h>
 #include <utility>
 
+#include "utils/ParticleProfiler.h"
+
 std::unique_ptr<Simulation> Simulation::generate_simulation(SimParams &params) {
   std::unique_ptr<Simulation> ptr = std::make_unique<Simulation>(params);
   return ptr;
@@ -74,6 +76,11 @@ void Simulation::run(LinkedCellContainer &particles) {
   Thermostat thermostat(particles, params_.initial_temp, params_.target_temp,
                         params_.dimensions, params_.delta_temp,
                         params_.is_gradual, params_.enable_brownian);
+
+  // here you can include the ParticleProfiler. Append the simulate methods with particle_profiler and
+  // call with it apply_profiler() in each modulo iteration if statement with the desired writer rate
+  // ParticleProfiler particle_profiler(particles, bin_width(size_t), x_min(double), x_max(double), "output_profile.csv");
+
   // Checkout-only mode
   if (params_.checkpoint_only) {
     checkpointMode(particles, current_time, option, FORCE_TYPE);
