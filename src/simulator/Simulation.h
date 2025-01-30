@@ -1,7 +1,6 @@
 #include "Thermostat.h"
 #include "io/input/cli/SimParams.h"
 #include "io/output/FileWriter.h"
-#include "particle/container/DirectSumContainer.h"
 #include "particle/container/LinkedCellContainer.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"
