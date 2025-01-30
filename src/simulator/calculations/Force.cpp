@@ -46,6 +46,7 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
     apply_gravity(particles);
   }
 }
+}
 
 void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
   for (auto &particle : particles.particles) {
@@ -79,7 +80,7 @@ void Force::compute_direct_sum(LinkedCellContainer &particles) {
 
 void Force::compute_serial(LinkedCellContainer &particles) {
   for (auto &particle : particles.particles) {
-    for (auto &neighbour : particles.get_neighbours(particle.getType())) {
+    for (auto &neighbour : particles.get_neighbours(particle.getId())) {
       if (*neighbour != particle) {
         auto r12 = neighbour->getX() - particle.getX();
         double distance = ArrayUtils::L2Norm(r12);
@@ -110,9 +111,9 @@ void Force::compute_parallel_fork_join(LinkedCellContainer &particles) {
     const int thread_id = omp_get_thread_num();
 
 #pragma omp for
-    for (size_t i = 0; i < particles.particles.size(); ++i) {
+    for (size_t i = 0; i < particles.size(); ++i) {
       auto &particle = particles.particles[i];
-      for (auto &neighbour : particles.get_neighbours(particle.getType())) {
+      for (auto &neighbour : particles.get_neighbours(particle.getId())) {
         if (*neighbour != particle && !particle.is_fixed()) {
           auto r12 = neighbour->getX() - particle.getX();
           double distance = ArrayUtils::L2Norm(r12);
@@ -123,8 +124,8 @@ void Force::compute_parallel_fork_join(LinkedCellContainer &particles) {
             thread_local_forces[thread_id][i] =
                 thread_local_forces[thread_id][i] + force;
             if(!neighbour->is_fixed()) {
-            thread_local_forces[thread_id][neighbour->getType()] =
-                thread_local_forces[thread_id][neighbour->getType()] - force; }
+            thread_local_forces[thread_id][neighbour->getId()] =
+                thread_local_forces[thread_id][neighbour->getId()] - force; }
           }
         }
       }
