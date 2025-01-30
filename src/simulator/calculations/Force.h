@@ -57,12 +57,6 @@ private:
    * @param OPTION Calculation option (e.g., DIRECT_SUM or LINKED_CELL).
    **/
   static void lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION);
-  /**
-   * @brief Gravitational force calculation.
-   * @param particles LinkedCellContainer reference.
-   * @param OPTION Calculation option (e.g., DIRECT_SUM or LINKED_CELL).
-   */
-  static void gravitational(LinkedCellContainer &particles, OPTIONS OPTION);
 
   // ----------------- Helper Functions -----------------------------------
 

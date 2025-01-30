@@ -202,16 +202,16 @@ TEST_F(BoundaryConditionsTest, EdgeGhostNeighbours) {
 
   // Get ghost neighbors of the left-front particle
   auto ghost_neighbours_left_front =
-      container_3d.get_additional_neighbour_indices(0);
+      container_3d.get_periodic_neighbours(0);
 
   // Get ghost neighbors of the right-back particle
   auto ghost_neighbours_right_back =
-      container_3d.get_additional_neighbour_indices(1);
+      container_3d.get_periodic_neighbours(1);
 
   // Verify that the ghost neighbors are correctly identified
   bool found_right_back_as_neighbour = false;
   for (const auto &ghost : ghost_neighbours_left_front) {
-    if (ghost.ptr == container_3d.cells_map[1]) {
+    if (ghost.ptr == container_3d.at(1)) {
       found_right_back_as_neighbour = true;
       break;
     }
@@ -219,7 +219,7 @@ TEST_F(BoundaryConditionsTest, EdgeGhostNeighbours) {
 
   bool found_left_front_as_neighbour = false;
   for (const auto &ghost : ghost_neighbours_right_back) {
-    if (ghost.ptr == container_3d.cells_map[0]) {
+    if (ghost.ptr == container_3d.at(0)) {
       found_left_front_as_neighbour = true;
       break;
     }
@@ -260,14 +260,14 @@ TEST_F(BoundaryConditionsTest, OppositeCornerGhostNeighbours) {
 
   // Get ghost neighbors for both particles
   auto ghost_neighbours_bottom_front_right =
-      container_3d.get_additional_neighbour_indices(0);
+      container_3d.get_periodic_neighbours(0);
   auto ghost_neighbours_top_back_left =
-      container_3d.get_additional_neighbour_indices(1);
+      container_3d.get_periodic_neighbours(1);
 
   // Verify that each particle appears as a ghost neighbor in the other's list
   bool found_top_back_left_as_neighbour = false;
   for (const auto &ghost : ghost_neighbours_bottom_front_right) {
-    if (ghost.ptr == container_3d.cells_map[1]) {
+    if (ghost.ptr == container_3d.at(1)) {
       found_top_back_left_as_neighbour = true;
       break;
     }
@@ -275,7 +275,7 @@ TEST_F(BoundaryConditionsTest, OppositeCornerGhostNeighbours) {
 
   bool found_bottom_front_right_as_neighbour = false;
   for (const auto &ghost : ghost_neighbours_top_back_left) {
-    if (ghost.ptr == container_3d.cells_map[0]) {
+    if (ghost.ptr == container_3d.at(0)) {
       found_bottom_front_right_as_neighbour = true;
       break;
     }
@@ -344,18 +344,18 @@ TEST_F(BoundaryConditionsTest, PeriodicRepulsiveForceZ) {
                           OPTIONS::LINKED_CELLS);
 
   // Get forces on both particles
-  auto force_A = container_3d.cells_map[0]->getF();
-  auto force_B = container_3d.cells_map[1]->getF();
-  auto force_C = container_3d.cells_map[2]->getF();
-  auto force_D = container_3d.cells_map[3]->getF();
-  auto force_E = container_3d.cells_map[4]->getF();
-  auto force_F = container_3d.cells_map[5]->getF();
-  auto force_G = container_3d.cells_map[6]->getF();
-  auto force_H = container_3d.cells_map[7]->getF();
-  auto force_I = container_3d.cells_map[8]->getF();
-  auto force_J = container_3d.cells_map[9]->getF();
-  auto force_K = container_3d.cells_map[10]->getF();
-  auto force_L = container_3d.cells_map[11]->getF();
+  auto force_A = container_3d.at(0)->getF();
+  auto force_B = container_3d.at(1)->getF();
+  auto force_C = container_3d.at(2)->getF();
+  auto force_D = container_3d.at(3)->getF();
+  auto force_E = container_3d.at(4)->getF();
+  auto force_F = container_3d.at(5)->getF();
+  auto force_G = container_3d.at(6)->getF();
+  auto force_H = container_3d.at(7)->getF();
+  auto force_I = container_3d.at(8)->getF();
+  auto force_J = container_3d.at(9)->getF();
+  auto force_K = container_3d.at(10)->getF();
+  auto force_L = container_3d.at(11)->getF();
 
   // Check that the z-component of the force is repulsive
   EXPECT_GT(force_A[2], 0.0)

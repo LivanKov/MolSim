@@ -133,8 +133,9 @@ void Force::compute_parallel_fork_join(LinkedCellContainer &particles) {
   }
 
 
-  // Combine thread-local forces into global forces
+ // Combine thread-local forces into global forces
   std::vector<std::array<double, 3>> global_forces(particles.particles.size(),
+                                                   {0.0, 0.0, 0.0});
 
 #pragma omp for
   for (size_t i = 0; i < particles.particles.size(); ++i) {
@@ -164,7 +165,7 @@ void Force::compute_parallel_tasking(LinkedCellContainer &particles) {
 
 #pragma omp task firstprivate(i) shared(particles, local_forces)
       {
-        for (auto &neighbour : particles.get_neighbours(particle.getType())) {
+        for (auto &neighbour : particles.get_neighbours(particle.getId())) {
           if (*neighbour != particle) {
             auto r12 = neighbour->getX() - particle.getX();
             double distance = ArrayUtils::L2Norm(r12);
@@ -173,9 +174,9 @@ void Force::compute_parallel_tasking(LinkedCellContainer &particles) {
               auto force =
                   compute_lj_force(&particle, neighbour.get(), r12, distance);
               local_forces[i] = local_forces[i] + force;
-              if(!neighbour.ptr->is_fixed()) {
-              local_forces[neighbour->getType()] =
-                  local_forces[neighbour->getType()] - force;
+              if(!neighbour->is_fixed()) {
+              local_forces[neighbour->getId()] =
+                  local_forces[neighbour->getId()] - force;
             }
         
           }
@@ -192,11 +193,12 @@ void Force::compute_parallel_tasking(LinkedCellContainer &particles) {
                                    local_forces[i]);
   }
 }
+}
 
 void Force::compute_ghost_cell_forces(LinkedCellContainer &particles) {
   for (auto &particle : particles.particles) {
     for (auto &neighbour :
-         particles.get_additional_neighbour_indices(particle.getType())) {
+         particles.get_periodic_neighbours(particle.getId())) {
       if (*(neighbour.ptr) != particle) {
         auto r12 = neighbour.position - particle.getX();
         double distance = ArrayUtils::L2Norm(r12);

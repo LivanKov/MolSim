@@ -59,7 +59,7 @@ void BoundaryConditions::handle_reflect_conditions(
         cell.placement == Placement::TOP_RIGHT_CORNER ||
         cell.placement == Placement::TOP_LEFT_CORNER ||
         cell.placement == Placement::BOTTOM_RIGHT_CORNER)
-      particles.cells_map[particle_id]->updateV(-velocity[0], -velocity[1],
+      particles.at(particle_id)->updateV(-velocity[0], -velocity[1],
                                                 velocity[2]);
   } else if (particles.domain_size_.size() == 3) {
     if (cell.placement == Placement::TOP_BACK_LEFT_CORNER ||
@@ -78,7 +78,7 @@ void BoundaryConditions::handle_reflect_conditions(
         cell.placement == Placement::TOP_FRONT_EDGE ||
         cell.placement == Placement::TOP_RIGHT_EDGE ||
         cell.placement == Placement::TOP_LEFT_EDGE) {
-      particles.cells_map[particle_id]->updateV(velocity[0], -velocity[1],
+      particles.at(particle_id)->updateV(velocity[0], -velocity[1],
                                                 velocity[2]);
     }
   }
@@ -110,11 +110,11 @@ void BoundaryConditions::handle_periodic_conditions(
         location[0], location[1] - particles.domain_size_[1], location[2]);
   if (particles.domain_size_.size() == 3) {
     if (location[2] < particles.left_corner_coordinates[2])
-      particles.cells_map[particle_id]->updateX(
+      particles.at(particle_id)->updateX(
           location[0], location[1], location[2] + particles.domain_size_[2]);
     if (location[2] >
         particles.left_corner_coordinates[2] + particles.domain_size_[2])
-      particles.cells_map[particle_id]->updateX(
+      particles.at(particle_id)->updateX(
           location[0], location[1], location[2] - particles.domain_size_[2]);
   }
 
