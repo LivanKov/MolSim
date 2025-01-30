@@ -49,6 +49,16 @@ private:
   std::array<double, 3> old_f;
 
   /**
+   * Thermal motion of this particle
+   */
+  std::array<double, 3> thermal_motion_;
+
+  /**
+   * Kinetic motion of this particle
+   */
+  std::array<double, 3> kinetic_motion_;
+
+  /**
    * Mass of this particle
    */
   double m;
@@ -74,6 +84,11 @@ private:
    */
   bool apply_fzup;
 
+   * @brief check if particle is fixed.
+   */
+  bool fixed;
+
+
 public:
   /**
    * @brief Constructor.
@@ -98,7 +113,7 @@ public:
       // for visualization, we need always 3 coordinates
       // -> in case of 2d, we use only the first and the second
       std::array<double, 3> x_arg, std::array<double, 3> v_arg, double m_arg,
-      int type, double epsilon_arg = 5.0, double sigma_arg = 1.0);
+      int type, double epsilon_arg = 5.0, double sigma_arg = 1.0, bool fixed = false);
 
   /**
    * @brief Destructor
@@ -135,6 +150,19 @@ public:
 
   const std::array<double, 3> &getOldF() const;
 
+
+  /**
+   * @brief access the array containing the thermal motion of the particle.
+   * @return a reference to the array containing the thermal motion of the particle.
+   */
+  const std::array<double, 3> &getThermalMotion() const;
+
+  /**
+   * @brief access the array containing the kinetic motion of the particle.
+   * @return a reference to the array containing the kinetic motion of the particle.
+   */
+  const std::array<double, 3> &getKineticMotion() const;
+
   /**
    * @brief access the array containing the old position of the particle.
    * @return a reference to the array containing the old position of the
@@ -170,10 +198,12 @@ public:
   double getSigma() const;
 
 
+
   bool isApplyFZup() const;
 
-
   void setAppliyFZup(bool apply_fzup_arg);
+
+  bool is_fixed() const;
 
   bool outbound;
 
@@ -252,6 +282,30 @@ public:
    * @param force: allowed the method to accept a std::array<double, 3>.
    */
   void updateOldF(const std::array<double, 3> &force);
+
+  /**
+   * @brief updates thermal motion of particle.
+   * @param x_arg, y_arg, z_arg: new thermal motion values.
+   */
+  void updateThermalMotion(double x_arg, double y_arg, double z_arg);
+
+  /**
+   * @brief updates thermal motion of particle.
+   * @param thermal_m: allowed the method to accept a std::array<double, 3>.
+   */
+  void updateThermalMotion(const std::array<double, 3> &thermal_m);
+
+ /**
+   * @brief updates kinetic motion of particle.
+   * @param x_arg, y_arg, z_arg: new kinetic motion values.
+   */
+ void updateKineticMotion(double x_arg, double y_arg, double z_arg);
+
+ /**
+  * @brief updates kinetic motion of particle.
+  * @param kinetic_m: allowed the method to accept a std::array<double, 3>.
+  */
+ void updateKineticMotion(const std::array<double, 3> &kinetic_m);
 
   /**
    * @brief updates the old position of the particle.

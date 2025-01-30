@@ -39,7 +39,8 @@ public:
 
       LinkedCellContainer &particles, double epsilon = 5.0, double sigma = 1.0,
       bool is_membrane = false,
-      std::vector<std::array<size_t, 3>> additional_force_coordinates = {});
+      std::vector<std::array<size_t, 3>> additional_force_coordinates = {}, bool fixed = false);
+
 
   /**
    * @brief Generate a disc of particles. The disc gets plotted along the
@@ -58,6 +59,8 @@ public:
                          size_t radius, double h, double mass,
                          LinkedCellContainer &particle_container,
                          double epsilon = 5.0, double sigma = 1.0);
+                         LinkedCellContainer &particles, double epsilon = 5.0,
+                         double sigma = 1.0, bool fixed = false);
 
   static void insertSingleMolecule(const std::array<double, 3> &position,
                                    const std::array<double, 3> &velocity,

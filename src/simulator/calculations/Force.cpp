@@ -67,8 +67,8 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       p.updateF(0, 0, 0);
     }
     for (auto &particle : particles) {
-      for (auto &neighbour : particles.get_neighbours(particle.getId())) {
-        if (*neighbour != particle) {
+      for (auto &neighbour : particles.get_neighbours(particle.getType())) {
+        if (*neighbour != particle && !particle.is_fixed()) {
           auto r12 = neighbour->getX() - particle.getX();
           double distance = ArrayUtils::L2Norm(r12);
 
@@ -97,7 +97,9 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
             auto force = (totalForce / distance) * r12;
 
             particle.updateF(particle.getF() + force);
-            neighbour->updateF(neighbour->getF() - force);
+            if (!neighbour->is_fixed()) {
+              neighbour->updateF(neighbour->getF() - force);
+            }
           }
         }
       }
@@ -106,7 +108,7 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
     for (auto &particle : particles) {
       for (auto &neighbour :
            particles.get_periodic_neighbours(particle.getId())) {
-        if (*(neighbour.ptr) != particle) {
+        if (*(neighbour.ptr) != particle && !particle.is_fixed()) {
           auto r12 = neighbour.position - particle.getX();
           double distance = ArrayUtils::L2Norm(r12);
 
@@ -133,7 +135,9 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
             auto force = (totalForce / distance) * r12;
 
             particle.updateF(particle.getF() + force);
-            neighbour.ptr->updateF(neighbour.ptr->getF() - force);
+            if (!neighbour.ptr->is_fixed()) {
+              neighbour.ptr->updateF(neighbour.ptr->getF() - force);
+            }
           }
         }
       }

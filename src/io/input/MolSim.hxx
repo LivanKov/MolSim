@@ -1526,6 +1526,24 @@ class cuboid: public ::xml_schema::type
   void
   membrane (::std::unique_ptr< membrane_type > p);
 
+  // fixed
+  //
+  typedef ::xml_schema::boolean fixed_type;
+  typedef ::xsd::cxx::tree::optional< fixed_type > fixed_optional;
+  typedef ::xsd::cxx::tree::traits< fixed_type, char > fixed_traits;
+
+  const fixed_optional&
+  fixed () const;
+
+  fixed_optional&
+  fixed ();
+
+  void
+  fixed (const fixed_type& x);
+
+  void
+  fixed (const fixed_optional& x);
+
   // Constructors.
   //
   cuboid (const coordinate_type&,
@@ -1579,6 +1597,7 @@ class cuboid: public ::xml_schema::type
   ::xsd::cxx::tree::one< initial_velocity_type > initial_velocity_;
   additional_force_optional additional_force_;
   membrane_optional membrane_;
+  fixed_optional fixed_;
 };
 
 class particle: public ::xml_schema::type

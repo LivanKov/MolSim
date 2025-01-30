@@ -1156,6 +1156,7 @@ initial_velocity (::std::unique_ptr< initial_velocity_type > x)
   this->initial_velocity_.set (std::move (x));
 }
 
+
 const cuboid::additional_force_optional& cuboid::
 additional_force () const
 {
@@ -1214,6 +1215,29 @@ void cuboid::
 membrane (::std::unique_ptr< membrane_type > x)
 {
   this->membrane_.set (std::move (x));
+  
+const cuboid::fixed_optional& cuboid::
+fixed () const
+{
+  return this->fixed_;
+}
+
+cuboid::fixed_optional& cuboid::
+fixed ()
+{
+  return this->fixed_;
+}
+
+void cuboid::
+fixed (const fixed_type& x)
+{
+  this->fixed_.set (x);
+}
+
+void cuboid::
+fixed (const fixed_optional& x)
+{
+  this->fixed_ = x;
 }
 
 
@@ -3431,6 +3455,7 @@ cuboid (const coordinate_type& coordinate,
   initial_velocity_ (initial_velocity, this),
   additional_force_ (this),
   membrane_ (this)
+  fixed_ (this)
 {
 }
 
@@ -3450,8 +3475,10 @@ cuboid (::std::unique_ptr< coordinate_type > coordinate,
   epsilon_ (epsilon, this),
   sigma_ (sigma, this),
   initial_velocity_ (std::move (initial_velocity), this),
+
   additional_force_ (this),
   membrane_ (this)
+  fixed_ (this)
 {
 }
 
@@ -3469,6 +3496,7 @@ cuboid (const cuboid& x,
   initial_velocity_ (x.initial_velocity_, f, this),
   additional_force_ (x.additional_force_, f, this),
   membrane_ (x.membrane_, f, this)
+  fixed_ (x.fixed_, f, this)
 {
 }
 
@@ -3486,6 +3514,7 @@ cuboid (const ::xercesc::DOMElement& e,
   initial_velocity_ (this),
   additional_force_ (this),
   membrane_ (this)
+  fixed_ (this)
 {
   if ((f & ::xml_schema::flags::base) == 0)
   {
@@ -3614,6 +3643,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       if (!this->membrane_)
       {
         this->membrane_.set (::std::move (r));
+    // fixed
+    //
+    if (n.name () == "fixed" && n.namespace_ ().empty ())
+    {
+      if (!this->fixed_)
+      {
+        this->fixed_.set (fixed_traits::create (i, f, this));
         continue;
       }
     }
@@ -3693,6 +3729,7 @@ operator= (const cuboid& x)
     this->initial_velocity_ = x.initial_velocity_;
     this->additional_force_ = x.additional_force_;
     this->membrane_ = x.membrane_;
+    this->fixed_ = x.fixed_;
   }
 
   return *this;
