@@ -30,16 +30,43 @@ struct DomainBoundaryConditions {
  */
 
 enum Placement {
+  // faces
   TOP,
   BOTTOM,
   LEFT,
   RIGHT,
   FRONT,
   BACK,
+
+  // 2D corners
   TOP_RIGHT_CORNER,
   TOP_LEFT_CORNER,
   BOTTOM_RIGHT_CORNER,
-  BOTTOM_LEFT_CORNER
+  BOTTOM_LEFT_CORNER,
+
+      // 3D edges (between 2 faces)
+  TOP_FRONT_EDGE,
+  TOP_BACK_EDGE,
+  BOTTOM_FRONT_EDGE,
+  BOTTOM_BACK_EDGE,
+  LEFT_FRONT_EDGE,
+  LEFT_BACK_EDGE,
+  RIGHT_FRONT_EDGE,
+  RIGHT_BACK_EDGE,
+  TOP_LEFT_EDGE,
+  TOP_RIGHT_EDGE,
+  BOTTOM_LEFT_EDGE,
+  BOTTOM_RIGHT_EDGE,
+
+  // 3D corners (3 faces meet)
+  TOP_FRONT_RIGHT_CORNER,
+  TOP_FRONT_LEFT_CORNER,
+  TOP_BACK_RIGHT_CORNER,
+  TOP_BACK_LEFT_CORNER,
+  BOTTOM_FRONT_RIGHT_CORNER,
+  BOTTOM_FRONT_LEFT_CORNER,
+  BOTTOM_BACK_RIGHT_CORNER,
+  BOTTOM_BACK_LEFT_CORNER
 };
 
 /**
@@ -74,6 +101,7 @@ class LinkedCellContainer {
    */
   struct Cell {
     /** @brief Set of particle IDs contained in this cell. */
+
     std::vector<int> particle_ids;
 
     /** @brief Returns the number of particles in this cell.
@@ -118,7 +146,7 @@ public:
    * @param r_cutoff The cutoff radius for interactions.
    * @param boundary_conditions The boundary conditions for the domain.
    */
-  void initialize(const std::initializer_list<double> &domain_size,
+  void initialize(const std::vector<double> &domain_size,
                   double r_cutoff,
                   const DomainBoundaryConditions &boundary_conditions);
 
@@ -347,6 +375,11 @@ public:
 
   ParticleIterator end();
 
+    /**
+   * @brief Assigns halo status to cells at the border of the array
+   */
+  void mark_halo_cells();
+
 private:
   /**
    * @brief Adjusts the coordinates of the domain based on new boundaries.
@@ -356,8 +389,5 @@ private:
   void readjust_coordinates(std::array<double, 3> current_low_left,
                             std::array<double, 3> current_up_right);
 
-  /**
-   * @brief Assigns halo status to cells at the border of the array
-   */
-  void mark_halo_cells();
+
 };

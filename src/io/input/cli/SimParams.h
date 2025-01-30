@@ -1,3 +1,4 @@
+#include "simulator/calculations/Force.h"
 #include "simulator/particle/container/LinkedCellContainer.h"
 #include <array>
 #include <string>
@@ -46,6 +47,10 @@ struct SimParams {
   static bool enable_v_threshold;
   static double v_threshold;
 
+  // Parallelization
+  static bool enable_omp;
+  static OMPSTRATEGY ompstrategy;
+
   // additional force (FZup)
   static double additional_force_zup;
   static double additional_force_time_limit;
@@ -61,3 +66,4 @@ struct SimParams {
 
   static bool is_membrane;
 };
+

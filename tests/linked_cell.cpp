@@ -57,7 +57,6 @@ TEST_F(LinkedCellTest, LocationTest) {
 
     container.update_particle_location(0, old_position);
 
-    
     EXPECT_EQ(container.cells[8].size(), 1);
 
   for (size_t i = 0; i < container.cells.size(); ++i) {
@@ -68,7 +67,6 @@ TEST_F(LinkedCellTest, LocationTest) {
 
   // leave the domain
 
-    
     std::array<double, 3>another_old_position = container[0].getX();
     container[0].updateX(10.0, 10.0, 0.0);
     container.update_particle_location(0, another_old_position);
@@ -95,8 +93,8 @@ TEST_F(LinkedCellTest, CuboidTest) {
   // Insert a 3x3x1 cuboid of particles with a side length of 3.0 and a mass
   // of 1.0
   ParticleGenerator::insertCuboid(
-      std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3, 1}, 3.0,
-      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
+      std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3,
+      1}, 3.0, 1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
 
   EXPECT_TRUE(container.size() == 9);
 
@@ -110,8 +108,8 @@ TEST_F(LinkedCellTest, CuboidTest) {
   // of 1.0
 
   ParticleGenerator::insertCuboid(
-      std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3, 3}, 3.0,
-      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
+      std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3,
+      3}, 3.0, 1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
 
   EXPECT_TRUE(container.size() == 27);
 
@@ -123,8 +121,8 @@ TEST_F(LinkedCellTest, CuboidTest) {
 TEST_F(LinkedCellTest, NeighbourTest) {
 
   ParticleGenerator::insertCuboid(
-      std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3, 1}, 3.0,
-      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
+      std::array<double, 3>{1.5, 1.5, 0.0}, std::array<size_t, 3>{3, 3,
+      1}, 3.0, 1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
 
   EXPECT_TRUE(container.size() == 9);
 
@@ -155,28 +153,32 @@ TEST_F(LinkedCellTest, NeighbourTest) {
 
   // check all surrounding coordinates
   auto it =
-      std::find_if(neighbours.begin(), neighbours.end(), [](ParticlePointer p) {
+      std::find_if(neighbours.begin(), neighbours.end(), [](ParticlePointer
+      p) {
         return p->getX()[0] == 7.5 && p->getX()[1] == 7.5 &&
                p->getX()[2] == 0.0;
       });
 
   EXPECT_TRUE(it != neighbours.end());
   it =
-      std::find_if(neighbours.begin(), neighbours.end(), [](ParticlePointer p) {
+      std::find_if(neighbours.begin(), neighbours.end(), [](ParticlePointer
+      p) {
         return p->getX()[0] == 7.5 && p->getX()[1] == 4.5 &&
                p->getX()[2] == 0.0;
       });
   EXPECT_TRUE(it != neighbours.end());
 
   it =
-      std::find_if(neighbours.begin(), neighbours.end(), [](ParticlePointer p) {
+      std::find_if(neighbours.begin(), neighbours.end(), [](ParticlePointer
+      p) {
         return p->getX()[0] == 4.5 && p->getX()[1] == 4.5 &&
                p->getX()[2] == 0.0;
       });
   EXPECT_TRUE(it != neighbours.end());
 
   it =
-      std::find_if(neighbours.begin(), neighbours.end(), [](ParticlePointer p) {
+      std::find_if(neighbours.begin(), neighbours.end(), [](ParticlePointer
+      p) {
         return p->getX()[0] == 1.5 && p->getX()[1] == 4.5 &&
                p->getX()[2] == 0.0;
       });
@@ -190,8 +192,8 @@ TEST_F(LinkedCellTest, NeighbourTest) {
   EXPECT_TRUE(it != neighbours.end());
 
   ParticleGenerator::insertCuboid(
-      std::array<double, 3>{1.5, 1.5, 1.5}, std::array<size_t, 3>{3, 3, 3}, 3.0,
-      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container_3d);
+      std::array<double, 3>{1.5, 1.5, 1.5}, std::array<size_t, 3>{3, 3,
+      3}, 3.0, 1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container_3d);
 
   EXPECT_TRUE(container_3d.size() == 27);
 
@@ -202,7 +204,9 @@ TEST_F(LinkedCellTest, NeighbourTest) {
               center_particle.getX()[1] == 4.5 &&
               center_particle.getX()[2] == 4.5);
 
-    EXPECT_TRUE(container_3d.get_neighbours(center_particle.getId()).size() == 27);
+
+  EXPECT_TRUE(container_3d.get_neighbours(center_particle.getId()).size() == 27);
+
 
 }
 
@@ -215,7 +219,8 @@ TEST_F(LinkedCellTest, UnevenDomainTest) {
   uneven_container.insert(p, true);
 
   EXPECT_TRUE(
-      uneven_container.is_within_domain(std::array<double, 3>{8.5, 1.0, 1.0}));
+      uneven_container.is_within_domain(std::array<double,
+      3>{8.5, 1.0, 1.0}));
 
   EXPECT_TRUE(uneven_container.size() == 1);
 
@@ -245,8 +250,8 @@ TEST_F(LinkedCellTest, UnevenDomainTest) {
 
   EXPECT_EQ(uneven_container.cells[12].size(), 1);
 
-  // move the particle, ensure it is removed from the old cell and inserted into
-  // the new cell
+  // move the particle, ensure it is removed from the old cell and inserted
+  // into the new cell
 
   std::array<double, 3> old_position = p_2.getX();
 
@@ -262,8 +267,8 @@ TEST_F(LinkedCellTest, UnevenDomainTest) {
 TEST_F(LinkedCellTest, RepositioningTest) {
 
   ParticleGenerator::insertCuboid(
-      std::array<double, 3>{5.0, 5.0, 0.0}, std::array<size_t, 3>{2, 2, 1}, 2.0,
-      1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
+      std::array<double, 3>{5.0, 5.0, 0.0}, std::array<size_t, 3>{2, 2,
+      1}, 2.0, 1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
 
   EXPECT_TRUE(container.size() == 4);
 
@@ -282,4 +287,189 @@ TEST_F(LinkedCellTest, RepositioningTest) {
   EXPECT_EQ(container.left_corner_coordinates[0], 1.5);
   EXPECT_EQ(container.left_corner_coordinates[1], 1.5);
   EXPECT_EQ(container.left_corner_coordinates[2], -1.5);
+}
+
+// Test the mark_halo_cells (or mark_boundary_cells) function for a 3D cube. The
+// test initializes a LinkedCellContainer with specific parameters and then
+// verifies the placement of each boundary cell.
+TEST_F(LinkedCellTest, MarkBoundaryCells3D) {
+
+  container_3d.mark_halo_cells();
+
+  size_t x_cells = container_3d.x;
+  size_t y_cells = container_3d.y;
+  size_t z_cells = container_3d.z;
+
+  for (size_t i = 0; i < x_cells; i++) {
+    for (size_t j = 0; j < y_cells; j++) {
+      for (size_t k = 0; k < z_cells; k++) {
+        size_t index = i + j * x_cells + k * x_cells * y_cells;
+        const auto &cell = container_3d.cells[index];
+
+        // Only check halo cells
+        if (cell.is_halo) {
+          switch (cell.placement) {
+          case Placement::BOTTOM_BACK_LEFT_CORNER:
+            EXPECT_EQ(i, 0);
+            EXPECT_EQ(j, 0);
+            EXPECT_EQ(k, 0);
+            break;
+          case Placement::BOTTOM_FRONT_LEFT_CORNER:
+            EXPECT_EQ(i, 0);
+            EXPECT_EQ(j, 0);
+            EXPECT_EQ(k, z_cells - 1);
+            break;
+          case Placement::TOP_BACK_LEFT_CORNER:
+            EXPECT_EQ(i, 0);
+            EXPECT_EQ(j, y_cells - 1);
+            EXPECT_EQ(k, 0);
+            break;
+          case Placement::TOP_FRONT_LEFT_CORNER:
+            EXPECT_EQ(i, 0);
+            EXPECT_EQ(j, y_cells - 1);
+            EXPECT_EQ(k, z_cells - 1);
+            break;
+          case Placement::BOTTOM_BACK_RIGHT_CORNER:
+            EXPECT_EQ(i, x_cells - 1);
+            EXPECT_EQ(j, 0);
+            EXPECT_EQ(k, 0);
+            break;
+          case Placement::BOTTOM_FRONT_RIGHT_CORNER:
+            EXPECT_EQ(i, x_cells - 1);
+            EXPECT_EQ(j, 0);
+            EXPECT_EQ(k, z_cells - 1);
+            break;
+          case Placement::TOP_BACK_RIGHT_CORNER:
+            EXPECT_EQ(i, x_cells - 1);
+            EXPECT_EQ(j, y_cells - 1);
+            EXPECT_EQ(k, 0);
+            break;
+          case Placement::TOP_FRONT_RIGHT_CORNER:
+            EXPECT_EQ(i, x_cells - 1);
+            EXPECT_EQ(j, y_cells - 1);
+            EXPECT_EQ(k, z_cells - 1);
+            break;
+
+          case Placement::LEFT_BACK_EDGE:
+            EXPECT_EQ(i, 0);
+            EXPECT_EQ(k, 0);
+            EXPECT_GT(j, 0);
+            EXPECT_LT(j, y_cells - 1);
+            break;
+          case Placement::LEFT_FRONT_EDGE:
+            EXPECT_EQ(i, 0);
+            EXPECT_EQ(k, z_cells - 1);
+            EXPECT_GT(j, 0);
+            EXPECT_LT(j, y_cells - 1);
+            break;
+          case Placement::RIGHT_BACK_EDGE:
+            EXPECT_EQ(i, x_cells - 1);
+            EXPECT_EQ(k, 0);
+            EXPECT_GT(j, 0);
+            EXPECT_LT(j, y_cells - 1);
+            break;
+          case Placement::RIGHT_FRONT_EDGE:
+            EXPECT_EQ(i, x_cells - 1);
+            EXPECT_EQ(k, z_cells - 1);
+            EXPECT_GT(j, 0);
+            EXPECT_LT(j, y_cells - 1);
+            break;
+          case Placement::TOP_BACK_EDGE:
+            EXPECT_EQ(j, y_cells - 1);
+            EXPECT_EQ(k, 0);
+            EXPECT_GT(i, 0);
+            EXPECT_LT(i, x_cells - 1);
+            break;
+          case Placement::TOP_FRONT_EDGE:
+            EXPECT_EQ(j, y_cells - 1);
+            EXPECT_EQ(k, z_cells - 1);
+            EXPECT_GT(i, 0);
+            EXPECT_LT(i, x_cells - 1);
+            break;
+          case Placement::BOTTOM_BACK_EDGE:
+            EXPECT_EQ(j, 0);
+            EXPECT_EQ(k, 0);
+            EXPECT_GT(i, 0);
+            EXPECT_LT(i, x_cells - 1);
+            break;
+          case Placement::BOTTOM_FRONT_EDGE:
+            EXPECT_EQ(j, 0);
+            EXPECT_EQ(k, z_cells - 1);
+            EXPECT_GT(i, 0);
+            EXPECT_LT(i, x_cells - 1);
+            break;
+          case Placement::BOTTOM_LEFT_EDGE:
+            EXPECT_EQ(i, 0);
+            EXPECT_EQ(j, 0);
+            EXPECT_GT(k, 0);
+            EXPECT_LT(k, z_cells - 1);
+            break;
+          case Placement::TOP_LEFT_EDGE:
+            EXPECT_EQ(i, 0);
+            EXPECT_EQ(j, y_cells - 1);
+            EXPECT_GT(k, 0);
+            EXPECT_LT(k, z_cells - 1);
+            break;
+          case Placement::BOTTOM_RIGHT_EDGE:
+            EXPECT_EQ(i, x_cells - 1);
+            EXPECT_EQ(j, 0);
+            EXPECT_GT(k, 0);
+            EXPECT_LT(k, z_cells - 1);
+            break;
+          case Placement::TOP_RIGHT_EDGE:
+            EXPECT_EQ(i, x_cells - 1);
+            EXPECT_EQ(j, y_cells - 1);
+            EXPECT_GT(k, 0);
+            EXPECT_LT(k, z_cells - 1);
+            break;
+
+          case Placement::BACK:
+            EXPECT_EQ(k, 0);
+            EXPECT_GT(i, 0);
+            EXPECT_LT(i, x_cells - 1);
+            EXPECT_GT(j, 0);
+            EXPECT_LT(j, y_cells - 1);
+            break;
+          case Placement::FRONT:
+            EXPECT_EQ(k, z_cells - 1);
+            EXPECT_GT(i, 0);
+            EXPECT_LT(i, x_cells - 1);
+            EXPECT_GT(j, 0);
+            EXPECT_LT(j, y_cells - 1);
+            break;
+          case Placement::BOTTOM:
+            EXPECT_EQ(j, 0);
+            EXPECT_GT(i, 0);
+            EXPECT_LT(i, x_cells - 1);
+            EXPECT_GT(k, 0);
+            EXPECT_LT(k, z_cells - 1);
+            break;
+          case Placement::TOP:
+            EXPECT_EQ(j, y_cells - 1);
+            EXPECT_GT(i, 0);
+            EXPECT_LT(i, x_cells - 1);
+            EXPECT_GT(k, 0);
+            EXPECT_LT(k, z_cells - 1);
+            break;
+          case Placement::LEFT:
+            EXPECT_EQ(i, 0);
+            EXPECT_GT(j, 0);
+            EXPECT_LT(j, y_cells - 1);
+            EXPECT_GT(k, 0);
+            EXPECT_LT(k, z_cells - 1);
+            break;
+          case Placement::RIGHT:
+            EXPECT_EQ(i, x_cells - 1);
+            EXPECT_GT(j, 0);
+            EXPECT_LT(j, y_cells - 1);
+            EXPECT_GT(k, 0);
+            EXPECT_LT(k, z_cells - 1);
+            break;
+          default:
+            FAIL() << "Invalid placement for boundary cell at index " << index;
+          }
+        }
+      }
+    }
+  }
 }
