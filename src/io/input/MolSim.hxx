@@ -243,8 +243,11 @@ class center;
 class initial_velocity;
 class coordinate;
 class dimensions;
+class additional_force;
+class membrane;
 class position;
 class velocity;
+class particle_coordinates;
 
 #include <memory>    // ::std::unique_ptr
 #include <limits>    // std::numeric_limits
@@ -581,6 +584,24 @@ class simulation_parameters: public ::xml_schema::type
   void
   gravity (const gravity_optional& x);
 
+  // zgravity
+  //
+  typedef ::xml_schema::double_ zgravity_type;
+  typedef ::xsd::cxx::tree::optional< zgravity_type > zgravity_optional;
+  typedef ::xsd::cxx::tree::traits< zgravity_type, char, ::xsd::cxx::tree::schema_type::double_ > zgravity_traits;
+
+  const zgravity_optional&
+  zgravity () const;
+
+  zgravity_optional&
+  zgravity ();
+
+  void
+  zgravity (const zgravity_type& x);
+
+  void
+  zgravity (const zgravity_optional& x);
+
   // enable_brownian
   //
   typedef ::xml_schema::boolean enable_brownian_type;
@@ -657,6 +678,7 @@ class simulation_parameters: public ::xml_schema::type
   ::xsd::cxx::tree::one< write_frequency_type > write_frequency_;
   ::xsd::cxx::tree::one< r_cutoff_radius_type > r_cutoff_radius_;
   gravity_optional gravity_;
+  zgravity_optional zgravity_;
   ::xsd::cxx::tree::one< enable_brownian_type > enable_brownian_;
   domain_size_optional domain_size_;
 };
@@ -1462,6 +1484,48 @@ class cuboid: public ::xml_schema::type
   void
   initial_velocity (::std::unique_ptr< initial_velocity_type > p);
 
+  // additional_force
+  //
+  typedef ::additional_force additional_force_type;
+  typedef ::xsd::cxx::tree::optional< additional_force_type > additional_force_optional;
+  typedef ::xsd::cxx::tree::traits< additional_force_type, char > additional_force_traits;
+
+  const additional_force_optional&
+  additional_force () const;
+
+  additional_force_optional&
+  additional_force ();
+
+  void
+  additional_force (const additional_force_type& x);
+
+  void
+  additional_force (const additional_force_optional& x);
+
+  void
+  additional_force (::std::unique_ptr< additional_force_type > p);
+
+  // membrane
+  //
+  typedef ::membrane membrane_type;
+  typedef ::xsd::cxx::tree::optional< membrane_type > membrane_optional;
+  typedef ::xsd::cxx::tree::traits< membrane_type, char > membrane_traits;
+
+  const membrane_optional&
+  membrane () const;
+
+  membrane_optional&
+  membrane ();
+
+  void
+  membrane (const membrane_type& x);
+
+  void
+  membrane (const membrane_optional& x);
+
+  void
+  membrane (::std::unique_ptr< membrane_type > p);
+
   // fixed
   //
   typedef ::xml_schema::boolean fixed_type;
@@ -1531,6 +1595,8 @@ class cuboid: public ::xml_schema::type
   ::xsd::cxx::tree::one< epsilon_type > epsilon_;
   ::xsd::cxx::tree::one< sigma_type > sigma_;
   ::xsd::cxx::tree::one< initial_velocity_type > initial_velocity_;
+  additional_force_optional additional_force_;
+  membrane_optional membrane_;
   fixed_optional fixed_;
 };
 
@@ -2036,6 +2102,156 @@ class dimensions: public ::xml_schema::type
   ::xsd::cxx::tree::one< z_type > z_;
 };
 
+class additional_force: public ::xml_schema::type
+{
+  public:
+  // particle_coordinates
+  //
+  typedef ::particle_coordinates particle_coordinates_type;
+  typedef ::xsd::cxx::tree::sequence< particle_coordinates_type > particle_coordinates_sequence;
+  typedef particle_coordinates_sequence::iterator particle_coordinates_iterator;
+  typedef particle_coordinates_sequence::const_iterator particle_coordinates_const_iterator;
+  typedef ::xsd::cxx::tree::traits< particle_coordinates_type, char > particle_coordinates_traits;
+
+  const particle_coordinates_sequence&
+  particle_coordinates () const;
+
+  particle_coordinates_sequence&
+  particle_coordinates ();
+
+  void
+  particle_coordinates (const particle_coordinates_sequence& s);
+
+  // fzup
+  //
+  typedef ::xml_schema::double_ fzup_type;
+  typedef ::xsd::cxx::tree::traits< fzup_type, char, ::xsd::cxx::tree::schema_type::double_ > fzup_traits;
+
+  const fzup_type&
+  fzup () const;
+
+  fzup_type&
+  fzup ();
+
+  void
+  fzup (const fzup_type& x);
+
+  // time_limit
+  //
+  typedef ::xml_schema::double_ time_limit_type;
+  typedef ::xsd::cxx::tree::traits< time_limit_type, char, ::xsd::cxx::tree::schema_type::double_ > time_limit_traits;
+
+  const time_limit_type&
+  time_limit () const;
+
+  time_limit_type&
+  time_limit ();
+
+  void
+  time_limit (const time_limit_type& x);
+
+  // Constructors.
+  //
+  additional_force (const fzup_type&,
+                    const time_limit_type&);
+
+  additional_force (const ::xercesc::DOMElement& e,
+                    ::xml_schema::flags f = 0,
+                    ::xml_schema::container* c = 0);
+
+  additional_force (const additional_force& x,
+                    ::xml_schema::flags f = 0,
+                    ::xml_schema::container* c = 0);
+
+  virtual additional_force*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  additional_force&
+  operator= (const additional_force& x);
+
+  virtual 
+  ~additional_force ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  particle_coordinates_sequence particle_coordinates_;
+  ::xsd::cxx::tree::one< fzup_type > fzup_;
+  ::xsd::cxx::tree::one< time_limit_type > time_limit_;
+};
+
+class membrane: public ::xml_schema::type
+{
+  public:
+  // k
+  //
+  typedef ::xml_schema::double_ k_type;
+  typedef ::xsd::cxx::tree::traits< k_type, char, ::xsd::cxx::tree::schema_type::double_ > k_traits;
+
+  const k_type&
+  k () const;
+
+  k_type&
+  k ();
+
+  void
+  k (const k_type& x);
+
+  // r_0
+  //
+  typedef ::xml_schema::double_ r_0_type;
+  typedef ::xsd::cxx::tree::traits< r_0_type, char, ::xsd::cxx::tree::schema_type::double_ > r_0_traits;
+
+  const r_0_type&
+  r_0 () const;
+
+  r_0_type&
+  r_0 ();
+
+  void
+  r_0 (const r_0_type& x);
+
+  // Constructors.
+  //
+  membrane (const k_type&,
+            const r_0_type&);
+
+  membrane (const ::xercesc::DOMElement& e,
+            ::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0);
+
+  membrane (const membrane& x,
+            ::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0);
+
+  virtual membrane*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  membrane&
+  operator= (const membrane& x);
+
+  virtual 
+  ~membrane ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< k_type > k_;
+  ::xsd::cxx::tree::one< r_0_type > r_0_;
+};
+
 class position: public ::xml_schema::type
 {
   public:
@@ -2186,6 +2402,88 @@ class velocity: public ::xml_schema::type
 
   virtual 
   ~velocity ();
+
+  // Implementation.
+  //
+  protected:
+  void
+  parse (::xsd::cxx::xml::dom::parser< char >&,
+         ::xml_schema::flags);
+
+  protected:
+  ::xsd::cxx::tree::one< x_type > x_;
+  ::xsd::cxx::tree::one< y_type > y_;
+  ::xsd::cxx::tree::one< z_type > z_;
+};
+
+class particle_coordinates: public ::xml_schema::type
+{
+  public:
+  // x
+  //
+  typedef ::xml_schema::int_ x_type;
+  typedef ::xsd::cxx::tree::traits< x_type, char > x_traits;
+
+  const x_type&
+  x () const;
+
+  x_type&
+  x ();
+
+  void
+  x (const x_type& x);
+
+  // y
+  //
+  typedef ::xml_schema::int_ y_type;
+  typedef ::xsd::cxx::tree::traits< y_type, char > y_traits;
+
+  const y_type&
+  y () const;
+
+  y_type&
+  y ();
+
+  void
+  y (const y_type& x);
+
+  // z
+  //
+  typedef ::xml_schema::int_ z_type;
+  typedef ::xsd::cxx::tree::traits< z_type, char > z_traits;
+
+  const z_type&
+  z () const;
+
+  z_type&
+  z ();
+
+  void
+  z (const z_type& x);
+
+  // Constructors.
+  //
+  particle_coordinates (const x_type&,
+                        const y_type&,
+                        const z_type&);
+
+  particle_coordinates (const ::xercesc::DOMElement& e,
+                        ::xml_schema::flags f = 0,
+                        ::xml_schema::container* c = 0);
+
+  particle_coordinates (const particle_coordinates& x,
+                        ::xml_schema::flags f = 0,
+                        ::xml_schema::container* c = 0);
+
+  virtual particle_coordinates*
+  _clone (::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0) const;
+
+  particle_coordinates&
+  operator= (const particle_coordinates& x);
+
+  virtual 
+  ~particle_coordinates ();
 
   // Implementation.
   //

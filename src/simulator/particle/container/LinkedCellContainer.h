@@ -1,4 +1,4 @@
-#include "DirectSumContainer.h"
+#include "ParticleContainer.h"
 #include "utils/logger/Logger.h"
 #include <array>
 #include <initializer_list>
@@ -44,7 +44,8 @@ enum Placement {
 
 /**
  * @struct GhostParticle
- * @brief Struct for ghost particle, stores the values necessary for the calculation
+ * @brief Struct for ghost particle, stores the values necessary for the
+ * calculation
  */
 
 struct GhostParticle {
@@ -58,43 +59,50 @@ struct GhostParticle {
 /**
  * @class LinkedCellContainer
  * @brief Class that provides a container for particles that uses linked cells
- * to speed up the computation.Inherits from DirectSumContainer.
+ * to speed up the computation.Inherits from ParticleContainer.
  */
 class LinkedCellContainer {
 
   /** @struct Cell
-   *  @brief Manages a collection of particles within a spatial cell of the linked cell structure.
-   *  
-   *  This struct represents a single cell in the linked cell data structure, which is used
-   *  to optimize particle interaction calculations by spatial partitioning. Each cell
-   *  maintains a set of particle IDs that fall within its spatial boundaries.
+   *  @brief Manages a collection of particles within a spatial cell of the
+   * linked cell structure.
+   *
+   *  This struct represents a single cell in the linked cell data structure,
+   * which is used to optimize particle interaction calculations by spatial
+   * partitioning. Each cell maintains a set of particle IDs that fall within
+   * its spatial boundaries.
    */
   struct Cell {
     /** @brief Set of particle IDs contained in this cell. */
-    std::unordered_set<int> particle_ids;
-    
+    std::vector<int> particle_ids;
+
     /** @brief Returns the number of particles in this cell.
      *  @return Number of particles in the cell.
      */
     size_t size() const;
-    
+
     /** @brief Adds a particle to this cell.
      *  @param id The ID of the particle to add.
      */
     void insert(int id);
-    
+
     /** @brief Removes a particle from this cell.
      *  @param id The ID of the particle to remove.
      */
     void remove(int id);
-    
+
     /** @brief Flag indicating if this is a halo cell.
      *  Halo cells are used for boundary condition calculations.
      */
     bool is_halo = false;
-    
+
     /** @brief The placement of this cell relative to the domain boundaries. */
     Placement placement;
+
+    /** @brief boundary condition of this cell */
+    BoundaryCondition boundary_condition;
+
+    std::vector<size_t> neighbour_indices;
   };
 
 public:
@@ -133,7 +141,8 @@ public:
   void clear();
 
   /**
-   * @brief Adjusts the domain placement to ensure all particles are within the domain.
+   * @brief Adjusts the domain placement to ensure all particles are within the
+   * domain.
    */
 
   void readjust();
@@ -168,6 +177,11 @@ public:
    */
 
   void set_boundary_conditions(DomainBoundaryConditions conditions);
+
+  /**
+   * @brief Unique identifier for the next particle to be added.
+   */
+  size_t particle_id;
 
   /**
    * @brief The size of the simulation domain.
@@ -216,14 +230,15 @@ public:
   /**
    * @brief A container of all particles in the domain.
    */
-  DirectSumContainer particles;
+  ParticleContainer particles;
 
   /**
    * @brief cell size for x,y,z
-   * 
+   *
    */
   /** @brief The cutoff radius for each dimension.
-   *  These values determine the size of each cell in the x, y, and z directions.
+   *  These values determine the size of each cell in the x, y, and z
+   * directions.
    */
   double r_cutoff_x;
   double r_cutoff_y;
@@ -245,24 +260,17 @@ public:
    */
   Particle &operator[](size_t index);
 
-  /**
-   * @brief Maps particle IDs to their corresponding cell pointers.
-   * Used for efficient particle lookup in the linked cell structure.
-   */
-  std::unordered_map<int, ParticlePointer> cells_map;
+
+  ParticlePointer& at(size_t index);
 
   /**
    * @brief Counter for particles that have left the simulation domain.
    */
   size_t particles_left_domain;
-  
-  /**
-   * @brief Unique identifier for the next particle to be added.
-   */
-  size_t particle_id;
 
   /**
-   * @brief Flag indicating if this container is a wrapper around another container.
+   * @brief Flag indicating if this container is a wrapper around another
+   * container.
    */
   bool is_wrapper;
 
@@ -318,7 +326,8 @@ public:
   /**
    * @brief Creates a single ghost particle with a position offset.
    * @param particle_id ID of the original particle.
-   * @param position_offset The offset to apply to the ghost particle's position.
+   * @param position_offset The offset to apply to the ghost particle's
+   * position.
    * @return The created ghost particle.
    */
   GhostParticle
@@ -330,7 +339,13 @@ public:
    * @param particle_id ID of the particle to find neighbors for.
    * @return Vector of ghost particles that are neighbors of the given particle.
    */
-  std::vector<GhostParticle> get_additional_neighbour_indices(int particle_id);
+  std::vector<GhostParticle> get_periodic_neighbours(int particle_id);
+
+  void precompute_neighbours();
+
+  ParticleIterator begin();
+
+  ParticleIterator end();
 
 private:
   /**

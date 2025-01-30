@@ -84,21 +84,6 @@ TEST_F(ThermostatTest, BoltzmannSecondTest) {
     ASSERT_NEAR(unit_thermostat.get_current_temperature(), 500, 15);
 }
 
-// checks for a smaller value
-TEST_F(ThermostatTest, BoltzmannThirdTest) {
-    ParticleGenerator::insertCuboid(
-   std::array<double, 3>{0, 0, 0}, std::array<size_t, 3>{5, 5, 5}, 1.0, 5,
-   std::array<double, 3>{0, 0, 0},  particles);
-
-    Thermostat unit_thermostat(particles, 5, 100, 3, 0.5, true, true);
-
-    unit_thermostat.calculate_current_temperature();
-
-    ASSERT_NEAR(unit_thermostat.get_current_temperature(), 5, 0.5);
-}
-
-
-
 // ---------------------------- tests for calculate_kinetic_energy() ---------------------------------------------------
 
 

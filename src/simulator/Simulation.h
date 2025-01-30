@@ -1,6 +1,6 @@
 #include "io/input/cli/SimParams.h"
-#include "particle/container/DirectSumContainer.h"
 #include "particle/container/LinkedCellContainer.h"
+#include "particle/container/ParticleContainer.h"
 #include <memory>
 
 #pragma once
@@ -36,7 +36,7 @@ public:
   /**
    * @brief Run the simulation, contains all the necessary logic for the
    * simulation.
-   * @param particles DirectSumContainer reference, pass the particle container
+   * @param particles ParticleContainer reference, pass the particle container
    * initialized in readFile.
    */
   void run(LinkedCellContainer &particles);
@@ -44,7 +44,7 @@ public:
    * @brief read file from XML input, initialize particles.
    * @param simParams SimParams reference, pass the initial simulation
    * parameters by XML input.
-   * @return DirectSumContainer initialized particle container.
+   * @return ParticleContainer initialized particle container.
    */
   static LinkedCellContainer readFile(SimParams &simParams);
 };

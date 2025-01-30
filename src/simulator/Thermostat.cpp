@@ -92,6 +92,7 @@ void Thermostat::apply() {
   }
 
   // in the very end we apply our scaling factor to the particles
+
   for (size_t i = 0; i < particles_.size(); ++i) {
     auto &p = particles_[i];
     auto &current_velocity = p.getV();
@@ -108,8 +109,6 @@ void Thermostat::apply() {
       "Thermostat applied. The new temperature is now: " +
       std::to_string(get_current_temperature()));
 }
-
-// ----------------- helper methods -----------------------------------
 
 double Thermostat::calculate_kinetic_energy() const {
   double kinetic_energy = 0.0;
@@ -193,7 +192,9 @@ void Thermostat::initialize() {
         "No scaling required, because scaling_factor is 1.0");
     return;
   }
+
   // in the very end we apply our scaling factor to the particles
+
   for (size_t i = 0; i < particles_.size(); ++i) {
     auto &p = particles_[i];
     auto &current_velocity = p.getV();
@@ -206,6 +207,11 @@ void Thermostat::initialize() {
   }
 }
 
+
+double Thermostat::get_current_temperature() {
+  calculate_current_temperature();
+  return current_temperature_;
+}
 
 // ----------------------- thermostat modification: -----------------------------------------
 

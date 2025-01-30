@@ -8,7 +8,7 @@
 #include "io/output/VTKWriter.h"
 #include "io/output/XYZWriter.h"
 #include "particle/ParticleGenerator.h"
-#include "particle/container/DirectSumContainer.h"
+#include "particle/container/ParticleContainer.h"
 #include "simulator/calculations/BoundaryConditions.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"
@@ -48,7 +48,8 @@ void Simulation::run(LinkedCellContainer &particles) {
 
   ForceType FORCE_TYPE = params_.calculate_grav_force
                              ? ForceType::GRAVITATIONAL
-                             : ForceType::LENNARD_JONES;
+                             : (params_.is_membrane ? ForceType::MEMBRANE
+                                                    : ForceType::LENNARD_JONES);
   std::unique_ptr<output::FileWriter> writer;
   if (params_.xyz_output) {
     writer = std::make_unique<output::XYZWriter>(particles);
@@ -90,6 +91,10 @@ void Simulation::run(LinkedCellContainer &particles) {
   auto start_time = std::chrono::high_resolution_clock::now();
 
   while (current_time < params_.end_time) {
+
+    if(current_time >= SimParams::additional_force_time_limit){
+      SimParams::apply_fzup = false;
+    }
 
     size_t molecules_this_iteration = particles.size();
 

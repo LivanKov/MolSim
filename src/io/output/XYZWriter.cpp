@@ -26,7 +26,7 @@ void XYZWriter::plot_particles(const std::string &filename, int iteration) {
           "file format doku."
        << std::endl;
 
-  for (auto &p : particles.particles) {
+  for (auto &p : particles) {
     std::array<double, 3> x = p.getX();
     file << "Ar ";
     file.setf(std::ios_base::showpoint);

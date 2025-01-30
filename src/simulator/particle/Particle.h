@@ -8,7 +8,9 @@
 #pragma once
 
 #include <array>
+#include <memory>
 #include <string>
+#include <vector>
 
 /**
  * @class Particle
@@ -78,9 +80,14 @@ private:
   double sigma;
 
   /**
+   * @brief Flag to apply additional force to this particle
+   */
+  bool apply_fzup;
+
    * @brief check if particle is fixed.
    */
   bool fixed;
+
 
 public:
   /**
@@ -175,7 +182,7 @@ public:
    * @return integer variable containing the mass of the particle.
    */
 
-  int getType() const;
+  int getId() const;
 
   /**
    * @brief returns the value, that correponds to particle epsilon.
@@ -190,6 +197,11 @@ public:
    */
   double getSigma() const;
 
+
+
+  bool isApplyFZup() const;
+
+  void setAppliyFZup(bool apply_fzup_arg);
 
   bool is_fixed() const;
 
@@ -314,6 +326,12 @@ public:
    */
 
   bool left_domain;
+
+  std::vector<std::shared_ptr<Particle>> membrane_neighbours;
+
+  std::vector<std::shared_ptr<Particle>> diagonal_membrane_neighbours;
+
+  size_t cell_index;
 };
 
 /**

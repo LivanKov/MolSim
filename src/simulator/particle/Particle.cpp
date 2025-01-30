@@ -21,6 +21,10 @@ Particle::Particle(int type_arg) {
   kinetic_motion_ = {0., 0., 0.};
   left_domain = false;
   outbound = false;
+  membrane_neighbours = {};
+  diagonal_membrane_neighbours = {};
+  cell_index = -1;
+  apply_fzup = false;
   fixed = false;
 }
 
@@ -39,6 +43,10 @@ Particle::Particle(const Particle &other) {
   epsilon = other.epsilon;
   sigma = other.sigma;
   outbound = other.outbound;
+  membrane_neighbours = other.membrane_neighbours;
+  diagonal_membrane_neighbours = other.diagonal_membrane_neighbours;
+  cell_index = other.cell_index;
+  apply_fzup = other.apply_fzup;
   fixed = other.fixed;
 }
 
@@ -60,6 +68,10 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   epsilon = epsilon_arg;
   sigma = sigma_arg;
   outbound = false;
+  membrane_neighbours = {};
+  diagonal_membrane_neighbours = {};
+  cell_index = -1;
+  apply_fzup = false;
   this->fixed = fixed;
   if(this->fixed) {
     v = {0., 0., 0.};
@@ -84,13 +96,18 @@ const std::array<double, 3> &Particle::getKineticMotion() const { return kinetic
 
 double Particle::getM() const { return m; }
 
-int Particle::getType() const { return type; }
+int Particle::getId() const { return type; }
 
 double Particle::getEpsilon() const { return epsilon; }
 
 double Particle::getSigma() const { return sigma; }
 
+bool Particle::isApplyFZup() const { return apply_fzup; }
+
+void Particle::setAppliyFZup(bool apply_fzup_arg) { apply_fzup = apply_fzup_arg; }
+
 bool Particle::is_fixed() const { return fixed; }
+
 
 std::string Particle::toString() const {
   std::stringstream stream;

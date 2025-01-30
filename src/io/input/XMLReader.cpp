@@ -83,6 +83,12 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
       logger.info("g_gravity: " + std::to_string(simParameters.gravity));
     }
 
+    if(xmlParams.zgravity().present()) {
+      SimParams::enable_z_gravity = true;
+      simParameters.z_gravity = xmlParams.zgravity().get();
+      logger.info("z_gravity: " + std::to_string(simParameters.z_gravity));
+    }
+
     // Read Thermostats
     if (doc->thermostats().present()) {
       SimParams::enable_thermo = true;
@@ -193,6 +199,34 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         double epsilon = cuboid.epsilon();
         double sigma = cuboid.sigma();
 
+        std::vector<std::array<size_t, 3>> additional_force_coordinates{};
+
+        if (cuboid.additional_force().present()) {
+          SimParams::apply_fzup = true;
+          SimParams::additional_force_zup =
+              cuboid.additional_force().get().fzup();
+          SimParams::additional_force_time_limit =
+              cuboid.additional_force().get().time_limit();
+
+
+          for (const auto &coordinate :
+               cuboid.additional_force().get().particle_coordinates()) {
+            additional_force_coordinates.push_back(std::array<size_t, 3>{
+                static_cast<size_t>(coordinate.x()),
+                static_cast<size_t>(coordinate.y()),
+                static_cast<size_t>(coordinate.z())});
+          }
+        }
+
+        bool membrane = false;
+
+        if (cuboid.membrane().present()) {
+          SimParams::membrane_bond_length = cuboid.membrane().get().r_0();
+          SimParams::membrane_stiffness = cuboid.membrane().get().k();
+          SimParams::is_membrane = true;
+          membrane = true;
+        }
+
         std::array<double, 3> initial_velocity = {
             cuboid.initial_velocity().x(), cuboid.initial_velocity().y(),
             cuboid.initial_velocity().z()};
@@ -216,7 +250,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
 
         ParticleGenerator::insertCuboid(position, dimensions, mesh_width, mass,
                                         initial_velocity, particles, epsilon,
-                                        sigma, is_fixed);
+                                        sigma, membrane, additional_force_coordinates, fixed);
 
         logger.info("Particles check: " + std::to_string(particles.size()));
         logger.info("Particles' cell check: " +

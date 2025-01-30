@@ -1,5 +1,5 @@
 #include "Force.h"
-#include "../particle/container/DirectSumContainer.h"
+#include "../particle/container/ParticleContainer.h"
 #include "io/input/cli/SimParams.h"
 #include "utils/ArrayUtils.h"
 #include <iostream>
@@ -13,13 +13,16 @@ void Force::run(LinkedCellContainer &particles, ForceType type,
   case GRAVITATIONAL:
     gravitational(particles, OPTION);
     break;
+  case MEMBRANE:
+    membrane(particles);
+    break;
   }
 }
 
 void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
   if (OPTION == OPTIONS::DIRECT_SUM) {
 
-    for (auto &p : particles.particles) {
+    for (auto &p : particles) {
       p.updateOldF(p.getF());
       p.updateF(0, 0, 0);
     }
@@ -59,11 +62,11 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       }
     }
   } else {
-    for (auto &p : particles.particles) {
+    for (auto &p : particles) {
       p.updateOldF(p.getF());
       p.updateF(0, 0, 0);
     }
-    for (auto &particle : particles.particles) {
+    for (auto &particle : particles) {
       for (auto &neighbour : particles.get_neighbours(particle.getType())) {
         if (*neighbour != particle && !particle.is_fixed()) {
           auto r12 = neighbour->getX() - particle.getX();
@@ -102,9 +105,9 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       }
     }
 
-    for (auto &particle : particles.particles) {
+    for (auto &particle : particles) {
       for (auto &neighbour :
-           particles.get_additional_neighbour_indices(particle.getType())) {
+           particles.get_periodic_neighbours(particle.getId())) {
         if (*(neighbour.ptr) != particle && !particle.is_fixed()) {
           auto r12 = neighbour.position - particle.getX();
           double distance = ArrayUtils::L2Norm(r12);
@@ -142,7 +145,7 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
   }
 
   if (SimParams::enable_gravity) {
-    for (auto &particle : particles.particles) {
+    for (auto &particle : particles) {
       double gravitational_force_y = particle.getM() * SimParams::gravity;
       particle.updateF(particle.getF()[0],
                        particle.getF()[1] + gravitational_force_y,
@@ -155,7 +158,7 @@ void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
   // store the current force as the old force and reset current to 0
 
   if (OPTION == OPTIONS::DIRECT_SUM) {
-    for (auto &p : particles.particles) {
+    for (auto &p : particles) {
       p.updateOldF(p.getF());
       p.updateF(0, 0, 0);
     }
@@ -180,12 +183,12 @@ void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
       }
     }
   } else {
-    for (auto &p : particles.particles) {
+    for (auto &p : particles) {
       p.updateOldF(p.getF());
       p.updateF(0, 0, 0);
     }
-    for (auto &particle : particles.particles) {
-      for (auto neighbour : particles.get_neighbours(particle.getType())) {
+    for (auto &particle : particles) {
+      for (auto neighbour : particles.get_neighbours(particle.getId())) {
         auto r12 = neighbour->getX() - particle.getX();
         double distance = ArrayUtils::L2Norm(r12);
         if (distance > 1e-5) {
@@ -196,6 +199,90 @@ void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
           neighbour->updateF(neighbour->getF() - force);
         }
       }
+    }
+  }
+}
+
+void Force::membrane(LinkedCellContainer &particles) {
+  for (auto &p : particles) {
+      p.updateOldF(p.getF());
+      p.updateF(0, 0, 0);
+  }
+
+
+  for (auto &p : particles) {
+    for (auto neighbour : p.membrane_neighbours) {
+      auto r12 = p.getX() - neighbour->getX();
+      auto r21 = neighbour->getX() - p.getX();
+      double distance = ArrayUtils::L2Norm(r12);
+      auto totalForce = SimParams::membrane_stiffness *
+                          (distance - SimParams::membrane_bond_length) * (r21 /
+                          distance);
+      p.updateF(p.getF() + totalForce);
+      neighbour->updateF(neighbour->getF() - totalForce);
+      double _sigma = (p.getSigma() + neighbour->getSigma()) / 2;
+      double min_distance = MAGIC_NUMBER * _sigma;
+
+      // put this in a separate function later
+      if (distance < min_distance) {
+        double term = _sigma / distance;
+        double term6 = pow(term, 6);
+        double term12 = pow(term, 12);
+        double _epsilon;
+        if (p.getEpsilon() == neighbour->getEpsilon()) {
+          _epsilon = p.getEpsilon();
+        } else {
+          _epsilon = sqrt(p.getEpsilon() * neighbour->getEpsilon());
+        }
+        double lj_force = 24 * _epsilon * (term6 - 2 * term12) / distance;
+        auto force = (lj_force / distance) * r12;
+        p.updateF(p.getF() + force);
+        neighbour->updateF(neighbour->getF() - force);
+      }
+    }
+
+    for (auto neighbour : p.diagonal_membrane_neighbours) {
+      auto r12 = p.getX() - neighbour->getX();
+      auto r21 = neighbour->getX() - p.getX();
+      double distance = ArrayUtils::L2Norm(r12);
+        auto totalForce =
+            SimParams::membrane_stiffness *
+            (distance - SimParams::membrane_bond_length * TWO_SQRT) * (r21 /
+            distance);
+        p.updateF(p.getF() + totalForce);
+        neighbour->updateF(neighbour->getF() - totalForce);
+      double _sigma = p.getSigma() + neighbour->getSigma();
+      double min_distance = MAGIC_NUMBER * _sigma;
+
+      // put this in a separate function later
+      if (distance < min_distance) {
+        double term = _sigma / distance;
+        double term6 = pow(term, 6);
+        double term12 = pow(term, 12);
+        double _epsilon;
+        if (p.getEpsilon() == neighbour->getEpsilon()) {
+          _epsilon = p.getEpsilon();
+        } else {
+          _epsilon = sqrt(p.getEpsilon() * neighbour->getEpsilon());
+        }
+        double lj_force = 24 * _epsilon * (term6 - 2 * term12) / distance;
+        auto force = (lj_force / distance) * r12;
+        p.updateF(p.getF() + force);
+        neighbour->updateF(neighbour->getF() - force);
+      }
+    }
+
+    if (SimParams::enable_z_gravity) {
+      double gravitational_force_z = p.getM() * SimParams::z_gravity;
+      p.updateF(p.getF()[0],
+                       p.getF()[1],
+                       p.getF()[2] + gravitational_force_z);
+    }
+
+    if(p.isApplyFZup() && SimParams::apply_fzup){
+      p.updateF(p.getF()[0],
+                       p.getF()[1],
+                       p.getF()[2] + SimParams::additional_force_zup);
     }
   }
 }

@@ -22,6 +22,7 @@
                             <xs:element name="write_frequency" type="xs:unsignedInt"/>
                             <xs:element name="r_cutoff_radius" type="xs:double"/>
                             <xs:element name="gravity" minOccurs="0" type="xs:double"/>
+                            <xs:element name="zgravity" minOccurs="0" type="xs:double"/>
                             <xs:element name="enable_brownian" type="xs:boolean"/>
                             <xs:element name="domain_size" minOccurs="0">
                                 <xs:complexType>
@@ -136,6 +137,31 @@
                                                     <xs:element name="x" type="xs:double"/>
                                                     <xs:element name="y" type="xs:double"/>
                                                     <xs:element name="z" type="xs:double"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="additional_force" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="particle_coordinates" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="x" type="xs:int"/>
+                                                                <xs:element name="y" type="xs:int"/>
+                                                                <xs:element name="z" type="xs:int"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="fzup" type="xs:double"/>
+                                                    <xs:element name="time_limit" type="xs:double"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="membrane" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="k" type="xs:double"/>
+                                                    <xs:element name="r_0" type="xs:double"/>
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
