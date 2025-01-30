@@ -69,6 +69,11 @@ private:
    */
   double sigma;
 
+  /**
+   * @brief Flag to apply additional force to this particle
+   */
+  bool apply_fzup;
+
 public:
   /**
    * @brief Constructor.
@@ -163,6 +168,9 @@ public:
    * @return double variable containing the sigma of the particle.
    */
   double getSigma() const;
+
+
+  bool isApplyFZup() const;
 
   bool outbound;
 

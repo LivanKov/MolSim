@@ -146,13 +146,6 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       particle.updateF(particle.getF()[0],
                        particle.getF()[1] + gravitational_force_y,
                        particle.getF()[2]);
-      if (SimParams::additional_force_particle_ids.contains(particle.getId()) &&
-          SimParams::enable_additional_force) {
-        double additional_force =
-            particle.getM() * SimParams::additional_force_z_gravity;
-        particle.updateF(particle.getF()[0], particle.getF()[1],
-                         particle.getF()[2] + additional_force);
-      }
     }
   }
 }
@@ -273,6 +266,20 @@ void Force::membrane(LinkedCellContainer &particles) {
         p.updateF(p.getF() + force);
         neighbour->updateF(neighbour->getF() - force);
       }
+    }
+
+    if (SimParams::enable_z_gravity) {
+      double gravitational_force_z = p.getM() * SimParams::z_gravity;
+      p.updateF(p.getF()[0],
+                       p.getF()[1],
+                       p.getF()[2] + gravitational_force_z);
+    }
+
+    if(p.isApplyFZup() && SimParams::apply_fzup){
+      double additional_force = p.getM() * SimParams::additional_force_zup;
+      p.updateF(p.getF()[0],
+                       p.getF()[1],
+                       p.getF()[2] + additional_force);
     }
   }
 }

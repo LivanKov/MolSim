@@ -83,6 +83,12 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
       logger.info("g_gravity: " + std::to_string(simParameters.gravity));
     }
 
+    if(xmlParams.zgravity().present()) {
+      SimParams::enable_z_gravity = true;
+      simParameters.z_gravity = xmlParams.zgravity().get();
+      logger.info("z_gravity: " + std::to_string(simParameters.z_gravity));
+    }
+
     // Read Thermostats
     if (doc->thermostats().present()) {
       SimParams::enable_thermo = true;
@@ -194,9 +200,9 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         double sigma = cuboid.sigma();
 
         if (cuboid.additional_force().present()) {
-          SimParams::enable_additional_force = true;
-          SimParams::additional_force_z_gravity =
-              cuboid.additional_force().get().z_grav();
+          SimParams::apply_fzup = true;
+          SimParams::additional_force_zup =
+              cuboid.additional_force().get().fzup();
           SimParams::additional_force_time_limit =
               cuboid.additional_force().get().time_limit();
 

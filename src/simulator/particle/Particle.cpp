@@ -83,6 +83,8 @@ double Particle::getEpsilon() const { return epsilon; }
 
 double Particle::getSigma() const { return sigma; }
 
+bool Particle::isApplyFZup() const { return apply_fzup; }
+
 std::string Particle::toString() const {
   std::stringstream stream;
   stream << "Particle: X:" << x << " v: " << v << " f: " << f

@@ -53,7 +53,7 @@
 
 #include <xsd/cxx/config.hxx>
 
-#if (LIBXSD_VERSION != 400002000000000L)
+#if (XSD_INT_VERSION != 4000000L)
 #error XSD runtime version mismatch
 #endif
 
@@ -584,23 +584,23 @@ class simulation_parameters: public ::xml_schema::type
   void
   gravity (const gravity_optional& x);
 
-  // z-gravity
+  // zgravity
   //
-  typedef ::xml_schema::double_ z_gravity_type;
-  typedef ::xsd::cxx::tree::optional< z_gravity_type > z_gravity_optional;
-  typedef ::xsd::cxx::tree::traits< z_gravity_type, char, ::xsd::cxx::tree::schema_type::double_ > z_gravity_traits;
+  typedef ::xml_schema::double_ zgravity_type;
+  typedef ::xsd::cxx::tree::optional< zgravity_type > zgravity_optional;
+  typedef ::xsd::cxx::tree::traits< zgravity_type, char, ::xsd::cxx::tree::schema_type::double_ > zgravity_traits;
 
-  const z_gravity_optional&
-  z_gravity () const;
+  const zgravity_optional&
+  zgravity () const;
 
-  z_gravity_optional&
-  z_gravity ();
-
-  void
-  z_gravity (const z_gravity_type& x);
+  zgravity_optional&
+  zgravity ();
 
   void
-  z_gravity (const z_gravity_optional& x);
+  zgravity (const zgravity_type& x);
+
+  void
+  zgravity (const zgravity_optional& x);
 
   // enable_brownian
   //
@@ -678,7 +678,7 @@ class simulation_parameters: public ::xml_schema::type
   ::xsd::cxx::tree::one< write_frequency_type > write_frequency_;
   ::xsd::cxx::tree::one< r_cutoff_radius_type > r_cutoff_radius_;
   gravity_optional gravity_;
-  z_gravity_optional z_gravity_;
+  zgravity_optional zgravity_;
   ::xsd::cxx::tree::one< enable_brownian_type > enable_brownian_;
   domain_size_optional domain_size_;
 };

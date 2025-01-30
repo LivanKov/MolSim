@@ -38,7 +38,7 @@ public:
       const std::array<double, 3> &initialVelocity,
 
       LinkedCellContainer &particles, double epsilon = 5.0, double sigma = 1.0,
-      bool is_membrane = false,
+      bool is_membrane = false,  double fzup = 0.0,
       std::vector<std::array<double, 3>> additional_force_coordinates = {});
 
   /**

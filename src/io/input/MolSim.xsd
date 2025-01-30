@@ -22,7 +22,7 @@
                             <xs:element name="write_frequency" type="xs:unsignedInt"/>
                             <xs:element name="r_cutoff_radius" type="xs:double"/>
                             <xs:element name="gravity" minOccurs="0" type="xs:double"/>
-                            <xs:element name="z-gravity" minOccurs="0" type="xs:double"/>
+                            <xs:element name="zgravity" minOccurs="0" type="xs:double"/>
                             <xs:element name="enable_brownian" type="xs:boolean"/>
                             <xs:element name="domain_size" minOccurs="0">
                                 <xs:complexType>

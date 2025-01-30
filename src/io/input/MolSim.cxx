@@ -386,28 +386,28 @@ gravity (const gravity_optional& x)
   this->gravity_ = x;
 }
 
-const simulation_parameters::z_gravity_optional& simulation_parameters::
-z_gravity () const
+const simulation_parameters::zgravity_optional& simulation_parameters::
+zgravity () const
 {
-  return this->z_gravity_;
+  return this->zgravity_;
 }
 
-simulation_parameters::z_gravity_optional& simulation_parameters::
-z_gravity ()
+simulation_parameters::zgravity_optional& simulation_parameters::
+zgravity ()
 {
-  return this->z_gravity_;
-}
-
-void simulation_parameters::
-z_gravity (const z_gravity_type& x)
-{
-  this->z_gravity_.set (x);
+  return this->zgravity_;
 }
 
 void simulation_parameters::
-z_gravity (const z_gravity_optional& x)
+zgravity (const zgravity_type& x)
 {
-  this->z_gravity_ = x;
+  this->zgravity_.set (x);
+}
+
+void simulation_parameters::
+zgravity (const zgravity_optional& x)
+{
+  this->zgravity_ = x;
 }
 
 const simulation_parameters::enable_brownian_type& simulation_parameters::
@@ -2134,7 +2134,7 @@ simulation_parameters (const end_time_type& end_time,
   write_frequency_ (write_frequency, this),
   r_cutoff_radius_ (r_cutoff_radius, this),
   gravity_ (this),
-  z_gravity_ (this),
+  zgravity_ (this),
   enable_brownian_ (enable_brownian, this),
   domain_size_ (this)
 {
@@ -2151,7 +2151,7 @@ simulation_parameters (const simulation_parameters& x,
   write_frequency_ (x.write_frequency_, f, this),
   r_cutoff_radius_ (x.r_cutoff_radius_, f, this),
   gravity_ (x.gravity_, f, this),
-  z_gravity_ (x.z_gravity_, f, this),
+  zgravity_ (x.zgravity_, f, this),
   enable_brownian_ (x.enable_brownian_, f, this),
   domain_size_ (x.domain_size_, f, this)
 {
@@ -2168,7 +2168,7 @@ simulation_parameters (const ::xercesc::DOMElement& e,
   write_frequency_ (this),
   r_cutoff_radius_ (this),
   gravity_ (this),
-  z_gravity_ (this),
+  zgravity_ (this),
   enable_brownian_ (this),
   domain_size_ (this)
 {
@@ -2258,13 +2258,13 @@ parse (::xsd::cxx::xml::dom::parser< char >& p,
       }
     }
 
-    // z-gravity
+    // zgravity
     //
-    if (n.name () == "z-gravity" && n.namespace_ ().empty ())
+    if (n.name () == "zgravity" && n.namespace_ ().empty ())
     {
-      if (!this->z_gravity_)
+      if (!this->zgravity_)
       {
-        this->z_gravity_.set (z_gravity_traits::create (i, f, this));
+        this->zgravity_.set (zgravity_traits::create (i, f, this));
         continue;
       }
     }
@@ -2359,7 +2359,7 @@ operator= (const simulation_parameters& x)
     this->write_frequency_ = x.write_frequency_;
     this->r_cutoff_radius_ = x.r_cutoff_radius_;
     this->gravity_ = x.gravity_;
-    this->z_gravity_ = x.z_gravity_;
+    this->zgravity_ = x.zgravity_;
     this->enable_brownian_ = x.enable_brownian_;
     this->domain_size_ = x.domain_size_;
   }

@@ -22,6 +22,8 @@ struct SimParams {
   bool periodic;
   static double gravity;
   static bool enable_gravity;
+  static double z_gravity;
+  static bool enable_z_gravity;
   static std::array<double, 3> lower_left_corner;
   static bool fixed_Domain;
 
@@ -44,11 +46,10 @@ struct SimParams {
   static bool enable_v_threshold;
   static double v_threshold;
 
-  // additional force
-  static std::unordered_set<int> additional_force_particle_ids;
-  static double additional_force_z_gravity;
+  // additional force (FZup)
+  static double additional_force_zup;
   static double additional_force_time_limit;
-  static bool enable_additional_force;
+  static bool apply_fzup;
 
   // membrane parameters
   static double membrane_stiffness;
