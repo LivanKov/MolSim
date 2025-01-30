@@ -24,6 +24,8 @@
         <right>Reflecting</right>
         <top>Reflecting</top>
         <bottom>Reflecting</bottom>
+        <front>Reflecting</front>
+        <back>Reflecting</back>
     </boundary_conditions>
 
     <cuboids>
@@ -47,6 +49,15 @@
                 <y>0.0</y>
                 <z>0.0</z>
             </initial_velocity>
+            <additional_force>
+                <particle_coordinates>
+                    <x>17</x>
+                    <y>24</y>
+                    <z>0</z>
+                </particle_coordinates>
+                <fzup>0.8</fzup>
+                <time_limit>150.0</time_limit>
+            </additional_force>
             <membrane>
                 <k>300.0</k>
                 <r_0>2.2</r_0>

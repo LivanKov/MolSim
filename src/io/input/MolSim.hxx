@@ -2402,8 +2402,8 @@ class particle_coordinates: public ::xml_schema::type
   public:
   // x
   //
-  typedef ::xml_schema::double_ x_type;
-  typedef ::xsd::cxx::tree::traits< x_type, char, ::xsd::cxx::tree::schema_type::double_ > x_traits;
+  typedef ::xml_schema::int_ x_type;
+  typedef ::xsd::cxx::tree::traits< x_type, char > x_traits;
 
   const x_type&
   x () const;
@@ -2416,8 +2416,8 @@ class particle_coordinates: public ::xml_schema::type
 
   // y
   //
-  typedef ::xml_schema::double_ y_type;
-  typedef ::xsd::cxx::tree::traits< y_type, char, ::xsd::cxx::tree::schema_type::double_ > y_traits;
+  typedef ::xml_schema::int_ y_type;
+  typedef ::xsd::cxx::tree::traits< y_type, char > y_traits;
 
   const y_type&
   y () const;
@@ -2430,8 +2430,8 @@ class particle_coordinates: public ::xml_schema::type
 
   // z
   //
-  typedef ::xml_schema::double_ z_type;
-  typedef ::xsd::cxx::tree::traits< z_type, char, ::xsd::cxx::tree::schema_type::double_ > z_traits;
+  typedef ::xml_schema::int_ z_type;
+  typedef ::xsd::cxx::tree::traits< z_type, char > z_traits;
 
   const z_type&
   z () const;

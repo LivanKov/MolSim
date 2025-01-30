@@ -199,6 +199,8 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
         double epsilon = cuboid.epsilon();
         double sigma = cuboid.sigma();
 
+        std::vector<std::array<size_t, 3>> additional_force_coordinates{};
+
         if (cuboid.additional_force().present()) {
           SimParams::apply_fzup = true;
           SimParams::additional_force_zup =
@@ -206,12 +208,13 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
           SimParams::additional_force_time_limit =
               cuboid.additional_force().get().time_limit();
 
-          std::vector<std::array<double, 3>> additional_force_coordinates{};
 
           for (const auto &coordinate :
                cuboid.additional_force().get().particle_coordinates()) {
-            additional_force_coordinates.push_back(std::array<double, 3>{
-                coordinate.x(), coordinate.y(), coordinate.z()});
+            additional_force_coordinates.push_back(std::array<size_t, 3>{
+                static_cast<size_t>(coordinate.x()),
+                static_cast<size_t>(coordinate.y()),
+                static_cast<size_t>(coordinate.z())});
           }
         }
 
@@ -242,7 +245,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
 
         ParticleGenerator::insertCuboid(position, dimensions, mesh_width, mass,
                                         initial_velocity, particles, epsilon,
-                                        sigma, membrane);
+                                        sigma, membrane, additional_force_coordinates);
 
         logger.info("Particles check: " + std::to_string(particles.size()));
         logger.info("Particles' cell check: " +

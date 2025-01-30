@@ -276,10 +276,9 @@ void Force::membrane(LinkedCellContainer &particles) {
     }
 
     if(p.isApplyFZup() && SimParams::apply_fzup){
-      double additional_force = p.getM() * SimParams::additional_force_zup;
       p.updateF(p.getF()[0],
                        p.getF()[1],
-                       p.getF()[2] + additional_force);
+                       p.getF()[2] + SimParams::additional_force_zup);
     }
   }
 }

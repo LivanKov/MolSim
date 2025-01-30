@@ -172,6 +172,9 @@ public:
 
   bool isApplyFZup() const;
 
+
+  void setAppliyFZup(bool apply_fzup_arg);
+
   bool outbound;
 
   /**

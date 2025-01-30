@@ -22,6 +22,7 @@ Particle::Particle(int type_arg) {
   membrane_neighbours = {};
   diagonal_membrane_neighbours = {};
   cell_index = -1;
+  apply_fzup = false;
 }
 
 Particle::Particle(const Particle &other) {
@@ -40,6 +41,7 @@ Particle::Particle(const Particle &other) {
   membrane_neighbours = other.membrane_neighbours;
   diagonal_membrane_neighbours = other.diagonal_membrane_neighbours;
   cell_index = other.cell_index;
+  apply_fzup = other.apply_fzup;
 }
 
 // Todo: maybe use initializater list instead of copy?
@@ -61,6 +63,7 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   membrane_neighbours = {};
   diagonal_membrane_neighbours = {};
   cell_index = -1;
+  apply_fzup = false;
 }
 
 Particle::~Particle() { Logger::getInstance().trace("Particle destroyed!"); }
@@ -84,6 +87,8 @@ double Particle::getEpsilon() const { return epsilon; }
 double Particle::getSigma() const { return sigma; }
 
 bool Particle::isApplyFZup() const { return apply_fzup; }
+
+void Particle::setAppliyFZup(bool apply_fzup_arg) { apply_fzup = apply_fzup_arg; }
 
 std::string Particle::toString() const {
   std::stringstream stream;

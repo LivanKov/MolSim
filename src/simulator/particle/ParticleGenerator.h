@@ -38,8 +38,8 @@ public:
       const std::array<double, 3> &initialVelocity,
 
       LinkedCellContainer &particles, double epsilon = 5.0, double sigma = 1.0,
-      bool is_membrane = false,  double fzup = 0.0,
-      std::vector<std::array<double, 3>> additional_force_coordinates = {});
+      bool is_membrane = false,
+      std::vector<std::array<size_t, 3>> additional_force_coordinates = {});
 
   /**
    * @brief Generate a disc of particles. The disc gets plotted along the
