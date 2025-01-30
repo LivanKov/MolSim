@@ -17,6 +17,7 @@ protected:
 
 };
 
+// checks if the particles get assigned to correct bin
 TEST(ParticleProfilerTest, BinAssignment) {
     LinkedCellContainer particles{};
 
