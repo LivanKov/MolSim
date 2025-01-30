@@ -35,7 +35,6 @@ void ParticleGenerator::insertCuboid(
         Particle particle(position, velocity, mass,
                           particle_container.particle_id, epsilon, sigma);
         if(std::find(additional_force_coordinates.begin(), additional_force_coordinates.end(), std::array<size_t, 3>{k, j, i}) != additional_force_coordinates.end()) {
-          std::cout << "Find" << std::endl;
           particle.setAppliyFZup(true);
         }
         particle_container.particle_id++;

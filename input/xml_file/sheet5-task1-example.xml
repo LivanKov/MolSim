@@ -24,8 +24,6 @@
         <right>Reflecting</right>
         <top>Reflecting</top>
         <bottom>Reflecting</bottom>
-        <front>Reflecting</front>
-        <back>Reflecting</back>
     </boundary_conditions>
 
     <cuboids>
@@ -53,6 +51,15 @@
                 <particle_coordinates>
                     <x>17</x>
                     <y>24</y>
+                    <z>0</z>
+                    <x>17</x>
+                    <y>25</y>
+                    <z>0</z>
+                    <x>18</x>
+                    <y>24</y>
+                    <z>0</z>
+                    <x>18</x>
+                    <y>25</y>
                     <z>0</z>
                 </particle_coordinates>
                 <fzup>0.8</fzup>

@@ -281,8 +281,6 @@ LinkedCellContainer::get_neighbours(int particle_id) {
     if (i != particle_id) {
       neighbours.push_back(particles.at(i));
     }
-
-    neighbours.push_back(particles.at(i));
   }
 
   size_t i = static_cast<size_t>((position[0] - left_corner_coordinates[0]) /
