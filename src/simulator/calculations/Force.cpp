@@ -26,7 +26,6 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
     particle.updateF(0.0, 0.0, 0.0);
   }
 
-
   if (OPTION == OPTIONS::DIRECT_SUM) {
     compute_direct_sum(particles);
   } else {
@@ -38,14 +37,13 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       } else {
         compute_parallel_tasking(particles);
       }
-
+    }
     compute_ghost_cell_forces(particles);
+    
+    if (SimParams::enable_gravity) {
+      apply_gravity(particles);
+    }
   }
-
-  if (SimParams::enable_gravity) {
-    apply_gravity(particles);
-  }
-}
 }
 
 void Force::gravitational(LinkedCellContainer &particles, OPTIONS OPTION) {
@@ -89,8 +87,8 @@ void Force::compute_serial(LinkedCellContainer &particles) {
           auto force =
               compute_lj_force(&particle, neighbour.get(), r12, distance);
           particle.updateF(particle.getF() + force);
-          if(!neighbour->is_fixed()) {
-          neighbour->updateF(neighbour->getF() - force);
+          if (!neighbour->is_fixed()) {
+            neighbour->updateF(neighbour->getF() - force);
           }
         }
       }
@@ -99,59 +97,42 @@ void Force::compute_serial(LinkedCellContainer &particles) {
 }
 
 void Force::compute_parallel_fork_join(LinkedCellContainer &particles) {
-  int num_threads = 1;
-#pragma omp parallel
-  { num_threads = omp_get_num_threads(); }
+
   std::vector<std::vector<std::array<double, 3>>> thread_local_forces(
-      num_threads, std::vector<std::array<double, 3>>(
-                       particles.particles.size(), {0.0, 0.0, 0.0}));
+      omp_get_max_threads());
+  for (auto &forces : thread_local_forces) {
+    forces.resize(particles.particles.size(), {0.0, 0.0, 0.0});
+  }
 
-#pragma omp parallel default(none) shared(particles, thread_local_forces)
-  {
-    const int thread_id = omp_get_thread_num();
+#pragma omp parallel for
+  for (size_t i = 0; i < particles.particles.size(); ++i) {
+    int thread_id = omp_get_thread_num();
+    auto &particle = particles.particles[i];
+    for (auto &neighbour : particles.get_neighbours(particle.getId())) {
+      if (*neighbour != particle) {
+        auto r12 = neighbour->getX() - particle.getX();
+        double distance = ArrayUtils::L2Norm(r12);
 
-#pragma omp for
-    for (size_t i = 0; i < particles.size(); ++i) {
-      auto &particle = particles.particles[i];
-      for (auto &neighbour : particles.get_neighbours(particle.getId())) {
-        if (*neighbour != particle && !particle.is_fixed()) {
-          auto r12 = neighbour->getX() - particle.getX();
-          double distance = ArrayUtils::L2Norm(r12);
+        if (distance > 1e-5) {
+          auto force =
+              compute_lj_force(&particle, neighbour.get(), r12, distance);
 
-          if (distance > 1e-5) {
-            auto force =
-                compute_lj_force(&particle, neighbour.get(), r12, distance);
-            thread_local_forces[thread_id][i] =
-                thread_local_forces[thread_id][i] + force;
-            if(!neighbour->is_fixed()) {
-            thread_local_forces[thread_id][neighbour->getId()] =
-                thread_local_forces[thread_id][neighbour->getId()] - force; }
-          }
+          thread_local_forces[thread_id][particle.getId()] =
+              thread_local_forces[thread_id][particle.getId()] + force;
+          thread_local_forces[thread_id][neighbour->getId()] =
+              thread_local_forces[thread_id][neighbour->getId()] - force;
         }
       }
     }
   }
 
-
- // Combine thread-local forces into global forces
-  std::vector<std::array<double, 3>> global_forces(particles.particles.size(),
-                                                   {0.0, 0.0, 0.0});
-
-#pragma omp for
   for (size_t i = 0; i < particles.particles.size(); ++i) {
-    for (int thread_id = 0; thread_id < num_threads; ++thread_id) {
-      global_forces[i] = global_forces[i] + thread_local_forces[thread_id][i];
+    auto &particle = particles.particles[i];
+    for (int thread_id = 0; thread_id < omp_get_max_threads(); ++thread_id) {
+      particle.updateF(particle.getF() + thread_local_forces[thread_id][i]);
     }
   }
-
-// Apply global forces to particles
-#pragma omp for
-  for (size_t i = 0; i < particles.particles.size(); ++i) {
-    particles.particles[i].updateF(particles.particles[i].getF() +
-                                   global_forces[i]);
-  }
 }
-
 
 void Force::compute_parallel_tasking(LinkedCellContainer &particles) {
   std::vector<std::array<double, 3>> local_forces(particles.particles.size(),
@@ -174,25 +155,23 @@ void Force::compute_parallel_tasking(LinkedCellContainer &particles) {
               auto force =
                   compute_lj_force(&particle, neighbour.get(), r12, distance);
               local_forces[i] = local_forces[i] + force;
-              if(!neighbour->is_fixed()) {
-              local_forces[neighbour->getId()] =
-                  local_forces[neighbour->getId()] - force;
+              if (!neighbour->is_fixed()) {
+                local_forces[neighbour->getId()] =
+                    local_forces[neighbour->getId()] - force;
+              }
             }
-        
           }
         }
       }
-    }
 #pragma omp taskwait
-  }
-
+    }
 
 #pragma omp parallel for
-  for (size_t i = 0; i < particles.particles.size(); ++i) {
-    particles.particles[i].updateF(particles.particles[i].getF() +
-                                   local_forces[i]);
+    for (size_t i = 0; i < particles.particles.size(); ++i) {
+      particles.particles[i].updateF(particles.particles[i].getF() +
+                                     local_forces[i]);
+    }
   }
-}
 }
 
 void Force::compute_ghost_cell_forces(LinkedCellContainer &particles) {
@@ -213,7 +192,7 @@ void Force::compute_ghost_cell_forces(LinkedCellContainer &particles) {
           double totalForce = 24 * epsilon * (term6 - 2 * term12) / distance;
           auto force = (totalForce / distance) * r12;
           particle.updateF(particle.getF() + force);
-          if(!neighbour.ptr->is_fixed()) {
+          if (!neighbour.ptr->is_fixed()) {
             neighbour.ptr->updateF(neighbour.ptr->getF() - force);
           }
         }
@@ -246,10 +225,9 @@ void Force::apply_gravity(LinkedCellContainer &particles) {
 
 void Force::membrane(LinkedCellContainer &particles) {
   for (auto &p : particles) {
-      p.updateOldF(p.getF());
-      p.updateF(0, 0, 0);
+    p.updateOldF(p.getF());
+    p.updateF(0, 0, 0);
   }
-
 
   for (auto &p : particles) {
     for (auto neighbour : p.membrane_neighbours) {
@@ -257,8 +235,8 @@ void Force::membrane(LinkedCellContainer &particles) {
       auto r21 = neighbour->getX() - p.getX();
       double distance = ArrayUtils::L2Norm(r12);
       auto totalForce = SimParams::membrane_stiffness *
-                          (distance - SimParams::membrane_bond_length) * (r21 /
-                          distance);
+                        (distance - SimParams::membrane_bond_length) *
+                        (r21 / distance);
       p.updateF(p.getF() + totalForce);
       neighbour->updateF(neighbour->getF() - totalForce);
       double _sigma = (p.getSigma() + neighbour->getSigma()) / 2;
@@ -286,12 +264,12 @@ void Force::membrane(LinkedCellContainer &particles) {
       auto r12 = p.getX() - neighbour->getX();
       auto r21 = neighbour->getX() - p.getX();
       double distance = ArrayUtils::L2Norm(r12);
-        auto totalForce =
-            SimParams::membrane_stiffness *
-            (distance - SimParams::membrane_bond_length * TWO_SQRT) * (r21 /
-            distance);
-        p.updateF(p.getF() + totalForce);
-        neighbour->updateF(neighbour->getF() - totalForce);
+      auto totalForce =
+          SimParams::membrane_stiffness *
+          (distance - SimParams::membrane_bond_length * TWO_SQRT) *
+          (r21 / distance);
+      p.updateF(p.getF() + totalForce);
+      neighbour->updateF(neighbour->getF() - totalForce);
       double _sigma = p.getSigma() + neighbour->getSigma();
       double min_distance = MAGIC_NUMBER * _sigma;
 
@@ -315,15 +293,12 @@ void Force::membrane(LinkedCellContainer &particles) {
 
     if (SimParams::enable_z_gravity) {
       double gravitational_force_z = p.getM() * SimParams::z_gravity;
-      p.updateF(p.getF()[0],
-                       p.getF()[1],
-                       p.getF()[2] + gravitational_force_z);
+      p.updateF(p.getF()[0], p.getF()[1], p.getF()[2] + gravitational_force_z);
     }
 
-    if(p.isApplyFZup() && SimParams::apply_fzup){
-      p.updateF(p.getF()[0],
-                       p.getF()[1],
-                       p.getF()[2] + SimParams::additional_force_zup);
+    if (p.isApplyFZup() && SimParams::apply_fzup) {
+      p.updateF(p.getF()[0], p.getF()[1],
+                p.getF()[2] + SimParams::additional_force_zup);
     }
   }
 }
