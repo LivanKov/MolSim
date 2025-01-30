@@ -369,10 +369,14 @@ public:
    */
   std::vector<GhostParticle> get_periodic_neighbours(int particle_id);
 
-  void precompute_neighbours();
-
+  /**
+   * @brief Iterator type for accessing particles in the container.
+   */
   ParticleIterator begin();
 
+  /**
+   * @brief Iterator type for accessing particles in the container.
+   */
   ParticleIterator end();
 
     /**
