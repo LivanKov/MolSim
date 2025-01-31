@@ -3,6 +3,7 @@
 #include "simulator/particle/ParticleGenerator.h"
 #include "io/input/cli/SimParams.h"
 
+//Main test fixture, initialize a 4x4 2D linked-cell container
 class MembraneTest : public ::testing::Test {
 protected:
     LinkedCellContainer container;
@@ -17,6 +18,7 @@ protected:
     }
 };
 
+//Simple membrane test, check for correct neighbour count
 TEST_F(MembraneTest, SimpleMembraneTest) {
     // Test parameters
     SimParams::fixed_Domain = false;
@@ -100,18 +102,4 @@ TEST_F(MembraneTest, SimpleMembraneTest) {
         
         EXPECT_EQ(actual_ids, expected_ids) << "Mismatch for particle " << particle;
     }
-    
-
-    
-
-    
-
-
-
-
-
-
-
-
-
 }

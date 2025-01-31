@@ -9,6 +9,8 @@
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Position.h"
 
+
+//Main test fixture, initialize multiple containers with different boundary conditions
 class PeriodicBoundaryTest : public ::testing::Test {
 protected:
     LinkedCellContainer container;  
@@ -43,7 +45,7 @@ protected:
 
 };
 
-
+//Check that the ghost particles are correctly identified as such
 TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     SimParams::fixed_Domain = false;
     ParticleGenerator::insertCuboid(
@@ -206,7 +208,7 @@ TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     EXPECT_EQ(upper_right_actual_ids, upper_right_expected_ids) << "Upper right neighbor IDs do not match expected values";
 }
 
-
+//Check that the periodic transition from one side of the domain to the other is correctly handled
 TEST_F(PeriodicBoundaryTest, PeriodicTransitionTest) {
     // Create a particle at the left edge of the domain
     Particle left_edge_particle({0.1, 5.0, 0.0}, {-2.0, 0.0, 0.0}, 1.0, 0);
@@ -252,7 +254,7 @@ TEST_F(PeriodicBoundaryTest, PeriodicTransitionTest) {
     // Check that all cells are empty    
 }
 
-
+//Check that a particle that moves from one corner to the other stays in the correct cell. Edge case
 TEST_F(PeriodicBoundaryTest, ParticleMovesFromCornerToCorner) {
     // Place a particle in the bottom-left corner
     Particle p({0.1, 0.1, 0.0}, {-1.0, -1.0, 0.0}, 1.0, 0);
@@ -270,7 +272,7 @@ TEST_F(PeriodicBoundaryTest, ParticleMovesFromCornerToCorner) {
     EXPECT_EQ(container.cells[container.cells.size() - 1].size(), 1);
 }
 
-
+//Check the behaviour of a domain that incorporates reflecting and periodic boundary conditions
 TEST_F(PeriodicBoundaryTest, ReflectingTransitionTest) {
     // Create a particle at the left edge of the domain
     Particle left_edge_particle({0.1, 5.0, 0.0}, {-2.0, 0.0, 0.0}, 1.0, 0);
@@ -312,7 +314,7 @@ TEST_F(PeriodicBoundaryTest, ReflectingTransitionTest) {
     // Check that all cells are empty    
 }
 
-
+//Check for single ghost particles being created
 TEST_F(PeriodicBoundaryTest, GhostParticlesTest) {
     // Insert a particle in the corner
     Particle corner_particle({0.1, 0.1, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
@@ -358,6 +360,7 @@ TEST_F(PeriodicBoundaryTest, GhostParticlesTest) {
     EXPECT_TRUE(container.cell_ghost_particles_map[15][0].position[1] == 10.1) << "Ghost particle in cell 15 should be above original";
 }
 
+//Check for single ghost particles being created in the lower right corner
 TEST_F(PeriodicBoundaryTest, LowerRightCornerGhostParticlesTest) {
     // Insert a particle in the lower right corner
     Particle corner_particle({9.9, 0.1, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
@@ -403,6 +406,7 @@ TEST_F(PeriodicBoundaryTest, LowerRightCornerGhostParticlesTest) {
 
 }
 
+//Check for single ghost particles being created in the upper right corner
 TEST_F(PeriodicBoundaryTest, UpperRightCornerGhostParticlesTest) {
     // Insert a particle in the upper right corner
     Particle corner_particle({9.9, 9.9, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
@@ -464,14 +468,6 @@ TEST_F(PeriodicBoundaryTest, UpperLeftCornerGhostParticlesTest) {
 
     EXPECT_EQ(total_particles, 5) << "Container should have 5 ghost particles";
 
-    /*
-    EXPECT_TRUE(container.cell_ghost_particles_map.contains(15)) << "Ghost particle should be in cell 3";
-    EXPECT_TRUE(container.cell_ghost_particles_map.contains(11)) << "Ghost particle should be in cell 7";
-    EXPECT_TRUE(container.cell_ghost_particles_map.contains(3)) << "Ghost particle should be in cell 11";
-    EXPECT_TRUE(container.cell_ghost_particles_map.contains(1)) << "Ghost particle should be in cell 15";
-    EXPECT_TRUE(container.cell_ghost_particles_map.contains(0)) << "Ghost particle should be in cell 0";
-    */
-
     EXPECT_NEAR(container.cell_ghost_particles_map[0][0].position[0], 0.1, 0.0001) << "Ghost particle in cell 12 should be at the same x-position as original";
     EXPECT_NEAR(container.cell_ghost_particles_map[0][0].position[1], -0.1, 0.0001) << "Ghost particle in cell 12 should be above original";
 
@@ -488,6 +484,7 @@ TEST_F(PeriodicBoundaryTest, UpperLeftCornerGhostParticlesTest) {
     EXPECT_NEAR(container.cell_ghost_particles_map[3][0].position[1], -0.1, 0.0001) << "Ghost particle in cell 15 should be below original";
 }
 
+//Check that ghost particles are created correctly when a particle is inserted on the left side of the domain
 TEST_F(PeriodicBoundaryTest, LeftSideGhostParticlesTest) {
     // Insert a particle on the left side, but not in the corner
     Particle left_side_particle({0.1, 5.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
@@ -522,6 +519,7 @@ TEST_F(PeriodicBoundaryTest, LeftSideGhostParticlesTest) {
     }
 }
 
+//Check that ghost particles are created correctly when a particle is inserted on the right side of the domain
 TEST_F(PeriodicBoundaryTest, RightSideGhostParticlesTest) {
     Particle right_side_particle({9.9, 5.0, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
     container.insert(right_side_particle, true);
@@ -539,12 +537,6 @@ TEST_F(PeriodicBoundaryTest, RightSideGhostParticlesTest) {
 
     EXPECT_EQ(total_particles, 3) << "Container should have 3 ghost particles";
 
-    /*
-    EXPECT_TRUE(container.cell_ghost_particles_map.contains(12)) << "Ghost particle should be in left-side cell";
-    EXPECT_TRUE(container.cell_ghost_particles_map.contains(4)) << "Ghost particle should be in left-side cell";
-    EXPECT_TRUE(container.cell_ghost_particles_map.contains(8)) << "Ghost particle should be in left-side cell";
-    */
-
     for (const auto& [cell_index, ghosts] : container.cell_ghost_particles_map) {
         for (const auto& ghost : ghosts) {
             EXPECT_NEAR(ghost.position[0], -0.1, 1e-6) << "Ghost particle X position should be on the left side";
@@ -554,6 +546,7 @@ TEST_F(PeriodicBoundaryTest, RightSideGhostParticlesTest) {
     }
 }
 
+//Check that ghost particles are created correctly when a particle is inserted on the upper side of the domain
 TEST_F(PeriodicBoundaryTest, UpperSideGhostParticlesTest) {
     Particle upper_side_particle({5.0, 9.9, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
     container.insert(upper_side_particle, true);
@@ -569,12 +562,6 @@ TEST_F(PeriodicBoundaryTest, UpperSideGhostParticlesTest) {
 
     EXPECT_EQ(total_particles, 3) << "Container should have 3 ghost particles";
 
-    /*
-    EXPECT_TRUE(container.cell_ghost_particles_map.contains(1)) << "Ghost particle should be in bottom-side cell";
-    EXPECT_TRUE(container.cell_ghost_particles_map.contains(2)) << "Ghost particle should be in bottom-side cell";
-    EXPECT_TRUE(container.cell_ghost_particles_map.contains(3)) << "Ghost particle should be in bottom-side cell";
-    */
-
     for (const auto& [cell_index, ghosts] : container.cell_ghost_particles_map) {
         for (const auto& ghost : ghosts) {
             EXPECT_NEAR(ghost.position[0], 5.0, 1e-6) << "Ghost particle X position should match the original";
@@ -584,6 +571,7 @@ TEST_F(PeriodicBoundaryTest, UpperSideGhostParticlesTest) {
     }
 }
 
+//Check that ghost particles are created correctly when a particle is inserted on the bottom side of the domain
 TEST_F(PeriodicBoundaryTest, BottomSideGhostParticlesTest) {
     Particle bottom_side_particle({5.0, 0.1, 0.0}, {0.0, 0.0, 0.0}, 1.0, 0);
     container.insert(bottom_side_particle, true);

@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 #include "../src/io/input/cli/SimParams.h"
 
+//Main test fixture, initialize a 2d and 3d cell container for further testing
 class LinkedCellTest : public ::testing::Test {
 protected:
   LinkedCellTest() : container{}, container_3d{}, uneven_container{} {
@@ -24,6 +25,8 @@ protected:
   LinkedCellContainer uneven_container;
 };
 
+
+//Ensure that the particles are inserted into the correct cells
 TEST_F(LinkedCellTest, LocationTest) {
   for (size_t i = 0; i < container.cells.size(); ++i) {
     EXPECT_EQ(container.cells[i].size(), 0);
@@ -89,6 +92,9 @@ TEST_F(LinkedCellTest, LocationTest) {
   }
 }
 
+
+//Ensure that the particles inserted via cuboid are inserted into the correct
+//cells
 TEST_F(LinkedCellTest, CuboidTest) {
 
   // Insert a 3x3x1 cuboid of particles with a side length of 3.0 and a mass
@@ -119,6 +125,7 @@ TEST_F(LinkedCellTest, CuboidTest) {
   }
 }
 
+//Test that the neighbours are correctly identified
 TEST_F(LinkedCellTest, NeighbourTest) {
 
   ParticleGenerator::insertCuboid(
@@ -209,6 +216,7 @@ TEST_F(LinkedCellTest, NeighbourTest) {
   EXPECT_TRUE(container_3d.get_neighbours(center_particle.getId()).size() == 26);
 }
 
+//Uneven cuboid, check for correct particle placement
 TEST_F(LinkedCellTest, UnevenDomainTest) {
 
   EXPECT_TRUE(uneven_container.cells.size() == 64);
@@ -263,6 +271,7 @@ TEST_F(LinkedCellTest, UnevenDomainTest) {
   EXPECT_EQ(uneven_container.cells[13].size(), 1);
 }
 
+//Test that the domain is repositioned correctly in case it is not fixed
 TEST_F(LinkedCellTest, RepositioningTest) {
   ParticleGenerator::insertCuboid(
       std::array<double, 3>{5.0, 5.0, 0.0}, std::array<size_t, 3>{2, 2,
