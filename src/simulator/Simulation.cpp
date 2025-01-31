@@ -40,7 +40,7 @@ LinkedCellContainer Simulation::readFile(SimParams &params) {
 void Simulation::run(LinkedCellContainer &particles) {
   // Set OpenMP Threads
   if (SimParams::enable_omp) {
-    omp_set_num_threads(16);
+    omp_set_num_threads(6);
     std::cout << "Using " << omp_get_max_threads()
               << " threads for the simulation." << std::endl;
     std::cout << "Using " << to_string(SimParams::ompstrategy)
