@@ -152,16 +152,6 @@ struct SimParams {
    */
   double resume_start_time;
 
-  /*
-   * @brief Flag to indicate whether to enable the velocity threshold.Global
-   * Variable
-   */
-  static bool enable_v_threshold;
-  /*
-   * @brief The velocity threshold.Global Variable
-   */
-  static double v_threshold;
-
   // openmp variables
   /**
    * @brief Flag to indicate whether to use OpenMP parallelization.Global
