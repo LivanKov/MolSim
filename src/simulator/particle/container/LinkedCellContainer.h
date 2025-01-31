@@ -129,8 +129,6 @@ class LinkedCellContainer {
 
     /** @brief boundary condition of this cell */
     BoundaryCondition boundary_condition;
-
-    std::vector<size_t> neighbour_indices;
   };
 
 public:

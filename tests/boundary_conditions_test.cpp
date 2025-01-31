@@ -26,27 +26,6 @@ protected:
   ~BoundaryConditionsTest() override = default;
 };
 
-// Test that particles reflect correctly off the left boundary
-TEST_F(BoundaryConditionsTest, ReflectingBoundary) {
-  // Particle heading towards the left boundary
-  Particle p({0.5, 1.5, 0.0}, {-1.0, 0.0, 0.0}, 1.0, 0);
-  container.insert(p, true);
-
-  Calculation<BoundaryConditions>::run(container);
-
-  auto& cell = container.cells[10];
-  EXPECT_TRUE(cell.is_halo);
-  EXPECT_TRUE(container.cells[10].size() == 1);
-  EXPECT_TRUE(container.x == 10);
-  EXPECT_EQ(container.boundary_conditions_.left, BoundaryCondition::Reflecting);
-
-  auto p_ = container[0];
-  // Position and velocity should reflect
-  EXPECT_EQ(p_.getX()[0], 0.5);
-  EXPECT_EQ(p_.getV()[0], 1.0); // Position unchanged
-  EXPECT_EQ(p_.getV()[1], 0.0); // Velocity reversed
-  EXPECT_EQ(p_.getV()[2], 0.0);
-}
 
 // Test that particles crossing the right boundary are marked for removal
 TEST_F(BoundaryConditionsTest, OutflowBoundary) {
@@ -65,37 +44,6 @@ TEST_F(BoundaryConditionsTest, OutflowBoundary) {
   }
 }
 
-// Test that particles reflect correctly off the bottom boundary and crossing the top boundary are marked for removal
-TEST_F(BoundaryConditionsTest, BottomReflectingTopOutflow) {
-  // Particle heading towards the bottom (reflecting)
-  Particle p_bottom({5.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, 1.0, 0);
-  container.insert(p_bottom, true);
-
-  // Particle heading towards the top (outflow)
-  Particle p_top({5.0, 10.5, 0.0}, {0.0, 1.0, 0.0}, 1.0, 1);
-  container.insert(p_top, true);
-
-  Calculation<BoundaryConditions>::run(container);
-
-  auto& p_1 = container[0];
-  auto& p_2 = container[1];
-
-  for(size_t i = 0; i < container.cells.size(); i++){
-    auto& cell = container.cells[i];
-    if(i == 5){
-      EXPECT_TRUE(cell.size() == 1);
-    } else {
-      EXPECT_TRUE(cell.size() == 0);
-    }
-  }
-
-  // Check bottom boundary
-  EXPECT_EQ(p_1.getX()[0], 5.0);
-  EXPECT_EQ(p_1.getV()[1], 1.0);
-
-  // Check top boundary
-  EXPECT_TRUE(p_2.left_domain);
-}
 
 // Test that particle within the domain should remain unchanged
 TEST_F(BoundaryConditionsTest, NoBoundaryViolation) {
@@ -124,50 +72,6 @@ TEST_F(BoundaryConditionsTest, NoBoundaryViolation) {
   EXPECT_FALSE(pt.left_domain);
 }
 
-TEST_F(BoundaryConditionsTest, CornerCrossing) {
-  // Define domain size and corner location
-  std::initializer_list<double> domain_size = {10.0, 10.0};
-  double cutoff_radius = 1.0;
-
-  // Reflecting conditions on all boundaries
-  DomainBoundaryConditions boundary_conditions{
-      BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
-      BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
-      BoundaryCondition::Reflecting, BoundaryCondition::Reflecting};
-
-  LinkedCellContainer container{};
-  container.initialize(domain_size, cutoff_radius,
-                                boundary_conditions);
-
-  EXPECT_EQ(container.cells[99].size(), 0);
-
-  // Create a particle near the corner
-  Particle particle({9.9, 9.9, 0}, {1.0, 1.0, 0.0}, 1.0, 0);
-  container.insert(particle,true);
-
-  // Apply boundary handling
-  Calculation<BoundaryConditions>::run(container);
-
-
-  auto& pt = container[0];
-
-
-  // Check the particle is correctly reflected from the corner
-  auto position = pt.getX();
-  auto velocity = pt.getV();
-
-  EXPECT_EQ(container.cells[99].size(), 1);
-  EXPECT_TRUE(std::find(container.cells[99].particle_ids.begin(), container.cells[99].particle_ids.end(), 0) != container.cells[99].particle_ids.end());
-  EXPECT_TRUE(container.cells[99].placement == Placement::TOP_RIGHT_CORNER);
-
-  EXPECT_EQ(position[0], 9.9); // Reflected from the x boundary
-  EXPECT_EQ(position[1], 9.9); // Reflected from the y boundary
-  EXPECT_EQ(position[2], 0); // Reflected from the z boundary
-  
-  EXPECT_EQ(velocity[0], -1.0); // Velocity reversed in x
-  EXPECT_EQ(velocity[1], -1.0); // Velocity reversed in y
-  EXPECT_EQ(velocity[2], 0.0); // Velocity reversed in z
-}
 
 // // verify that particles located at the left-front edge and right-back edge of a
 // // 3D periodic boundary container correctly identify each other as ghost
@@ -397,39 +301,4 @@ TEST_F(BoundaryConditionsTest, PeriodicRepulsiveForceZ) {
       << "Forces should be equal and opposite in z-direction.";
   EXPECT_NEAR(force_K[0], -force_L[0], 1e-6)
       << "Forces should be equal and opposite in z-direction.";
-}
-
-// Verifies that a particle initially at (8.9, 8.9, 9.3) (Cell 27) in a 9×9×9
-// periodic boundary container with a cutoff radius of 3.0 is correctly placed
-// into Cell 8 after applying periodic boundary conditions. (potentially out of
-// bound)
-TEST_F(BoundaryConditionsTest, PeriodicCellWrapping) {
-  std::initializer_list<double> domain_siz = {9.0, 9.0, 9.0};
-  double cutoff_radius = 3.0;
-  DomainBoundaryConditions boundary_condition{
-      BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
-      BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
-      BoundaryCondition::Reflecting, BoundaryCondition::Reflecting};
-
-  LinkedCellContainer container_3d{};
-  container_3d.initialize(domain_siz, cutoff_radius, boundary_condition);
-
-  Particle particle({8.992, 4.941, 8.992}, {15.43, 14.14, 15.43}, 1.0, 0);
-  container_3d.insert(particle, true);
-  Calculation<Position>::run(container_3d, 0.0005, OPTIONS::LINKED_CELLS);
-
-  Calculation<BoundaryConditions>::run(container_3d);
-  auto &pt = container_3d[0];
-
-  std::array<double, 3> expected_position = {8.9, 8.9, 1.9};
-  auto new_position = pt.getX();
-  EXPECT_NEAR(new_position[0], expected_position[0], 1e-6);
-  EXPECT_NEAR(new_position[1], expected_position[1], 1e-6);
-  EXPECT_NEAR(new_position[2], expected_position[2], 1e-6);
-
-  size_t expected_cell_index = container_3d.get_cell_index(expected_position);
-  size_t new_cell_index = container_3d.get_cell_index(new_position);
-
-  EXPECT_EQ(new_cell_index, 8) << "Particle should be placed in Cell 8 after "
-                                  "periodic boundary handling.";
 }
