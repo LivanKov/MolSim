@@ -142,6 +142,8 @@ TEST_F(BasicTest, ContainerBehaviourTest) {
   // check that every particle maps onto correct pair
 }
 
+
+//Perform a basic test to check particle movement
 TEST_F(BasicTest, SimulationBehaviourTest) {
   // this in place initialization looks super ugly, perhaps we can use
   // std::initializer_list
@@ -162,6 +164,7 @@ TEST_F(BasicTest, SimulationBehaviourTest) {
   }
 }
 
+//Perform a basic test to check force calculation
 TEST_F(BasicTest, CalculateFTest) {
   calculateLJForce = true;
   delta_t = 0.02;

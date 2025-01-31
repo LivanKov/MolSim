@@ -5,6 +5,8 @@
 #include <iostream>
 #include <numeric>
 
+
+//Basic fixture, initialize en empty container
 class CuboidTest : public testing::Test {
 protected:
   CuboidTest() : container{} {}

@@ -5,6 +5,8 @@ This repository contains the code written for the Molecular Dynamics Lab (IN0012
 
 ![CI Build](https://github.com/LivanKov/MolSim/actions/workflows/ci.yml/badge.svg?branch=dev-sheet_2)
 
+![GIF Description](/assets/example1.gif)
+
 
 ### Build and Run on Linux 
 

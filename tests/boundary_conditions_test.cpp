@@ -8,6 +8,7 @@
 #include "gtest/gtest.h"
 // #include <initializer_list>
 
+//Basic Fixture, initialize a 10x10 2d linked-cell container
 class BoundaryConditionsTest : public ::testing::Test {
 protected:
   LinkedCellContainer container;
