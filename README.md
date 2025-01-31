@@ -7,6 +7,10 @@ This repository contains the code written for the Molecular Dynamics Lab (IN0012
 
 ![GIF Description](/assets/example1.gif)
 
+![GIF Description](/assets/example2.gif)
+
+
+
 
 ### Build and Run on Linux 
 
