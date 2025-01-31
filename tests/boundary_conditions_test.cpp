@@ -398,3 +398,38 @@ TEST_F(BoundaryConditionsTest, PeriodicRepulsiveForceZ) {
   EXPECT_NEAR(force_K[0], -force_L[0], 1e-6)
       << "Forces should be equal and opposite in z-direction.";
 }
+
+// Verifies that a particle initially at (8.9, 8.9, 9.3) (Cell 27) in a 9×9×9
+// periodic boundary container with a cutoff radius of 3.0 is correctly placed
+// into Cell 8 after applying periodic boundary conditions. (potentially out of
+// bound)
+TEST_F(BoundaryConditionsTest, PeriodicCellWrapping) {
+  std::initializer_list<double> domain_siz = {9.0, 9.0, 9.0};
+  double cutoff_radius = 3.0;
+  DomainBoundaryConditions boundary_condition{
+      BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
+      BoundaryCondition::Reflecting, BoundaryCondition::Reflecting,
+      BoundaryCondition::Reflecting, BoundaryCondition::Reflecting};
+
+  LinkedCellContainer container_3d{};
+  container_3d.initialize(domain_siz, cutoff_radius, boundary_condition);
+
+  Particle particle({8.992, 4.941, 8.992}, {15.43, 14.14, 15.43}, 1.0, 0);
+  container_3d.insert(particle, true);
+  Calculation<Position>::run(container_3d, 0.0005, OPTIONS::LINKED_CELLS);
+
+  Calculation<BoundaryConditions>::run(container_3d);
+  auto &pt = container_3d[0];
+
+  std::array<double, 3> expected_position = {8.9, 8.9, 1.9};
+  auto new_position = pt.getX();
+  EXPECT_NEAR(new_position[0], expected_position[0], 1e-6);
+  EXPECT_NEAR(new_position[1], expected_position[1], 1e-6);
+  EXPECT_NEAR(new_position[2], expected_position[2], 1e-6);
+
+  size_t expected_cell_index = container_3d.get_cell_index(expected_position);
+  size_t new_cell_index = container_3d.get_cell_index(new_position);
+
+  EXPECT_EQ(new_cell_index, 8) << "Particle should be placed in Cell 8 after "
+                                  "periodic boundary handling.";
+}
