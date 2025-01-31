@@ -198,13 +198,38 @@ public:
    */
   double getSigma() const;
 
+  /**
+   * @brief returns the value, that correponds to particle apply_fzup.
+   * @return bool variable containing the apply_fzup of the particle.
+   */
+
   bool isApplyFZup() const;
+
+  /**
+   * @brief set the value, that correponds to particle apply_fzup.
+   * @param apply_fzup_arg: bool variable containing the apply_fzup of the
+   * particle.
+   */
 
   void setAppliyFZup(bool apply_fzup_arg);
 
+  /**
+   * @brief returns the value, that correponds to particle fixed.
+   * @return bool variable containing the fixed of the particle.
+   */
+
   bool is_fixed() const;
 
+  /**
+   * @brief set the fixed variable
+   * @param fixed_arg: bool variable containing new value of fixed variable.
+   */
+
   void setFixed(bool fixed_arg);
+
+  /**
+   * @brief outbound flag, used for boundary conditions.
+   */
 
   bool outbound;
 
@@ -328,9 +353,21 @@ public:
 
   bool left_domain;
 
+  /**
+   * @brief membrane neighbours.
+   */
+
   std::vector<std::shared_ptr<Particle>> membrane_neighbours;
 
+  /**
+   * @brief diagonal membrane neighbours.
+   */
+
   std::vector<std::shared_ptr<Particle>> diagonal_membrane_neighbours;
+
+  /**
+   * @brief index of the cell the particle is in.
+   */
 
   size_t cell_index;
 };
