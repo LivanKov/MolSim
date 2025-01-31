@@ -18,9 +18,9 @@
 
 #include "utils/logger/Logger.h"
 
-FileReader::FileReader() = default;
+input::FileReader::FileReader() = default;
 
-FileReader::~FileReader() = default;
+input::FileReader::~FileReader() = default;
 
 auto containerToString = [](const auto &container) {
   std::ostringstream oss;
@@ -37,7 +37,8 @@ auto containerToString = [](const auto &container) {
   return oss.str();
 };
 
-void FileReader::readFile(LinkedCellContainer &particles, char *filename) {
+void input::FileReader::readFile(LinkedCellContainer &particles,
+                                 char *filename) {
   std::array<double, 3> x;
   std::array<size_t, 3> mesh;
   double d;

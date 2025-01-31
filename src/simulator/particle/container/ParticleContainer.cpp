@@ -98,7 +98,7 @@ std::vector<ParticlePointer> &ParticleContainer::get_all_particles() {
   return _particle_container;
 }
 
-ParticlePointer& ParticleContainer::at(size_t index) {
+ParticlePointer &ParticleContainer::at(size_t index) {
   return _particle_container[index];
 }
 

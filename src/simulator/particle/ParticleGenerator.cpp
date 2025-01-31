@@ -8,8 +8,8 @@
 #include "io/input/cli/SimParams.h"
 #include "utils/MaxwellBoltzmannDistribution.h"
 #include <cmath>
-#include <random>
 #include <iostream>
+#include <random>
 
 #include "utils/logger/Logger.h"
 
@@ -22,7 +22,8 @@ void ParticleGenerator::insertCuboid(
 
     LinkedCellContainer &particle_container, double epsilon, double sigma,
     bool is_membrane,
-    std::vector<std::array<size_t, 3>> additional_force_coordinates, bool fixed) {
+    std::vector<std::array<size_t, 3>> additional_force_coordinates,
+    bool fixed) {
   for (size_t i = 0; i < dimensions[2]; ++i) {
     for (size_t j = 0; j < dimensions[1]; ++j) {
       for (size_t k = 0; k < dimensions[0]; ++k) {
@@ -34,7 +35,10 @@ void ParticleGenerator::insertCuboid(
 
         Particle particle(position, velocity, mass,
                           particle_container.particle_id, epsilon, sigma);
-        if(std::find(additional_force_coordinates.begin(), additional_force_coordinates.end(), std::array<size_t, 3>{k, j, i}) != additional_force_coordinates.end()) {
+        if (std::find(additional_force_coordinates.begin(),
+                      additional_force_coordinates.end(),
+                      std::array<size_t, 3>{k, j, i}) !=
+            additional_force_coordinates.end()) {
           particle.setAppliyFZup(true);
         }
         particle_container.particle_id++;
@@ -143,9 +147,8 @@ void ParticleGenerator::generate_membrane(
                     particle_container.at(neighbour_id));
           } else {
             // horizontal membrane member
-            particle_container[particle_id]
-                .membrane_neighbours.push_back(
-                    particle_container.at(neighbour_id));
+            particle_container[particle_id].membrane_neighbours.push_back(
+                particle_container.at(neighbour_id));
           }
         }
       }

@@ -12,9 +12,9 @@
 #include <sstream>
 #include <string>
 
-XMLReader::XMLReader() = default;
+input::XMLReader::XMLReader() = default;
 
-XMLReader::~XMLReader() = default;
+input::XMLReader::~XMLReader() = default;
 
 auto containerToStrings = [](const auto &container) {
   std::ostringstream oss;
@@ -31,8 +31,8 @@ auto containerToStrings = [](const auto &container) {
   return oss.str();
 };
 
-void XMLReader::readXMLFile(LinkedCellContainer &particles,
-                            SimParams &simParameters) {
+void input::XMLReader::readXMLFile(LinkedCellContainer &particles,
+                                   SimParams &simParameters) {
   Logger &logger = Logger::getInstance(simParameters.log_level);
   std::string filename = simParameters.input_path;
   try {
@@ -83,7 +83,7 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
       logger.info("g_gravity: " + std::to_string(simParameters.gravity));
     }
 
-    if(xmlParams.zgravity().present()) {
+    if (xmlParams.zgravity().present()) {
       SimParams::enable_z_gravity = true;
       simParameters.z_gravity = xmlParams.zgravity().get();
       logger.info("z_gravity: " + std::to_string(simParameters.z_gravity));
@@ -208,13 +208,12 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
           SimParams::additional_force_time_limit =
               cuboid.additional_force().get().time_limit();
 
-
           for (const auto &coordinate :
                cuboid.additional_force().get().particle_coordinates()) {
-            additional_force_coordinates.push_back(std::array<size_t, 3>{
-                static_cast<size_t>(coordinate.x()),
-                static_cast<size_t>(coordinate.y()),
-                static_cast<size_t>(coordinate.z())});
+            additional_force_coordinates.push_back(
+                std::array<size_t, 3>{static_cast<size_t>(coordinate.x()),
+                                      static_cast<size_t>(coordinate.y()),
+                                      static_cast<size_t>(coordinate.z())});
           }
         }
 
@@ -248,9 +247,9 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
           is_fixed = cuboid.fixed().get();
         }
 
-        ParticleGenerator::insertCuboid(position, dimensions, mesh_width, mass,
-                                        initial_velocity, particles, epsilon,
-                                        sigma, membrane, additional_force_coordinates, is_fixed);
+        ParticleGenerator::insertCuboid(
+            position, dimensions, mesh_width, mass, initial_velocity, particles,
+            epsilon, sigma, membrane, additional_force_coordinates, is_fixed);
 
         logger.info("Particles check: " + std::to_string(particles.size()));
         logger.info("Particles' cell check: " +
@@ -317,7 +316,8 @@ void XMLReader::readXMLFile(LinkedCellContainer &particles,
   }
 }
 
-BoundaryCondition XMLReader::parseBoundaryCondition(const std::string &value) {
+BoundaryCondition
+input::XMLReader::parseBoundaryCondition(const std::string &value) {
   if (value == "Outflow") {
     return BoundaryCondition::Outflow;
   } else if (value == "Reflecting") {

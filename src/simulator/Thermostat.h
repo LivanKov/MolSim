@@ -115,49 +115,46 @@ public:
    */
   void initialize();
 
+  // ---------------- modified methods: -----------------------
 
-
-// ---------------- modified methods: -----------------------
-
- /**
+  /**
    * @brief This is the modified application method of the thermostat.
    *
    * It can heat, cool or hold the temperature of the systems with respect to
    * the parameters specified. This is done by scaling the particles' thermal
    * motions appropriate.
    */
- void apply_new();
+  void apply_new();
 
- /**
-  * @brief Calculates the average velocity of the particles in the system.
-  *
-  * @return std::array<double, 3> The average velocity
-  */
- std::array<double, 3>  calculate_average_velocity();
+  /**
+   * @brief Calculates the average velocity of the particles in the system.
+   *
+   * @return std::array<double, 3> The average velocity
+   */
+  std::array<double, 3> calculate_average_velocity();
 
- /**
-  *@brief Calculates the current thermal motion of each particle.
-  *
-  * When calling this method each particle's thermal motion gets updated
-  * according to its current velocity and the average velocity of all
-  * particles: thermal_motion = currentV - averageV
-  *
-  */
- void determine_thermal_motion();
+  /**
+   *@brief Calculates the current thermal motion of each particle.
+   *
+   * When calling this method each particle's thermal motion gets updated
+   * according to its current velocity and the average velocity of all
+   * particles: thermal_motion = currentV - averageV
+   *
+   */
+  void determine_thermal_motion();
 
- /**
-  * @brief Calculates the current kinetic energy of the system.
-  *
-  * Here the formula for the kinetic energy of a systems gets applied.
-  * The kinetic energy just depends, besides on the mass and
-  * number of particles, on the particles' thermal motion.
-  *
-  * @return double The current kinetic energy.
-  */
+  /**
+   * @brief Calculates the current kinetic energy of the system.
+   *
+   * Here the formula for the kinetic energy of a systems gets applied.
+   * The kinetic energy just depends, besides on the mass and
+   * number of particles, on the particles' thermal motion.
+   *
+   * @return double The current kinetic energy.
+   */
   double calculate_kinetic_energy_new();
 
-
- /**
+  /**
    * @brief Gets the current temperature of the system.
    *
    * The current temperature gets calculated partly with the kinetic energy.
@@ -165,18 +162,17 @@ public:
    *
    * @return double The current temperature.
    */
- void calculate_current_temperature_new();
+  void calculate_current_temperature_new();
 
- /**
-  * @brief Scales particles' velocities directly with respect to initial
-  * temperature.
-  *
-  * Helper method primarily for testing purposes. Scales particles_ directly to
-  * the velocities in regard to the initial temperature which is calculated
-  * by thermal motion.
-  */
+  /**
+   * @brief Scales particles' velocities directly with respect to initial
+   * temperature.
+   *
+   * Helper method primarily for testing purposes. Scales particles_ directly to
+   * the velocities in regard to the initial temperature which is calculated
+   * by thermal motion.
+   */
   void initialize_new();
-
 
 private:
   /** @brief Reference to the ParticleContainer holding all particles in the

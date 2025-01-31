@@ -73,7 +73,7 @@ Particle::Particle(std::array<double, 3> x_arg, std::array<double, 3> v_arg,
   cell_index = -1;
   apply_fzup = false;
   this->fixed = fixed;
-  if(this->fixed) {
+  if (this->fixed) {
     v = {0., 0., 0.};
   }
 }
@@ -90,9 +90,13 @@ const std::array<double, 3> &Particle::getF() const { return f; }
 
 const std::array<double, 3> &Particle::getOldF() const { return old_f; }
 
-const std::array<double, 3> &Particle::getThermalMotion() const { return thermal_motion_; }
+const std::array<double, 3> &Particle::getThermalMotion() const {
+  return thermal_motion_;
+}
 
-const std::array<double, 3> &Particle::getKineticMotion() const { return kinetic_motion_; }
+const std::array<double, 3> &Particle::getKineticMotion() const {
+  return kinetic_motion_;
+}
 
 double Particle::getM() const { return m; }
 
@@ -104,10 +108,11 @@ double Particle::getSigma() const { return sigma; }
 
 bool Particle::isApplyFZup() const { return apply_fzup; }
 
-void Particle::setAppliyFZup(bool apply_fzup_arg) { apply_fzup = apply_fzup_arg; }
+void Particle::setAppliyFZup(bool apply_fzup_arg) {
+  apply_fzup = apply_fzup_arg;
+}
 
 bool Particle::is_fixed() const { return fixed; }
-
 
 std::string Particle::toString() const {
   std::stringstream stream;
@@ -154,26 +159,21 @@ void Particle::updateOldF(double x_arg, double y_arg, double z_arg) {
 
 void Particle::updateOldF(const std::array<double, 3> &force) { old_f = force; }
 
-
 void Particle::updateThermalMotion(double x_arg, double y_arg, double z_arg) {
   thermal_motion_ = {x_arg, y_arg, z_arg};
 }
-
 
 void Particle::updateThermalMotion(const std::array<double, 3> &thermal_m) {
   thermal_motion_ = thermal_m;
 }
 
-
 void Particle::updateKineticMotion(double x_arg, double y_arg, double z_arg) {
   kinetic_motion_ = {x_arg, y_arg, z_arg};
 }
 
-
 void Particle::updateKineticMotion(const std::array<double, 3> &kinetic_m) {
   kinetic_motion_ = kinetic_m;
 }
-
 
 void Particle::updateOldX(double x_arg, double y_arg, double z_arg) {
   old_x = {x_arg, y_arg, z_arg};

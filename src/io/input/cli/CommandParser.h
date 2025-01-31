@@ -7,7 +7,13 @@
 
 namespace CommandParser {
 
+/*
+ * @brief Print input help message.
+ */
 void print_help();
 
+/*
+ * @brief Parse input arguments.
+ */
 SimParams &parse(int argc, char **argv, SimParams &parameters);
 } // namespace CommandParser

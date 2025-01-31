@@ -88,7 +88,6 @@ private:
    */
   bool fixed;
 
-
 public:
   /**
    * @brief Constructor.
@@ -113,7 +112,8 @@ public:
       // for visualization, we need always 3 coordinates
       // -> in case of 2d, we use only the first and the second
       std::array<double, 3> x_arg, std::array<double, 3> v_arg, double m_arg,
-      int type, double epsilon_arg = 5.0, double sigma_arg = 1.0, bool fixed = false);
+      int type, double epsilon_arg = 5.0, double sigma_arg = 1.0,
+      bool fixed = false);
 
   /**
    * @brief Destructor
@@ -150,16 +150,17 @@ public:
 
   const std::array<double, 3> &getOldF() const;
 
-
   /**
    * @brief access the array containing the thermal motion of the particle.
-   * @return a reference to the array containing the thermal motion of the particle.
+   * @return a reference to the array containing the thermal motion of the
+   * particle.
    */
   const std::array<double, 3> &getThermalMotion() const;
 
   /**
    * @brief access the array containing the kinetic motion of the particle.
-   * @return a reference to the array containing the kinetic motion of the particle.
+   * @return a reference to the array containing the kinetic motion of the
+   * particle.
    */
   const std::array<double, 3> &getKineticMotion() const;
 
@@ -196,8 +197,6 @@ public:
    * @return double variable containing the sigma of the particle.
    */
   double getSigma() const;
-
-
 
   bool isApplyFZup() const;
 
@@ -295,17 +294,17 @@ public:
    */
   void updateThermalMotion(const std::array<double, 3> &thermal_m);
 
- /**
+  /**
    * @brief updates kinetic motion of particle.
    * @param x_arg, y_arg, z_arg: new kinetic motion values.
    */
- void updateKineticMotion(double x_arg, double y_arg, double z_arg);
+  void updateKineticMotion(double x_arg, double y_arg, double z_arg);
 
- /**
-  * @brief updates kinetic motion of particle.
-  * @param kinetic_m: allowed the method to accept a std::array<double, 3>.
-  */
- void updateKineticMotion(const std::array<double, 3> &kinetic_m);
+  /**
+   * @brief updates kinetic motion of particle.
+   * @param kinetic_m: allowed the method to accept a std::array<double, 3>.
+   */
+  void updateKineticMotion(const std::array<double, 3> &kinetic_m);
 
   /**
    * @brief updates the old position of the particle.

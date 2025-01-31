@@ -44,7 +44,7 @@ enum Placement {
   BOTTOM_RIGHT_CORNER,
   BOTTOM_LEFT_CORNER,
 
-      // 3D edges (between 2 faces)
+  // 3D edges (between 2 faces)
   TOP_FRONT_EDGE,
   TOP_BACK_EDGE,
   BOTTOM_FRONT_EDGE,
@@ -146,8 +146,7 @@ public:
    * @param r_cutoff The cutoff radius for interactions.
    * @param boundary_conditions The boundary conditions for the domain.
    */
-  void initialize(const std::vector<double> &domain_size,
-                  double r_cutoff,
+  void initialize(const std::vector<double> &domain_size, double r_cutoff,
                   const DomainBoundaryConditions &boundary_conditions);
 
   /**
@@ -288,8 +287,7 @@ public:
    */
   Particle &operator[](size_t index);
 
-
-  ParticlePointer& at(size_t index);
+  ParticlePointer &at(size_t index);
 
   /**
    * @brief Counter for particles that have left the simulation domain.
@@ -379,7 +377,7 @@ public:
    */
   ParticleIterator end();
 
-    /**
+  /**
    * @brief Assigns halo status to cells at the border of the array
    */
   void mark_halo_cells();
@@ -392,6 +390,4 @@ private:
    */
   void readjust_coordinates(std::array<double, 3> current_low_left,
                             std::array<double, 3> current_up_right);
-
-
 };

@@ -32,7 +32,6 @@ SimParams &CommandParser::parse(int argc, char **argv, SimParams &parameters) {
 
   int opt;
 
-  
   while ((opt = getopt(argc, argv, "e:d:i:t:o:hxl:fnurcv:pa")) != -1) {
     switch (opt) {
     case 'e':

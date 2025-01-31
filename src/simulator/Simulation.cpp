@@ -33,7 +33,7 @@ Simulation::Simulation(SimParams &params) : params_(params) {}
 
 LinkedCellContainer Simulation::readFile(SimParams &params) {
   LinkedCellContainer particles{};
-  XMLReader::readXMLFile(particles, params);
+  input::XMLReader::readXMLFile(particles, params);
   return particles;
 }
 
@@ -62,7 +62,7 @@ void Simulation::run(LinkedCellContainer &particles) {
                                                     : ForceType::LENNARD_JONES);
 
   std::unique_ptr<output::FileWriter> writer = createFileWriter(particles);
-                             
+
   if (params_.xyz_output) {
     writer = std::make_unique<output::XYZWriter>(particles);
   } else {
@@ -77,9 +77,11 @@ void Simulation::run(LinkedCellContainer &particles) {
                         params_.dimensions, params_.delta_temp,
                         params_.is_gradual, params_.enable_brownian);
 
-  // here you can include the ParticleProfiler. Append the simulate methods with particle_profiler and
-  // call with it apply_profiler() in each modulo iteration if statement with the desired writer rate
-  // ParticleProfiler particle_profiler(particles, bin_width(size_t), x_min(double), x_max(double), "output_profile.csv");
+  // here you can include the ParticleProfiler. Append the simulate methods with
+  // particle_profiler and call with it apply_profiler() in each modulo
+  // iteration if statement with the desired writer rate ParticleProfiler
+  // particle_profiler(particles, bin_width(size_t), x_min(double),
+  // x_max(double), "output_profile.csv");
 
   // Checkout-only mode
   if (params_.checkpoint_only) {
@@ -89,8 +91,8 @@ void Simulation::run(LinkedCellContainer &particles) {
 
   // Resume from checkpoint if enabled
   if (params_.resume_from_checkpoint) {
-    CheckpointReader::readCheckpoint(particles, params_.time_delta,
-                                     params_.resume_start_time);
+    input::CheckpointReader::readCheckpoint(particles, params_.time_delta,
+                                            params_.resume_start_time);
     logger.info("Resumed from checkpoint. Adding additional input...");
     current_time = params_.resume_start_time;
   }
@@ -124,9 +126,9 @@ void Simulation::checkpointMode(LinkedCellContainer &particles,
     current_time += params_.time_delta;
   }
 
-
-  CheckpointWriter::writeCheckpoint(particles, "../output/checkpoint.chk",
-                                    params_.time_delta, params_.end_time);
+  output::CheckpointWriter::writeCheckpoint(
+      particles, "../output/checkpoint.chk", params_.time_delta,
+      params_.end_time);
   Logger::getInstance().info("Equilibration completed.");
 }
 
@@ -139,7 +141,7 @@ void Simulation::simulate(LinkedCellContainer &particles, double &current_time,
 
   while (current_time < params_.end_time) {
 
-    if(current_time >= SimParams::additional_force_time_limit){
+    if (current_time >= SimParams::additional_force_time_limit) {
       SimParams::apply_fzup = false;
     }
 

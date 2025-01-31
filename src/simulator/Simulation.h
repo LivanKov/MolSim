@@ -2,10 +2,10 @@
 #include "io/input/cli/SimParams.h"
 #include "io/output/FileWriter.h"
 #include "particle/container/LinkedCellContainer.h"
+#include "particle/container/ParticleContainer.h"
 #include "simulator/calculations/Calculation.h"
 #include "simulator/calculations/Force.h"
 #include <chrono>
-#include "particle/container/ParticleContainer.h"
 #include <memory>
 
 #pragma once
@@ -23,7 +23,6 @@
 
 class Simulation {
 private:
-
   /**
    * @brief Creates the appropriate file writer (e.g., XYZWriter or VTKWriter)
    * based on the parameters.

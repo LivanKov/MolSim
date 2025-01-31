@@ -1,9 +1,8 @@
-#ifndef FILEWRITER_H
-#define FILEWRITER_H
-
 #include "simulator/particle/container/LinkedCellContainer.h"
 #include <memory>
 #include <string>
+
+#pragma once
 
 namespace output {
 
@@ -34,4 +33,3 @@ public:
   LinkedCellContainer &particles;
 };
 } // namespace output
-#endif

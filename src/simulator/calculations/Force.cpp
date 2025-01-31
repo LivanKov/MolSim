@@ -39,7 +39,7 @@ void Force::lennard_jones(LinkedCellContainer &particles, OPTIONS OPTION) {
       }
     }
     compute_ghost_cell_forces(particles);
-    
+
     if (SimParams::enable_gravity) {
       apply_gravity(particles);
     }

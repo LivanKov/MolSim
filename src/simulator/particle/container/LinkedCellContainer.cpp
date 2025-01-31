@@ -205,18 +205,17 @@ void LinkedCellContainer::initialize(
             ? boundary_conditions.left
             : BoundaryCondition::Reflecting;
   }
-  
+
   mark_halo_cells();
-  precompute_neighbours();
 }
 
 LinkedCellContainer::LinkedCellContainer()
     : particle_id{0}, domain_size_{0, 0, 0}, left_corner_coordinates{0.0, 0.0,
                                                                      0.0},
-      placement_map{}, r_cutoff_{0}, x{0}, y{0}, z{0},
-      particles_left_domain{0}, is_wrapper{false}, halo_count{0},
-      boundary_conditions_{}, reflective_flag{false}, periodic_flag{false},
-      halo_cell_indices{}, particles_outbound{}, cell_ghost_particles_map{} {}
+      placement_map{}, r_cutoff_{0}, x{0}, y{0}, z{0}, particles_left_domain{0},
+      is_wrapper{false}, halo_count{0}, boundary_conditions_{},
+      reflective_flag{false}, periodic_flag{false}, halo_cell_indices{},
+      particles_outbound{}, cell_ghost_particles_map{} {}
 
 void LinkedCellContainer::insert(Particle &p, bool placement) {
   ParticlePointer p_ptr = std::make_shared<Particle>(p);
@@ -269,8 +268,7 @@ void LinkedCellContainer::update_particle_location(
 std::vector<ParticlePointer>
 LinkedCellContainer::get_neighbours(int particle_id) {
   std::vector<ParticlePointer> neighbours{};
-  if (particles[particle_id].left_domain ||
-      particles[particle_id].outbound) {
+  if (particles[particle_id].left_domain || particles[particle_id].outbound) {
     return neighbours;
   }
   std::array<double, 3> position = particles[particle_id].getX();
@@ -353,7 +351,7 @@ Particle &LinkedCellContainer::operator[](size_t index) {
   return particles[index];
 }
 
-ParticlePointer& LinkedCellContainer::at(size_t index) {
+ParticlePointer &LinkedCellContainer::at(size_t index) {
   return particles.at(index);
 }
 
@@ -369,35 +367,34 @@ void LinkedCellContainer::mark_halo_cells() {
           halo_cell_indices.push_back(index);
           halo_count++;
 
-
           if (domain_size_.size() == 2) {
-          if (index == 0) {
-            cells[index].placement = Placement::BOTTOM_LEFT_CORNER;
-            cells[index].boundary_condition =
-                placement_map[BOTTOM_LEFT_CORNER];
-          } else if (index == x - 1) {
-            cells[index].placement = Placement::BOTTOM_RIGHT_CORNER;
-            cells[index].boundary_condition =
-                placement_map[BOTTOM_RIGHT_CORNER];
-          } else if (index == x * y - x) {
-            cells[index].placement = Placement::TOP_LEFT_CORNER;
-            cells[index].boundary_condition = placement_map[TOP_LEFT_CORNER];
-          } else if (index == x * y - 1) {
-            cells[index].placement = Placement::TOP_RIGHT_CORNER;
-            cells[index].boundary_condition = placement_map[TOP_RIGHT_CORNER];
-          } else if (index < x) {
-            cells[index].placement = Placement::BOTTOM;
-            cells[index].boundary_condition = placement_map[BOTTOM];
-          } else if (index >= x * (y - 1)) {
-            cells[index].placement = Placement::TOP;
-            cells[index].boundary_condition = placement_map[TOP];
-          } else if (index % x == 0) {
-            cells[index].placement = Placement::LEFT;
-            cells[index].boundary_condition = placement_map[LEFT];
-          } else if ((index + 1) % x == 0) {
-            cells[index].placement = Placement::RIGHT;
-            cells[index].boundary_condition = placement_map[RIGHT];
-          }
+            if (index == 0) {
+              cells[index].placement = Placement::BOTTOM_LEFT_CORNER;
+              cells[index].boundary_condition =
+                  placement_map[BOTTOM_LEFT_CORNER];
+            } else if (index == x - 1) {
+              cells[index].placement = Placement::BOTTOM_RIGHT_CORNER;
+              cells[index].boundary_condition =
+                  placement_map[BOTTOM_RIGHT_CORNER];
+            } else if (index == x * y - x) {
+              cells[index].placement = Placement::TOP_LEFT_CORNER;
+              cells[index].boundary_condition = placement_map[TOP_LEFT_CORNER];
+            } else if (index == x * y - 1) {
+              cells[index].placement = Placement::TOP_RIGHT_CORNER;
+              cells[index].boundary_condition = placement_map[TOP_RIGHT_CORNER];
+            } else if (index < x) {
+              cells[index].placement = Placement::BOTTOM;
+              cells[index].boundary_condition = placement_map[BOTTOM];
+            } else if (index >= x * (y - 1)) {
+              cells[index].placement = Placement::TOP;
+              cells[index].boundary_condition = placement_map[TOP];
+            } else if (index % x == 0) {
+              cells[index].placement = Placement::LEFT;
+              cells[index].boundary_condition = placement_map[LEFT];
+            } else if ((index + 1) % x == 0) {
+              cells[index].placement = Placement::RIGHT;
+              cells[index].boundary_condition = placement_map[RIGHT];
+            }
           } else if (domain_size_.size() == 3) {
             // Corner : Most specific
             if (i == 0 && j == 0 && k == 0) {
@@ -508,7 +505,7 @@ void LinkedCellContainer::mark_halo_cells() {
               cells[index].placement = Placement::RIGHT;
               continue;
             }
-            }
+          }
         }
       }
     }
@@ -579,14 +576,9 @@ GhostParticle LinkedCellContainer::create_ghost_particle(
   return ghost;
 }
 
-ParticleIterator LinkedCellContainer::begin() {
-  return particles.begin();
-}
+ParticleIterator LinkedCellContainer::begin() { return particles.begin(); }
 
-ParticleIterator LinkedCellContainer::end() {
-  return particles.end();
-}
-
+ParticleIterator LinkedCellContainer::end() { return particles.end(); }
 
 void LinkedCellContainer::create_ghost_particles(int particle_id,
                                                  int cell_index) {
@@ -708,1178 +700,1096 @@ void LinkedCellContainer::create_ghost_particles(int particle_id,
     default:
       break;
     }
-  }
-    else if (domain_size_.size() == 3) {
-      // Helper arrays for offsets
-      const std::array<double, 3> left_offset = {domain_size_[0], 0, 0};
-      const std::array<double, 3> right_offset = {-domain_size_[0], 0, 0};
-      const std::array<double, 3> top_offset = {0, -domain_size_[1], 0};
-      const std::array<double, 3> bottom_offset = {0, domain_size_[1], 0};
-      const std::array<double, 3> front_offset = {0, 0, -domain_size_[2]};
-      const std::array<double, 3> back_offset = {0, 0, domain_size_[2]};
-      switch (placement) {
-      case Placement::LEFT: {
-        auto ghost = create_ghost_particle(particle_id, left_offset);
-        // Neighbors of the halo ghost particle mirrored to the RIGHT of the
-        // domain
-        cell_ghost_particles_map[cell_index + x - 1].push_back(
-            ghost); // Direct Left Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x].push_back(
-            ghost); // Left-Top Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x].push_back(
-            ghost); // Left-bottom Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
-            ghost); // Left-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
-            ghost); // Left-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x + x * y].push_back(
-            ghost); // Left-Top-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x - x * y].push_back(
-            ghost); // Left-Top-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x - x * y].push_back(
-            ghost); // Left-Bottom-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x + x * y].push_back(
-            ghost); // Left-Bottom-Front Neighbour
-        break;
-      }
-
-      case Placement::RIGHT: {
-        auto ghost = create_ghost_particle(particle_id, right_offset);
-        // Neighbors of the halo ghost particle mirrored to the LEFT of the
-        // domain 
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost);
-        // Right 
-        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
-            ghost); // Right-Top
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
-            ghost); // Right-Bottom
-        cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
-            ghost); // Right-Back
-        cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
-            ghost); // Right-Front
-        cell_ghost_particles_map[cell_index - x + 1 + x + x * y].push_back(
-            ghost); // Right-Top-Front
-        cell_ghost_particles_map[cell_index - x + 1 + x - x * y].push_back(
-            ghost); // Right-Top-Back
-        cell_ghost_particles_map[cell_index - x + 1 - x - x * y].push_back(
-            ghost); // Right-Bottom-Back
-        cell_ghost_particles_map[cell_index - x + 1 - x + x * y].push_back(
-            ghost); // Right-Bottom-Front
-        break;
-      }
-
-      case Placement::TOP: {
-        auto ghost = create_ghost_particle(particle_id, top_offset);
-        // Neighbors of the halo ghost particle mirrored to the TOP of the
-        // domain 
-        cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
-            ghost); // Top
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1].push_back(
-            ghost); // Top-Left
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1].push_back(
-            ghost); // Top-Right
-        cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
-            ghost); // Top-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
-            ghost); // Top-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost); // Top-Right-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + x *
-        y].push_back(
-            ghost); // Top-Right-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost); // Top-Left-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost); // Top-Left-Front
-        break;
-      }
-
-      case Placement::BOTTOM: {
-        auto ghost = create_ghost_particle(particle_id, bottom_offset);
-        // Neighbors of the halo ghost particle mirrored to the BOTTOM of the
-        // domain
-        cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
-            ghost); // Bottom
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1].push_back(
-            ghost); // Bottom-Left
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1].push_back(
-            ghost); // Bottom-Right
-        cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
-            ghost); // Bottom-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
-            ghost); // Bottom-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost); // Bottom-Right-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + x *
-        y].push_back(
-            ghost); // Bottom-Right-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost); // Bottom-Left-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost); // Bottom-Left-Front
-        break;
-      }
-
-      case Placement::FRONT: {
-        auto ghost = create_ghost_particle(particle_id, front_offset);
-        // Neighbors of the halo ghost particle mirrored to the BACK of the
-        // domain 
-        cell_ghost_particles_map[cell_index - (z - 1) * x *
-        y].push_back(
-            ghost); // Front
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1].push_back(
-            ghost); // Front-Left
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1].push_back(
-            ghost); // Front-Right
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + x].push_back(
-            ghost); // Front-Top
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - x].push_back(
-            ghost); // Front-Bottom
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 +
-        x].push_back(
-            ghost); // Front-Right-Top
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 -
-        x].push_back(
-            ghost); // Front-Right-Bottom
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 +
-        x].push_back(
-            ghost); // Front-Left-Top
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 -
-        x].push_back(
-            ghost); // Front-Left-Bottom
-        break;
-      }
-
-      case Placement::BACK: {
-        auto ghost = create_ghost_particle(particle_id, back_offset);
-        // Neighbors of the halo ghost particle mirrored to the FRONT of the
-        // domain
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
-            ghost); // Back
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1].push_back(
-            ghost); // Back-Left
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1].push_back(
-            ghost); // Back-Right
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + x].push_back(
-            ghost); // Back-Top
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - x].push_back(
-            ghost); // Back-Bottom
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 +
-        x].push_back(
-            ghost); // Back-Right-Top
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 -
-        x].push_back(
-            ghost); // Back-Right-Bottom
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 +
-        x].push_back(
-            ghost); // Back-Left-Top
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 -
-        x].push_back(
-            ghost); // Back-Left-Bottom
-        break;
-      }
-
-      case Placement::LEFT_FRONT_EDGE: {
-        auto ghost_1 = create_ghost_particle(particle_id, left_offset);
-        // map 6 neighbours
-        cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_1); //Left 
-        cell_ghost_particles_map[cell_index + x + x - 1].push_back(
-            ghost_1); // Left-Top
-        cell_ghost_particles_map[cell_index - 1].push_back(
-            ghost_1); // Left-Bottom
-        cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
-            ghost_1); // Left-Back
-        cell_ghost_particles_map[cell_index + x + x - 1 - x * y].push_back(
-            ghost_1); // Left-Top-Back
-        cell_ghost_particles_map[cell_index - 1 - x * y].push_back(
-            ghost_1); // Left-Bottom-Back
-
-        auto ghost_2 = create_ghost_particle(particle_id, front_offset);
-        // map 6 neighbours
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
-            ghost_2); // Front
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1].push_back(
-            ghost_2); // Front-Right
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + x].push_back(
-            ghost_2); // Front-Top
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - x].push_back(
-            ghost_2); // Front-Bottom
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 +
-        x].push_back(
-            ghost_2); // Front-Right-Top
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 -
-        x].push_back(
-            ghost_2); // Front-Right-Bottom
-
-        auto ghost_3 = create_ghost_particle(
-            particle_id, {left_offset[0], 0, front_offset[2]});
-        // map 3 neighbours
-        cell_ghost_particles_map[cell_index + x - 1 - (z - 1) * x * y]
-            .push_back(ghost_3); // Left-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x - (z - 1) * x * y]
-            .push_back(ghost_3); // Left-Top-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x - (z - 1) * x * y]
-            .push_back(ghost_3); // Left-Bottom-Front Neighbour
-        break;
-      }
-
-      case Placement::LEFT_BACK_EDGE: {
-        auto ghost_1 = create_ghost_particle(particle_id, left_offset);
-        cell_ghost_particles_map[cell_index + x - 1].push_back(
-            ghost_1); // Direct Left Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x].push_back(
-            ghost_1); // Left-Top Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x].push_back(
-            ghost_1); // Left-bottom Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
-            ghost_1); // Left-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x + x * y].push_back(
-            ghost_1); // Left-Top-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x + x * y].push_back(
-            ghost_1); // Left-Bottom-Front Neighbour
-
-        auto ghost_2 = create_ghost_particle(particle_id, back_offset);
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
-            ghost_2); // Back
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1].push_back(
-            ghost_2); // Back-Right
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + x].push_back(
-            ghost_2); // Back-Top
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - x].push_back(
-            ghost_2); // Back-Bottom
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 +
-        x].push_back(
-            ghost_2); // Back-Right-Top
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 -
-        x].push_back(
-            ghost_2); // Back-Right-Bottom
-
-        auto ghost_3 = create_ghost_particle(particle_id,
-                                             {left_offset[0], 0,
-                                             back_offset[2]});
-        cell_ghost_particles_map[cell_index + x - 1 + (z - 1) * x * y]
-            .push_back(ghost_3); // Left-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x + (z - 1) * x * y]
-            .push_back(ghost_3); // Left-Top-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x + (z - 1) * x * y]
-            .push_back(ghost_3); // Left-Bottom-Back Neighbour
-        break;
-      }
-
-      case Placement::RIGHT_FRONT_EDGE: {
-        auto ghost_1 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
-            ghost_1); // Right-Top
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
-            ghost_1); // Right-Bottom
-        cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
-            ghost_1); // Right-Back
-        cell_ghost_particles_map[cell_index - x + 1 + x - x * y].push_back(
-            ghost_1); // Right-Top-Back
-        cell_ghost_particles_map[cell_index - x + 1 - x - x * y].push_back(
-            ghost_1); // Right-Bottom-Back
-
-        auto ghost_2 = create_ghost_particle(particle_id, front_offset);
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
-            ghost_2); // Front
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1].push_back(
-            ghost_2); // Front-Left
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + x].push_back(
-            ghost_2); // Front-Top
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - x].push_back(
-            ghost_2); // Front-Bottom
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 +
-        x].push_back(
-            ghost_2); // Front-Left-Top
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 -
-        x].push_back(
-            ghost_2); // Front-Left-Bottom
-
-        auto ghost_3 = create_ghost_particle(
-            particle_id, {right_offset[0], 0, front_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 - (z - 1) * x * y]
-            .push_back(ghost_3); // Right-Front
-        cell_ghost_particles_map[cell_index - x + 1 + x - (z - 1) * x * y]
-            .push_back(ghost_3); // Right-Top-Front
-        cell_ghost_particles_map[cell_index - x + 1 - x - (z - 1) * x * y]
-            .push_back(ghost_3); // Right-Bottom-Front
-        break;
-      }
-
-      case Placement::RIGHT_BACK_EDGE: {
-        auto ghost_1 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
-            ghost_1); // Right-Top
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
-            ghost_1); // Right-Bottom
-        cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
-            ghost_1); // Right-Front
-        cell_ghost_particles_map[cell_index - x + 1 + x + x * y].push_back(
-            ghost_1); // Right-Top-Front
-        cell_ghost_particles_map[cell_index - x + 1 - x + x * y].push_back(
-            ghost_1); // Right-Bottom-Front
-
-        auto ghost_2 = create_ghost_particle(particle_id, back_offset);
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
-            ghost_2); // Back
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1].push_back(
-            ghost_2); // Back-Left
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + x].push_back(
-            ghost_2); // Back-Top
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - x].push_back(
-            ghost_2); // Back-Bottom
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 + x]
-            .push_back(ghost_2); // Back-Left-Top
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 - x]
-            .push_back(ghost_2); // Back-Left-Bottom
-
-        auto ghost_3 = create_ghost_particle(
-            particle_id, {right_offset[0], 0, back_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 + (z - 1) * x * y]
-            .push_back(ghost_3); // Right-Back
-        cell_ghost_particles_map[cell_index - x + 1 + x + (z - 1) * x * y]
-            .push_back(ghost_3); // Right-Top-Back
-        cell_ghost_particles_map[cell_index - x + 1 - x + (z - 1) * x * y]
-            .push_back(ghost_3); // Right-Bottom-Back
-        break;
-      }
-
-      case Placement::TOP_LEFT_EDGE: {
-        auto ghost_1 = create_ghost_particle(particle_id, left_offset);
-        cell_ghost_particles_map[cell_index + x - 1].push_back(
-            ghost_1); // Direct Left Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x].push_back(
-            ghost_1); // Left-bottom Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
-            ghost_1); // Left-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
-            ghost_1); // Left-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x - x * y].push_back(
-            ghost_1); // Left-Bottom-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x + x * y].push_back(
-            ghost_1); // Left-Bottom-Front Neighbour
-
-        auto ghost_2 = create_ghost_particle(particle_id, top_offset);
-        cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
-            ghost_2); // Top
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1].push_back(
-            ghost_2); // Top-Right
-        cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
-            ghost_2); // Top-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
-            ghost_2); // Top-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost_2); // Top-Right-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + x *
-        y].push_back(
-            ghost_2); // Top-Right-Front
-
-        auto ghost_3 = create_ghost_particle(particle_id,
-                                             {left_offset[0], top_offset[1],
-                                             0});
-        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x].push_back(
-            ghost_3); // Left-Top Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x + x * y]
-            .push_back(ghost_3); // Left-Top-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x - x * y]
-            .push_back(ghost_3); // Left-Top-Back Neighbour
-        break;
-      }
-
-      case Placement::TOP_RIGHT_EDGE: {
-        auto ghost_1 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
-            ghost_1); // Right-Bottom
-        cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
-            ghost_1); // Right-Back
-        cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
-            ghost_1); // Right-Front
-        cell_ghost_particles_map[cell_index - x + 1 - x - x * y].push_back(
-            ghost_1); // Right-Bottom-Back
-        cell_ghost_particles_map[cell_index - x + 1 - x + x * y].push_back(
-            ghost_1); // Right-Bottom-Front
-
-        auto ghost_2 = create_ghost_particle(particle_id, top_offset);
-        cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
-            ghost_2); // Top
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1].push_back(
-            ghost_2); // Top-Left
-        cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
-            ghost_2); // Top-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
-            ghost_2); // Top-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost_2); // Top-Left-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost_2); // Top-Left-Front
-        auto ghost_3 = create_ghost_particle(particle_id,
-                                             {right_offset[0], top_offset[1],
-                                             0});
-        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x].push_back(
-            ghost_3); // Right-Top
-        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x + x * y]
-            .push_back(ghost_3); // Right-Top-Front
-        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x - x * y]
-            .push_back(ghost_3); // Right-Top-Back
-        break;
-      }
-
-      case Placement::BOTTOM_RIGHT_EDGE: {
-        auto ghost_1 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
-            ghost_1); // Right-Top
-        cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
-            ghost_1); // Right-Back
-        cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
-            ghost_1); // Right-Front
-        cell_ghost_particles_map[cell_index - x + 1 + x + x * y].push_back(
-            ghost_1); // Right-Top-Front
-        cell_ghost_particles_map[cell_index - x + 1 + x - x * y].push_back(
-            ghost_1); // Right-Top-Back
-
-        auto ghost_2 = create_ghost_particle(particle_id, bottom_offset);
-        cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
-            ghost_2); // Bottom
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1].push_back(
-            ghost_2); // Bottom-Left
-        cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
-            ghost_2); // Bottom-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
-            ghost_2); // Bottom-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost_2); // Bottom-Left-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost_2); // Bottom-Left-Front
-        auto ghost_3 = create_ghost_particle(
-            particle_id, {right_offset[0], bottom_offset[1], 0});
-        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x].push_back(
-            ghost_3); // Right-Bottom
-        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x - x * y]
-            .push_back(ghost_3); // Right-Bottom-Back
-        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x + x * y]
-            .push_back(ghost_3); // Right-Bottom-Front
-        break;
-      }
-
-      case Placement::BOTTOM_LEFT_EDGE: {
-        auto ghost_1 = create_ghost_particle(particle_id, left_offset);
-        cell_ghost_particles_map[cell_index + x - 1].push_back(
-            ghost_1); // Direct Left Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x].push_back(
-            ghost_1); // Left-Top Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
-            ghost_1); // Left-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
-            ghost_1); // Left-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x + x * y].push_back(
-            ghost_1); // Left-Top-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x - x * y].push_back(
-            ghost_1); // Left-Top-Back Neighbour
-        auto ghost_2 = create_ghost_particle(particle_id, bottom_offset);
-        cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
-            ghost_2); // Bottom
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1].push_back(
-            ghost_2); // Bottom-Right
-        cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
-            ghost_2); // Bottom-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
-            ghost_2); // Bottom-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost_2); // Bottom-Right-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + x *
-        y].push_back(
-            ghost_2); // Bottom-Right-Front
-
-        auto ghost_3 = create_ghost_particle(
-            particle_id, {left_offset[0], bottom_offset[1], 0});
-        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x].push_back(
-            ghost_3); // Left-bottom Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x - x * y]
-            .push_back(ghost_3); // Left-Bottom-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x + x * y]
-            .push_back(ghost_3); // Left-Bottom-Front Neighbour
-        break;
-      }
-
-      case Placement::TOP_FRONT_EDGE: {
-        auto ghost_1 = create_ghost_particle(particle_id, top_offset);
-        cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
-            ghost_1); // Top
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1].push_back(
-            ghost_1); // Top-Left
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1].push_back(
-            ghost_1); // Top-Right
-        cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
-            ghost_1); // Top-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost_1); // Top-Right-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost_1); // Top-Left-Back
-
-        auto ghost_2 = create_ghost_particle(particle_id, front_offset);
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
-            ghost_2); // Front
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1].push_back(
-            ghost_2); // Front-Left
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1].push_back(
-            ghost_2); // Front-Right
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - x].push_back(
-            ghost_2); // Front-Bottom
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 -
-        x].push_back(
-            ghost_2); // Front-Right-Bottom
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 -
-        x].push_back(
-            ghost_2); // Front-Left-Bottom
-
-        auto ghost_3 = create_ghost_particle(particle_id,
-                                             {0, top_offset[1],
-                                             front_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x - (z - 1) * x * y]
-            .push_back(ghost_3); // Top-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - (z - 1) * x * y]
-            .push_back(ghost_3); // Top-Right-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - (z - 1) * x * y]
-            .push_back(ghost_3); // Top-Left-Front
-        break;
-      }
-
-      case Placement::BOTTOM_FRONT_EDGE: {
-        auto ghost_1 = create_ghost_particle(particle_id, bottom_offset);
-        cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
-            ghost_1); // Bottom
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1].push_back(
-            ghost_1); // Bottom-Left
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1].push_back(
-            ghost_1); // Bottom-Right
-        cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
-            ghost_1); // Bottom-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost_1); // Bottom-Right-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost_1); // Bottom-Left-Back
-        auto ghost_2 = create_ghost_particle(particle_id, front_offset);
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
-            ghost_2); // Front
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1].push_back(
-            ghost_2); // Front-Left
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1].push_back(
-            ghost_2); // Front-Right
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + x].push_back(
-            ghost_2); // Front-Top
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 +
-        x].push_back(
-            ghost_2); // Front-Right-Top
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 +
-        x].push_back(
-            ghost_2); // Front-Left-Top
-        auto ghost_3 = create_ghost_particle(
-            particle_id, {0, bottom_offset[1], front_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x - (z - 1) * x * y]
-            .push_back(ghost_3); // Bottom-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - (z - 1) * x * y]
-            .push_back(ghost_3); // Bottom-Right-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - (z - 1) * x * y]
-            .push_back(ghost_3); // Bottom-Left-Front
-        break;
-      }
-
-      case Placement::BOTTOM_BACK_EDGE: {
-        auto ghost_1 = create_ghost_particle(particle_id, bottom_offset);
-        cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
-            ghost_1); // Bottom
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1].push_back(
-            ghost_1); // Bottom-Left
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1].push_back(
-            ghost_1); // Bottom-Right
-        cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
-            ghost_1); // Bottom-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + x *
-        y].push_back(
-            ghost_1); // Bottom-Right-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost_1); // Bottom-Left-Front\
-
-        auto ghost_2 = create_ghost_particle(particle_id, back_offset);
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
-            ghost_2); // Back
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1].push_back(
-            ghost_2); // Back-Left
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1].push_back(
-            ghost_2); // Back-Right
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + x].push_back(
-            ghost_2); // Back-Top
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 +
-        x].push_back(
-            ghost_2); // Back-Right-Top
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 +
-        x].push_back(
-            ghost_2); // Back-Left-Top
-
-        auto ghost_3 = create_ghost_particle(
-            particle_id, {0, bottom_offset[1], back_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x + (z - 1) * x * y]
-            .push_back(ghost_3); // Bottom-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + (z - 1) * x * y]
-            .push_back(ghost_3); // Bottom-Right-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + (z - 1) * x * y]
-            .push_back(ghost_3); // Bottom-Left-Back
-        break;
-      }
-
-      case Placement::TOP_BACK_EDGE: {
-        auto ghost_1 = create_ghost_particle(particle_id, top_offset);
-        cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
-            ghost_1); // Top
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1].push_back(
-            ghost_1); // Top-Left
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1].push_back(
-            ghost_1); // Top-Right
-        cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
-            ghost_1); // Top-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + x *
-        y].push_back(
-            ghost_1); // Top-Right-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost_1); // Top-Left-Front
-
-        auto ghost_2 = create_ghost_particle(particle_id, back_offset);
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
-            ghost_2); // Back
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1].push_back(
-            ghost_2); // Back-Left
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1].push_back(
-            ghost_2); // Back-Right
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - x].push_back(
-            ghost_2); // Back-Bottom
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 -
-        x].push_back(
-            ghost_2); // Back-Right-Bottom
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 -
-        x].push_back(
-            ghost_2); // Back-Left-Bottom
-        auto ghost_3 = create_ghost_particle(particle_id,
-                                             {0, top_offset[1],
-                                             back_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x + (z - 1) * x * y]
-            .push_back(ghost_3); // Top-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + (z - 1) * x * y]
-            .push_back(ghost_3); // Top-Right-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + (z - 1) * x * y]
-            .push_back(ghost_3); // Top-Left-Back
-        break;
-      }
-
-      case Placement::TOP_FRONT_RIGHT_CORNER: {
-        auto ghost_1 = create_ghost_particle(particle_id, top_offset);
-        cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
-            ghost_1); // Top
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1].push_back(
-            ghost_1); // Top-Left
-        cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
-            ghost_1); // Top-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost_1); // Top-Left-Back
-        auto ghost_2 = create_ghost_particle(particle_id, front_offset);
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
-            ghost_2); // Front
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1].push_back(
-            ghost_2); // Front-Left
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - x].push_back(
-            ghost_2); // Front-Bottom
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 -
-        x].push_back(
-            ghost_2); // Front-Left-Bottom
-        auto ghost_3 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
-            ghost_3); // Right-Bottom
-        cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
-            ghost_3); // Right-Back
-        cell_ghost_particles_map[cell_index - x + 1 - x - x * y].push_back(
-            ghost_3); // Right-Bottom-Back
-        auto ghost_4 = create_ghost_particle(particle_id,
-                                             {right_offset[0], top_offset[1],
-                                             0});
-        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x].push_back(
-            ghost_4); // Right-Top
-        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x - x * y]
-            .push_back(ghost_4); // Right-Top-Back
-        auto ghost_5 = create_ghost_particle(
-            particle_id, {right_offset[0], 0, front_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 - (z - 1) * x * y]
-            .push_back(ghost_5); // Right-Front
-        cell_ghost_particles_map[cell_index - x + 1 - x - (z - 1) * x * y]
-            .push_back(ghost_5); // Right-Bottom-Front
-        auto ghost_6 = create_ghost_particle(particle_id,
-                                             {0, top_offset[1],
-                                             front_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x - (z - 1) * x * y]
-            .push_back(ghost_6); // Top-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - (z - 1) * x * y]
-            .push_back(ghost_6); // Top-Left-Front
-        auto ghost_7 = create_ghost_particle(
-            particle_id, {right_offset[0], top_offset[1], front_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x + x * y]
-            .push_back(ghost_7); // Right-Top-Front
-        break;
-      }
-
-      case Placement::TOP_FRONT_LEFT_CORNER: {
-        auto ghost_1 = create_ghost_particle(particle_id, top_offset);
-        cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
-            ghost_1); // Top
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1].push_back(
-            ghost_1); // Top-Right
-        cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
-            ghost_1); // Top-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost_1); // Top-Right-Back
-        auto ghost_2 = create_ghost_particle(particle_id, front_offset);
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
-            ghost_2); // Front
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1].push_back(
-            ghost_2); // Front-Right
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - x].push_back(
-            ghost_2); // Front-Bottom
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 -
-        x].push_back(
-            ghost_2); // Front-Right-Bottom
-        auto ghost_3 = create_ghost_particle(particle_id, left_offset);
-        cell_ghost_particles_map[cell_index + x - 1].push_back(
-            ghost_3); // Direct Left Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x].push_back(
-            ghost_3); // Left-bottom Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
-            ghost_3); // Left-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x - x * y].push_back(
-            ghost_3); // Left-Bottom-Back Neighbour
-        auto ghost_4 = create_ghost_particle(particle_id,
-                                             {left_offset[0], top_offset[1],
-                                             0});
-        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x].push_back(
-            ghost_4); // Left-Top Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x - x * y]
-            .push_back(ghost_4); // Left-Top-Back Neighbour
-        auto ghost_5 = create_ghost_particle(
-            particle_id, {left_offset[0], 0, front_offset[2]});
-        cell_ghost_particles_map[cell_index + x - 1 - (z - 1) * x * y]
-            .push_back(ghost_5); // Left-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x - (z - 1) * x * y]
-            .push_back(ghost_5); // Left-Bottom-Front Neighbour
-        auto ghost_6 = create_ghost_particle(particle_id,
-                                             {0, top_offset[1],
-                                             front_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x - (z - 1) * x * y]
-            .push_back(ghost_6); // Top-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - (z - 1) * x * y]
-            .push_back(ghost_6); // Top-Right-Front
-        auto ghost_7 = create_ghost_particle(
-            particle_id, {left_offset[0], top_offset[1], front_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x + x - 1 -
-                                 (z - 1) * x * y]
-            .push_back(ghost_7); // Top-Left-Front
-        break;
-      }
-
-      case Placement::TOP_BACK_LEFT_CORNER: {
-        auto ghost_1 = create_ghost_particle(particle_id, top_offset);
-        cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
-            ghost_1); // Top
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1].push_back(
-            ghost_1); // Top-Right
-        cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
-            ghost_1); // Top-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + x *
-        y].push_back(
-            ghost_1); // Top-Right-Front
-        auto ghost_2 = create_ghost_particle(particle_id, back_offset);
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
-            ghost_2); // Back
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1].push_back(
-            ghost_2); // Back-Right
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - x].push_back(
-            ghost_2); // Back-Bottom
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 -
-        x].push_back(
-            ghost_2); // Back-Right-Bottom
-        auto ghost_3 = create_ghost_particle(particle_id, left_offset);
-        cell_ghost_particles_map[cell_index + x - 1].push_back(
-            ghost_3); // Direct Left Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x].push_back(
-            ghost_3); // Left-bottom Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
-            ghost_3); // Left-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x + x * y].push_back(
-            ghost_3); // Left-Bottom-Front Neighbour
-        auto ghost_4 = create_ghost_particle(particle_id,
-                                             {left_offset[0], top_offset[1],
-                                             0});
-        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x].push_back(
-            ghost_4); // Left-Top Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x + x * y]
-            .push_back(ghost_4); // Left-Top-Front Neighbour
-        auto ghost_5 = create_ghost_particle(particle_id,
-                                             {left_offset[0], 0,
-                                             back_offset[2]});
-        cell_ghost_particles_map[cell_index + x - 1 + (z - 1) * x * y]
-            .push_back(ghost_5); // Left-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x + (z - 1) * x * y]
-            .push_back(ghost_5); // Left-Bottom-Back Neighbour
-
-        auto ghost_6 = create_ghost_particle(particle_id,
-                                             {0, top_offset[1],
-                                             back_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x + (z - 1) * x * y]
-            .push_back(ghost_6); // Top-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + (z - 1) * x * y]
-            .push_back(ghost_6); // Top-Right-Back
-        auto ghost_7 = create_ghost_particle(
-            particle_id, {left_offset[0], top_offset[1], back_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x + x - 1 +
-                                 (z - 1) * x * y]
-            .push_back(ghost_7); // Top-Left-Back
-        break;
-      }
-
-      case Placement::TOP_BACK_RIGHT_CORNER: {
-        auto ghost_1 = create_ghost_particle(particle_id, top_offset);
-        cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
-            ghost_1); // Top
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1].push_back(
-            ghost_1); // Top-Left
-        cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
-            ghost_1); // Top-Front
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost_1); // Top-Left-Front
-
-        auto ghost_2 = create_ghost_particle(particle_id, back_offset);
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
-            ghost_2); // Back
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1].push_back(
-            ghost_2); // Back-Left
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - x].push_back(
-            ghost_2); // Back-Bottom
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 -
-        x].push_back(
-            ghost_2); // Back-Left-Bottom
-
-        auto ghost_3 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
-            ghost_3); // Right-Bottom
-        cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
-            ghost_3); // Right-Front
-        cell_ghost_particles_map[cell_index - x + 1 - x + x * y].push_back(
-            ghost_3); // Right-Bottom-Front
-
-        auto ghost_4 = create_ghost_particle(particle_id,
-                                             {right_offset[0], top_offset[1],
-                                             0});
-        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x].push_back(
-            ghost_4); // Right-Top
-        cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x + x * y]
-            .push_back(ghost_4); // Right-Top-Front
-
-        auto ghost_5 = create_ghost_particle(
-            particle_id, {right_offset[0], 0, back_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 + (z - 1) * x * y]
-            .push_back(ghost_5); // Right-Back
-        cell_ghost_particles_map[cell_index - x + 1 - x + (z - 1) * x * y]
-            .push_back(ghost_5); // Right-Bottom-Back
-
-        auto ghost_6 = create_ghost_particle(particle_id,
-                                             {0, top_offset[1],
-                                             back_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x + (z - 1) * x * y]
-            .push_back(ghost_6); // Top-Back
-        cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + (z - 1) * x * y]
-            .push_back(ghost_6); // Top-Left-Back
-
-        auto ghost_7 = create_ghost_particle(
-            particle_id, {right_offset[0], top_offset[1], back_offset[2]});
-        cell_ghost_particles_map[cell_index - (y - 1) * x - x + 1 +
-                                 (z - 1) * x * y]
-            .push_back(ghost_7); // Top-Right-Back
-        break;
-      }
-
-      case Placement::BOTTOM_FRONT_RIGHT_CORNER: {
-        auto ghost_1 = create_ghost_particle(particle_id, bottom_offset);
-        cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
-            ghost_1); // Bottom
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1].push_back(
-            ghost_1); // Bottom-Left
-        cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
-            ghost_1); // Bottom-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - x *
-        y].push_back(
-            ghost_1); // Bottom-Left-Back
-
-        auto ghost_2 = create_ghost_particle(particle_id, front_offset);
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
-            ghost_2); // Front
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1].push_back(
-            ghost_2); // Front-Left
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + x].push_back(
-            ghost_2); // Front-Top
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 +
-        x].push_back(
-            ghost_2); // Front-Left-Top
-
-        auto ghost_3 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
-            ghost_3); // Right-Top
-        cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
-            ghost_3); // Right-Back
-        cell_ghost_particles_map[cell_index - x + 1 + x - x * y].push_back(
-            ghost_3); // Right-Top-Back
-
-        auto ghost_4 = create_ghost_particle(
-            particle_id, {right_offset[0], bottom_offset[1], 0});
-        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x].push_back(
-            ghost_4); // Right-Bottom
-        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x - x * y]
-            .push_back(ghost_4); // Right-Bottom-Back
-
-        auto ghost_5 = create_ghost_particle(
-            particle_id, {right_offset[0], 0, front_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 - (z - 1) * x * y]
-            .push_back(ghost_5); // Right-Front
-        cell_ghost_particles_map[cell_index - x + 1 + x - (z - 1) * x * y]
-            .push_back(ghost_5); // Right-Top-Front
-
-        auto ghost_6 = create_ghost_particle(
-            particle_id, {0, bottom_offset[1], front_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x - (z - 1) * x * y]
-            .push_back(ghost_6); // Bottom-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - (z - 1) * x * y]
-            .push_back(ghost_6); // Bottom-Left-Front
-
-        auto ghost_7 = create_ghost_particle(
-            particle_id, {right_offset[0], bottom_offset[1],
-            front_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x - x + 1 -
-                                 (z - 1) * x * y]
-            .push_back(ghost_7); // Bottom-Right-Front
-        break;
-      }
-
-      case Placement::BOTTOM_FRONT_LEFT_CORNER: {
-        auto ghost_1 = create_ghost_particle(particle_id, bottom_offset);
-        cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
-            ghost_1); // Bottom
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1].push_back(
-            ghost_1); // Bottom-Right
-        cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
-            ghost_1); // Bottom-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - x *
-        y].push_back(
-            ghost_1); // Bottom-Right-Back
-
-        auto ghost_2 = create_ghost_particle(particle_id, front_offset);
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
-            ghost_2); // Front
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1].push_back(
-            ghost_2); // Front-Right
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + x].push_back(
-            ghost_2); // Front-Top
-        cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 +
-        x].push_back(
-            ghost_2); // Front-Right-Top
-
-        auto ghost_3 = create_ghost_particle(particle_id, left_offset);
-        cell_ghost_particles_map[cell_index + x - 1].push_back(
-            ghost_3); // Direct Left Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x].push_back(
-            ghost_3); // Left-Top Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
-            ghost_3); // Left-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x - x * y].push_back(
-            ghost_3); // Left-Top-Back Neighbour
-
-        auto ghost_4 = create_ghost_particle(
-            particle_id, {left_offset[0], bottom_offset[1], 0});
-        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x].push_back(
-            ghost_4); // Left-bottom Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x - x * y]
-            .push_back(ghost_4); // Left-Bottom-Back Neighbour
-
-        auto ghost_5 = create_ghost_particle(
-            particle_id, {left_offset[0], 0, front_offset[2]});
-        cell_ghost_particles_map[cell_index + x - 1 - (z - 1) * x * y]
-            .push_back(ghost_5); // Left-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x - (z - 1) * x * y]
-            .push_back(ghost_5); // Left-Top-Front Neighbour
-
-        auto ghost_6 = create_ghost_particle(
-            particle_id, {0, bottom_offset[1], front_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x - (z - 1) * x * y]
-            .push_back(ghost_6); // Bottom-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - (z - 1) * x * y]
-            .push_back(ghost_6); // Bottom-Right-Front
-
-        auto ghost_7 = create_ghost_particle(
-            particle_id, {left_offset[0], bottom_offset[1],
-            front_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x + x - 1 -
-                                 (z - 1) * x * y]
-            .push_back(ghost_7); // Bottom-Left-Front
-        break;
-      }
-
-      case Placement::BOTTOM_BACK_LEFT_CORNER: {
-        auto ghost_1 = create_ghost_particle(particle_id, bottom_offset);
-        cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
-            ghost_1); // Bottom
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1].push_back(
-            ghost_1); // Bottom-Right
-        cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
-            ghost_1); // Bottom-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + x *
-        y].push_back(
-            ghost_1); // Bottom-Right-Front
-
-        auto ghost_2 = create_ghost_particle(particle_id, back_offset);
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
-            ghost_2); // Back
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1].push_back(
-            ghost_2); // Back-Right
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + x].push_back(
-            ghost_2); // Back-Top
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 +
-        x].push_back(
-            ghost_2); // Back-Right-Top
-
-        auto ghost_3 = create_ghost_particle(particle_id, left_offset);
-        cell_ghost_particles_map[cell_index + x - 1].push_back(
-            ghost_3); // Direct Left Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x].push_back(
-            ghost_3); // Left-Top Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
-            ghost_3); // Left-Front Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x + x * y].push_back(
-            ghost_3); // Left-Top-Front Neighbour
-
-        auto ghost_4 = create_ghost_particle(
-            particle_id, {left_offset[0], bottom_offset[1], 0});
-        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x].push_back(
-            ghost_4); // Left-bottom Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x + x * y]
-            .push_back(ghost_4); // Left-Bottom-Front Neighbour
-
-        auto ghost_5 = create_ghost_particle(particle_id,
-                                             {left_offset[0], 0,
-                                             back_offset[2]});
-        cell_ghost_particles_map[cell_index + x - 1 + (z - 1) * x * y]
-            .push_back(ghost_5); // Left-Back Neighbour
-        cell_ghost_particles_map[cell_index + x - 1 + x + (z - 1) * x * y]
-            .push_back(ghost_5); // Left-Top-Back Neighbour
-
-        auto ghost_6 = create_ghost_particle(
-            particle_id, {0, bottom_offset[1], back_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x + (z - 1) * x * y]
-            .push_back(ghost_6); // Bottom-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + (z - 1) * x * y]
-            .push_back(ghost_6); // Bottom-Right-Back
-
-        auto ghost_7 = create_ghost_particle(
-            particle_id, {left_offset[0], bottom_offset[1], back_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x + x - 1 +
-                                 (z - 1) * x * y]
-            .push_back(ghost_7); // Bottom-Left-Back
-        break;
-      }
-
-      case Placement::BOTTOM_BACK_RIGHT_CORNER: {
-        auto ghost_1 = create_ghost_particle(particle_id, bottom_offset);
-        cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
-            ghost_1); // Bottom
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1].push_back(
-            ghost_1); // Bottom-Left
-        cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
-            ghost_1); // Bottom-Front
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + x *
-        y].push_back(
-            ghost_1); // Bottom-Left-Front
-
-        auto ghost_2 = create_ghost_particle(particle_id, back_offset);
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
-            ghost_2); // Back
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1].push_back(
-            ghost_2); // Back-Left
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y + x].push_back(
-            ghost_2); // Back-Top
-        cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 +
-        x].push_back(
-            ghost_2); // Back-Left-Top
-
-        auto ghost_3 = create_ghost_particle(particle_id, right_offset);
-        cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); //Right 
-        cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
-            ghost_3); // Right-Top
-        cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
-            ghost_3); // Right-Front
-        cell_ghost_particles_map[cell_index - x + 1 + x + x * y].push_back(
-            ghost_3); // Right-Top-Front
-
-        auto ghost_4 = create_ghost_particle(
-            particle_id, {right_offset[0], bottom_offset[1], 0});
-        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x].push_back(
-            ghost_4); // Right-Bottom
-        cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x + x * y]
-            .push_back(ghost_4); // Right-Bottom-Front
-
-        auto ghost_5 = create_ghost_particle(
-            particle_id, {right_offset[0], 0, back_offset[2]});
-        cell_ghost_particles_map[cell_index - x + 1 + (z - 1) * x * y]
-            .push_back(ghost_5); // Right-Back
-        cell_ghost_particles_map[cell_index - x + 1 + x + (z - 1) * x * y]
-            .push_back(ghost_5); // Right-Top-Back
-
-        auto ghost_6 = create_ghost_particle(
-            particle_id, {0, bottom_offset[1], back_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x + (z - 1) * x * y]
-            .push_back(ghost_6); // Bottom-Back
-        cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + (z - 1) * x * y]
-            .push_back(ghost_6); // Bottom-Left-Back
-
-        auto ghost_7 = create_ghost_particle(
-            particle_id, {right_offset[0], bottom_offset[1],
-            back_offset[2]});
-        cell_ghost_particles_map[cell_index + (y - 1) * x - x + 1 +
-                                 (z - 1) * x * y]
-            .push_back(ghost_7); // Bottom-Right-Back
-        break;
-      }
-      default:
-        break;
-      }
+  } else if (domain_size_.size() == 3) {
+    // Helper arrays for offsets
+    const std::array<double, 3> left_offset = {domain_size_[0], 0, 0};
+    const std::array<double, 3> right_offset = {-domain_size_[0], 0, 0};
+    const std::array<double, 3> top_offset = {0, -domain_size_[1], 0};
+    const std::array<double, 3> bottom_offset = {0, domain_size_[1], 0};
+    const std::array<double, 3> front_offset = {0, 0, -domain_size_[2]};
+    const std::array<double, 3> back_offset = {0, 0, domain_size_[2]};
+    switch (placement) {
+    case Placement::LEFT: {
+      auto ghost = create_ghost_particle(particle_id, left_offset);
+      // Neighbors of the halo ghost particle mirrored to the RIGHT of the
+      // domain
+      cell_ghost_particles_map[cell_index + x - 1].push_back(
+          ghost); // Direct Left Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x].push_back(
+          ghost); // Left-Top Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x].push_back(
+          ghost); // Left-bottom Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
+          ghost); // Left-Back Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
+          ghost); // Left-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x + x * y].push_back(
+          ghost); // Left-Top-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x - x * y].push_back(
+          ghost); // Left-Top-Back Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x - x * y].push_back(
+          ghost); // Left-Bottom-Back Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x + x * y].push_back(
+          ghost); // Left-Bottom-Front Neighbour
+      break;
     }
+
+    case Placement::RIGHT: {
+      auto ghost = create_ghost_particle(particle_id, right_offset);
+      // Neighbors of the halo ghost particle mirrored to the LEFT of the
+      // domain
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost);
+      // Right
+      cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+          ghost); // Right-Top
+      cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
+          ghost); // Right-Bottom
+      cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
+          ghost); // Right-Back
+      cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
+          ghost); // Right-Front
+      cell_ghost_particles_map[cell_index - x + 1 + x + x * y].push_back(
+          ghost); // Right-Top-Front
+      cell_ghost_particles_map[cell_index - x + 1 + x - x * y].push_back(
+          ghost); // Right-Top-Back
+      cell_ghost_particles_map[cell_index - x + 1 - x - x * y].push_back(
+          ghost); // Right-Bottom-Back
+      cell_ghost_particles_map[cell_index - x + 1 - x + x * y].push_back(
+          ghost); // Right-Bottom-Front
+      break;
+    }
+
+    case Placement::TOP: {
+      auto ghost = create_ghost_particle(particle_id, top_offset);
+      // Neighbors of the halo ghost particle mirrored to the TOP of the
+      // domain
+      cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
+          ghost); // Top
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1].push_back(
+          ghost); // Top-Left
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1].push_back(
+          ghost); // Top-Right
+      cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
+          ghost); // Top-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
+          ghost); // Top-Front
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - x * y].push_back(
+          ghost); // Top-Right-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + x * y].push_back(
+          ghost); // Top-Right-Front
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - x * y].push_back(
+          ghost); // Top-Left-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + x * y].push_back(
+          ghost); // Top-Left-Front
+      break;
+    }
+
+    case Placement::BOTTOM: {
+      auto ghost = create_ghost_particle(particle_id, bottom_offset);
+      // Neighbors of the halo ghost particle mirrored to the BOTTOM of the
+      // domain
+      cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
+          ghost); // Bottom
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1].push_back(
+          ghost); // Bottom-Left
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1].push_back(
+          ghost); // Bottom-Right
+      cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
+          ghost); // Bottom-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
+          ghost); // Bottom-Front
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - x * y].push_back(
+          ghost); // Bottom-Right-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + x * y].push_back(
+          ghost); // Bottom-Right-Front
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - x * y].push_back(
+          ghost); // Bottom-Left-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + x * y].push_back(
+          ghost); // Bottom-Left-Front
+      break;
+    }
+
+    case Placement::FRONT: {
+      auto ghost = create_ghost_particle(particle_id, front_offset);
+      // Neighbors of the halo ghost particle mirrored to the BACK of the
+      // domain
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
+          ghost); // Front
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1].push_back(
+          ghost); // Front-Left
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1].push_back(
+          ghost); // Front-Right
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + x].push_back(
+          ghost); // Front-Top
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - x].push_back(
+          ghost); // Front-Bottom
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 + x].push_back(
+          ghost); // Front-Right-Top
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 - x].push_back(
+          ghost); // Front-Right-Bottom
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 + x].push_back(
+          ghost); // Front-Left-Top
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 - x].push_back(
+          ghost); // Front-Left-Bottom
+      break;
+    }
+
+    case Placement::BACK: {
+      auto ghost = create_ghost_particle(particle_id, back_offset);
+      // Neighbors of the halo ghost particle mirrored to the FRONT of the
+      // domain
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
+          ghost); // Back
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1].push_back(
+          ghost); // Back-Left
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1].push_back(
+          ghost); // Back-Right
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + x].push_back(
+          ghost); // Back-Top
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - x].push_back(
+          ghost); // Back-Bottom
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 + x].push_back(
+          ghost); // Back-Right-Top
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 - x].push_back(
+          ghost); // Back-Right-Bottom
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 + x].push_back(
+          ghost); // Back-Left-Top
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 - x].push_back(
+          ghost); // Back-Left-Bottom
+      break;
+    }
+
+    case Placement::LEFT_FRONT_EDGE: {
+      auto ghost_1 = create_ghost_particle(particle_id, left_offset);
+      // map 6 neighbours
+      cell_ghost_particles_map[cell_index + x - 1].push_back(ghost_1); // Left
+      cell_ghost_particles_map[cell_index + x + x - 1].push_back(
+          ghost_1); // Left-Top
+      cell_ghost_particles_map[cell_index - 1].push_back(
+          ghost_1); // Left-Bottom
+      cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
+          ghost_1); // Left-Back
+      cell_ghost_particles_map[cell_index + x + x - 1 - x * y].push_back(
+          ghost_1); // Left-Top-Back
+      cell_ghost_particles_map[cell_index - 1 - x * y].push_back(
+          ghost_1); // Left-Bottom-Back
+
+      auto ghost_2 = create_ghost_particle(particle_id, front_offset);
+      // map 6 neighbours
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
+          ghost_2); // Front
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1].push_back(
+          ghost_2); // Front-Right
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + x].push_back(
+          ghost_2); // Front-Top
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - x].push_back(
+          ghost_2); // Front-Bottom
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 + x].push_back(
+          ghost_2); // Front-Right-Top
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 - x].push_back(
+          ghost_2); // Front-Right-Bottom
+
+      auto ghost_3 = create_ghost_particle(
+          particle_id, {left_offset[0], 0, front_offset[2]});
+      // map 3 neighbours
+      cell_ghost_particles_map[cell_index + x - 1 - (z - 1) * x * y].push_back(
+          ghost_3); // Left-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x - (z - 1) * x * y]
+          .push_back(ghost_3); // Left-Top-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x - (z - 1) * x * y]
+          .push_back(ghost_3); // Left-Bottom-Front Neighbour
+      break;
+    }
+
+    case Placement::LEFT_BACK_EDGE: {
+      auto ghost_1 = create_ghost_particle(particle_id, left_offset);
+      cell_ghost_particles_map[cell_index + x - 1].push_back(
+          ghost_1); // Direct Left Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x].push_back(
+          ghost_1); // Left-Top Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x].push_back(
+          ghost_1); // Left-bottom Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
+          ghost_1); // Left-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x + x * y].push_back(
+          ghost_1); // Left-Top-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x + x * y].push_back(
+          ghost_1); // Left-Bottom-Front Neighbour
+
+      auto ghost_2 = create_ghost_particle(particle_id, back_offset);
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
+          ghost_2); // Back
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1].push_back(
+          ghost_2); // Back-Right
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + x].push_back(
+          ghost_2); // Back-Top
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - x].push_back(
+          ghost_2); // Back-Bottom
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 + x].push_back(
+          ghost_2); // Back-Right-Top
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 - x].push_back(
+          ghost_2); // Back-Right-Bottom
+
+      auto ghost_3 = create_ghost_particle(particle_id,
+                                           {left_offset[0], 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index + x - 1 + (z - 1) * x * y].push_back(
+          ghost_3); // Left-Back Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x + (z - 1) * x * y]
+          .push_back(ghost_3); // Left-Top-Back Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x + (z - 1) * x * y]
+          .push_back(ghost_3); // Left-Bottom-Back Neighbour
+      break;
+    }
+
+    case Placement::RIGHT_FRONT_EDGE: {
+      auto ghost_1 = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); // Right
+      cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+          ghost_1); // Right-Top
+      cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
+          ghost_1); // Right-Bottom
+      cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
+          ghost_1); // Right-Back
+      cell_ghost_particles_map[cell_index - x + 1 + x - x * y].push_back(
+          ghost_1); // Right-Top-Back
+      cell_ghost_particles_map[cell_index - x + 1 - x - x * y].push_back(
+          ghost_1); // Right-Bottom-Back
+
+      auto ghost_2 = create_ghost_particle(particle_id, front_offset);
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
+          ghost_2); // Front
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1].push_back(
+          ghost_2); // Front-Left
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + x].push_back(
+          ghost_2); // Front-Top
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - x].push_back(
+          ghost_2); // Front-Bottom
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 + x].push_back(
+          ghost_2); // Front-Left-Top
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 - x].push_back(
+          ghost_2); // Front-Left-Bottom
+
+      auto ghost_3 = create_ghost_particle(
+          particle_id, {right_offset[0], 0, front_offset[2]});
+      cell_ghost_particles_map[cell_index - x + 1 - (z - 1) * x * y].push_back(
+          ghost_3); // Right-Front
+      cell_ghost_particles_map[cell_index - x + 1 + x - (z - 1) * x * y]
+          .push_back(ghost_3); // Right-Top-Front
+      cell_ghost_particles_map[cell_index - x + 1 - x - (z - 1) * x * y]
+          .push_back(ghost_3); // Right-Bottom-Front
+      break;
+    }
+
+    case Placement::RIGHT_BACK_EDGE: {
+      auto ghost_1 = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); // Right
+      cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+          ghost_1); // Right-Top
+      cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
+          ghost_1); // Right-Bottom
+      cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
+          ghost_1); // Right-Front
+      cell_ghost_particles_map[cell_index - x + 1 + x + x * y].push_back(
+          ghost_1); // Right-Top-Front
+      cell_ghost_particles_map[cell_index - x + 1 - x + x * y].push_back(
+          ghost_1); // Right-Bottom-Front
+
+      auto ghost_2 = create_ghost_particle(particle_id, back_offset);
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
+          ghost_2); // Back
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1].push_back(
+          ghost_2); // Back-Left
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + x].push_back(
+          ghost_2); // Back-Top
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - x].push_back(
+          ghost_2); // Back-Bottom
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 + x].push_back(
+          ghost_2); // Back-Left-Top
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 - x].push_back(
+          ghost_2); // Back-Left-Bottom
+
+      auto ghost_3 = create_ghost_particle(
+          particle_id, {right_offset[0], 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index - x + 1 + (z - 1) * x * y].push_back(
+          ghost_3); // Right-Back
+      cell_ghost_particles_map[cell_index - x + 1 + x + (z - 1) * x * y]
+          .push_back(ghost_3); // Right-Top-Back
+      cell_ghost_particles_map[cell_index - x + 1 - x + (z - 1) * x * y]
+          .push_back(ghost_3); // Right-Bottom-Back
+      break;
+    }
+
+    case Placement::TOP_LEFT_EDGE: {
+      auto ghost_1 = create_ghost_particle(particle_id, left_offset);
+      cell_ghost_particles_map[cell_index + x - 1].push_back(
+          ghost_1); // Direct Left Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x].push_back(
+          ghost_1); // Left-bottom Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
+          ghost_1); // Left-Back Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
+          ghost_1); // Left-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x - x * y].push_back(
+          ghost_1); // Left-Bottom-Back Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x + x * y].push_back(
+          ghost_1); // Left-Bottom-Front Neighbour
+
+      auto ghost_2 = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
+          ghost_2); // Top
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1].push_back(
+          ghost_2); // Top-Right
+      cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
+          ghost_2); // Top-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
+          ghost_2); // Top-Front
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - x * y].push_back(
+          ghost_2); // Top-Right-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + x * y].push_back(
+          ghost_2); // Top-Right-Front
+
+      auto ghost_3 = create_ghost_particle(particle_id,
+                                           {left_offset[0], top_offset[1], 0});
+      cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x].push_back(
+          ghost_3); // Left-Top Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x + x * y]
+          .push_back(ghost_3); // Left-Top-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x - x * y]
+          .push_back(ghost_3); // Left-Top-Back Neighbour
+      break;
+    }
+
+    case Placement::TOP_RIGHT_EDGE: {
+      auto ghost_1 = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); // Right
+      cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
+          ghost_1); // Right-Bottom
+      cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
+          ghost_1); // Right-Back
+      cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
+          ghost_1); // Right-Front
+      cell_ghost_particles_map[cell_index - x + 1 - x - x * y].push_back(
+          ghost_1); // Right-Bottom-Back
+      cell_ghost_particles_map[cell_index - x + 1 - x + x * y].push_back(
+          ghost_1); // Right-Bottom-Front
+
+      auto ghost_2 = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
+          ghost_2); // Top
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1].push_back(
+          ghost_2); // Top-Left
+      cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
+          ghost_2); // Top-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
+          ghost_2); // Top-Front
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - x * y].push_back(
+          ghost_2); // Top-Left-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + x * y].push_back(
+          ghost_2); // Top-Left-Front
+      auto ghost_3 = create_ghost_particle(particle_id,
+                                           {right_offset[0], top_offset[1], 0});
+      cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x].push_back(
+          ghost_3); // Right-Top
+      cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x + x * y]
+          .push_back(ghost_3); // Right-Top-Front
+      cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x - x * y]
+          .push_back(ghost_3); // Right-Top-Back
+      break;
+    }
+
+    case Placement::BOTTOM_RIGHT_EDGE: {
+      auto ghost_1 = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_1); // Right
+      cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+          ghost_1); // Right-Top
+      cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
+          ghost_1); // Right-Back
+      cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
+          ghost_1); // Right-Front
+      cell_ghost_particles_map[cell_index - x + 1 + x + x * y].push_back(
+          ghost_1); // Right-Top-Front
+      cell_ghost_particles_map[cell_index - x + 1 + x - x * y].push_back(
+          ghost_1); // Right-Top-Back
+
+      auto ghost_2 = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
+          ghost_2); // Bottom
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1].push_back(
+          ghost_2); // Bottom-Left
+      cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
+          ghost_2); // Bottom-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
+          ghost_2); // Bottom-Front
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - x * y].push_back(
+          ghost_2); // Bottom-Left-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + x * y].push_back(
+          ghost_2); // Bottom-Left-Front
+      auto ghost_3 = create_ghost_particle(
+          particle_id, {right_offset[0], bottom_offset[1], 0});
+      cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x].push_back(
+          ghost_3); // Right-Bottom
+      cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x - x * y]
+          .push_back(ghost_3); // Right-Bottom-Back
+      cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x + x * y]
+          .push_back(ghost_3); // Right-Bottom-Front
+      break;
+    }
+
+    case Placement::BOTTOM_LEFT_EDGE: {
+      auto ghost_1 = create_ghost_particle(particle_id, left_offset);
+      cell_ghost_particles_map[cell_index + x - 1].push_back(
+          ghost_1); // Direct Left Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x].push_back(
+          ghost_1); // Left-Top Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
+          ghost_1); // Left-Back Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
+          ghost_1); // Left-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x + x * y].push_back(
+          ghost_1); // Left-Top-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x - x * y].push_back(
+          ghost_1); // Left-Top-Back Neighbour
+      auto ghost_2 = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
+          ghost_2); // Bottom
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1].push_back(
+          ghost_2); // Bottom-Right
+      cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
+          ghost_2); // Bottom-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
+          ghost_2); // Bottom-Front
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - x * y].push_back(
+          ghost_2); // Bottom-Right-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + x * y].push_back(
+          ghost_2); // Bottom-Right-Front
+
+      auto ghost_3 = create_ghost_particle(
+          particle_id, {left_offset[0], bottom_offset[1], 0});
+      cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x].push_back(
+          ghost_3); // Left-bottom Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x - x * y]
+          .push_back(ghost_3); // Left-Bottom-Back Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x + x * y]
+          .push_back(ghost_3); // Left-Bottom-Front Neighbour
+      break;
+    }
+
+    case Placement::TOP_FRONT_EDGE: {
+      auto ghost_1 = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
+          ghost_1); // Top
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1].push_back(
+          ghost_1); // Top-Left
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1].push_back(
+          ghost_1); // Top-Right
+      cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
+          ghost_1); // Top-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - x * y].push_back(
+          ghost_1); // Top-Right-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - x * y].push_back(
+          ghost_1); // Top-Left-Back
+
+      auto ghost_2 = create_ghost_particle(particle_id, front_offset);
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
+          ghost_2); // Front
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1].push_back(
+          ghost_2); // Front-Left
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1].push_back(
+          ghost_2); // Front-Right
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - x].push_back(
+          ghost_2); // Front-Bottom
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 - x].push_back(
+          ghost_2); // Front-Right-Bottom
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 - x].push_back(
+          ghost_2); // Front-Left-Bottom
+
+      auto ghost_3 = create_ghost_particle(particle_id,
+                                           {0, top_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index - (y - 1) * x - (z - 1) * x * y]
+          .push_back(ghost_3); // Top-Front
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - (z - 1) * x * y]
+          .push_back(ghost_3); // Top-Right-Front
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - (z - 1) * x * y]
+          .push_back(ghost_3); // Top-Left-Front
+      break;
+    }
+
+    case Placement::BOTTOM_FRONT_EDGE: {
+      auto ghost_1 = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
+          ghost_1); // Bottom
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1].push_back(
+          ghost_1); // Bottom-Left
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1].push_back(
+          ghost_1); // Bottom-Right
+      cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
+          ghost_1); // Bottom-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - x * y].push_back(
+          ghost_1); // Bottom-Right-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - x * y].push_back(
+          ghost_1); // Bottom-Left-Back
+      auto ghost_2 = create_ghost_particle(particle_id, front_offset);
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
+          ghost_2); // Front
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1].push_back(
+          ghost_2); // Front-Left
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1].push_back(
+          ghost_2); // Front-Right
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + x].push_back(
+          ghost_2); // Front-Top
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 + x].push_back(
+          ghost_2); // Front-Right-Top
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 + x].push_back(
+          ghost_2); // Front-Left-Top
+      auto ghost_3 = create_ghost_particle(
+          particle_id, {0, bottom_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index + (y - 1) * x - (z - 1) * x * y]
+          .push_back(ghost_3); // Bottom-Front
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - (z - 1) * x * y]
+          .push_back(ghost_3); // Bottom-Right-Front
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - (z - 1) * x * y]
+          .push_back(ghost_3); // Bottom-Left-Front
+      break;
+    }
+
+    case Placement::BOTTOM_BACK_EDGE: {
+      auto ghost_1 = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
+          ghost_1); // Bottom
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1].push_back(
+          ghost_1); // Bottom-Left
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1].push_back(
+          ghost_1); // Bottom-Right
+      cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
+          ghost_1); // Bottom-Front
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + x * y].push_back(
+          ghost_1); // Bottom-Right-Front
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + x * y].push_back(
+          ghost_1); // Bottom-Left-Front
+
+      auto ghost_2 = create_ghost_particle(particle_id, back_offset);
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
+          ghost_2); // Back
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1].push_back(
+          ghost_2); // Back-Left
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1].push_back(
+          ghost_2); // Back-Right
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + x].push_back(
+          ghost_2); // Back-Top
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 + x].push_back(
+          ghost_2); // Back-Right-Top
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 + x].push_back(
+          ghost_2); // Back-Left-Top
+
+      auto ghost_3 = create_ghost_particle(
+          particle_id, {0, bottom_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index + (y - 1) * x + (z - 1) * x * y]
+          .push_back(ghost_3); // Bottom-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + (z - 1) * x * y]
+          .push_back(ghost_3); // Bottom-Right-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + (z - 1) * x * y]
+          .push_back(ghost_3); // Bottom-Left-Back
+      break;
+    }
+
+    case Placement::TOP_BACK_EDGE: {
+      auto ghost_1 = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
+          ghost_1); // Top
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1].push_back(
+          ghost_1); // Top-Left
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1].push_back(
+          ghost_1); // Top-Right
+      cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
+          ghost_1); // Top-Front
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + x * y].push_back(
+          ghost_1); // Top-Right-Front
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + x * y].push_back(
+          ghost_1); // Top-Left-Front
+
+      auto ghost_2 = create_ghost_particle(particle_id, back_offset);
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
+          ghost_2); // Back
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1].push_back(
+          ghost_2); // Back-Left
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1].push_back(
+          ghost_2); // Back-Right
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - x].push_back(
+          ghost_2); // Back-Bottom
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 - x].push_back(
+          ghost_2); // Back-Right-Bottom
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 - x].push_back(
+          ghost_2); // Back-Left-Bottom
+      auto ghost_3 = create_ghost_particle(particle_id,
+                                           {0, top_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index - (y - 1) * x + (z - 1) * x * y]
+          .push_back(ghost_3); // Top-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + (z - 1) * x * y]
+          .push_back(ghost_3); // Top-Right-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + (z - 1) * x * y]
+          .push_back(ghost_3); // Top-Left-Back
+      break;
+    }
+
+    case Placement::TOP_FRONT_RIGHT_CORNER: {
+      auto ghost_1 = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
+          ghost_1); // Top
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1].push_back(
+          ghost_1); // Top-Left
+      cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
+          ghost_1); // Top-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - x * y].push_back(
+          ghost_1); // Top-Left-Back
+      auto ghost_2 = create_ghost_particle(particle_id, front_offset);
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
+          ghost_2); // Front
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1].push_back(
+          ghost_2); // Front-Left
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - x].push_back(
+          ghost_2); // Front-Bottom
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 - x].push_back(
+          ghost_2); // Front-Left-Bottom
+      auto ghost_3 = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); // Right
+      cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
+          ghost_3); // Right-Bottom
+      cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
+          ghost_3); // Right-Back
+      cell_ghost_particles_map[cell_index - x + 1 - x - x * y].push_back(
+          ghost_3); // Right-Bottom-Back
+      auto ghost_4 = create_ghost_particle(particle_id,
+                                           {right_offset[0], top_offset[1], 0});
+      cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x].push_back(
+          ghost_4); // Right-Top
+      cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x - x * y]
+          .push_back(ghost_4); // Right-Top-Back
+      auto ghost_5 = create_ghost_particle(
+          particle_id, {right_offset[0], 0, front_offset[2]});
+      cell_ghost_particles_map[cell_index - x + 1 - (z - 1) * x * y].push_back(
+          ghost_5); // Right-Front
+      cell_ghost_particles_map[cell_index - x + 1 - x - (z - 1) * x * y]
+          .push_back(ghost_5); // Right-Bottom-Front
+      auto ghost_6 = create_ghost_particle(particle_id,
+                                           {0, top_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index - (y - 1) * x - (z - 1) * x * y]
+          .push_back(ghost_6); // Top-Front
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1 - (z - 1) * x * y]
+          .push_back(ghost_6); // Top-Left-Front
+      auto ghost_7 = create_ghost_particle(
+          particle_id, {right_offset[0], top_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x + x * y]
+          .push_back(ghost_7); // Right-Top-Front
+      break;
+    }
+
+    case Placement::TOP_FRONT_LEFT_CORNER: {
+      auto ghost_1 = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
+          ghost_1); // Top
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1].push_back(
+          ghost_1); // Top-Right
+      cell_ghost_particles_map[cell_index - (y - 1) * x - x * y].push_back(
+          ghost_1); // Top-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - x * y].push_back(
+          ghost_1); // Top-Right-Back
+      auto ghost_2 = create_ghost_particle(particle_id, front_offset);
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
+          ghost_2); // Front
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1].push_back(
+          ghost_2); // Front-Right
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - x].push_back(
+          ghost_2); // Front-Bottom
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 - x].push_back(
+          ghost_2); // Front-Right-Bottom
+      auto ghost_3 = create_ghost_particle(particle_id, left_offset);
+      cell_ghost_particles_map[cell_index + x - 1].push_back(
+          ghost_3); // Direct Left Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x].push_back(
+          ghost_3); // Left-bottom Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
+          ghost_3); // Left-Back Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x - x * y].push_back(
+          ghost_3); // Left-Bottom-Back Neighbour
+      auto ghost_4 = create_ghost_particle(particle_id,
+                                           {left_offset[0], top_offset[1], 0});
+      cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x].push_back(
+          ghost_4); // Left-Top Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x - x * y]
+          .push_back(ghost_4); // Left-Top-Back Neighbour
+      auto ghost_5 = create_ghost_particle(
+          particle_id, {left_offset[0], 0, front_offset[2]});
+      cell_ghost_particles_map[cell_index + x - 1 - (z - 1) * x * y].push_back(
+          ghost_5); // Left-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x - (z - 1) * x * y]
+          .push_back(ghost_5); // Left-Bottom-Front Neighbour
+      auto ghost_6 = create_ghost_particle(particle_id,
+                                           {0, top_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index - (y - 1) * x - (z - 1) * x * y]
+          .push_back(ghost_6); // Top-Front
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1 - (z - 1) * x * y]
+          .push_back(ghost_6); // Top-Right-Front
+      auto ghost_7 = create_ghost_particle(
+          particle_id, {left_offset[0], top_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index - (y - 1) * x + x - 1 -
+                               (z - 1) * x * y]
+          .push_back(ghost_7); // Top-Left-Front
+      break;
+    }
+
+    case Placement::TOP_BACK_LEFT_CORNER: {
+      auto ghost_1 = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
+          ghost_1); // Top
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1].push_back(
+          ghost_1); // Top-Right
+      cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
+          ghost_1); // Top-Front
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + x * y].push_back(
+          ghost_1); // Top-Right-Front
+      auto ghost_2 = create_ghost_particle(particle_id, back_offset);
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
+          ghost_2); // Back
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1].push_back(
+          ghost_2); // Back-Right
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - x].push_back(
+          ghost_2); // Back-Bottom
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 - x].push_back(
+          ghost_2); // Back-Right-Bottom
+      auto ghost_3 = create_ghost_particle(particle_id, left_offset);
+      cell_ghost_particles_map[cell_index + x - 1].push_back(
+          ghost_3); // Direct Left Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x].push_back(
+          ghost_3); // Left-bottom Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
+          ghost_3); // Left-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x + x * y].push_back(
+          ghost_3); // Left-Bottom-Front Neighbour
+      auto ghost_4 = create_ghost_particle(particle_id,
+                                           {left_offset[0], top_offset[1], 0});
+      cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x].push_back(
+          ghost_4); // Left-Top Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - (y - 1) * x + x * y]
+          .push_back(ghost_4); // Left-Top-Front Neighbour
+      auto ghost_5 = create_ghost_particle(particle_id,
+                                           {left_offset[0], 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index + x - 1 + (z - 1) * x * y].push_back(
+          ghost_5); // Left-Back Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x + (z - 1) * x * y]
+          .push_back(ghost_5); // Left-Bottom-Back Neighbour
+
+      auto ghost_6 = create_ghost_particle(particle_id,
+                                           {0, top_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index - (y - 1) * x + (z - 1) * x * y]
+          .push_back(ghost_6); // Top-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x + 1 + (z - 1) * x * y]
+          .push_back(ghost_6); // Top-Right-Back
+      auto ghost_7 = create_ghost_particle(
+          particle_id, {left_offset[0], top_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index - (y - 1) * x + x - 1 +
+                               (z - 1) * x * y]
+          .push_back(ghost_7); // Top-Left-Back
+      break;
+    }
+
+    case Placement::TOP_BACK_RIGHT_CORNER: {
+      auto ghost_1 = create_ghost_particle(particle_id, top_offset);
+      cell_ghost_particles_map[cell_index - (y - 1) * x].push_back(
+          ghost_1); // Top
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1].push_back(
+          ghost_1); // Top-Left
+      cell_ghost_particles_map[cell_index - (y - 1) * x + x * y].push_back(
+          ghost_1); // Top-Front
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + x * y].push_back(
+          ghost_1); // Top-Left-Front
+
+      auto ghost_2 = create_ghost_particle(particle_id, back_offset);
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
+          ghost_2); // Back
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1].push_back(
+          ghost_2); // Back-Left
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - x].push_back(
+          ghost_2); // Back-Bottom
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 - x].push_back(
+          ghost_2); // Back-Left-Bottom
+
+      auto ghost_3 = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); // Right
+      cell_ghost_particles_map[cell_index - x + 1 - x].push_back(
+          ghost_3); // Right-Bottom
+      cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
+          ghost_3); // Right-Front
+      cell_ghost_particles_map[cell_index - x + 1 - x + x * y].push_back(
+          ghost_3); // Right-Bottom-Front
+
+      auto ghost_4 = create_ghost_particle(particle_id,
+                                           {right_offset[0], top_offset[1], 0});
+      cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x].push_back(
+          ghost_4); // Right-Top
+      cell_ghost_particles_map[cell_index - x + 1 - (y - 1) * x + x * y]
+          .push_back(ghost_4); // Right-Top-Front
+
+      auto ghost_5 = create_ghost_particle(
+          particle_id, {right_offset[0], 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index - x + 1 + (z - 1) * x * y].push_back(
+          ghost_5); // Right-Back
+      cell_ghost_particles_map[cell_index - x + 1 - x + (z - 1) * x * y]
+          .push_back(ghost_5); // Right-Bottom-Back
+
+      auto ghost_6 = create_ghost_particle(particle_id,
+                                           {0, top_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index - (y - 1) * x + (z - 1) * x * y]
+          .push_back(ghost_6); // Top-Back
+      cell_ghost_particles_map[cell_index - (y - 1) * x - 1 + (z - 1) * x * y]
+          .push_back(ghost_6); // Top-Left-Back
+
+      auto ghost_7 = create_ghost_particle(
+          particle_id, {right_offset[0], top_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index - (y - 1) * x - x + 1 +
+                               (z - 1) * x * y]
+          .push_back(ghost_7); // Top-Right-Back
+      break;
+    }
+
+    case Placement::BOTTOM_FRONT_RIGHT_CORNER: {
+      auto ghost_1 = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
+          ghost_1); // Bottom
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1].push_back(
+          ghost_1); // Bottom-Left
+      cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
+          ghost_1); // Bottom-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - x * y].push_back(
+          ghost_1); // Bottom-Left-Back
+
+      auto ghost_2 = create_ghost_particle(particle_id, front_offset);
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
+          ghost_2); // Front
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1].push_back(
+          ghost_2); // Front-Left
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + x].push_back(
+          ghost_2); // Front-Top
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y - 1 + x].push_back(
+          ghost_2); // Front-Left-Top
+
+      auto ghost_3 = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); // Right
+      cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+          ghost_3); // Right-Top
+      cell_ghost_particles_map[cell_index - x + 1 - x * y].push_back(
+          ghost_3); // Right-Back
+      cell_ghost_particles_map[cell_index - x + 1 + x - x * y].push_back(
+          ghost_3); // Right-Top-Back
+
+      auto ghost_4 = create_ghost_particle(
+          particle_id, {right_offset[0], bottom_offset[1], 0});
+      cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x].push_back(
+          ghost_4); // Right-Bottom
+      cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x - x * y]
+          .push_back(ghost_4); // Right-Bottom-Back
+
+      auto ghost_5 = create_ghost_particle(
+          particle_id, {right_offset[0], 0, front_offset[2]});
+      cell_ghost_particles_map[cell_index - x + 1 - (z - 1) * x * y].push_back(
+          ghost_5); // Right-Front
+      cell_ghost_particles_map[cell_index - x + 1 + x - (z - 1) * x * y]
+          .push_back(ghost_5); // Right-Top-Front
+
+      auto ghost_6 = create_ghost_particle(
+          particle_id, {0, bottom_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index + (y - 1) * x - (z - 1) * x * y]
+          .push_back(ghost_6); // Bottom-Front
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1 - (z - 1) * x * y]
+          .push_back(ghost_6); // Bottom-Left-Front
+
+      auto ghost_7 = create_ghost_particle(
+          particle_id, {right_offset[0], bottom_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index + (y - 1) * x - x + 1 -
+                               (z - 1) * x * y]
+          .push_back(ghost_7); // Bottom-Right-Front
+      break;
+    }
+
+    case Placement::BOTTOM_FRONT_LEFT_CORNER: {
+      auto ghost_1 = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
+          ghost_1); // Bottom
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1].push_back(
+          ghost_1); // Bottom-Right
+      cell_ghost_particles_map[cell_index + (y - 1) * x - x * y].push_back(
+          ghost_1); // Bottom-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - x * y].push_back(
+          ghost_1); // Bottom-Right-Back
+
+      auto ghost_2 = create_ghost_particle(particle_id, front_offset);
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y].push_back(
+          ghost_2); // Front
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1].push_back(
+          ghost_2); // Front-Right
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + x].push_back(
+          ghost_2); // Front-Top
+      cell_ghost_particles_map[cell_index - (z - 1) * x * y + 1 + x].push_back(
+          ghost_2); // Front-Right-Top
+
+      auto ghost_3 = create_ghost_particle(particle_id, left_offset);
+      cell_ghost_particles_map[cell_index + x - 1].push_back(
+          ghost_3); // Direct Left Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x].push_back(
+          ghost_3); // Left-Top Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 - x * y].push_back(
+          ghost_3); // Left-Back Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x - x * y].push_back(
+          ghost_3); // Left-Top-Back Neighbour
+
+      auto ghost_4 = create_ghost_particle(
+          particle_id, {left_offset[0], bottom_offset[1], 0});
+      cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x].push_back(
+          ghost_4); // Left-bottom Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x - x * y]
+          .push_back(ghost_4); // Left-Bottom-Back Neighbour
+
+      auto ghost_5 = create_ghost_particle(
+          particle_id, {left_offset[0], 0, front_offset[2]});
+      cell_ghost_particles_map[cell_index + x - 1 - (z - 1) * x * y].push_back(
+          ghost_5); // Left-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x - (z - 1) * x * y]
+          .push_back(ghost_5); // Left-Top-Front Neighbour
+
+      auto ghost_6 = create_ghost_particle(
+          particle_id, {0, bottom_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index + (y - 1) * x - (z - 1) * x * y]
+          .push_back(ghost_6); // Bottom-Front
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1 - (z - 1) * x * y]
+          .push_back(ghost_6); // Bottom-Right-Front
+
+      auto ghost_7 = create_ghost_particle(
+          particle_id, {left_offset[0], bottom_offset[1], front_offset[2]});
+      cell_ghost_particles_map[cell_index + (y - 1) * x + x - 1 -
+                               (z - 1) * x * y]
+          .push_back(ghost_7); // Bottom-Left-Front
+      break;
+    }
+
+    case Placement::BOTTOM_BACK_LEFT_CORNER: {
+      auto ghost_1 = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
+          ghost_1); // Bottom
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1].push_back(
+          ghost_1); // Bottom-Right
+      cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
+          ghost_1); // Bottom-Front
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + x * y].push_back(
+          ghost_1); // Bottom-Right-Front
+
+      auto ghost_2 = create_ghost_particle(particle_id, back_offset);
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
+          ghost_2); // Back
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1].push_back(
+          ghost_2); // Back-Right
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + x].push_back(
+          ghost_2); // Back-Top
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + 1 + x].push_back(
+          ghost_2); // Back-Right-Top
+
+      auto ghost_3 = create_ghost_particle(particle_id, left_offset);
+      cell_ghost_particles_map[cell_index + x - 1].push_back(
+          ghost_3); // Direct Left Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x].push_back(
+          ghost_3); // Left-Top Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x * y].push_back(
+          ghost_3); // Left-Front Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x + x * y].push_back(
+          ghost_3); // Left-Top-Front Neighbour
+
+      auto ghost_4 = create_ghost_particle(
+          particle_id, {left_offset[0], bottom_offset[1], 0});
+      cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x].push_back(
+          ghost_4); // Left-bottom Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + (y - 1) * x + x * y]
+          .push_back(ghost_4); // Left-Bottom-Front Neighbour
+
+      auto ghost_5 = create_ghost_particle(particle_id,
+                                           {left_offset[0], 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index + x - 1 + (z - 1) * x * y].push_back(
+          ghost_5); // Left-Back Neighbour
+      cell_ghost_particles_map[cell_index + x - 1 + x + (z - 1) * x * y]
+          .push_back(ghost_5); // Left-Top-Back Neighbour
+
+      auto ghost_6 = create_ghost_particle(
+          particle_id, {0, bottom_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index + (y - 1) * x + (z - 1) * x * y]
+          .push_back(ghost_6); // Bottom-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x + 1 + (z - 1) * x * y]
+          .push_back(ghost_6); // Bottom-Right-Back
+
+      auto ghost_7 = create_ghost_particle(
+          particle_id, {left_offset[0], bottom_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index + (y - 1) * x + x - 1 +
+                               (z - 1) * x * y]
+          .push_back(ghost_7); // Bottom-Left-Back
+      break;
+    }
+
+    case Placement::BOTTOM_BACK_RIGHT_CORNER: {
+      auto ghost_1 = create_ghost_particle(particle_id, bottom_offset);
+      cell_ghost_particles_map[cell_index + (y - 1) * x].push_back(
+          ghost_1); // Bottom
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1].push_back(
+          ghost_1); // Bottom-Left
+      cell_ghost_particles_map[cell_index + (y - 1) * x + x * y].push_back(
+          ghost_1); // Bottom-Front
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + x * y].push_back(
+          ghost_1); // Bottom-Left-Front
+
+      auto ghost_2 = create_ghost_particle(particle_id, back_offset);
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y].push_back(
+          ghost_2); // Back
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1].push_back(
+          ghost_2); // Back-Left
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y + x].push_back(
+          ghost_2); // Back-Top
+      cell_ghost_particles_map[cell_index + (z - 1) * x * y - 1 + x].push_back(
+          ghost_2); // Back-Left-Top
+
+      auto ghost_3 = create_ghost_particle(particle_id, right_offset);
+      cell_ghost_particles_map[cell_index - x + 1].push_back(ghost_3); // Right
+      cell_ghost_particles_map[cell_index - x + 1 + x].push_back(
+          ghost_3); // Right-Top
+      cell_ghost_particles_map[cell_index - x + 1 + x * y].push_back(
+          ghost_3); // Right-Front
+      cell_ghost_particles_map[cell_index - x + 1 + x + x * y].push_back(
+          ghost_3); // Right-Top-Front
+
+      auto ghost_4 = create_ghost_particle(
+          particle_id, {right_offset[0], bottom_offset[1], 0});
+      cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x].push_back(
+          ghost_4); // Right-Bottom
+      cell_ghost_particles_map[cell_index - x + 1 + (y - 1) * x + x * y]
+          .push_back(ghost_4); // Right-Bottom-Front
+
+      auto ghost_5 = create_ghost_particle(
+          particle_id, {right_offset[0], 0, back_offset[2]});
+      cell_ghost_particles_map[cell_index - x + 1 + (z - 1) * x * y].push_back(
+          ghost_5); // Right-Back
+      cell_ghost_particles_map[cell_index - x + 1 + x + (z - 1) * x * y]
+          .push_back(ghost_5); // Right-Top-Back
+
+      auto ghost_6 = create_ghost_particle(
+          particle_id, {0, bottom_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index + (y - 1) * x + (z - 1) * x * y]
+          .push_back(ghost_6); // Bottom-Back
+      cell_ghost_particles_map[cell_index + (y - 1) * x - 1 + (z - 1) * x * y]
+          .push_back(ghost_6); // Bottom-Left-Back
+
+      auto ghost_7 = create_ghost_particle(
+          particle_id, {right_offset[0], bottom_offset[1], back_offset[2]});
+      cell_ghost_particles_map[cell_index + (y - 1) * x - x + 1 +
+                               (z - 1) * x * y]
+          .push_back(ghost_7); // Bottom-Right-Back
+      break;
+    }
+    default:
+      break;
+    }
+  }
 }

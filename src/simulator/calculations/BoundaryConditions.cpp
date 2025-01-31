@@ -42,14 +42,12 @@ void BoundaryConditions::handle_reflect_conditions(
 
   // Bottom boundary
   if (cell.placement == Placement::BOTTOM || cell.placement == Placement::TOP)
-    particles.at(particle_id)->updateV(velocity[0], -velocity[1],
-                                              velocity[2]);
+    particles.at(particle_id)->updateV(velocity[0], -velocity[1], velocity[2]);
 
   // Front or Back
   if (particles.z > 1 &&
       (cell.placement == Placement::FRONT || cell.placement == Placement::BACK))
-    particles.at(particle_id)->updateV(velocity[0], velocity[1],
-                                              -velocity[2]);
+    particles.at(particle_id)->updateV(velocity[0], velocity[1], -velocity[2]);
 
   if (particles.domain_size_.size() == 2) {
     // handle corners
@@ -57,8 +55,8 @@ void BoundaryConditions::handle_reflect_conditions(
         cell.placement == Placement::TOP_RIGHT_CORNER ||
         cell.placement == Placement::TOP_LEFT_CORNER ||
         cell.placement == Placement::BOTTOM_RIGHT_CORNER)
-      particles.at(particle_id)->updateV(-velocity[0], -velocity[1],
-                                                velocity[2]);
+      particles.at(particle_id)
+          ->updateV(-velocity[0], -velocity[1], velocity[2]);
   } else if (particles.domain_size_.size() == 3) {
     if (cell.placement == Placement::TOP_BACK_LEFT_CORNER ||
         cell.placement == Placement::TOP_BACK_RIGHT_CORNER ||
@@ -76,8 +74,8 @@ void BoundaryConditions::handle_reflect_conditions(
         cell.placement == Placement::TOP_FRONT_EDGE ||
         cell.placement == Placement::TOP_RIGHT_EDGE ||
         cell.placement == Placement::TOP_LEFT_EDGE) {
-      particles.at(particle_id)->updateV(velocity[0], -velocity[1],
-                                                velocity[2]);
+      particles.at(particle_id)
+          ->updateV(velocity[0], -velocity[1], velocity[2]);
     }
   }
 }
@@ -95,31 +93,36 @@ void BoundaryConditions::handle_periodic_conditions(
   std::array<double, 3> location = particles.at(particle_id)->getX();
 
   if (location[0] < particles.left_corner_coordinates[0])
-    particles.at(particle_id)->updateX(
-        location[0] + particles.domain_size_[0], location[1], location[2]);
+    particles.at(particle_id)
+        ->updateX(location[0] + particles.domain_size_[0], location[1],
+                  location[2]);
   if (location[0] >
       particles.left_corner_coordinates[0] + particles.domain_size_[0])
-    particles.at(particle_id)->updateX(
-        location[0] - particles.domain_size_[0], location[1], location[2]);
+    particles.at(particle_id)
+        ->updateX(location[0] - particles.domain_size_[0], location[1],
+                  location[2]);
   if (location[1] < particles.left_corner_coordinates[1])
-    particles.at(particle_id)->updateX(
-        location[0], location[1] + particles.domain_size_[1], location[2]);
+    particles.at(particle_id)
+        ->updateX(location[0], location[1] + particles.domain_size_[1],
+                  location[2]);
   if (location[1] >
       particles.left_corner_coordinates[1] + particles.domain_size_[1])
-    particles.at(particle_id)->updateX(
-        location[0], location[1] - particles.domain_size_[1], location[2]);
+    particles.at(particle_id)
+        ->updateX(location[0], location[1] - particles.domain_size_[1],
+                  location[2]);
   if (particles.domain_size_.size() == 3) {
     if (location[2] < particles.left_corner_coordinates[2])
-      particles.at(particle_id)->updateX(
-          location[0], location[1], location[2] + particles.domain_size_[2]);
+      particles.at(particle_id)
+          ->updateX(location[0], location[1],
+                    location[2] + particles.domain_size_[2]);
     if (location[2] >
         particles.left_corner_coordinates[2] + particles.domain_size_[2])
-      particles.at(particle_id)->updateX(
-          location[0], location[1], location[2] - particles.domain_size_[2]);
+      particles.at(particle_id)
+          ->updateX(location[0], location[1],
+                    location[2] - particles.domain_size_[2]);
   }
 
-  particles.at(particle_id)->updateOldX(location[0], location[1],
-                                               location[2]);
+  particles.at(particle_id)->updateOldX(location[0], location[1], location[2]);
   particles.update_particle_location(particle_id, location);
   if (!particles.is_within_domain(particles.at(particle_id)->getX())) {
     std::cout << "Out of domain" << std::endl;

@@ -2,11 +2,9 @@
 #include "../particle/container/ParticleContainer.h"
 #include "Calculation.h"
 
-
 #pragma once
 #define TWO_SQRT 1.41421356237
-#define MAGIC_NUMBER 1.12246204831 
-
+#define MAGIC_NUMBER 1.12246204831
 
 /**
  * @enum ForceType
@@ -60,15 +58,70 @@ private:
 
   // ----------------- Helper Functions -----------------------------------
 
+  /**
+   * @brief Computes the direct sum force between all particles in the
+   * container.
+   * @param particles LinkedCellContainer reference.
+   */
   static void compute_direct_sum(LinkedCellContainer &particles);
+
+  /**
+   * @brief Computes the force between all particles in the container using
+   * serial execution.
+   * @param particles LinkedCellContainer reference.
+   */
   static void compute_serial(LinkedCellContainer &particles);
+
+  /**
+   * @brief Computes the force between all particles in the container using
+   * parallel execution. Utilizes the fork-join policy.
+   * @param particles LinkedCellContainer reference.
+   */
   static void compute_parallel_fork_join(LinkedCellContainer &particles);
+
+  /**
+   * @brief Computes the force between all particles in the container using
+   * parallel execution using tasking. Utilizes the tasking policy.
+   * @param particles LinkedCellContainer reference.
+   */
   static void compute_parallel_tasking(LinkedCellContainer &particles);
+
+  /**
+   * @brief Computes forces affected by the ghost cells.
+   * @param particles LinkedCellContainer reference.
+   */
   static void compute_ghost_cell_forces(LinkedCellContainer &particles);
+
+  /**
+   * @brief Computes the Lennard-Jones force between two particles.
+   * @param p1 First particle.
+   * @param p2 Second particle.
+   * @param r12 Vector representing the distance between the particles.
+   * @param distance Distance between the particles.
+   * @return The Lennard-Jones force between the particles.
+   */
   static std::array<double, 3>
   compute_lj_force(Particle *p1, Particle *p2, const std::array<double, 3> &r12,
                    double distance);
+
+  /**
+   * @brief Applies gravity to all particles in the container.
+   * @param particles LinkedCellContainer reference.
+   */
   static void apply_gravity(LinkedCellContainer &particles);
+
+  /**
+   * @brief Computes the gravitational force between all particles in the
+   * container.
+   * @param particles LinkedCellContainer reference.
+   * @param OPTION Gravitational force option.
+   */
   static void gravitational(LinkedCellContainer &particles, OPTIONS OPTION);
+
+  /**
+   * @brief Computes the force within a connected membrane of particles in the
+   * container.
+   * @param particles LinkedCellContainer reference.
+   */
   static void membrane(LinkedCellContainer &particles);
 };

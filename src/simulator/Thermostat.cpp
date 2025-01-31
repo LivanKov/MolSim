@@ -207,8 +207,8 @@ void Thermostat::initialize() {
   }
 }
 
-
-// ----------------------- thermostat modification: -----------------------------------------
+// ----------------------- thermostat modification:
+// -----------------------------------------
 
 // new application method of thermostat (using thermal motion)
 
@@ -253,7 +253,7 @@ void Thermostat::apply_new() {
   // we only scale the thermal motion of the particle
   for (size_t i = 0; i < particles_.size(); ++i) {
     auto &particle = particles_[i];
-    auto &current_thermal_motion= particle.getThermalMotion();
+    auto &current_thermal_motion = particle.getThermalMotion();
 
     // here we scale only the thermal motion part of the particle
     std::array<double, 3> scaled_thermal_motion{};
@@ -261,7 +261,7 @@ void Thermostat::apply_new() {
       scaled_thermal_motion[j] = current_thermal_motion[j] * scaling_factor_;
     }
 
-    std::array<double,3> new_velocity{};
+    std::array<double, 3> new_velocity{};
     // then we add the average velocity to the scaled thermal motion
     // the result is the new velocity of the particle
     for (size_t l = 0; l < dimensions_; ++l) {
@@ -280,7 +280,7 @@ void Thermostat::apply_new() {
 
 std::array<double, 3> Thermostat::calculate_average_velocity() {
   const size_t amount_particles = particles_.size();
-  std::array<double, 3> average_velocity = {0.,0.,0.};
+  std::array<double, 3> average_velocity = {0., 0., 0.};
 
   // also to avoid dividing by zero later
   if (amount_particles == 0) {
@@ -308,7 +308,7 @@ void Thermostat::determine_thermal_motion() {
 
   for (size_t i = 0; i < particles_.size(); ++i) {
     auto &particle = particles_[i];
-    std::array<double, 3> thermal_motion = {0.,0.,0.};
+    std::array<double, 3> thermal_motion = {0., 0., 0.};
 
     for (size_t l = 0; l < dimensions_; ++l) {
       thermal_motion[l] = particle.getV()[l] - average_velocity[l];
@@ -372,7 +372,7 @@ void Thermostat::initialize_new() {
   // we only scale the thermal motion of the particle
   for (size_t i = 0; i < particles_.size(); ++i) {
     auto &particle = particles_[i];
-    auto &current_thermal_motion= particle.getThermalMotion();
+    auto &current_thermal_motion = particle.getThermalMotion();
 
     // here we scale only the thermal motion part of the particle
     std::array<double, 3> scaled_thermal_motion{};
@@ -380,7 +380,7 @@ void Thermostat::initialize_new() {
       scaled_thermal_motion[j] = current_thermal_motion[j] * scaling_factor_;
     }
 
-    std::array<double,3> new_velocity{};
+    std::array<double, 3> new_velocity{};
     // then we add the average velocity to the scaled thermal motion
     // the result is the new velocity of the particle
     for (size_t l = 0; l < dimensions_; ++l) {
@@ -391,13 +391,16 @@ void Thermostat::initialize_new() {
   }
 }
 
-
 // ------------- getters  --------------------------------------------
 
-double Thermostat::get_current_temperature() const { return current_temperature_; }
+double Thermostat::get_current_temperature() const {
+  return current_temperature_;
+}
 
 size_t Thermostat::get_dimensions() const { return dimensions_; }
 
-double Thermostat::get_target_temperature() const { return target_temperature_; }
+double Thermostat::get_target_temperature() const {
+  return target_temperature_;
+}
 
 bool Thermostat::get_gradual() const { return gradual_; }

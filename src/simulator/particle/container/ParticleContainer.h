@@ -129,7 +129,7 @@ public:
 
   std::vector<ParticlePointer> &get_all_particles();
 
-  ParticlePointer& at(size_t index);
+  ParticlePointer &at(size_t index);
 
 protected:
   /**

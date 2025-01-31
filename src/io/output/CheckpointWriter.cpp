@@ -3,12 +3,12 @@
 #include <fstream>
 #include <iomanip>
 
-CheckpointWriter::CheckpointWriter() = default;
-CheckpointWriter::~CheckpointWriter() = default;
+output::CheckpointWriter::CheckpointWriter() = default;
+output::CheckpointWriter::~CheckpointWriter() = default;
 
-void CheckpointWriter::writeCheckpoint(LinkedCellContainer &particles,
-                                       const std::string &filename,
-                                       double delta_t, double t_end) {
+void output::CheckpointWriter::writeCheckpoint(LinkedCellContainer &particles,
+                                               const std::string &filename,
+                                               double delta_t, double t_end) {
   std::ofstream file(filename);
   if (!file.is_open()) {
     Logger::getInstance().error("Failed to open checkpoint file for writing: " +
