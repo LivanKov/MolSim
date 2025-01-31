@@ -204,6 +204,8 @@ public:
 
   bool is_fixed() const;
 
+  void setFixed(bool fixed_arg);
+
   bool outbound;
 
   /**

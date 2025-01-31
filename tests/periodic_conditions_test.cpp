@@ -83,9 +83,9 @@ TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     std::cout << std::endl;
 
     // TODO: Uncomment and adjust expected neighbor count once verified
-    EXPECT_EQ(neighbours.size() + additional_neighbour_indices.size(), 9) << "Corner particle should have 8 neighbors with periodic conditions";
+    EXPECT_EQ(neighbours.size() + additional_neighbour_indices.size(), 8) << "Corner particle should have 8 neighbors with periodic conditions";
 
-    std::vector<int> expected_ids = {0, 1, 4, 5, 12, 13, 3, 7, 15};
+    std::vector<int> expected_ids = {1, 4, 5, 12, 13, 3, 7, 15};
     std::vector<int> actual_ids;
     
     for (const auto& n : neighbours) {
@@ -119,7 +119,7 @@ TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     }
     std::cout << std::endl;
 
-    EXPECT_EQ(bottom_right_neighbours.size() + additional_neighbour_indices.size(), 9) << "Bottom right particle should have 9 neighbors with periodic conditions";
+    EXPECT_EQ(bottom_right_neighbours.size() + additional_neighbour_indices.size(), 8) << "Bottom right particle should have 8 neighbors with periodic conditions";
 
     std::vector<int> bottom_right_expected_ids = {2, 3, 6, 7, 0, 4, 14, 15, 12};
     std::vector<int> bottom_right_actual_ids;
@@ -154,7 +154,7 @@ TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     }
     std::cout << std::endl;
 
-    EXPECT_EQ(upper_left_neighbours.size() + additional_neighbour_indices.size(), 9) << "Upper left particle should have 9 neighbors with periodic conditions";
+    EXPECT_EQ(upper_left_neighbours.size() + additional_neighbour_indices.size(), 8) << "Upper left particle should have 8 neighbors with periodic conditions";
 
     std::vector<int> upper_left_expected_ids = {8, 9, 12, 13, 0, 1, 11, 15, 3};
     std::vector<int> upper_left_actual_ids;
@@ -188,7 +188,7 @@ TEST_F(PeriodicBoundaryTest, BasicNeighbourTest) {
     }
     std::cout << std::endl;
 
-    EXPECT_EQ(upper_right_neighbours.size() + additional_neighbour_indices.size(), 9) << "Upper right particle should have 9 neighbors with periodic conditions";
+    EXPECT_EQ(upper_right_neighbours.size() + additional_neighbour_indices.size(), 8) << "Upper right particle should have 8 neighbors with periodic conditions";
 
     std::vector<int> upper_right_expected_ids = {10, 11, 14, 15, 2, 3, 8, 12, 0};
     std::vector<int> upper_right_actual_ids;

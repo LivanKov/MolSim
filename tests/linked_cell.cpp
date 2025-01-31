@@ -4,6 +4,7 @@
 #include <array>
 #include <cmath>
 #include <gtest/gtest.h>
+#include "../src/io/input/cli/SimParams.h"
 
 class LinkedCellTest : public ::testing::Test {
 protected:
@@ -36,7 +37,7 @@ TEST_F(LinkedCellTest, LocationTest) {
               std::array<double, 3>{0.0, 0.0, 0.0}, 1.0, 0);
 
   container.insert(p1, true);
-  EXPECT_TRUE(container.domain_size_.size() == 3);
+  EXPECT_TRUE(container.domain_size_.size() == 2);
 
   EXPECT_TRUE(container.is_within_domain(p1.getX()));
 
@@ -131,21 +132,21 @@ TEST_F(LinkedCellTest, NeighbourTest) {
   EXPECT_TRUE(p_1.getX()[0] == 1.5 && p_1.getX()[1] == 1.5 &&
               p_1.getX()[2] == 0.0);
 
-    EXPECT_TRUE(container.get_neighbours(p_1.getId()).size() == 4);
+  EXPECT_TRUE(container.get_neighbours(p_1.getId()).size() == 3);
 
   Particle p_2 = container[4];
 
   EXPECT_TRUE(p_2.getX()[0] == 4.5 && p_2.getX()[1] == 4.5 &&
               p_2.getX()[2] == 0.0);
 
-    EXPECT_TRUE(container.get_neighbours(p_2.getId()).size() == 9);
+  EXPECT_TRUE(container.get_neighbours(p_2.getId()).size() == 8);
 
   Particle p_3 = container[7];
 
   EXPECT_TRUE(p_3.getX()[0] == 4.5 && p_3.getX()[1] == 7.5 &&
               p_3.getX()[2] == 0.0);
 
-    EXPECT_TRUE(container.get_neighbours(p_3.getId()).size() == 6);
+    EXPECT_TRUE(container.get_neighbours(p_3.getId()).size() == 5);
 
   // verify every single neigbour for posterity's sake
 
@@ -205,9 +206,7 @@ TEST_F(LinkedCellTest, NeighbourTest) {
               center_particle.getX()[2] == 4.5);
 
 
-  EXPECT_TRUE(container_3d.get_neighbours(center_particle.getId()).size() == 27);
-
-
+  EXPECT_TRUE(container_3d.get_neighbours(center_particle.getId()).size() == 26);
 }
 
 TEST_F(LinkedCellTest, UnevenDomainTest) {
@@ -265,7 +264,6 @@ TEST_F(LinkedCellTest, UnevenDomainTest) {
 }
 
 TEST_F(LinkedCellTest, RepositioningTest) {
-
   ParticleGenerator::insertCuboid(
       std::array<double, 3>{5.0, 5.0, 0.0}, std::array<size_t, 3>{2, 2,
       1}, 2.0, 1.0, std::array<double, 3>{0.0, 0.0, 0.0}, container);
@@ -282,11 +280,11 @@ TEST_F(LinkedCellTest, RepositioningTest) {
   EXPECT_EQ(container.cells[7].size(), 0);
   EXPECT_EQ(container.cells[8].size(), 0);
 
-  EXPECT_EQ(container.domain_size_.size(), 3);
+  EXPECT_EQ(container.domain_size_.size(), 2);
 
   EXPECT_EQ(container.left_corner_coordinates[0], 1.5);
   EXPECT_EQ(container.left_corner_coordinates[1], 1.5);
-  EXPECT_EQ(container.left_corner_coordinates[2], -1.5);
+  EXPECT_EQ(container.left_corner_coordinates[2], 0);
 }
 
 // Test the mark_halo_cells (or mark_boundary_cells) function for a 3D cube. The

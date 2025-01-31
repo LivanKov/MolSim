@@ -71,13 +71,16 @@ void Force::compute_direct_sum(LinkedCellContainer &particles) {
       auto force =
           compute_lj_force(it->first.get(), it->second.get(), r12, distance);
       it->first->updateF(it->first->getF() + force);
-      it->second->updateF(it->second->getF() - force);
+      if (!it->second->is_fixed()) {
+        it->second->updateF(it->second->getF() - force);
+      }
     }
   }
 }
 
 void Force::compute_serial(LinkedCellContainer &particles) {
   for (auto &particle : particles.particles) {
+    if (particle.is_fixed()) continue;
     for (auto &neighbour : particles.get_neighbours(particle.getId())) {
       if (*neighbour != particle) {
         auto r12 = neighbour->getX() - particle.getX();
@@ -108,6 +111,7 @@ void Force::compute_parallel_fork_join(LinkedCellContainer &particles) {
   for (size_t i = 0; i < particles.particles.size(); ++i) {
     int thread_id = omp_get_thread_num();
     auto &particle = particles.particles[i];
+    if (particle.is_fixed()) continue;
     for (auto &neighbour : particles.get_neighbours(particle.getId())) {
       if (*neighbour != particle) {
         auto r12 = neighbour->getX() - particle.getX();
@@ -119,8 +123,10 @@ void Force::compute_parallel_fork_join(LinkedCellContainer &particles) {
 
           thread_local_forces[thread_id][particle.getId()] =
               thread_local_forces[thread_id][particle.getId()] + force;
-          thread_local_forces[thread_id][neighbour->getId()] =
-              thread_local_forces[thread_id][neighbour->getId()] - force;
+          if (!neighbour->is_fixed()) {
+            thread_local_forces[thread_id][neighbour->getId()] =
+                thread_local_forces[thread_id][neighbour->getId()] - force;
+          }
         }
       }
     }
@@ -176,6 +182,7 @@ void Force::compute_parallel_tasking(LinkedCellContainer &particles) {
 
 void Force::compute_ghost_cell_forces(LinkedCellContainer &particles) {
   for (auto &particle : particles.particles) {
+    if (particle.is_fixed()) continue;
     for (auto &neighbour :
          particles.get_periodic_neighbours(particle.getId())) {
       if (*(neighbour.ptr) != particle) {
@@ -216,6 +223,7 @@ std::array<double, 3> Force::compute_lj_force(Particle *p1, Particle *p2,
 
 void Force::apply_gravity(LinkedCellContainer &particles) {
   for (auto &particle : particles.particles) {
+    if(particle.is_fixed()) continue;
     double gravitational_force_y = particle.getM() * SimParams::gravity;
     particle.updateF(particle.getF()[0],
                      particle.getF()[1] + gravitational_force_y,
