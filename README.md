@@ -229,3 +229,5 @@ Deletes all files in the `output` directory. Use this to clear generated files o
 ### Some more examples
 
 ![GIF Description](/assets/example2.gif)
+
+![GIF Description](/assets/example3.gif)
