@@ -7,10 +7,6 @@ This repository contains the code written for the Molecular Dynamics Lab (IN0012
 
 ![GIF Description](/assets/example1.gif)
 
-![GIF Description](/assets/example2.gif)
-
-
-
 
 ### Build and Run on Linux 
 
@@ -72,6 +68,18 @@ Users can override the parameters defined in the XML file using command line arg
 | `-l <log_level>`  | Option to choose the logging level                                  |
 | `-f`              | Calculate Gravitational Force instead of Lennard-Jones Force        |
 | `-n`              | Disable all file outputs                                            | 
+
+### Multithreading
+
+This simulator supports different multithreading policies in order to greatly speed up computation. These are passed via the command line arguments:
+
+We utilize **OpenMP** and offer two powerful strategies:
+
+
+| Option            | Strategy                                                           |
+|-------------------|---------------------------------------------------------------------|
+| `-p`              | Fork-Join-Model                                                     |
+| `-a`              | Tasking-Model                                                       |
 
 ### Examples
 To run the MolSim program with an XML input file and additional command line arguments:
@@ -216,3 +224,8 @@ Deletes all files in the `output` directory. Use this to clear generated files o
 
 - [Manish Kumar Mishra](https://github.com/manishmishra6016)
 - [Samuel Newcome](https://github.com/SamNewcome)
+
+
+### Some more examples
+
+![GIF Description](/assets/example2.gif)
