@@ -114,8 +114,11 @@ void Particle::setAppliyFZup(bool apply_fzup_arg) {
 
 bool Particle::is_fixed() const { return fixed; }
 
-void Particle::setFixed(bool fixed_arg) { fixed = fixed_arg;
-if(this->fixed) v = {0., 0., 0.}; }
+void Particle::setFixed(bool fixed_arg) {
+  fixed = fixed_arg;
+  if (this->fixed)
+    v = {0., 0., 0.};
+}
 
 std::string Particle::toString() const {
   std::stringstream stream;

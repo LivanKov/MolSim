@@ -34,7 +34,8 @@ void ParticleGenerator::insertCuboid(
         std::array<double, 3> velocity = initialVelocity;
 
         Particle particle(position, velocity, mass,
-                          particle_container.particle_id, epsilon, sigma, fixed);
+                          particle_container.particle_id, epsilon, sigma,
+                          fixed);
         if (std::find(additional_force_coordinates.begin(),
                       additional_force_coordinates.end(),
                       std::array<size_t, 3>{k, j, i}) !=

@@ -8,7 +8,7 @@ void Position::run(LinkedCellContainer &particles, double time_delta,
     if (!p.is_fixed()) {
       auto old_x = p.getX();
       p.updateX(p.getX() + time_delta * p.getV() +
-              pow(time_delta, 2) * p.getF() / (2 * p.getM()));
+                pow(time_delta, 2) * p.getF() / (2 * p.getM()));
       p.updateOldX(old_x);
 
       if (option == OPTIONS::LINKED_CELLS) {
