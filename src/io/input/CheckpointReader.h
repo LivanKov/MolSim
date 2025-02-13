@@ -2,6 +2,8 @@
 
 #include "simulator/particle/container/LinkedCellContainer.h"
 
+namespace input {
+
 /**
  * @class CheckpointReader
  * @brief Class for reading checkpoint files.
@@ -29,3 +31,5 @@ public:
 
 private:
 };
+
+} // namespace input

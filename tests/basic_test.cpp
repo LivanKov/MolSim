@@ -1,5 +1,5 @@
 #include "simulator/particle/Particle.h"
-#include "simulator/particle/container/DirectSumContainer.h"
+#include "simulator/particle/container/ParticleContainer.h"
 #include "utils/ArrayUtils.h"
 #include "utils/logger/Logger.h"
 #include <array>
@@ -17,7 +17,7 @@ class BasicTest : public testing::Test {
 protected:
   BasicTest() : container{}, starting_coord{1.0}, delta_t{1.0} {}
 
-  DirectSumContainer container;
+  ParticleContainer container;
   double starting_coord;
   double delta_t;
   bool calculateLJForce = true;
@@ -142,6 +142,8 @@ TEST_F(BasicTest, ContainerBehaviourTest) {
   // check that every particle maps onto correct pair
 }
 
+
+//Perform a basic test to check particle movement
 TEST_F(BasicTest, SimulationBehaviourTest) {
   // this in place initialization looks super ugly, perhaps we can use
   // std::initializer_list
@@ -162,6 +164,7 @@ TEST_F(BasicTest, SimulationBehaviourTest) {
   }
 }
 
+//Perform a basic test to check force calculation
 TEST_F(BasicTest, CalculateFTest) {
   calculateLJForce = true;
   delta_t = 0.02;

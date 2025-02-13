@@ -25,6 +25,8 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(spdlog)
 
+# Find OpenMP
+find_package(OpenMP REQUIRED)
 
 # collect all cpp files
 file(GLOB_RECURSE MY_SRC
@@ -58,9 +60,15 @@ target_link_libraries(MolSim
         # stuff that is used in headers and source files
         PUBLIC
         xerces-c
+        OpenMP::OpenMP_CXX # Link OpenMP library
         PRIVATE
         spdlog::spdlog
 )
+
+option(OPEN_MP "Build with OpenMP" OFF)
+if(OPEN_MP)
+    add_compile_definitions(PARALLEL)
+endif()
 
 # activate all compiler warnings. Clean up your code :P
 # depending on the compiler different flags are used
@@ -70,6 +78,11 @@ target_compile_options(MolSim
             # disable some spam warnings for icpc...
             $<$<CXX_COMPILER_ID:Intel>:-w3 -wd383,981,1418,1572,2259>
 )
+
+# Add OpenMP-specific compiler options
+if(OpenMP_CXX_FOUND)
+    target_compile_options(MolSim PRIVATE ${OpenMP_CXX_FLAGS})
+endif()
 
 add_subdirectory(tests ${CMAKE_BINARY_DIR}/tests)
 

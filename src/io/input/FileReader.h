@@ -14,6 +14,8 @@
 
 #include "utils/logger/Logger.h"
 
+namespace input {
+
 /**
  * @class FileReader
  * @brief Reads particle data from a file.
@@ -35,3 +37,4 @@ public:
    */
   static void readFile(LinkedCellContainer &particles, char *filename);
 };
+} // namespace input

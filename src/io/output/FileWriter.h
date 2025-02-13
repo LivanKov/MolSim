@@ -1,9 +1,8 @@
-#ifndef FILEWRITER_H
-#define FILEWRITER_H
-
 #include "simulator/particle/container/LinkedCellContainer.h"
 #include <memory>
 #include <string>
+
+#pragma once
 
 namespace output {
 
@@ -16,7 +15,7 @@ class FileWriter {
 public:
   /**
    * @brief Constructor, should be overriden by the derived classes.
-   * @param particles DirectSumContainer reference.
+   * @param particles ParticleContainer reference.
    */
   FileWriter(LinkedCellContainer &particles);
 
@@ -29,9 +28,8 @@ public:
   virtual void plot_particles(const std::string &filepath, int iteration);
 
   /**
-   * @brief DirectSumContainer reference
+   * @brief ParticleContainer reference
    */
   LinkedCellContainer &particles;
 };
 } // namespace output
-#endif

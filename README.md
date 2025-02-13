@@ -2,7 +2,10 @@ MolSim (WS24/25, Group H)
 ===
 This repository contains the code written for the Molecular Dynamics Lab (IN0012) during WS24/25 at TUM.
 
+
 ![CI Build](https://github.com/LivanKov/MolSim/actions/workflows/ci.yml/badge.svg?branch=dev-sheet_2)
+
+![GIF Description](/assets/example1.gif)
 
 
 ### Build and Run on Linux 
@@ -66,6 +69,18 @@ Users can override the parameters defined in the XML file using command line arg
 | `-f`              | Calculate Gravitational Force instead of Lennard-Jones Force        |
 | `-n`              | Disable all file outputs                                            | 
 
+### Multithreading
+
+This simulator supports different multithreading policies in order to greatly speed up computation. These are passed via the command line arguments:
+
+We utilize **OpenMP** and offer two powerful strategies:
+
+
+| Option            | Strategy                                                           |
+|-------------------|---------------------------------------------------------------------|
+| `-p`              | Fork-Join-Model                                                     |
+| `-a`              | Tasking-Model                                                       |
+
 ### Examples
 To run the MolSim program with an XML input file and additional command line arguments:
 
@@ -80,7 +95,7 @@ In this example:
 - **-o ../output/simulation_output** overrides the `output_path` specified in the XML file to set the output file path.
 - **-t 5** overrides the `write_frequence` specified in the XML file to set the write frequency to write a file every 5 iterations.
 
-### EML Example
+### XML Example
 Here is an example of an XML input file:
 
 ```xml
@@ -209,3 +224,10 @@ Deletes all files in the `output` directory. Use this to clear generated files o
 
 - [Manish Kumar Mishra](https://github.com/manishmishra6016)
 - [Samuel Newcome](https://github.com/SamNewcome)
+
+
+### Some more examples
+
+![GIF Description](/assets/example2.gif)
+
+![GIF Description](/assets/example3.gif)

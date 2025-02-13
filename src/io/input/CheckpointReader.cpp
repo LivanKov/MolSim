@@ -4,11 +4,11 @@
 #include <fstream>
 #include <iomanip>
 
-CheckpointReader::CheckpointReader() = default;
-CheckpointReader::~CheckpointReader() = default;
+input::CheckpointReader::CheckpointReader() = default;
+input::CheckpointReader::~CheckpointReader() = default;
 
-void CheckpointReader::readCheckpoint(LinkedCellContainer &particles,
-                                      double &delta_t, double &t_end) {
+void input::CheckpointReader::readCheckpoint(LinkedCellContainer &particles,
+                                             double &delta_t, double &t_end) {
   const std::string &filename = "../output/checkpoint.chk";
   std::ifstream file(filename);
   if (!file.is_open()) {

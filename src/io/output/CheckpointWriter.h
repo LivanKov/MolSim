@@ -2,6 +2,7 @@
 
 #include "simulator/particle/container/LinkedCellContainer.h"
 
+namespace output {
 /**
  * @class CheckpointWriter
  * @brief Class for writing checkpoint files.
@@ -29,3 +30,4 @@ public:
 
 private:
 };
+} // namespace output

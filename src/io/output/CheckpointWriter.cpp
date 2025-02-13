@@ -3,12 +3,12 @@
 #include <fstream>
 #include <iomanip>
 
-CheckpointWriter::CheckpointWriter() = default;
-CheckpointWriter::~CheckpointWriter() = default;
+output::CheckpointWriter::CheckpointWriter() = default;
+output::CheckpointWriter::~CheckpointWriter() = default;
 
-void CheckpointWriter::writeCheckpoint(LinkedCellContainer &particles,
-                                       const std::string &filename,
-                                       double delta_t, double t_end) {
+void output::CheckpointWriter::writeCheckpoint(LinkedCellContainer &particles,
+                                               const std::string &filename,
+                                               double delta_t, double t_end) {
   std::ofstream file(filename);
   if (!file.is_open()) {
     Logger::getInstance().error("Failed to open checkpoint file for writing: " +
@@ -20,14 +20,14 @@ void CheckpointWriter::writeCheckpoint(LinkedCellContainer &particles,
   file << "# Checkpoint file for simulation restart\n";
   file << "# delta_t: " << delta_t << "\n";
   file << "# t_end: " << t_end << "\n";
-  file << particles.particles.size() << "\n";
+  file << particles.size() << "\n";
 
   // Write particle data
-  for (const auto &p : particles.particles) {
+  for (const auto &p : particles) {
     file << std::fixed << std::setprecision(6) << p.getX()[0] << " "
          << p.getX()[1] << " " << p.getX()[2] << " " << p.getV()[0] << " "
          << p.getV()[1] << " " << p.getV()[2] << " " << p.getM() << " "
-         << p.getType() << "\n";
+         << p.getId() << "\n";
   }
 
   file.close();
